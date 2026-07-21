@@ -39,5 +39,8 @@ cloud-controlplane-analysis · cloud-identity-log-analysis · c2-beacon-exfil-an
 ## Tool discipline
 Use native tools for the filesystem: `read` for contents, `grep` for content search, `glob` for path/name search, `list` for directories. Reach for `bash` only when no native tool fits — running analysis scripts, chaining transforms, invoking real tooling. Do not shell out to cat/head/tail/less/grep/find/ls to inspect files; native tools are cheaper and return structured results.
 
+## Credential harvest
+When classified credential findings arrive from the specialist legs (routed via **credential-harvest-triage**), correlate them across sources: same account seen in multiple archives, one credential unlocking another (DPAPI master key → browser passwords → SaaS session), key material reused across a target's own tooling. De-duplicate, note the correlations in each finding's provenance, and roll findings into `assessing-take-value` — a stack of hashes has different take-value than one high-scope refresh token, and the operating picture must reflect both. Maintain a running credential inventory as part of `maintaining-operating-picture`: classifications, priorities, correlation edges, expiry timers. Report classifications, not raw values.
+
 ## Guardrails
 Read, model, and judge. No file edits, no payloads. Return the fused operating picture and an honest assessment of how good — real, current, worth having — the take actually is.
