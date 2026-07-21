@@ -57,9 +57,15 @@ Both scripts are idempotent — safe to re-run.
 
 ## Source of truth
 
-The competency map that drives the analyst artifacts lives in the [CyberStrike](https://github.com/BerezhaSecurity/CyberStrike) repo at `docs/roles/operational-analyst.md`. The compile contract (grid row → skill, grid column → agent's named skill set) is specified in CyberStrike's OpenSpec under `openspec/specs/analyst-agent-roster/` and `openspec/specs/analyst-skill-library/`.
+The competency map that drives the analyst artifacts lives at [`docs/roles/operational-analyst.md`](docs/roles/operational-analyst.md). The compile contract that binds the map to the artifacts (grid row → skill, grid column → agent's named skill set, ●/○ → deep/working membership) is specified in [`openspec/specs/competency-map-derivation/`](openspec/specs/competency-map-derivation/spec.md), with the roster and library shape in [`openspec/specs/analyst-agent-roster/`](openspec/specs/analyst-agent-roster/spec.md) and [`openspec/specs/analyst-skill-library/`](openspec/specs/analyst-skill-library/spec.md).
 
-Editing the artifacts here without touching the map there is a source-of-truth drift bug. Regenerate from the map when the map changes.
+The exploratory history that produced the current shape is preserved under [`openspec/changes/archive/`](openspec/changes/archive/) — the original `derive-analyst-agents-skills` change and the follow-on `credential-harvest-capability` proposal.
+
+Editing the artifacts under `analysts/` without touching the map is a source-of-truth drift bug. When the map changes, regenerate from it.
+
+## How to extend
+
+The mechanism for adding new agents or skills — frontmatter contracts, permission model, prompt-level composition — is documented in [`docs/agents-skills-extension-workbook.md`](docs/agents-skills-extension-workbook.md). Read it before authoring new pillars or new skills.
 
 ## Verifying an install
 

@@ -1,0 +1,26 @@
+schema: spec-driven
+
+# Project context (shown to AI when creating artifacts)
+context: |
+  CyberStrike is an AI-powered offensive-security assistant: a security-focused
+  fork of opencode. Bun + TypeScript monorepo; the core CLI/server lives in
+  packages/cyberstrike. It is extended primarily by markdown files (custom agents,
+  skills, slash commands) and JSON config (cyberstrike.json{,c}), with a TypeScript
+  plugin API and MCP servers as the "when markdown is not enough" escape hatch.
+
+  These specs describe the CURRENT, source-verified behavior of the extension
+  surface, oriented toward authors of custom user-level agents and skills. Every
+  requirement is grounded in packages/cyberstrike/src. Where the code diverges from
+  existing docs (docs/agents-skills-extension-workbook.md) the code is authoritative
+  and the divergence is called out in design.md.
+
+  Conventions: Bun APIs (Bun.file, Bun.Glob); default branch is `dev`; tests run
+  from package dirs, never the repo root; config dir is `.cyberstrike/`; env flags
+  are `CYBERSTRIKE_*`.
+
+rules:
+  proposal:
+    - Distinguish "current behavior" from "desired behavior" explicitly.
+  specs:
+    - Every normative claim must be traceable to a file:line in packages/cyberstrike/src.
+    - State the ACTUAL behavior even when it is a trap; capture the ideal in design.md.
