@@ -2,25 +2,39 @@ schema: spec-driven
 
 # Project context (shown to AI when creating artifacts)
 context: |
-  CyberStrike is an AI-powered offensive-security assistant: a security-focused
-  fork of opencode. Bun + TypeScript monorepo; the core CLI/server lives in
-  packages/cyberstrike. It is extended primarily by markdown files (custom agents,
-  skills, slash commands) and JSON config (cyberstrike.json{,c}), with a TypeScript
-  plugin API and MCP servers as the "when markdown is not enough" escape hatch.
+  acordia-agents is a markdown-only distribution of opencode agents and skills
+  derived from the ACORDIA operational-role framework. There is no application
+  code, no build, no runtime — only agent files, skill files, and an install
+  script that symlinks (or copies) them into `~/.config/opencode/`.
 
-  These specs describe the CURRENT, source-verified behavior of the extension
-  surface, oriented toward authors of custom user-level agents and skills. Every
-  requirement is grounded in packages/cyberstrike/src. Where the code diverges from
-  existing docs (docs/agents-skills-extension-workbook.md) the code is authoritative
-  and the divergence is called out in design.md.
+  Scope today: the Analysis pillar — one primary orchestrator
+  (`operational-analyst`) plus three subagent legs
+  (`target-network-analyst`, `defender-detection-analyst`, `fusion-analyst`)
+  and the 39-row skill library that realises their shared analytic spine.
+  Every artifact traces back to a specific row or paragraph in the source
+  competency map at `docs/roles/operational-analyst.md` (the role model)
+  and the mechanics of the extension surface documented in
+  `docs/agents-skills-extension-workbook.md`.
 
-  Conventions: Bun APIs (Bun.file, Bun.Glob); default branch is `dev`; tests run
-  from package dirs, never the repo root; config dir is `.cyberstrike/`; env flags
-  are `CYBERSTRIKE_*`.
+  Future pillars (Collection, Operations, Reflection, Direction, Independent
+  action) may follow the same shape once compiled from their role models.
+
+  Conventions: all analyst agents are read-only (`edit: deny`); prefer opencode
+  native `read`/`grep`/`glob`/`list` over bash substitutes (`cat`/`head`/`tail`/
+  `ls` are denied, `grep`/`find`/`rg`/`fd` are gated with `ask`); the
+  orchestrator dispatches only its three named legs, never a general or explore
+  agent; skill binding is by prompt reference (opencode has no per-agent
+  `skills:` field), so each agent prompt names its skill set explicitly.
 
 rules:
   proposal:
     - Distinguish "current behavior" from "desired behavior" explicitly.
+    - Layer changes by artifact type — agent prompts, skill bodies, install
+      script, docs — so each layer can be reviewed and applied independently.
   specs:
-    - Every normative claim must be traceable to a file:line in packages/cyberstrike/src.
-    - State the ACTUAL behavior even when it is a trap; capture the ideal in design.md.
+    - Every normative claim must be traceable either to an artifact in this
+      repo (agent file, skill file, install script) or to a row/paragraph in
+      `docs/roles/operational-analyst.md` or
+      `docs/agents-skills-extension-workbook.md`.
+    - State the ACTUAL behavior even when it is a trap; capture the ideal in
+      design.md.
