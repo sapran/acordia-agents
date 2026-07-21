@@ -23,3 +23,28 @@ Read logs and artefacts across host, network, and cloud to reconstruct events, u
 - A reconstructed timeline of events from correlated artefacts.
 - A map of the environment's logging coverage, fidelity, and blind spots.
 - Own-footprint assessment: what you left behind, where, and how visible it is.
+
+## Credential extraction
+
+Credentials leak into logs constantly. Extraction here is grep-shaped across collected log corpora; no live log-source polling.
+
+**Application / debug logs**
+- Stack traces printing config objects — search for `password=`, `token=`, `secret=`, `apiKey=`, `Authorization: `. Case-insensitive; multi-line context (`grep -B2 -A10`).
+- Request logs with URLs — query-string tokens (`?api_key=`, `?access_token=`, `?sig=`); reverse-proxy access logs (`nginx`, `apache`, `envoy`) commonly hold JWTs in the query string when clients ignore the header contract.
+- Debug/verbose modes (Rails logger, Django DEBUG, Spring Boot `logging.level.root=DEBUG`) — HTTP request bodies including `password` fields, session cookies, OIDC id_tokens.
+
+**CI/CD and build logs**
+- GitHub Actions/GitLab CI/Jenkins output — masked secrets *sometimes* fail to mask (env vars printed by `env` step, secrets echoed via `set -x`, base64-encoded before mask). Search for the pattern-library prefixes (`ghp_`, `AKIA`, `xox`, `eyJ`) even in logs marked "secrets masked".
+- Docker build logs — `ARG` credentials leaked into image layers or build output.
+- Terraform apply/plan output — resource creation surfaces secrets in `sensitive = false` outputs.
+
+**Connection strings and config leaks**
+- Full DSN patterns (`postgres://user:pass@host`, `mongodb+srv://`, `Server=...;Password=...;`) appear in ORM debug logs, migration output, health-check probes.
+- Kubernetes event logs and `describe pod` output — image-pull-secret refs (safe) vs env-var secret values printed when a container crashloops (unsafe).
+
+**System / audit logs**
+- Windows Security event 4688 (process creation) with command-line auditing on — full command lines including `-Password`, `-Credential`, `net use ... /user:...`.
+- Linux `auth.log` / `secure` — pam_ldap or `sudo` reads that logged the wrong field; `bash_history` shipped via syslog.
+
+**Cross-cutting**
+- Log-sourced credentials often have unknown freshness (log retention window) and unknown revocation status. Mark `freshness: unknown` unless the log line carries a timestamp inside the retention SLA. Classification and reporting via [`credential-harvest-triage`](../credential-harvest-triage/SKILL.md); source path in the report references the log file, not the credential value.

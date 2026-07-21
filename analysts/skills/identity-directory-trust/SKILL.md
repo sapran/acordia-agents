@@ -23,3 +23,23 @@ Map the target's identity fabric — Active Directory / Entra ID structure, priv
 - Directory and privilege map with tier-0 principals identified.
 - Trust and hybrid-sync edges, including transitive and over-broad grants.
 - Shortest identity attack paths from foothold to domain/tenant control.
+
+## Credential extraction
+
+Passive extraction from directory-service artefacts already in hand (NTDS dumps, ticket caches, LAPS exports, ADCS material). Never queries the live directory to validate.
+
+**Active Directory database**
+- `NTDS.dit` + `SYSTEM` hive — `impacket-secretsdump -ntds NTDS.dit -system SYSTEM LOCAL`. Yields all domain account NTLM hashes plus `krbtgt` (golden-ticket material — highest scope, flag P0 automatically). Kerberos AES keys are extracted with `-just-dc` mode.
+- `DPAPI_SYSTEM` LSA secret + user DPAPI master keys — chained decrypt with `impacket-dpapi` yields service account plaintexts, scheduled-task credentials, saved browser passwords.
+
+**Kerberos tickets**
+- Windows `.kirbi` files — parse with `KrbRelay`, `Rubeus describe /ticket:<file>` (analysis only, not renewal). Yields service, client, renew-till, encryption type, target SPN. TGTs (`krbtgt/<domain>`) mark broadest scope.
+- MIT `.ccache` files (`/tmp/krb5cc_*`, `KRB5CCNAME` env var target) — parse with `klist -c` or `impacket-ticketConverter`. Same fields.
+
+**LAPS / gMSA / ADCS**
+- Legacy LAPS (`ms-Mcs-AdmPwd`) and Windows LAPS (`msLAPS-Password`, `msLAPS-EncryptedPassword`) — plaintext or encrypted local-admin passwords. When collected from AD replication metadata or an LDAP dump, decode per attribute type.
+- gMSA (`msDS-ManagedPassword`) — 240-byte blob; parse with `gMSADumper.py`-style logic against the raw blob you already collected. Yields NTLM + Kerberos keys for the gMSA identity.
+- ADCS artefacts — `.pfx`/`.p12` (private key + cert; may be passphrase-protected — dictionary attack offline only, not online), `.pem` with `-----BEGIN` headers, template-vulnerable enrolments identifiable in AD-DUMP JSON exports.
+
+**Cross-cutting**
+- Directory-derived credentials classify as `scope: domain` or higher; `krbtgt`, tier-0 accounts, and enterprise-CA private keys always mark `priority: P0`. All output flows through [`credential-harvest-triage`](../credential-harvest-triage/SKILL.md); no raw hashes or keys in reports.
