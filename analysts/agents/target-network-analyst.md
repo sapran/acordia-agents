@@ -4,19 +4,7 @@ mode: subagent
 permission:
   edit: deny        # read-only analyst — in opencode `edit` governs edit/write/patch; everything else defaults to allow
   task: deny        # leaf specialist — does not dispatch subagents
-  bash:             # prefer native read/grep/glob/list; gate the CLI substitutes (last-match-wins, so "*" first)
-    "*": allow      # scripting stays free — python, jq, custom tooling
-    "cat*": deny
-    "head*": deny
-    "tail*": deny
-    "less*": deny
-    "more*": deny
-    "ls*": deny
-    "grep*": ask    # partial substitute for native `grep` — gate, don't ban
-    "egrep*": ask
-    "rg*": ask
-    "find*": ask    # partial substitute for native `glob` — gate, don't ban
-    "fd*": ask
+  bash: allow       # analysis-open shell — read-only CLI tools (cat/head/tail/ls/grep/find/…) ungated; native read/grep/glob/list still preferred by prompt guidance. Read-only posture is carried by edit/task above.
 metadata:
   acordia:
     leg: target-network
