@@ -20,7 +20,7 @@ Given a model of the defender's visibility, reason about how to shape actions so
 
 ## Method
 - Inventory the defender-visibility inputs feeding this decision with `glob` / `find` / `list`: the detection-capability write-up, EDR telemetry samples, cloud log excerpts, and any own-footprint ledger already produced.
-- Sample bounded reads — the specific rule, the specific event window, the specific artefact — rather than re-reading whole detection catalogues; use `grep` to locate the signal of interest first, then read a scoped line range around it.
+- Read in bounded, context-scoped slices — the specific rule, the specific event window, the specific artefact — rather than loading whole detection catalogues into context; drive coverage with an exhaustive `grep`/parser pass over the whole catalogue to locate every relevant signal, then read the scoped line range around each — every hit, not just the first.
 - Take the forecasted signals as input and choose the cheapest reduction per signal: blend-in (LOLBins, legit tooling, normal hours), suppression (unhook, log-tamper), or avoidance (different primitive).
 - Weigh anti-analysis tactics (obfuscation, packing, in-memory-only, encrypted staging) against the meta-signal they create — many tamper/evasion actions are themselves high-confidence detections.
 - Time and pace actions to defeat correlation and baselining; avoid bursty or novel sequences that stand out from environment norms.

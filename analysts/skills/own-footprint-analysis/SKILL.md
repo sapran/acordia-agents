@@ -20,7 +20,7 @@ Systematically enumerate the indicators the operation itself generates across ev
 
 ## Method
 - Inventory the operation's own emitted-artefact set with `glob` / `find` / `list`: staging logs, C2 configs, tooling manifests, redirector/VPS records, and any collection our own dry-runs produced.
-- Sample bounded reads — a single log day, a single host's exported registry hive, a single beacon PCAP window — rather than dumping the entire operation's ledger at once; use `grep` to isolate the indicator of interest first, then read a scoped line range around it.
+- Read in bounded, context-scoped slices — a single log day, a single host's exported registry hive, a single beacon PCAP window — rather than dumping the entire operation's ledger into context at once; drive coverage with an exhaustive `grep`/parser pass over the whole source to isolate every indicator, then read the scoped line range around each — every hit, not just the first.
 - Walk each layer and list artifacts: host (files, registry, services, prefetch, logs), network (C2 domains/IPs, JA3/JARM, TLS certs, User-Agents), identity (accounts, tokens, consent), and infrastructure (redirectors, VPS, registrant/OSINT leakage).
 - For each indicator, record its fidelity (how uniquely it points to us), persistence (how long it survives), and observability (who can see it); cite each ledger entry by `<path>:<offset>` (byte) or `<path>@L<line>` (line) back to the source artefact so the ledger stays auditable.
 - Distinguish transient indicators (in-memory, session-scoped) from durable ones (on-disk, logged, registered) and flag the durable, high-fidelity ones as priority risk.

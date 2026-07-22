@@ -21,7 +21,7 @@ Read logs and artefacts across host, network, and cloud to reconstruct events, u
 ## Method
 - Inventory the log corpus with `ls` / `find` / `glob` first — list every collected log source (path, size, first/last timestamp) before opening any single file.
 - Identify the artefact and its semantics: know what each log/event actually records, its fidelity, retention, and blind spots before trusting it.
-- Read by bounded sampling: drive reads with `grep`/`rg`/`jq` for known indicators or timestamps, then open only the matched line-range with a few lines of context. Never slurp gigabyte-scale JSON or `.evtx` files whole — use the parser's native pagination or offset-limited reads.
+- Read with bounded context, exhaustive coverage: drive an exhaustive `grep`/`rg`/`jq` pass over the whole file for known indicators or timestamps, then open only the matched line-ranges — every match, not just the first — with a few lines of context. Never slurp gigabyte-scale JSON or `.evtx` files whole into context — use the parser's native pagination or offset-limited reads, and confirm the pass covered the whole file (record counts reconcile).
 - Reconstruct timelines by correlating artefacts across host, network, and cloud into one ordered account of events.
 - Read the environment from its exhaust — installed tooling, agents, logging config, and coverage gaps revealed by what is and isn't recorded.
 - Turn the lens on yourself: locate the artefacts your own operation generated and judge what a hunter reading them would conclude.

@@ -20,7 +20,7 @@ Establish the target's baseline behaviour across people and machines so operatio
 
 ## Method
 - Inventory the temporal data sources with `glob` / `find` / `list`: authentication logs, EDR process telemetry, mail/calendar exports, scheduled-task dumps, and any prior baseline artefacts.
-- Sample bounded reads per source — one week of logon events, one admin's process tree, one service account's scheduled runs — rather than ingesting months of raw log wholesale; use `grep` to isolate the actor or time window first, then read a scoped line range.
+- Read in bounded, context-scoped slices per source — one week of logon events, one admin's process tree, one service account's scheduled runs — rather than ingesting months of raw log into context wholesale; drive coverage with an exhaustive `grep`/parser pass over the whole source to isolate every actor or time window in scope, then read the scoped line range around each — every hit, not just the first.
 - Collect temporal data: logon times, working hours, timezone, admin windows, backup/patch jobs, batch runs, beacon-friendly idle periods.
 - Profile per-actor patterns — a given admin's hosts, tools, and cadence; a service account's fixed behaviour; a system's periodic traffic; cite each pattern claim by `<path>:<offset>` (byte) or `<path>@L<line>` (line) back to the log line that supports it.
 - Separate human rhythm from automation rhythm; automation is regular and forgeable, humans are irregular and observant.

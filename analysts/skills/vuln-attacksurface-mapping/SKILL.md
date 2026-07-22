@@ -20,7 +20,7 @@ Build and prioritize the target's attack surface — every reachable entry point
 
 ## Method
 - Inventory the reachable recon feeds with `glob` / `find` / `list`: external scan outputs, internal Nmap results, cloud-asset inventories, identity enumeration dumps, application/API catalogues, and human-surface OSINT.
-- Sample bounded reads per source — one scanner report, one cloud-asset export, one identity slice — rather than concatenating every feed into a single wall of text; use `grep` to locate the candidate finding first, then read a scoped range around it.
+- Read in bounded, context-scoped slices per source — one scanner report, one cloud-asset export, one identity slice — rather than concatenating every feed into a single wall of text in context; drive coverage with an exhaustive `grep`/parser pass over the whole feed to locate every candidate finding, then read the scoped range around each — every hit, not just the first.
 - Aggregate the surface: external and internal exposure, services, apps/APIs, cloud, identity, and human entry points from all recon feeds.
 - Assess each element for weakness — known vulns, misconfig, weak auth, exposure — and, critically, whether it is actually reachable and exploitable; cite each weakness by `<path>:<offset>` (byte) or `<path>@L<line>` (line) back to the scan or config line that grounds it.
 - Weight by mission proximity: how close a foothold there sits to a crown jewel or mission choke point.
