@@ -55,7 +55,7 @@ Follow opencode's frontmatter, not CyberStrike's superset. `docs/agents-skills-e
 ### Agents (`analysts/agents/<name>.md`)
 
 - Required frontmatter: `description` (dispatch signal — the leg's italic operating question, verbatim in meaning) and `mode` (`primary` for the orchestrator, `subagent` for the three legs).
-- **Read-only posture is mandatory.** Every analyst carries `edit: deny` (in opencode `edit` governs edit/write/patch collectively; there is no separate `write` key, and a top-level `"*": deny` does *not* deny-default because per-tool built-ins override it — express read-only as `edit: deny`).
+- **Read-only posture is the default.** Every analyst denies edit (in opencode `edit` governs edit/write/patch collectively; there is no separate `write` key, and a top-level `"*": deny` does *not* deny-default because per-tool built-ins override it — express read-only as `edit: deny`). **Scoped-write exception:** the two agents holding the "Briefing & written reporting" grid competency — `operational-analyst` (● Core) and `fusion-analyst` (○ Fus) — carry a path-scoped `edit` (`"*": deny` then `".acordia/reports/**": allow`, last-match-wins) so they can persist reports to `.acordia/reports/`; `target-network-analyst` and `defender-detection-analyst` keep the blanket `edit: deny` (added by change `analyst-report-write-scope`). `edit: deny` is a posture signal, not a hard sandbox — `bash: "*": allow` already permits scripted writes.
 - **Legs additionally carry `task: deny`** — they are leaf specialists and never dispatch subagents.
 - **The orchestrator's `task` block whitelists only the three legs** (`"*": deny` then `target-network-analyst`, `defender-detection-analyst`, `fusion-analyst` allowed). Never route to a general-purpose or explore agent from the primary.
 - **Bash discipline is encoded in permissions:** `cat`/`head`/`tail`/`less`/`more`/`ls` → `deny`; `grep`/`egrep`/`rg`/`find`/`fd` → `ask`; `"*": allow` for genuine scripting (python, jq, custom tooling). Prefer opencode native `read`/`grep`/`glob`/`list` over shelling out.
@@ -80,7 +80,7 @@ Slash commands (available under both `.claude/commands/opsx/` and `.opencode/com
 - `/opsx:archive` — finalise a completed change and archive it.
 - `/opsx:sync` — sync delta specs into main specs without archiving.
 
-Preferred sequence for a feature/change/bugfix: **explore → propose → apply → archive → finalise & push branch → open PR to `main` → review → session-finalise**. Assume parallel agent work: apply changes in worktrees on branches.
+Preferred sequence for a feature/change/bugfix: **explore → propose → apply → archive → finalise & push branch → open PR to `develop` → review → session-finalise**. Assume parallel agent work: apply changes in worktrees on branches.
 
 Every normative claim in a spec must trace to either an artifact in this repo (agent file, skill file, install script) or a row/paragraph in `docs/roles/operational-analyst.md` / `docs/agents-skills-extension-workbook.md`. State the *actual* behaviour in specs even when it is a trap; capture the ideal in `design.md`.
 

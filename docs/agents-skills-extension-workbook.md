@@ -436,6 +436,17 @@ opencode agent `permission` keys (verified): `read`, `edit`, `glob`, `grep`, `li
 default to `allow` (except `external_directory`/`doom_loop` → `ask`, and `.env`
 reads → `deny`). Verify a resolved agent with `opencode debug agent <name>`.
 
+**Path-scoped `edit`.** Like `bash`, the `edit` permission accepts glob rules with
+**last-match-wins** precedence, so a read-only agent can be granted a single
+writable sink without opening up the rest of the tree:
+`edit: { "*": deny, ".acordia/reports/**": allow }`. In this repo that block is
+reserved for the two agents holding the *Briefing & written reporting* grid
+competency (`operational-analyst`, `fusion-analyst`), which write their reports to
+`.acordia/reports/`; every other analyst uses a blanket `edit: deny`. Note this is
+a **posture** control, not a sandbox — `bash: "*": allow` already permits scripted
+writes — so the scoped block declares the sanctioned output path rather than
+granting a new capability class.
+
 The load-bearing one: in opencode an agent **cannot** list its skills. Composition
 is by (a) triggering-quality skill `description`s and (b) the agent **prompt**
 naming the skills it draws on.

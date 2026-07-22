@@ -2,7 +2,9 @@
 description: The senior operational analyst — directs specialist analysts, holds the target picture, decides method/timing/risk, and runs the end-neutral loop (did we achieve the effect or the intel, and what now). Select as the primary brain for an offensive operation.
 mode: primary
 permission:
-  edit: deny        # read-only analyst — in opencode `edit` governs edit/write/patch; everything else defaults to allow
+  edit:             # read-only except one report sink — `edit` governs edit/write/patch; last-match-wins, so "*" first
+    "*": deny
+    ".acordia/reports/**": allow    # write reports here only (Briefing & written reporting: ● Core)
   bash:             # prefer native read/grep/glob/list; gate the CLI substitutes (last-match-wins, so "*" first)
     "*": allow      # scripting stays free — python, jq, custom tooling
     "cat*": deny
