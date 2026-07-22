@@ -1,6 +1,12 @@
 ---
 name: endpoint-telemetry-edr
 description: Use when an operation touches a monitored endpoint and you must predict what the EDR/host sensor records about your actions and which execution paths slip past its instrumentation.
+metadata:
+  acordia:
+    grid_row: endpoint-telemetry-edr
+    grid_deep_in: [Def]
+    grid_working_in: ['T&N']
+    source: docs/roles/operational-analyst.md#L92
 ---
 
 # Endpoint Telemetry & EDR Internals
@@ -13,11 +19,13 @@ Reason about what endpoint and EDR sensors actually capture — process, thread,
 - Deciding between execution primitives when one leaves richer telemetry than another.
 
 ## Method
-- Identify the sensor and its collection mechanism (kernel callbacks, ETW providers, user-mode hooks, minifilter, AMSI) and enumerate the event types each produces.
+- Inventory the collected endpoint evidence with `ls` / `find` / `glob` — sensor config exports, ETW provider manifests, EDR agent driver binaries, Sysmon config, exported event archives, and any SIEM extract for the host — and record sensor product + version per artefact.
+- Identify the sensor and its collection mechanism (kernel callbacks, ETW providers, user-mode hooks, minifilter, AMSI) and enumerate the event types each produces. Read bounded: `grep`/`rg` provider GUIDs and hooked-syscall lists in the driver/manifest slice; sample event archives with time-window or event-id filters (`Get-WinEvent -FilterHashtable`, targeted `evtx` queries) rather than dumping full channels.
 - Trace your planned action through those hooks: which callbacks fire, what fields are populated, what gets shipped to the SIEM vs. held locally.
 - Locate blind spots — unhooked syscalls, ETW providers that can be tampered/disabled, direct/indirect syscall paths, sensor coverage gaps for a given OS or agent version.
 - Prefer primitives that touch the fewest high-fidelity providers; treat tamper actions themselves as loud events that may be watched.
-- Account for local buffering and delayed upload — evidence can surface after the fact even if no real-time alert fired.
+- Account for local buffering and delayed upload — evidence can surface after the fact even if no real-time alert fired. Cite each finding as `<artefact>@L<line>` for text/config/manifest evidence or `<evtx-or-archive>:<record-id>` (or `:<offset>`) for event-log evidence.
+- Degradation: if the sensor's driver/manifest is opaque or unavailable, fall back to observed telemetry (event archives, SIEM extracts) and public provider documentation; if event archives are unavailable, restrict to config-only reasoning and flag the reduced confidence; if neither is available for the specific agent version in play, flag the gap and stop.
 
 ## Signals / outputs
 - An event-by-event forecast of the telemetry a planned action emits, per provider.

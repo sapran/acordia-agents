@@ -1,6 +1,12 @@
 ---
 name: deception-detection
 description: Use when the data reaching you is suspiciously convenient, too clean, or arrives just when the target would want you to see it — treat yourself as the one being targeted and test whether the picture is planted.
+metadata:
+  acordia:
+    grid_row: deception-detection
+    grid_deep_in: [Core, Def]
+    grid_working_in: []
+    source: docs/roles/operational-analyst.md#L71
 ---
 
 # Deception Detection / Anti-Manipulation

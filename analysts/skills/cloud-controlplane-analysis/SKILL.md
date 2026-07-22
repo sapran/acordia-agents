@@ -1,6 +1,12 @@
 ---
 name: cloud-controlplane-analysis
 description: Use when the target lives in AWS/Azure/GCP — analyze the cloud control plane, services, and the trust between them to find where API-level access, roles, or misconfiguration yield control.
+metadata:
+  acordia:
+    grid_row: cloud-controlplane-analysis
+    grid_deep_in: ['T&N']
+    grid_working_in: [Def, Fus]
+    source: docs/roles/operational-analyst.md#L87
 ---
 
 # Cloud Control-Plane & Service Analysis
@@ -13,11 +19,13 @@ Model a target's cloud estate at the control-plane level — services, identitie
 - When the real attack surface is IAM policy, service config, and metadata — not network ports.
 
 ## Method
-- Inventory the estate: accounts/subscriptions/projects, key services, and the control-plane APIs that govern them.
-- Map identity and trust: IAM roles/policies, service principals, workload identities, assume-role/federation chains, and cross-account trust.
+- Inventory the estate with `ls` / `find` / `glob` across the collected control-plane exports — account/subscription/project rosters, IAM dumps, Terraform state files, CloudTrail/Audit log bundles, `aws iam list-*` / `gcloud * list` / `az * list` snapshots — before opening any single document. Do not call the live control plane.
+- Map identity and trust: IAM roles/policies, service principals, workload identities, assume-role/federation chains, and cross-account trust. Drive reads with `grep`/`jq` for role ARNs, principal IDs, and trust-policy `sts:AssumeRole` clauses; open only the matched policy documents by line range, never the full state file.
 - Hunt control-plane misconfiguration — over-permissive policies, public resources, exposed secrets/keys, metadata/SSRF paths, logging gaps.
 - Trace privilege-escalation and pivot chains through the control plane (role chaining, service-to-service trust, CI/CD and infra-as-code paths).
 - Tie control-plane access to mission effect: which grant reaches the crown-jewel data, key vault, or production workload.
+- Cite every finding by `<export-path>@L<line>` for JSON/HCL/YAML exports or `<export-path>:<byte-offset>` for binary state so a peer can re-open the exact policy statement or state resource.
+- If provider CLIs, `jq`, `terraform show`, or a similar named parser is unavailable, either substitute a documented equivalent (`yq`, `hcl2json`) or flag the gap and stop — never infer trust chains from truncated console screenshots.
 
 ## Signals / outputs
 - Estate and identity/trust map with cross-account and federation edges.

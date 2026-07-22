@@ -1,6 +1,12 @@
 ---
 name: calibrated-confidence
 description: Use when handing a target judgement to a decision-maker and you need to attach a confidence that honestly reflects the evidence — neither hedged to uselessness nor inflated to sound decisive.
+metadata:
+  acordia:
+    grid_row: calibrated-confidence
+    grid_deep_in: [Core]
+    grid_working_in: [Fus]
+    source: docs/roles/operational-analyst.md#L72
 ---
 
 # Calibrated Confidence

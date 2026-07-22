@@ -1,6 +1,12 @@
 ---
 name: reasoning-under-uncertainty
 description: Use when you must commit to a targeting or movement decision on the operation but the intelligence picture is either too thin or too noisy to read cleanly.
+metadata:
+  acordia:
+    grid_row: reasoning-under-uncertainty
+    grid_deep_in: [Core]
+    grid_working_in: []
+    source: docs/roles/operational-analyst.md#L67
 ---
 
 # Reasoning Under Uncertainty & Overload

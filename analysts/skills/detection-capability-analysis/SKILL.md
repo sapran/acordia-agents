@@ -1,6 +1,12 @@
 ---
 name: detection-capability-analysis
 description: Use before or during an operation to reason from first principles about what the defender's detection stack can and cannot see, so you choose techniques that fall in their blind spots rather than their tripwires.
+metadata:
+  acordia:
+    grid_row: detection-capability-analysis
+    grid_deep_in: [Def]
+    grid_working_in: [Core]
+    source: docs/roles/operational-analyst.md#L91
 ---
 
 # Detection-Capability Analysis

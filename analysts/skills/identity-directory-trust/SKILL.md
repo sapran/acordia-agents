@@ -1,6 +1,12 @@
 ---
 name: identity-directory-trust
 description: Use when Active Directory or Entra ID underpins the target — map the directory, its privileged identities, and the trust relationships that let one compromise reach everything.
+metadata:
+  acordia:
+    grid_row: identity-directory-trust
+    grid_deep_in: ['T&N']
+    grid_working_in: [Def]
+    source: docs/roles/operational-analyst.md#L88
 ---
 
 # Identity & Directory (AD/Entra) & Trust
@@ -13,11 +19,13 @@ Map the target's identity fabric — Active Directory / Entra ID structure, priv
 - When you need to convert a foothold into domain/tenant dominance via identity, not exploits.
 
 ## Method
-- Enumerate the directory: domains/forests/tenants, OUs, groups, privileged roles, service accounts, and trust links.
+- Inventory the collected directory artefacts with `ls` / `find` / `glob` — SharpHound / BloodHound JSON exports, ADExplorer snapshots, NTDS.dit + SYSTEM hive dumps, LDAP dumps, ticket caches, LAPS/gMSA/ADCS material — and record what each covers (domain, tenant, time window).
+- Enumerate the directory from those artefacts, bounded: query BloodHound JSON via `jq`; grep LDIF / CSV exports for privileged group memberships, delegation attributes (`msDS-AllowedToActOnBehalfOfOtherIdentity`, `TrustedForDelegation`), and trust records rather than reading multi-megabyte dumps wholesale. For NTDS, use `impacket-secretsdump` targeted extractions, not raw hive reads.
 - Map privilege: who is effectively Domain/Enterprise/Global Admin, delegation (constrained/unconstrained/RBCD), and shadow-admin paths.
 - Analyze trust relationships — inter-forest/domain trusts, hybrid sync (AD<->Entra), federation, and where trust is transitive or over-broad.
 - Trace identity attack paths (Kerberos abuse, ACL/ADCS misconfig, token/PRT theft, sync-account leverage) toward tier-0 assets.
-- Identify the crown-jewel identities and choke points whose control equals control of the mission.
+- Identify the crown-jewel identities and choke points whose control equals control of the mission. Cite each finding as `<artefact>@L<line>` for text/LDIF exports or `<artefact>:<offset>` for binary hive/database evidence; reference the BloodHound node/edge id when routing through graph data.
+- Degradation: if BloodHound / SharpHound output is unavailable, fall back to raw LDAP dump grep + hand-drawn privilege map and flag reduced completeness; if `impacket-secretsdump` / `impacket-dpapi` are unavailable for hive/DPAPI parsing, flag the gap and stop — do not improvise credential extraction from unfamiliar formats.
 
 ## Signals / outputs
 - Directory and privilege map with tier-0 principals identified.

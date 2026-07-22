@@ -1,6 +1,12 @@
 ---
 name: c2-beacon-exfil-analysis
 description: Use to analyze your own command-and-control, beaconing, and exfiltration traffic for the signatures a network defender could detect — before the channel gets you caught.
+metadata:
+  acordia:
+    grid_row: c2-beacon-exfil-analysis
+    grid_deep_in: [Def]
+    grid_working_in: [Fus]
+    source: docs/roles/operational-analyst.md#L97
 ---
 
 # C2 / Beacon / Exfil-Signal Analysis
@@ -13,11 +19,13 @@ Examine the operation's own C2, beacon, and exfiltration behavior from the netwo
 - After a network-detection capability (NDR, proxy, DNS analytics, NetFlow, TLS inspection) is discovered in the environment.
 
 ## Method
-- Characterize the channel's observable fingerprint: JA3/JARM, TLS cert and SNI, domain/IP reputation, HTTP headers/URIs, DNS query patterns, protocol anomalies.
-- Analyze beacon behavior a defender baselines against: interval regularity, jitter, packet sizing, connection frequency, and long-lived or off-hours sessions.
-- Model exfil detectability: volume vs. baseline, destination reputation, timing, and DLP content triggers; prefer low-and-slow or blend-with-normal egress.
-- Map each signature to the specific network sensor that would catch it and estimate alert likelihood.
+- Inventory the channel-evidence set with `ls` / `find` / `glob` — own-side pcap of the beacon, Zeek/flow exports of the exfil path, profile files (malleable C2, redirector config), proxy/DNS logs from the environment — and note capture point, timespan, and byte size per artefact before opening.
+- Characterize the channel's observable fingerprint from bounded reads: JA3/JARM via `tshark -Y tls.handshake.type==1 -T fields ...` or `zeek -r`'s `ssl.log`; TLS cert and SNI, domain/IP reputation, HTTP headers/URIs, DNS query patterns, protocol anomalies — pulled per conversation, not per full capture.
+- Analyze beacon behavior a defender baselines against from Zeek `conn.log` aggregates: interval regularity, jitter, packet sizing, connection frequency, and long-lived or off-hours sessions.
+- Model exfil detectability: volume vs. baseline (flow aggregates), destination reputation, timing, and DLP content triggers; prefer low-and-slow or blend-with-normal egress.
+- Map each signature to the specific network sensor that would catch it and estimate alert likelihood. Cite each finding as `<pcap>:<packet-number>` for packet-level evidence, `<log>@L<line>` for Zeek / proxy / DNS log lines, and `<profile>@L<line>` for malleable / redirector config anchors.
 - Recommend tuning — domain fronting/redirectors, malleable profiles, jitter, protocol choice, chunking — weighed against the cost and the risk the tuning itself is anomalous.
+- Degradation: if `tshark`/Wireshark is unavailable, fall back to Zeek logs (or `tcpdump -r ... -nn`) and flag reduced fingerprint fidelity (JA3/JARM may be missing); if Zeek is unavailable, drive from `tshark -T fields` extraction and flag missing typed-log aggregation; if only netflow is on hand, flag the gap for any payload-dependent signature (JA3, SNI, URI) and constrain analysis to volume/timing.
 
 ## Signals / outputs
 - A signature inventory of the current C2/exfil channel with per-signature detection risk.

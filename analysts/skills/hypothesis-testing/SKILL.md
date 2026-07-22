@@ -1,6 +1,12 @@
 ---
 name: hypothesis-testing
 description: Use when more than one explanation fits the target picture — competing reads of an operator's identity, a system's true function, or whether you have been detected — and you are tempted to lock onto the first one.
+metadata:
+  acordia:
+    grid_row: hypothesis-testing
+    grid_deep_in: [Core]
+    grid_working_in: [Def]
+    source: docs/roles/operational-analyst.md#L69
 ---
 
 # Hypothesis Testing (Competing Hypotheses)

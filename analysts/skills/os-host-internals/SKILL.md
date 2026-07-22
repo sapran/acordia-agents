@@ -1,6 +1,12 @@
 ---
 name: os-host-internals
 description: Use when you are on or reasoning about a specific host and need to command Windows/Linux/macOS internals — to understand its state, escalate, persist, and move without tripping the host's own defenses.
+metadata:
+  acordia:
+    grid_row: os-host-internals
+    grid_deep_in: ['T&N', Def]
+    grid_working_in: [Core]
+    source: docs/roles/operational-analyst.md#L85
 ---
 
 # OS & Host Internals
@@ -13,11 +19,14 @@ Apply deep operating-system knowledge to a target host so you can read its true 
 - When you need to predict how a host will respond to an action — logging, EDR, integrity controls, isolation.
 
 ## Method
-- Establish host context: OS/version, patch level, privilege model, running processes/services, scheduled tasks/daemons, and installed security tooling.
+- Inventory the collected host material with `ls` / `find` / `glob` — mounted image trees, process listings, autoruns exports, service manifests, scheduled-task dumps, `.plist` bundles — before opening any single file.
+- Establish host context: OS/version, patch level, privilege model, running processes/services, scheduled tasks/daemons, and installed security tooling. Drive reads with `grep`/`rg` against structured exports (`Get-CimInstance` / WMI output, `systemctl list-unit-files`, `launchctl list`, autoruns CSV); open only the matched entries by line range, not the full multi-megabyte export wholesale.
 - Identify escalation vectors native to the platform — token/privilege abuse, SUID/sudo, service and DLL/dylib hijacks, misconfigured ACLs, kernel/driver exposure.
 - Locate credential and secret material at rest and in memory (LSASS/keyring/keychain, tokens, caches, config).
 - Choose persistence that matches the platform's legitimate mechanisms and survives reboot without standing out.
 - Model the host's observation surface: what is logged, what EDR sees, and how to act inside normal process behaviour.
+- Cite every finding by `<image-path>@L<line>` for text-like exports (autoruns CSV, `.reg` dumps, `plist` XML, shell histories) or `<image-path>:<byte-offset>` for binary registry hives, raw memory, and keychain files so a peer can re-open the exact key, service, or scheduled task.
+- If `impacket-secretsdump`, `regripper`, `evtx_dump`, `plutil`, `chainbreaker`, or a similar named parser is unavailable, either substitute a documented equivalent (`hivex`, `python-registry`, `plistutil`) or flag the gap and stop — never infer registry or keychain contents from a hex dump alone.
 
 ## Signals / outputs
 - Host state and privilege map with concrete escalation candidates.

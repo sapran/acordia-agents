@@ -1,6 +1,12 @@
 ---
 name: ot-embedded
 description: Use when the target includes ICS/SCADA, PLCs, or embedded devices — analyse OT and embedded environments where protocols, physics, and fragility differ sharply from IT.
+metadata:
+  acordia:
+    grid_row: ot-embedded
+    grid_deep_in: []
+    grid_working_in: ['T&N', Def]
+    source: docs/roles/operational-analyst.md#L109
 ---
 
 # Operational-Technology / Embedded

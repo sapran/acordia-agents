@@ -1,6 +1,12 @@
 ---
 name: log-artefact-interpretation
 description: Use whenever you have raw logs or artefacts in hand — host, network, or cloud — and need to reconstruct what happened, what the environment is, and whether your own activity left marks.
+metadata:
+  acordia:
+    grid_row: log-artefact-interpretation
+    grid_deep_in: ['T&N', Def, Fus]
+    grid_working_in: [Core]
+    source: docs/roles/operational-analyst.md#L107
 ---
 
 # Log / Artefact Interpretation
@@ -13,11 +19,15 @@ Read logs and artefacts across host, network, and cloud to reconstruct events, u
 - When assessing your own detectability — what evidence your actions wrote, and where it lives.
 
 ## Method
+- Inventory the log corpus with `ls` / `find` / `glob` first — list every collected log source (path, size, first/last timestamp) before opening any single file.
 - Identify the artefact and its semantics: know what each log/event actually records, its fidelity, retention, and blind spots before trusting it.
+- Read by bounded sampling: drive reads with `grep`/`rg`/`jq` for known indicators or timestamps, then open only the matched line-range with a few lines of context. Never slurp gigabyte-scale JSON or `.evtx` files whole — use the parser's native pagination or offset-limited reads.
 - Reconstruct timelines by correlating artefacts across host, network, and cloud into one ordered account of events.
 - Read the environment from its exhaust — installed tooling, agents, logging config, and coverage gaps revealed by what is and isn't recorded.
 - Turn the lens on yourself: locate the artefacts your own operation generated and judge what a hunter reading them would conclude.
 - Distinguish signal from routine noise, and flag artefacts that have been cleared, tampered, or are conspicuously absent.
+- Cite every claim by `<log-path>@L<line>` (or `<log-path>:<byte-offset>` for binary event-log formats after parser conversion) so the corroborating record is re-openable.
+- If a named parser (`evtx_dump`, `jq`, `zeek-cut`, cloud-provider log CLIs) is unavailable, either substitute a documented equivalent or flag the gap and stop — never reason from a truncated `head`/`tail` alone.
 
 ## Signals / outputs
 - A reconstructed timeline of events from correlated artefacts.
@@ -34,7 +44,7 @@ Credentials leak into logs constantly. Extraction here is grep-shaped across col
 - Debug/verbose modes (Rails logger, Django DEBUG, Spring Boot `logging.level.root=DEBUG`) — HTTP request bodies including `password` fields, session cookies, OIDC id_tokens.
 
 **CI/CD and build logs**
-- GitHub Actions/GitLab CI/Jenkins output — masked secrets *sometimes* fail to mask (env vars printed by `env` step, secrets echoed via `set -x`, base64-encoded before mask). Search for the pattern-library prefixes (`ghp_`, `AKIA`, `xox`, `eyJ`) even in logs marked "secrets masked".
+- GitHub Actions/GitLab CI/Jenkins output — masked secrets *sometimes* fail to mask (env vars printed by `env` step, secrets echoed via `set -x`, base64-encoded before mask). Search for the [pattern-library](../credential-harvest-triage/references/credential-patterns.md) prefixes (`ghp_`, `AKIA`, `xox`, `eyJ`) even in logs marked "secrets masked".
 - Docker build logs — `ARG` credentials leaked into image layers or build output.
 - Terraform apply/plan output — resource creation surfaces secrets in `sensitive = false` outputs.
 

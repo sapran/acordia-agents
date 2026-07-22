@@ -1,6 +1,12 @@
 ---
 name: cloud-identity-log-analysis
 description: Use when the operation moves through cloud or identity infrastructure and you must predict what the audit and sign-in logs record about your authentication, API calls, and resource access.
+metadata:
+  acordia:
+    grid_row: cloud-identity-log-analysis
+    grid_deep_in: [Def]
+    grid_working_in: ['T&N', Fus]
+    source: docs/roles/operational-analyst.md#L93
 ---
 
 # Cloud & Identity Log Analysis

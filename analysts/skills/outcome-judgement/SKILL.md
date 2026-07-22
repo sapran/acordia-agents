@@ -1,6 +1,12 @@
 ---
 name: outcome-judgement
 description: Use immediately after an action fires — judge whether the operation's actual end was met (the effect landed, or the intel was collected), not merely whether the technique executed.
+metadata:
+  acordia:
+    grid_row: outcome-judgement
+    grid_deep_in: [Core]
+    grid_working_in: ['T&N', Fus]
+    source: docs/roles/operational-analyst.md#L74
 ---
 
 # Outcome Judgement (End Achieved)
