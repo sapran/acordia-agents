@@ -19,10 +19,10 @@ Each bucket's slice SHALL be dispatched with only that slice. The procedure SHAL
 - **WHEN** opencode starts
 - **THEN** `credential-harvest-triage` is discovered from `~/.config/opencode/skills/` and is invokable
 
-#### Scenario: Body carries schema, bucket-partition step, procedure, and pattern pointer
+#### Scenario: Body carries schema, procedure, and pattern library
 
 - **WHEN** the triage skill is inspected
-- **THEN** it contains a classification schema, a bucket-partition step, a numbered triage procedure downstream of the partition, and a pointer to `references/credential-patterns.md`
+- **THEN** it contains a classification schema, a bucket-partition step, a numbered triage procedure downstream of the partition, and a pointer to the pattern library at `references/credential-patterns.md`
 
 #### Scenario: Bucket partition maps to existing legs
 

@@ -2,7 +2,6 @@
 
 ## Purpose
 Defines the opencode-native skill library derived one-to-one from the competency-grid rows in `docs/roles/operational-analyst.md` — file location, slug and frontmatter contract, triggering-quality descriptions, and the treatment of the cross-cutting deep skills as ordinary skills rather than agents.
-
 ## Requirements
 ### Requirement: One skill per competency-grid row
 
@@ -74,16 +73,130 @@ Seven skills SHALL each carry a named `## Credential extraction` section coverin
 
 ### Requirement: `credential-harvest-triage` skill exists
 
-The library SHALL contain a skill `analysts/skills/credential-harvest-triage/SKILL.md` providing (a) a classification schema for credential findings (type, subtype, status, scope, source, reuse potential, priority), (b) a triage procedure (inventory → first-pass scan → deep-pass per category → classify → correlate → prioritise → report), and (c) an inline pattern library for common credential material (API-key prefixes by provider, auth-material formats, password-hash types, connection-string shapes, private-key markers). It SHALL declare its cross-cutting/procedural nature in its body and SHALL NOT be added as a row to the competency grid.
+The library SHALL contain a skill `analysts/skills/credential-harvest-triage/SKILL.md` providing (a) a classification schema for credential findings (type, subtype, status, scope, source, reuse potential, priority), (b) a triage procedure that begins with **inventory**, then performs a **bucket partition** step assigning material to a leg-owned bucket, then scans, classifies, correlates, prioritises, and reports, and (c) a **pointer** to a co-located pattern-library reference file for common credential material. It SHALL declare its cross-cutting/procedural nature in its body and SHALL NOT be added as a row to the competency grid.
+
+The **bucket partition** step SHALL enumerate five buckets and their target legs:
+
+- Bucket A — identity / directory / cloud-controlplane material → `target-network-analyst`
+- Bucket B — host-forensic material (memory, SAM, DPAPI, keychain, shadow) → whichever leg holds the host under analysis
+- Bucket C — web / API auth material → `target-network-analyst`
+- Bucket D — log-artefact material → `defender-detection-analyst`
+- Bucket E — implant / payload RE material → cross-cutting via `implant-payload-re`, reported to `fusion-analyst`
+
+Each bucket's slice SHALL be dispatched with only that slice. The procedure SHALL state that per-leg classifications feed back into `multi-source-fusion` for cross-leg correlation.
 
 #### Scenario: Triage skill loads from opencode
+
 - **WHEN** opencode starts
 - **THEN** `credential-harvest-triage` is discovered from `~/.config/opencode/skills/` and is invokable
 
 #### Scenario: Body carries schema, procedure, and pattern library
+
 - **WHEN** the triage skill is inspected
-- **THEN** it contains a classification schema, a numbered triage procedure, and an inline pattern library
+- **THEN** it contains a classification schema, a bucket-partition step, a numbered triage procedure downstream of the partition, and a pointer to the pattern library at `references/credential-patterns.md`
+
+#### Scenario: Bucket partition maps to existing legs
+
+- **WHEN** the bucket-partition step is read
+- **THEN** every bucket routes to one of `target-network-analyst`, `defender-detection-analyst`, `fusion-analyst`, or the cross-cutting `implant-payload-re` skill, and no bucket routes to a leg not on the current whitelist
 
 #### Scenario: Not a grid row
+
 - **WHEN** the competency grid in `docs/roles/operational-analyst.md` is inspected
 - **THEN** no row corresponds to `credential-harvest-triage`
+
+### Requirement: `analyst-loop` skill exists
+
+The library SHALL contain a skill `analysts/skills/analyst-loop/SKILL.md` naming the end-neutral analytic loop — target-read (through the T&N leg), defender-read (through the Def leg), fusion (through the Fus leg), judgement (calibrated, via spine skills), next-move — as a first-class procedural cross-cutting skill.
+
+The skill body SHALL contain: (a) a **cross-cutting notice** declaring the skill procedural and non-grid; (b) a **loop-shape** section naming the five steps in one sentence each; (c) a **loop-invariants** section stating end-neutrality (every pass reaches a judgement plus a next move), gap-naming on every judgement, calibrated confidence on every judgement, and passive posture; (d) a **where-this-runs** paragraph stating the loop is the orchestrator's workflow, and that a leg session matching this skill surfaces the need for a full pass back to the orchestrator rather than attempting the loop itself.
+
+The skill's `description` SHALL be authored for trigger quality — stating WHEN to run the loop, not WHAT it is — so opencode's description-match selection fires cleanly on operator sessions asking for a fresh analytic round.
+
+The skill SHALL declare its cross-cutting/procedural nature and SHALL NOT be added as a row to the competency grid. The `## Method` contract for evidence-reading skills (from `analyst-verifiability-anchors`) SHALL NOT apply — this skill reads no files.
+
+#### Scenario: Loop skill loads from opencode
+
+- **WHEN** opencode starts
+- **THEN** `analyst-loop` is discovered from `~/.config/opencode/skills/` and is invokable
+
+#### Scenario: Body carries the four required sections
+
+- **WHEN** the loop skill is inspected
+- **THEN** it contains a cross-cutting notice, a loop-shape section naming five steps, a loop-invariants section, and a where-this-runs paragraph
+
+#### Scenario: Trigger-quality description
+
+- **WHEN** an operator session asks for a fresh end-neutral analytic pass
+- **THEN** `analyst-loop`'s `description` is specific enough for opencode to select it
+
+#### Scenario: Not a grid row
+
+- **WHEN** the competency grid in `docs/roles/operational-analyst.md` is inspected
+- **THEN** no row corresponds to `analyst-loop`
+
+#### Scenario: Orchestrator references the skill; legs do not
+
+- **WHEN** `analysts/agents/operational-analyst.md` is inspected
+- **THEN** it names `analyst-loop` in one sentence within its existing loop-describing paragraph
+
+- **WHEN** any leg agent (`target-network-analyst`, `defender-detection-analyst`, `fusion-analyst`) is inspected
+- **THEN** it does not name `analyst-loop`
+
+### Requirement: Method contract for evidence-reading skills
+
+Skills whose `Objective` involves reading collected material (files, memory dumps, logs, packet captures, configuration archives) SHALL structure their `## Method` section as four ordered elements: (a) an **inventory step** that names the tool used to enumerate the input (e.g. `find`, `glob`, `list`, or a file-typing tool); (b) a **bounded sampling discipline** that prohibits wholesale reads of large inputs; (c) a **citation format** that anchors each observation to `<path>:<offset>` or `<path>@L<line>`; (d) a **degradation policy** stating what the analyst does when each optional external tool named in the body is unavailable.
+
+The requirement applies to the following fifteen skills only: `disk-memory-forensics`, `log-artefact-interpretation`, `cloud-controlplane-analysis`, `web-api-authflow-analysis`, `os-host-internals`, `implant-payload-re`, `identity-directory-trust`, `packet-traffic-analysis`, `endpoint-telemetry-edr`, `c2-beacon-exfil-analysis`, `protocol-routing-architecture`, `own-footprint-analysis`, `evasion-antianalysis`, `pattern-of-life-baselining`, `vuln-attacksurface-mapping`. Analytic-spine skills (whose input is analyst reasoning, not collected material) SHALL NOT be subject to this requirement.
+
+#### Scenario: Method starts with an inventory step
+
+- **WHEN** an evidence-reading skill's `## Method` section is read
+- **THEN** its first ordered element names the tool used to enumerate the input before any sampling happens
+
+#### Scenario: Sampling is bounded, never wholesale
+
+- **WHEN** an evidence-reading skill's `## Method` describes reading the input
+- **THEN** the reading is scoped (offset, line-range, or targeted grep hit), and no step instructs a wholesale load of a multi-megabyte artefact
+
+#### Scenario: Findings cite a byte or line anchor
+
+- **WHEN** an evidence-reading skill's `## Method` describes recording a finding
+- **THEN** it specifies the citation shape as `<path>:<offset>` or `<path>@L<line>`
+
+#### Scenario: Degradation policy per optional tool
+
+- **WHEN** an evidence-reading skill names an optional external tool (e.g. `pypykatz`, `secretsdump.py`, `tshark`)
+- **THEN** its `## Method` states what to do when that tool is unavailable — either a fallback path or an explicit "flag the gap and stop"
+
+#### Scenario: Analytic-spine skills exempted
+
+- **WHEN** an analytic-spine skill's `## Method` is inspected
+- **THEN** it is not required to follow the four-element contract, because the skill has no file inventory step and no optional tools to degrade
+
+### Requirement: Procedural skills MAY co-locate reference files
+
+A procedural cross-cutting skill MAY ship supplementary content in a `references/` subdirectory alongside its `SKILL.md`. When it does, the skill body SHALL contain a naming pointer to each reference file, so a session that reads only `SKILL.md` knows the reference exists and what class of content lives there. `install.sh` symlinks the whole skill directory; sibling reference files SHALL therefore land alongside `SKILL.md` at deploy time without an install-script change.
+
+Reference files SHALL be markdown. Structured formats (YAML, JSON) SHALL NOT be used unless a consumer exists in the repo — this repo has no code path that loads structured references.
+
+#### Scenario: Reference file colocated with skill
+
+- **WHEN** a procedural skill declares a reference file
+- **THEN** the file lives at `analysts/skills/<slug>/references/<name>.md`
+
+#### Scenario: Skill body names each reference file
+
+- **WHEN** a procedural skill's `SKILL.md` is inspected
+- **THEN** for every reference file present, the body contains a naming pointer stating the file's path relative to `SKILL.md` and what class of content it holds
+
+#### Scenario: `credential-harvest-triage` carries `credential-patterns.md`
+
+- **WHEN** `analysts/skills/credential-harvest-triage/` is inspected
+- **THEN** it contains `SKILL.md` and `references/credential-patterns.md`, and `SKILL.md` names the reference file
+
+#### Scenario: Reference file is markdown
+
+- **WHEN** any reference file under a procedural skill is inspected
+- **THEN** it is a `.md` file
+
