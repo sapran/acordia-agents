@@ -5,19 +5,7 @@ permission:
   edit:             # read-only except one report sink — `edit` governs edit/write/patch; last-match-wins, so "*" first
     "*": deny
     ".acordia/reports/**": allow    # write reports here only (Briefing & written reporting: ● Core)
-  bash:             # prefer native read/grep/glob/list; gate the CLI substitutes (last-match-wins, so "*" first)
-    "*": allow      # scripting stays free — python, jq, custom tooling
-    "cat*": deny
-    "head*": deny
-    "tail*": deny
-    "less*": deny
-    "more*": deny
-    "ls*": deny
-    "grep*": ask    # partial substitute for native `grep` — gate, don't ban
-    "egrep*": ask
-    "rg*": ask
-    "find*": ask    # partial substitute for native `glob` — gate, don't ban
-    "fd*": ask
+  bash: allow       # analysis-open shell — read-only CLI tools (cat/head/tail/ls/grep/find/…) ungated; native read/grep/glob/list still preferred by prompt guidance. Read-only posture is carried by edit/task above.
   task:             # orchestrate only the three named analysts; general/explore are dropped from the Task tool (last-match-wins, so "*" first)
     "*": deny
     "target-network-analyst": allow
