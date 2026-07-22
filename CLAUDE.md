@@ -80,7 +80,7 @@ Slash commands (available under both `.claude/commands/opsx/` and `.opencode/com
 - `/opsx:archive` — finalise a completed change and archive it.
 - `/opsx:sync` — sync delta specs into main specs without archiving.
 
-Preferred sequence for a feature/change/bugfix: **explore → propose → apply → archive → finalise & push branch → open PR to `main` → review → session-finalise**. Assume parallel agent work: apply changes in worktrees on branches.
+Preferred sequence for a feature/change/bugfix: **explore → propose → apply → archive → finalise & push branch → open PR to `develop` → review → session-finalise**. Assume parallel agent work: apply changes in worktrees on branches.
 
 Every normative claim in a spec must trace to either an artifact in this repo (agent file, skill file, install script) or a row/paragraph in `docs/roles/operational-analyst.md` / `docs/agents-skills-extension-workbook.md`. State the *actual* behaviour in specs even when it is a trap; capture the ideal in `design.md`.
 
