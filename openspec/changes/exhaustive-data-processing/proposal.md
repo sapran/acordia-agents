@@ -1,10 +1,8 @@
 ## Why
 
-When collected material lands for analysis — a file dump, an archive, a log bundle, a memory capture — the analyst reads only the opening portion of a large artefact and draws a conclusion from that head sample. Data past the first read window is never processed. In a credential-harvest dump this manufactures false negatives: the key on line 5,000 of a 20,000-line export is never seen, and the operating picture reports "clean" on material that was never read.
+The analyst reads only the opening portion of a large collected artefact and concludes from that head sample; data past the first read window is never processed. In a credential-harvest dump this manufactures false negatives — the key on line 5,000 of a 20,000-line export is never seen, and the picture reports "clean" on material never read.
 
-The framework has no artefact that mandates *exhaustive* processing, and — worse — the existing `analyst-skill-library` requirement "Method contract for evidence-reading skills" frames read discipline as a **"bounded sampling discipline"** (scenario: *"Sampling is bounded, never wholesale"*). That wording governs the right axis (do not wholesale-load a multi-megabyte artefact into context) but is silent on coverage, so an analyst can sample the head, stop, and be fully spec-conformant. The word "sample" is doing double duty: it means *read in bounded pieces* but reads as *look at a subset and stop*. Seven evidence-reading skills inherit that framing verbatim ("Sample bounded reads…").
-
-This change makes exhaustive coverage a first-class, triggerable discipline and closes the spec-level licensing gap. Now, because the sampling behaviour was observed live during a credential-harvest dump.
+No artefact mandates *exhaustive* processing, and the existing "Method contract for evidence-reading skills" requirement frames reads as a **"bounded sampling discipline"** (scenario: *"Sampling is bounded, never wholesale"*) — the right axis (no wholesale context load) but silent on coverage, so sampling the head and stopping is spec-conformant. Seven skills inherit the "Sample bounded reads" framing. This change makes exhaustive coverage a triggerable discipline and closes that licensing gap. Observed live during a credential-harvest dump.
 
 ## What Changes
 

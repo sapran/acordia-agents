@@ -48,10 +48,10 @@ The requirement applies to the following fifteen skills only: `disk-memory-foren
 - **WHEN** an evidence-reading skill's `## Method` section is read
 - **THEN** its first ordered element names the tool used to enumerate the input before any read happens
 
-#### Scenario: Reads into context are bounded, never wholesale
+#### Scenario: Sampling is bounded, never wholesale
 
-- **WHEN** an evidence-reading skill's `## Method` describes reading the input into context
-- **THEN** the read is scoped (offset, line-range, or targeted tool hit), and no step instructs a wholesale load of a multi-megabyte artefact into context
+- **WHEN** an evidence-reading skill's `## Method` describes reading the input
+- **THEN** the reading is scoped (offset, line-range, or targeted grep hit), and no step instructs a wholesale load of a multi-megabyte artefact
 
 #### Scenario: Coverage is exhaustive, never a head sample
 
