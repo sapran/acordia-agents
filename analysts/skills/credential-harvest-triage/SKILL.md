@@ -50,7 +50,7 @@ Every credential finding SHALL be classified along these axes. Analysts record t
    - **Bucket C — web / API auth** (JWTs, OAuth tokens, session cookies, provider API keys) → `target-network-analyst`
    - **Bucket D — log-artefact** (application / CI / system logs, connection strings leaked in logs) → `defender-detection-analyst`
    - **Bucket E — implant / payload RE** (malware configs, embedded keys in binaries) → cross-cutting via `implant-payload-re`, findings reported to `fusion-analyst`
-   Buckets route to legs, not to skills; a leg applies its own specialist skills (step 4) to its slice. The mapping is fixed by domain — reclassify a bucket only through an openspec change, not an in-file edit.
+   Buckets route to legs, not to skills. Each leg then runs steps 3–5 (first-pass scan, deep-pass, classify) on its own slice, applying its own specialist skills; the legs work in parallel, and step 6 re-merges their classifications. The mapping is fixed by domain — reclassify a bucket only through an openspec change, not an in-file edit.
 3. **First-pass scan**: run the pattern library (see `references/credential-patterns.md`) across text-decodable artefacts (`grep -rHnE`, `rg`, or equivalent). Record hits with path + line, not the matched string. Flag binary artefacts for deep-pass.
 4. **Deep-pass per category**: dispatch to the matching specialist skill:
    - Memory / disk images → `disk-memory-forensics`
