@@ -1,6 +1,12 @@
 ---
 name: implant-payload-re
 description: Use to reverse-engineer an implant or payload's real behavior — ours, a competitor's, or a captured sample — to understand exactly what it does, what it emits, and how it would be detected.
+metadata:
+  acordia:
+    grid_row: implant-payload-re
+    grid_deep_in: [Def]
+    grid_working_in: ['T&N']
+    source: docs/roles/operational-analyst.md#L98
 ---
 
 # Implant/Payload Behaviour & Reverse-Engineering
@@ -13,11 +19,12 @@ Reverse-engineer implant/payload behavior to ground-truth what it actually does 
 - Analyzing a captured, third-party, or competitor sample to understand capability, indicators, and attribution.
 
 ## Method
-- Triage statically first: file type, packing, imports, strings, embedded config, and signing — cheap signal before you run anything.
-- Analyze safely in an isolated, instrumented environment; assume anti-analysis and sandbox-evasion and account for it.
-- Recover behavior dynamically: process/thread activity, injection, persistence, file/registry changes, and full network/C2 behavior.
-- Extract config and IOCs — keys, domains, mutexes, campaign markers — and map behavior to ATT&CK techniques and the telemetry each would produce.
+- Inventory the sample set with `ls` / `find` / `glob` (candidate binaries, dropped stages, embedded resources); record file type, size, and hash before any read.
+- Triage statically first, bounded: `file`, entropy scan, `strings -a -n 8` (and `-e l` for UTF-16) piped through `grep`/`rg` for pattern hits; read PE/ELF headers and named sections (`.rsrc`, `.rdata`, `__cstring`) by section offset, not the whole image. For .NET, decompile targeted classes rather than the full assembly.
+- Analyze safely in an isolated, instrumented environment; assume anti-analysis and sandbox-evasion and account for it. Recover behavior dynamically from bounded windows of the run (process/thread activity, injection, persistence, file/registry changes, network/C2), citing event indexes rather than dumping the full trace.
+- Extract config and IOCs — keys, domains, mutexes, campaign markers — and map behavior to ATT&CK techniques and the telemetry each would produce. Cite each finding as `<sample>:<offset>` for binary evidence or `<trace>@L<line>` for sandbox log lines; never quote decrypted credential values raw.
 - Feed findings to the leg that needs them: detection-signature prediction for blue-side reasoning, or capability/attribution for target work.
+- Degradation: if a family-specific config parser (CAPE / malwareconfig) is unavailable, fall back to locating the decryptor stub and extracting algorithm + key manually; if the sandbox/instrumentation environment is unavailable, restrict to static analysis and flag the gap; if a decompiler (`ILSpy`, `dnSpyEx`, `Ghidra`) is unavailable and only stripped native code remains, flag the gap and stop.
 
 ## Signals / outputs
 - A behavior profile: what it does on host and network, plus its anti-analysis tricks.

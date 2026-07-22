@@ -1,6 +1,12 @@
 ---
 name: evasion-antianalysis
 description: Use when you know what the defender can see and must decide how to shape an action to avoid detection and frustrate later analysis — timing, obfuscation, living-off-the-land, and anti-forensic choices.
+metadata:
+  acordia:
+    grid_row: evasion-antianalysis
+    grid_deep_in: [Def]
+    grid_working_in: ['T&N']
+    source: docs/roles/operational-analyst.md#L94
 ---
 
 # Evasion & Anti-Analysis Reasoning
@@ -13,11 +19,14 @@ Given a model of the defender's visibility, reason about how to shape actions so
 - When an action cannot be made invisible and you must trade fidelity of evidence against operational cost.
 
 ## Method
+- Inventory the defender-visibility inputs feeding this decision with `glob` / `find` / `list`: the detection-capability write-up, EDR telemetry samples, cloud log excerpts, and any own-footprint ledger already produced.
+- Sample bounded reads — the specific rule, the specific event window, the specific artefact — rather than re-reading whole detection catalogues; use `grep` to locate the signal of interest first, then read a scoped line range around it.
 - Take the forecasted signals as input and choose the cheapest reduction per signal: blend-in (LOLBins, legit tooling, normal hours), suppression (unhook, log-tamper), or avoidance (different primitive).
 - Weigh anti-analysis tactics (obfuscation, packing, in-memory-only, encrypted staging) against the meta-signal they create — many tamper/evasion actions are themselves high-confidence detections.
 - Time and pace actions to defeat correlation and baselining; avoid bursty or novel sequences that stand out from environment norms.
-- Plan the forensic aftermath: what artifacts remain, what can be minimized, and what a responder would reconstruct if they arrive later.
+- Plan the forensic aftermath: what artifacts remain, what can be minimized, and what a responder would reconstruct if they arrive later; cite each expected-signal-to-mitigation pairing by `<path>:<offset>` (byte) or `<path>@L<line>` (line) back to the detection or telemetry line that predicts it.
 - Keep every evasion reversible/deniable where possible; never trade a quiet action for a loud cover-up.
+- If a detection-rule parser or EDR-log decoder is unavailable, fall back to raw-string `grep` over the exports; if the visibility model itself is absent, flag the gap and stop rather than plan evasion against assumed sensors.
 
 ## Signals / outputs
 - A per-action evasion plan mapping each expected signal to a mitigation and its residual risk.

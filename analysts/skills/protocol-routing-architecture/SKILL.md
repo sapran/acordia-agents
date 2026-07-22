@@ -1,6 +1,12 @@
 ---
 name: protocol-routing-architecture
 description: Use when you need the shape of the target network — reconstruct how it is built, routed, and segmented so you can find the paths between where you are and where you want to be.
+metadata:
+  acordia:
+    grid_row: protocol-routing-architecture
+    grid_deep_in: ['T&N']
+    grid_working_in: [Def]
+    source: docs/roles/operational-analyst.md#L84
 ---
 
 # Protocol, Routing & Network Architecture
@@ -13,11 +19,14 @@ Reconstruct the target's network architecture — topology, routing, segmentatio
 - When you must locate segmentation, chokepoints, and egress/ingress paths before touching them.
 
 ## Method
-- Map layers: L2/L3 topology, VLANs, subnets, routing domains, VPNs/tunnels, and the gateways/firewalls that join or divide them.
-- Identify segmentation and trust zones — DMZ, corp, OT/ICS, management, cloud interconnect — and the exact crossing points.
+- Inventory the collected network artefacts with `glob` / `find` / `list`: config exports (Cisco/Juniper/Palo Alto), routing tables, firewall rulesets, VPN configs, network diagrams, and any topology dumps.
+- Sample bounded reads by interface block, VLAN definition, or ACL rule set rather than pulling multi-megabyte show-tech dumps wholesale; use `grep` to locate the segment boundaries first, then read a scoped line range around each hit.
+- Map layers from that sample: L2/L3 topology, VLANs, subnets, routing domains, VPNs/tunnels, and the gateways/firewalls that join or divide them.
+- Identify segmentation and trust zones — DMZ, corp, OT/ICS, management, cloud interconnect — and the exact crossing points; cite each boundary by `<path>:<offset>` (byte) or `<path>@L<line>` (line) back to the config line that proves the claim.
 - Trace routing and reachability: default routes, NAT, proxies, split-tunnel, and what a packet from your foothold can actually reach.
 - Profile protocols in play (routing protocols, tunneling, management planes) and their weaknesses or misconfigurations.
 - Derive attack paths: which segment boundary to cross, via which host/rule/protocol, and where egress for C2 or exfil exists.
+- If a vendor-specific parser (e.g. `ciscoconfparse`, offline `netmiko` helpers) is unavailable, fall back to manual `grep`-driven reads of the raw config; if the raw config itself is missing, flag the gap and stop rather than infer topology from screenshots or memory.
 
 ## Signals / outputs
 - Segmentation and trust-zone map with named crossing points.

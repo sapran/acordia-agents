@@ -1,6 +1,12 @@
 ---
 name: naming-the-gaps
 description: Use when a target picture feels good enough to act on and you need to force-surface what you still do not know before committing collection or an operation to it.
+metadata:
+  acordia:
+    grid_row: naming-the-gaps
+    grid_deep_in: [Core]
+    grid_working_in: [Fus]
+    source: docs/roles/operational-analyst.md#L68
 ---
 
 # Naming the Gaps

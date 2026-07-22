@@ -1,6 +1,12 @@
 ---
 name: effect-on-target-verification
 description: Use after an action to confirm the target system actually changed — read the effects side of "did it land," distinguishing real effect from delivery success, cover story, or defender illusion.
+metadata:
+  acordia:
+    grid_row: effect-on-target-verification
+    grid_deep_in: ['T&N']
+    grid_working_in: [Core]
+    source: docs/roles/operational-analyst.md#L82
 ---
 
 # Effect-on-Target Verification

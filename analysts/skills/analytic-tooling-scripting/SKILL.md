@@ -1,6 +1,12 @@
 ---
 name: analytic-tooling-scripting
 description: Use when manual analysis won't scale or repeat cleanly — script your own parsers, extractors, and transforms to turn raw take into answers instead of grinding it by hand.
+metadata:
+  acordia:
+    grid_row: analytic-tooling-scripting
+    grid_deep_in: [Core]
+    grid_working_in: ['T&N', Def, Fus]
+    source: docs/roles/operational-analyst.md#L108
 ---
 
 # Analytic Tooling & Scripting

@@ -1,6 +1,12 @@
 ---
 name: maintaining-operating-picture
 description: Use when an operation is live and the fused picture will rot — keep the target and situational picture current as access shifts, defenders move, and the environment changes under you.
+metadata:
+  acordia:
+    grid_row: maintaining-operating-picture
+    grid_deep_in: [Fus]
+    grid_working_in: [Core]
+    source: docs/roles/operational-analyst.md#L103
 ---
 
 # Maintaining the Operating Picture
