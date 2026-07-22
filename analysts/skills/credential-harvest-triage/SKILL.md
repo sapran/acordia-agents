@@ -50,8 +50,8 @@ Every credential finding SHALL be classified along these axes. Analysts record t
    - **Bucket C — web / API auth** (JWTs, OAuth tokens, session cookies, provider API keys) → `target-network-analyst`
    - **Bucket D — log-artefact** (application / CI / system logs, connection strings leaked in logs) → `defender-detection-analyst`
    - **Bucket E — implant / payload RE** (malware configs, embedded keys in binaries) → cross-cutting via `implant-payload-re`, findings reported to `fusion-analyst`
-   Buckets route to legs, not to skills. Each leg then runs steps 3–5 (first-pass scan, deep-pass, classify) on its own slice, applying its own specialist skills; the legs work in parallel, and step 6 re-merges their classifications. The mapping is fixed by domain — reclassify a bucket only through an openspec change, not an in-file edit.
-3. **First-pass scan**: run the pattern library (see `references/credential-patterns.md`) across text-decodable artefacts (`grep -rHnE`, `rg`, or equivalent). Record hits with path + line, not the matched string. Flag binary artefacts for deep-pass.
+   Buckets route to legs, not to skills. Each leg then runs steps 3–5 (first-pass scan, deep-pass, classify) on its own slice, applying its own specialist skills; the legs work in parallel, and step 6 re-merges their classifications. Each leg returns a **coverage receipt** for its bucket — declared scope reconciled to covered scope — per `exhaustive-data-processing`; the orchestrator rejects any bucket whose scan did not cover its whole slice and re-dispatches it. The mapping is fixed by domain — reclassify a bucket only through an openspec change, not an in-file edit.
+3. **First-pass scan**: run the pattern library (see `references/credential-patterns.md`) across text-decodable artefacts (`grep -rHnE`, `rg`, or equivalent). The scan SHALL cover 100% of each bucket's text-decodable bytes and record *every* hit — never a sample — with path + line, not the matched string (see `exhaustive-data-processing`). Flag binary artefacts for deep-pass.
 4. **Deep-pass per category**: dispatch to the matching specialist skill:
    - Memory / disk images → `disk-memory-forensics`
    - AD / NTDS / Kerberos / LAPS / ADCS → `identity-directory-trust`
@@ -63,7 +63,7 @@ Every credential finding SHALL be classified along these axes. Analysts record t
 5. **Classify** each finding into the schema. Redact source paths that reveal analyst home dirs or workstation identity.
 6. **Correlate** across findings: same account across sources, same key in multiple archives, one credential unlocking another (e.g. DPAPI master key → browser passwords). Because the buckets were analysed by different legs, this is where their classifications re-merge — hand the per-leg findings to `fusion-analyst`, which runs `multi-source-fusion` to resolve cross-leg linkages. Merge duplicates; note the correlation in `provenance`.
 7. **Prioritise**: rank by scope × reuse-potential × freshness. Break ties by ease-of-use (plaintext > hash > encrypted). Assign P0/P1/P2/P3.
-8. **Report**: emit the classified inventory. Do not include raw credential values. For each P0/P1, name the specialist owner and the reuse hypothesis to validate operationally.
+8. **Report**: emit the classified inventory. State total coverage — buckets scanned, artefacts parsed, any deferred remainder named — so a sampled pass cannot masquerade as a complete one. Do not include raw credential values. For each P0/P1, name the specialist owner and the reuse hypothesis to validate operationally.
 
 ## Pattern library
 
