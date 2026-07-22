@@ -5,7 +5,7 @@ metadata:
   acordia:
     grid_row: null
     procedural: true
-    source: openspec/changes/exhaustive-data-processing/proposal.md
+    source: openspec/changes/archive/2026-07-22-exhaustive-data-processing/proposal.md
 ---
 
 # Exhaustive Data Processing
