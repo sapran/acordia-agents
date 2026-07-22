@@ -50,7 +50,7 @@ Passive analysis of collected auth material — tokens, cookies, API-key strings
 - Authorization codes — short-lived (~60s); found in redirect URLs in referer headers and browser history; useless after the initial exchange but reveal client_id / redirect_uri.
 
 **API keys by provider**
-- Use the pattern-library prefixes from [`credential-harvest-triage`](../credential-harvest-triage/SKILL.md): `AKIA`, `ghp_`, `sk-`, `sk-ant-`, `xox[baprs]-`, `AIza`, `glpat-`, `npm_`, `pypi-`, `dckr_pat_`.
+- Use the pattern-library prefixes from [`credential-harvest-triage/references/credential-patterns.md`](../credential-harvest-triage/references/credential-patterns.md): `AKIA`, `ghp_`, `sk-`, `sk-ant-`, `xox[baprs]-`, `AIza`, `glpat-`, `npm_`, `pypi-`, `dckr_pat_`.
 - Provider-specific parse: GitHub PATs disclose scope via `X-OAuth-Scopes` on any `/user` GET (do not call; if the header was captured in a log, record it); AWS access keys carry the account ID in the ID via `sts:GetAccessKeyInfo` documentation (offline mapping only).
 
 **Session cookies**

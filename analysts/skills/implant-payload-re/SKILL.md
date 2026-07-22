@@ -36,7 +36,7 @@ Reverse-engineer implant/payload behavior to ground-truth what it actually does 
 Credential material embedded in payloads — hardcoded strings, encrypted config blocks, keys embedded for C2 auth or lateral movement. Extraction is static or sandboxed-dynamic; never runs the sample against a live target to prove reuse.
 
 **Static extraction from binaries**
-- `strings -a -n 8` (and `strings -e l` for UTF-16 on Windows PE), then pattern-library grep from [`credential-harvest-triage`](../credential-harvest-triage/SKILL.md). Hits often surface C2 auth keys, hardcoded RDP/SMB credentials, hardcoded API tokens for stagers pulling from paste sites.
+- `strings -a -n 8` (and `strings -e l` for UTF-16 on Windows PE), then pattern-library grep from [`credential-harvest-triage/references/credential-patterns.md`](../credential-harvest-triage/references/credential-patterns.md). Hits often surface C2 auth keys, hardcoded RDP/SMB credentials, hardcoded API tokens for stagers pulling from paste sites.
 - `.rsrc` (PE resources) — embedded config blobs, sometimes XOR- or RC4-obfuscated with a key also present in the binary. Extract with `pefile` / `pyresource` + a short deobfuscator.
 - `.rdata` / `.data` — hardcoded strings the compiler could not deduplicate; C2 URLs and hex-encoded key material.
 - .NET assemblies — decompile with `ILSpy` / `dnSpyEx`; hardcoded credentials often live as string literals in obfuscated fields. `de4dot` normalises common obfuscators.
