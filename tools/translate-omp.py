@@ -98,8 +98,17 @@ def has_scoped_write(entry) -> bool:
 
 
 def deep_skills(body: str, source: Path) -> list[str]:
+    # The skill list is the line directly under the heading. If a future edit
+    # puts a blank line there, an empty result must abort rather than silently
+    # shipping `autoloadSkills: []`.
     for line in iter_heading_values(body, DEEP_HEADINGS):
-        return [part.strip() for part in line.split("·") if part.strip()]
+        skills = [part.strip() for part in line.split("·") if part.strip()]
+        if not skills:
+            raise TranslationError(
+                f"{source}: the line under the `(deep)` heading names no skills; "
+                "the prompt changed shape and the autoload extraction must be revisited"
+            )
+        return skills
     raise TranslationError(f"{source}: no `(deep)` skill heading found for autoload")
 
 
@@ -213,6 +222,12 @@ def main() -> int:
         default="none",
         help="inject the prompt's `(deep)` skill bodies at subagent start",
     )
+    parser.add_argument(
+        "--check",
+        action="store_true",
+        help="translate and report failures without writing anything, so a "
+        "dry-run exercises the same code an install would",
+    )
     args = parser.parse_args()
 
     translated: list[tuple[Path, str]] = []
@@ -222,6 +237,11 @@ def main() -> int:
         except TranslationError as err:
             print(f"translate-omp: {err}", file=sys.stderr)
             return 1
+
+    if args.check:
+        for path, _ in translated:
+            print(f"  would translate: {path.name}")
+        return 0
 
     args.out.mkdir(parents=True, exist_ok=True)
     for path, content in translated:

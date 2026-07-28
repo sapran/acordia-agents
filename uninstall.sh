@@ -74,7 +74,39 @@ harness_root() {
   esac
 }
 
+# A name match is not proof of ownership: a user may keep an unrelated agent or
+# skill under the same name. Removing that would be data loss, so every removal
+# is gated on evidence that this repository put the file there.
+#
+#   symlink      -> must resolve inside this repository
+#   copied agent -> must be byte-identical to the source, or be a translated
+#                   file whose provenance names that source
+#   copied skill -> its SKILL.md must be byte-identical to the source's
+owned_by_repo() {
+  local dst="$1" src="$2" kind="$3"
+
+  if [[ -L "$dst" ]]; then
+    local resolved
+    resolved="$(cd "$(dirname "$dst")" && readlink -f "$(basename "$dst")" 2>/dev/null || true)"
+    [[ -n "$resolved" && "$resolved" == "$REPO_ROOT"/* ]]
+    return
+  fi
+
+  case "$kind" in
+    agent)
+      cmp -s "$dst" "$src" && return 0
+      # Translated omp agents differ from their source by construction; they
+      # carry the source path in their generated provenance block.
+      grep -qF "from: ${src#$REPO_ROOT/}" "$dst" 2>/dev/null
+      ;;
+    skill)
+      cmp -s "$dst/SKILL.md" "$src/SKILL.md"
+      ;;
+  esac
+}
+
 count_removed=0
+count_skipped=0
 
 for harness in "${HARNESSES[@]}"; do
   root="$(harness_root "$harness")"
@@ -95,22 +127,31 @@ for harness in "${HARNESSES[@]}"; do
         [[ -e "$agent" ]] || continue
         name="$(basename "$agent")"
         dst="$root/agents/$name"
-        if [[ -e "$dst" || -L "$dst" ]]; then
+        [[ -e "$dst" || -L "$dst" ]] || continue
+        if owned_by_repo "$dst" "$agent" agent; then
           echo "  agent: $name"
           run rm -f "$dst"
           count_removed=$((count_removed + 1))
+        else
+          echo "  agent: $name — skipped, not deployed by this repository" >&2
+          count_skipped=$((count_skipped + 1))
         fi
       done
     fi
 
     if [[ -d "$pillar_root/skills" ]]; then
       for skill_dir in "$pillar_root/skills"/*/; do
+        [[ -e "$skill_dir/SKILL.md" ]] || continue
         slug="$(basename "$skill_dir")"
         dst="$root/skills/$slug"
-        if [[ -e "$dst" || -L "$dst" ]]; then
+        [[ -e "$dst" || -L "$dst" ]] || continue
+        if owned_by_repo "$dst" "${skill_dir%/}" skill; then
           echo "  skill: $slug"
           run rm -rf "$dst"
           count_removed=$((count_removed + 1))
+        else
+          echo "  skill: $slug — skipped, not deployed by this repository" >&2
+          count_skipped=$((count_skipped + 1))
         fi
       done
     fi
@@ -126,4 +167,8 @@ if [[ "$DRY_RUN" -eq 1 ]]; then
   echo "dry-run: would remove $count_removed artifact(s)"
 else
   echo "removed $count_removed artifact(s)"
+fi
+
+if [[ "$count_skipped" -gt 0 ]]; then
+  echo "left $count_skipped name-matching artifact(s) in place — this repository did not deploy them"
 fi

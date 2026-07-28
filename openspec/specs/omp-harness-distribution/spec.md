@@ -55,6 +55,19 @@ The files under `<pillar>/agents/` and `<pillar>/skills/` SHALL remain written t
 - **THEN** the agent files and skill entries this repository deployed under `~/.omp/agent/` are removed
 - **AND** files under `~/.omp/agent/` that this repository did not deploy are left in place
 
+#### Scenario: A name match alone is not grounds for removal
+
+- **WHEN** a harness config holds an agent file or skill directory whose name matches a repository artifact but whose content this repository did not deploy
+- **THEN** `uninstall.sh` leaves it in place
+- **AND** reports how many name-matching artifacts it declined to remove
+
+#### Scenario: Ownership is established by deployment evidence
+
+- **WHEN** `uninstall.sh` considers a deployed artifact
+- **THEN** it removes a symlink only if the link resolves inside this repository
+- **AND** removes a copied agent only if it is byte-identical to its source or carries generated provenance naming that source
+- **AND** removes a copied skill only if its `SKILL.md` is byte-identical to the source's
+
 ### Requirement: Frontmatter translation contract
 
 The translator SHALL convert one opencode agent file into one omp task-agent file according to a fixed mapping. The generated file SHALL carry a `name` field equal to the source filename stem and SHALL preserve the source `description` verbatim, because omp skips any agent file lacking either field.
@@ -173,4 +186,11 @@ Both harnesses SHALL support repeated invocation without accumulating state, and
 - **WHEN** `./install.sh --harness omp --dry-run` runs
 - **THEN** the intended actions are printed
 - **AND** no file is created, removed, or modified anywhere on disk
+
+#### Scenario: A clean dry run predicts a clean install
+
+- **WHEN** `./install.sh --harness omp --dry-run` runs
+- **THEN** the translator is exercised in a mode that parses every source agent without writing output
+- **AND** a source file that would fail translation makes the dry run exit non-zero
+- **AND** the printed plan names the translated build path as each agent's source, matching what a real run copies
 

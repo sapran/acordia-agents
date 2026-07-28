@@ -120,11 +120,18 @@ harness_root() {
 }
 
 # Translate a pillar's opencode agents into omp form under .build/, echoing the
-# directory that holds them. Generated output — never edit, never commit.
+# directory that would hold them. Generated output — never edit, never commit.
+# Under --dry-run this runs the translator in --check mode: the same parsing and
+# the same failures, but nothing written, so a clean dry-run really does predict
+# a clean install.
 translate_pillar() {
   local pillar="$1" out="$BUILD_ROOT/omp/$1/agents"
   local -a args=(--out "$out" --autoload "$AUTOLOAD")
-  rm -rf "$out"
+  if [[ "$DRY_RUN" -eq 1 ]]; then
+    args+=(--check)
+  else
+    rm -rf "$out"
+  fi
   "$REPO_ROOT/tools/translate-omp.py" "$REPO_ROOT/$pillar/agents"/*.md "${args[@]}" >&2
   printf '%s' "$out"
 }
@@ -157,19 +164,18 @@ for harness in "${HARNESSES[@]}"; do
     echo "  -- $pillar --"
 
     if [[ -d "$pillar_root/agents" ]]; then
+      # For omp the deployed file is the translated one, so name the build path
+      # as the source even in dry-run; the filenames are identical either way.
       agent_src_dir="$pillar_root/agents"
       if [[ "$harness" == "omp" ]]; then
-        if [[ "$DRY_RUN" -eq 1 ]]; then
-          echo "  [dry-run] translate $pillar agents into $BUILD_ROOT/omp/$pillar/agents"
-        else
-          agent_src_dir="$(translate_pillar "$pillar")"
-        fi
+        translate_pillar "$pillar" >/dev/null
+        agent_src_dir="$BUILD_ROOT/omp/$pillar/agents"
       fi
-      for agent in "$agent_src_dir"/*.md; do
+      for agent in "$pillar_root/agents"/*.md; do
         [[ -e "$agent" ]] || continue
         name="$(basename "$agent")"
         echo "  agent: $name"
-        deploy_file "$agent" "$root/agents/$name" "$agent_mode"
+        deploy_file "$agent_src_dir/$name" "$root/agents/$name" "$agent_mode"
         count_deployed=$((count_deployed + 1))
       done
     fi
