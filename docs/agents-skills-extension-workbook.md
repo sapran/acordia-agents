@@ -462,3 +462,103 @@ For portable / opencode-native agents and skills:
   once, in place, in the opencode dir.
 - **Compose by description + prompt**, not a `skills:` list: write the skill
   `description` to trigger, and have the agent prompt name its skill set.
+
+## 7. omp (`oh-my-pi`) — the second harness
+
+omp is the other harness this repo deploys to. Verified against omp 17.1.8
+(`omp://task-agent-discovery.md`, `omp://skills.md`,
+`omp://system-prompt-customization.md`). The two halves behave very differently.
+
+### 7.1 Skills need no translation
+
+omp registers an `opencode` skill provider (priority 55) that scans
+`~/.config/opencode/skills` using the same non-recursive `<name>/SKILL.md`
+layout. Skills installed for opencode are therefore already live in omp. The
+omp-native user location is `~/.omp/agent/skills`; installing to both is
+harmless because omp de-duplicates by `realpath` before it de-duplicates by
+name.
+
+omp reads more frontmatter than opencode does — `globs`, `alwaysApply`, `hide`,
+`disableModelInvocation` — and ignores the rest. `name` defaults to the
+directory name. Nothing in this repo's skill files needs to change.
+
+### 7.2 Agents need translation
+
+omp discovers task agents from `<project>/.omp/agents`, `~/.omp/agent/agents`,
+and Claude plugin `agents/` directories. It **deliberately skips**
+`.claude/agents`, `.codex/agents`, and `.gemini/agents` because their
+frontmatter is not the omp contract, and it does not look at
+`~/.config/opencode/agents` at all. An opencode agent file is invisible to omp
+no matter where it sits.
+
+The mapping `tools/translate-omp.py` implements:
+
+| Concern | opencode | omp |
+| --- | --- | --- |
+| Name | filename stem | **required** `name:` field — a file missing `name` or `description` is skipped with a logged warning |
+| Role | `mode: primary` / `subagent` / `all` | no modes; every file-defined agent is a subagent reached through the `task` tool |
+| Tool access | `permission:` map, allow-by-default with denies | `tools:` allowlist; an absent tool does not exist for that agent — **except** the xd:// transport tools, see 7.3. omp appends `yield` automatically |
+| Read-only | `edit: deny` | omit `edit` from `tools:`; `edit` really does disappear, `write` does not |
+| Path-scoped write | `edit: { "*": deny, ".acordia/reports/**": allow }` | **no equivalent** — omp scopes per tool, never per path, and cannot deny `write` at all under default settings |
+| Delegation | `permission.task` map naming allowed agents | `task` in `tools:` **plus** `spawns:` listing allowed agent names (`*` for any) |
+| Leaf specialist | `task: deny` | omit `task` from `tools:`; leave `spawns` unset |
+| Skill binding | none — the prompt names its skills in prose | optional `autoloadSkills:` injects the named skills' full bodies at subagent start |
+| Model | `model: provider/id` | `model:` (accepts role aliases such as `@smol`), plus `thinkingLevel:` |
+| Extra metadata | ignored | preserved as unknown keys |
+
+Two more omp-only fields worth knowing: `output:` declares a structured-output
+schema, and `readSummarize: false` makes the agent's `read` return verbatim file
+content instead of a structural summary.
+
+### 7.3 Tool differences that reach into the prompt and the allowlist
+
+omp has **no `list` tool** — a directory path handed to `read` enumerates it.
+Any prompt that instructs an agent to use `list` is wrong under omp, which is
+why the translator rewrites that paragraph and then asserts that no `` `list` ``
+token survives. `read`, `grep`, `glob`, `bash`, `web_search`, and `task` carry
+over unchanged.
+
+**The allowlist has one hole.** omp's `XDEV_TRANSPORT_TOOLS` are `read` and
+`write`: they are the channel every `xd://` device is invoked through, so both
+are present whenever the `tools.xdev` setting is on, which is the default —
+regardless of what the agent's `tools:` list says. Verified on omp 17.1.8 by
+asking a translated leg agent, whose allowlist has no `write`, to create a
+scratch file with the `write` tool; it succeeded and a read-back confirmed the
+file. `edit` and `task` were correctly absent from the same agent, so the
+allowlist is enforced in general.
+
+The consequence for a read-only agent: omitting `edit` and `task` works;
+omitting `write` does not. Under omp, "read-only" means no editing tool and no
+dispatch, with writes constrained by the prompt rather than by the harness.
+Disabling `tools.xdev` restores full allowlist enforcement at the cost of
+moving every discoverable tool back into the top-level schema.
+
+### 7.4 There is no file-defined primary agent
+
+omp has no `mode: primary`. An opencode primary agent has two possible landings:
+
+- **Spawnable orchestrator** (what this repo does) — give it `task` in `tools:`
+  and name its legs in `spawns:`. It keeps its own prompt and, like any
+  subagent, inherits the session's discovered-skills list.
+- **Session persona** — `~/.omp/agent/SYSTEM.md` or `<project>/.omp/SYSTEM.md`.
+  Beware: `SYSTEM.md` **replaces prompt block 0**, and block 0 is where omp
+  injects the discovered-skills list. A persona installed this way must hard-code
+  the skill names it wants the model to know about, which reintroduces drift.
+  `APPEND_SYSTEM.md` keeps block 0 but layers onto omp's coding-agent prompt
+  rather than replacing it.
+
+### 7.5 Deploy and verify
+
+```sh
+./install.sh --harness omp          # translate + deploy
+./install.sh --harness both         # both harnesses in one run
+./install.sh --harness omp --autoload deep   # preload each agent's deep skills
+```
+
+Translated agents land in `~/.omp/agent/agents/` as **copies**, generated into
+the gitignored `.build/omp/`. They are build output: edit
+`analysts/agents/*.md` and reinstall, never the generated file.
+
+To verify, start omp and check that the four analysts appear in the agent
+roster the `task` tool advertises, and that `operational-analyst` can spawn its
+three legs while the legs cannot spawn anything.
