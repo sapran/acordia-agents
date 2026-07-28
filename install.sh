@@ -68,13 +68,16 @@ if [[ -n "$TARGET_OVERRIDE" && "$HARNESS" == "both" ]]; then
 fi
 
 if [[ ${#PILLARS[@]} -eq 0 ]]; then
-  # A pillar is a top-level directory that actually carries artifacts; `docs`,
-  # `openspec`, `tools`, and the build dir are not pillars.
+  # A pillar is a VISIBLE top-level directory carrying artifacts. Everything in
+  # this repository that is tooling configuration rather than distributable
+  # content is dot-prefixed — `.git`, `.github`, `.build`, `.opencode`,
+  # `.claude`, `.codex` — so the dot-prefix rule replaces an exclusion list that
+  # kept growing. `docs`, `openspec`, and `tools` are visible but carry no
+  # artifacts, hence the second test. `--pillar` bypasses both.
   while IFS= read -r -d '' dir; do
     [[ -d "$dir/agents" || -d "$dir/skills" ]] || continue
     PILLARS+=("$(basename "$dir")")
-  done < <(find "$REPO_ROOT" -mindepth 1 -maxdepth 1 -type d \
-             ! -name '.git' ! -name '.github' ! -name '.build' -print0)
+  done < <(find "$REPO_ROOT" -mindepth 1 -maxdepth 1 -type d ! -name '.*' -print0)
 fi
 
 run() {

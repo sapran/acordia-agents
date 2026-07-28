@@ -47,12 +47,12 @@ if [[ -n "$TARGET_OVERRIDE" && "$HARNESS" == "both" ]]; then
 fi
 
 if [[ ${#PILLARS[@]} -eq 0 ]]; then
-  # Mirrors install.sh: a pillar is a top-level directory carrying artifacts.
+  # Mirrors install.sh: a pillar is a VISIBLE top-level directory carrying
+  # artifacts. Dot-prefixed directories are this repository's own tooling.
   while IFS= read -r -d '' dir; do
     [[ -d "$dir/agents" || -d "$dir/skills" ]] || continue
     PILLARS+=("$(basename "$dir")")
-  done < <(find "$REPO_ROOT" -mindepth 1 -maxdepth 1 -type d \
-             ! -name '.git' ! -name '.github' ! -name '.build' -print0)
+  done < <(find "$REPO_ROOT" -mindepth 1 -maxdepth 1 -type d ! -name '.*' -print0)
 fi
 
 run() {
