@@ -1,5 +1,5 @@
 ---
-description: Mobile application security specialist for Android/iOS testing against OWASP MASTG/MASVS — static and dynamic analysis with Frida/Objection instrumentation, storage, crypto, auth, IPC, and resilience-bypass coverage.
+description: ACORDIA Operations — Mobile application security specialist for Android/iOS testing against OWASP MASTG/MASVS — static and dynamic analysis with Frida/Objection instrumentation, storage, crypto, auth, IPC, and resilience-bypass coverage.
 mode: subagent
 permission:
   edit: allow

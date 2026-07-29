@@ -1,5 +1,5 @@
 ---
-description: Web application and API security specialist — OWASP WSTG methodology, authentication/authorization, injection, business logic, and API-specific testing.
+description: ACORDIA Operations — Web application and API security specialist — OWASP WSTG methodology, authentication/authorization, injection, business logic, and API-specific testing.
 mode: subagent
 permission:
   edit: allow

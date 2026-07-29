@@ -67,6 +67,18 @@ Uninstall takes the same `--harness` selector:
 
 Both scripts are idempotent — safe to re-run.
 
+### Namespace safety
+
+Both harnesses load agents and skills from a flat directory shared with their own built-ins (omp ships `task`, `scout`, `reviewer`, `designer`, `sonic`, `librarian` there) and with whatever you keep yourself. So `install.sh` refuses to overwrite anything this repository did not deploy: it checks every destination before writing a single file, and aborts naming the conflict, leaving the harness untouched. `--force` replaces the foreign artifact deliberately:
+
+```sh
+./install.sh --force            # replace artifacts this repo does not own
+```
+
+Ownership is evidence-based, not name-based — a symlink resolving into this checkout, a byte-identical copy, or a translated agent naming its source — and the same rule governs `uninstall.sh`, which leaves name-matching strangers in place. It is defined once in [`tools/ownership.sh`](tools/ownership.sh). Note that ownership is per checkout: installing from a second clone or worktree over an existing deployment counts as foreign and needs `--force`.
+
+Agent names are deliberately **not** prefixed — the name is the dispatch handle, and the skill slug is bound to its folder — so provenance is carried by the `description` instead. Every agent's description opens with `ACORDIA Analysis — ` or `ACORDIA Operations — `, which is what a harness shows beside the bare agent name.
+
 ### The omp harness
 
 Skills need no translation: omp ships an `opencode` skill provider, so an opencode install already makes the library visible to omp. `--harness omp` additionally places the skills under `~/.omp/agent/skills/` so omp works without an opencode config at all.

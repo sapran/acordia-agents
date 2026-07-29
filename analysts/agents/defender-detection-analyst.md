@@ -1,5 +1,5 @@
 ---
-description: Will this be seen, is it being seen right now, and is our operation still clean? Dispatch for detection-capability analysis, evasion reasoning, own-footprint review, and live overwatch of the defender.
+description: ACORDIA Analysis — Will this be seen, is it being seen right now, and is our operation still clean? Dispatch for detection-capability analysis, evasion reasoning, own-footprint review, and live overwatch of the defender.
 mode: subagent
 permission:
   edit: deny        # read-only analyst — in opencode `edit` governs edit/write/patch; everything else defaults to allow
