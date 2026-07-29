@@ -22,10 +22,12 @@ from pathlib import Path
 
 import yaml
 
-# Tools every analyst gets. `edit`/`write` are absent by design: that is the
-# translation of opencode's `edit: deny`. omp appends `yield` itself when a
-# `tools` list is present; naming it keeps the generated file honest.
-BASE_TOOLS = ["read", "grep", "glob", "bash", "web_search", "todo", "yield"]
+# Tools always available regardless of source permissions. `edit`/`write`,
+# `browser`, and `task` are appended conditionally in `translate()`, mirroring
+# the source `permission` map so a write-capable pillar translates as
+# faithfully as a read-only one. omp appends `yield` itself when a `tools`
+# list is present; naming it keeps the generated file honest.
+BASE_TOOLS = ["read", "grep", "glob", "bash", "web_search", "todo"]
 
 # opencode's `list` tool has no omp counterpart — in omp a directory path
 # handed to `read` enumerates it. This paragraph is byte-identical across all
@@ -90,11 +92,22 @@ def allowed_spawns(entry) -> list[str]:
     return [name for name, verdict in entry.items() if name != "*" and verdict == "allow"]
 
 
-def has_scoped_write(entry) -> bool:
-    """True when `permission.edit` denies globally but allows some path."""
-    if not isinstance(entry, dict):
-        return False
-    return any(name != "*" and verdict == "allow" for name, verdict in entry.items())
+def write_posture(entry) -> str:
+    """Classify `permission.edit`: outright allow, scoped exception, or denial."""
+    if entry == "allow":
+        return "allowed"
+    if isinstance(entry, dict) and any(name != "*" and verdict == "allow" for name, verdict in entry.items()):
+        return "scoped"
+    return "denied"
+
+
+def has_bash_denies(entry) -> bool:
+    """True when `permission.bash` is a path/pattern map carrying `deny` rules.
+
+    omp's `bash` tool is on/off, with no per-command equivalent — those denies
+    become prompt-level guardrails under omp rather than enforced ones.
+    """
+    return isinstance(entry, dict) and any(verdict == "deny" for verdict in entry.values())
 
 
 def deep_skills(body: str, source: Path) -> list[str]:
@@ -147,21 +160,31 @@ def translate(source: Path, *, autoload: str) -> str:
     tools = list(BASE_TOOLS)
     spawns = allowed_spawns(permission_entry(permission, "task"))
 
-    if mode == "primary":
-        if not spawns:
-            raise TranslationError(f"{source}: primary agent names no dispatchable agents")
+    edit_posture = write_posture(permission_entry(permission, "edit"))
+    # A path-scoped exception still denies by default ("*": deny) — that
+    # default is what the source author reaches for to keep an agent
+    # read-only-by-default, so only an outright `allow` earns the tool. The
+    # exception is still surfaced honestly in `write_note` below.
+    if edit_posture == "allowed":
+        tools += ["edit", "write"]
+
+    if permission_entry(permission, "browser") == "allow":
+        tools.append("browser")
+
+    if mode == "primary" and not spawns:
+        raise TranslationError(f"{source}: primary agent names no dispatchable agents")
+    if spawns:
         # omp reads delegation off `spawns`; `task` must be in the allowlist for
         # the tool to exist at all.
-        tools.insert(tools.index("yield"), "task")
+        tools.append("task")
 
-    scoped_write = has_scoped_write(permission_entry(permission, "edit"))
+    tools.append("yield")
 
-    if TOOL_DISCIPLINE_SRC not in body:
-        raise TranslationError(
-            f"{source}: expected Tool-discipline paragraph not found; "
-            "the prompt changed shape and the omp rewrite must be revisited"
-        )
-    body = body.replace(TOOL_DISCIPLINE_SRC, TOOL_DISCIPLINE_OMP)
+    # This paragraph is byte-identical across all four analyst files, but it
+    # is an analyst-pillar convention, not a repository-wide one — its absence
+    # elsewhere is not an error, it just means nothing needs rewriting here.
+    if TOOL_DISCIPLINE_SRC in body:
+        body = body.replace(TOOL_DISCIPLINE_SRC, TOOL_DISCIPLINE_OMP)
     body = body.replace(INLINE_LIST_SRC, INLINE_LIST_OMP)
 
     if "`list`" in body:
@@ -176,7 +199,11 @@ def translate(source: Path, *, autoload: str) -> str:
     # `tools.xdev` is on, which is the default. `edit` and `task` ARE removed by
     # omission; `write` is the one hole, and it is stamped here rather than
     # papered over.
-    if scoped_write:
+    if edit_posture == "allowed":
+        write_note = (
+            "source granted write access; the allowlist carries `edit` and `write`"
+        )
+    elif edit_posture == "scoped":
         write_note = (
             "source scoped writes to `.acordia/reports/**`; omp cannot express a "
             "path-scoped permission and cannot deny `write` at all while "
@@ -190,7 +217,7 @@ def translate(source: Path, *, autoload: str) -> str:
         )
 
     out: dict = {"name": name, "description": description, "tools": tools}
-    if spawns and mode == "primary":
+    if spawns:
         out["spawns"] = spawns
     if autoload == "deep":
         out["autoloadSkills"] = deep_skills(body, source)
@@ -202,6 +229,11 @@ def translate(source: Path, *, autoload: str) -> str:
         "harness": "omp",
         "write_access": write_note,
     }
+    if has_bash_denies(permission_entry(permission, "bash")):
+        metadata["generated"]["bash_denies"] = (
+            "omp has no per-command bash equivalent; the source's per-pattern "
+            "denies are prompt-level guardrails under omp, not enforced ones"
+        )
     out["metadata"] = metadata
 
     frontmatter = yaml.safe_dump(out, sort_keys=False, allow_unicode=True, width=10**6)

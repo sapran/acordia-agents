@@ -562,3 +562,71 @@ the gitignored `.build/omp/`. They are build output: edit
 To verify, start omp and check that the four analysts appear in the agent
 roster the `task` tool advertises, and that `operational-analyst` can spawn its
 three legs while the legs cannot spawn anything.
+
+---
+
+## 8. CyberStrike substitution contract — for future ports
+
+`operators/` is the first pillar ported from a CyberStrike-derived fork rather than
+derived from an ACORDIA competency map. Its prompts and skill bodies called twelve
+platform tools that exist only inside CyberStrike (methodology engine, vulnerability
+reporting, attack-script runner, hackbrowser crawler, `skill` CLI). This section is
+the one place that mapping is documented, so a future pillar ported from the same
+fork reuses it instead of inventing a second one — see
+[`docs/roles/operator.md`](roles/operator.md), which references this section rather
+than restating the table.
+
+### 8.1 Tool substitution table
+
+Every ported prompt and skill body SHALL name only tools the target harness
+provides. Each CyberStrike platform tool below is replaced exactly as follows,
+at every occurrence, preserving the upstream intent — the same information
+recorded, the same test performed — rather than deleting the step:
+
+| CyberStrike tool | Portable substitution |
+| --- | --- |
+| `add_intel` | append an entry to `.acordia/ops/intel.md` |
+| `update_vrt_check`, `record_coverage_note` | append an entry to `.acordia/ops/coverage.md` |
+| `methodology_status`, `get_coverage_notes` | read `.acordia/ops/coverage.md` and `.acordia/ops/intel.md` |
+| `scope_check` | read `.acordia/ops/scope.md` before touching a new host, domain, account, or subnet |
+| `report_vulnerability`, `triage_vulnerability` | write `.acordia/ops/findings/<slug>.md` |
+| `generate_report` | compose the report from the journal into `.acordia/ops/reports/<name>.md` |
+| `ensure_tools` | install with `bash`, after asking the user first |
+| `attack_script <name>` | the equivalent standard tool (`jwt_tool`, `ffuf`, `sqlmap`, `nuclei`) or an explicit inline command (`curl`, `python3 -c`), preserving the same test |
+| `hackbrowser` | the `browser` tool where the harness provides it (omp does; stock opencode does not); otherwise scripted HTTP requests — always ask the user before an automated crawl |
+| `skill search`/`load`/`unload` | nothing — skills fire by description match, and the prompt already names the skill set it draws on |
+
+Intel entries carry a severity (`critical`/`high`/`medium`/`low`/`informational`)
+and a confidence (`confirmed`/`high`/`medium`/`low`). Coverage entries carry the
+request sent, the response summary, and the reasoning that proves or disproves
+the issue — CyberStrike's own coverage discipline, kept intact.
+
+A prompt that would need a tool present in one harness but not the other
+(`browser` exists in omp and CyberStrike, not in stock opencode; `list` exists in
+opencode, not in omp) states the condition and names the fallback, rather than
+assuming the tool is there.
+
+### 8.2 The `.acordia/ops/` operation journal
+
+CyberStrike keeps operation state — intel, coverage, findings, reports — in its
+own methodology-engine database. Neither opencode nor omp has an equivalent, so
+the state moves to files, in a fixed layout every ported prompt names the same
+way:
+
+| Path | Content |
+| --- | --- |
+| `.acordia/ops/scope.md` | authorised targets, exclusions, rules of engagement |
+| `.acordia/ops/intel.md` | append-only intel log — endpoints, credentials, technologies, parameters, configuration, auth flows, with severity and confidence |
+| `.acordia/ops/coverage.md` | append-only coverage log — what was tested, the request sent, the response summary, and the reasoning |
+| `.acordia/ops/findings/<slug>.md` | one confirmed finding per file, with evidence |
+| `.acordia/ops/reports/<name>.md` | composed engagement reports |
+
+The path mirrors the analyst pillar's existing `.acordia/reports/` sink, so the
+two pillars share one operator-visible convention. The journal is **discipline,
+not a permission scope**: it is described in every operator prompt's body, but
+no `edit` rule attempts to confine writes to it — omp scopes a tool by name
+only, never by path, so a scoped rule would hold in opencode and silently
+evaporate in omp. `scope_check`'s substitution follows the same logic as the
+analyst pillar's read-only posture: an absent or silent scope file means a
+target is **untested**, never implicitly in scope.
+

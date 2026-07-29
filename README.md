@@ -10,13 +10,12 @@ Two harnesses can load them. opencode reads them as they are. omp reads the skil
 
 ## Scope
 
-Currently one pillar wired up:
+Two pillars wired up:
 
 - **`analysts/`** — the ACORDIA Analysis pillar, realised as four decision-support agents plus their skill library. Read-only by design (`edit: deny`); no target interaction, no active testing.
+- **`operators/`** — the ACORDIA Operations pillar, ported from the CyberStrike fork (`~/git/CyberStrike`, commit `359655518`): five offensive agents (one primary orchestrator plus four domain specialists) and a 30-skill technique library. **Not read-only** — `edit: allow`, unscoped, because an operator writes scripts, evidence, and its own operation journal. Provenance and what was deliberately left out of the port are recorded in [`docs/roles/operator.md`](docs/roles/operator.md).
 
-Future pillars (Collection, Operations, Reflection, Direction, Independent action) may follow the same shape as they get compiled.
-
-## Layout
+Future pillars (Collection, Reflection, Direction, Independent action) may follow the same shape as they get compiled.
 
 ```
 acordia-agents/
@@ -30,6 +29,18 @@ acordia-agents/
 │       ├── reasoning-under-uncertainty/SKILL.md
 │       ├── identity-directory-trust/SKILL.md
 │       └── ... (40 more)
+├── operators/
+│   ├── agents/                   # 5 opencode agent files, write-capable
+│   │   ├── operator.md                        (mode: primary)
+│   │   ├── web-application.md                 (mode: subagent)
+│   │   ├── mobile-application.md              (mode: subagent)
+│   │   ├── cloud-security.md                  (mode: subagent)
+│   │   └── internal-network.md                (mode: subagent)
+│   └── skills/                   # 30 opencode skills
+│       ├── attack-jwt/SKILL.md
+│       ├── ad-security/SKILL.md
+│       ├── wstg-injection/SKILL.md
+│       └── ... (27 more)
 ├── tools/
 │   └── translate-omp.py          # opencode agent frontmatter → omp task agent
 └── install.sh                    # deploy to opencode and/or omp
@@ -44,6 +55,7 @@ acordia-agents/
 ./install.sh --copy             # copy instead of symlink (frozen snapshot)
 ./install.sh --dry-run          # print what would happen, do nothing
 ./install.sh --pillar analysts  # explicit pillar select (default: all)
+./install.sh --pillar operators # operators only (write-capable — read the posture above first)
 ```
 
 Uninstall takes the same `--harness` selector:
@@ -84,6 +96,7 @@ In omp, treat the read-only posture as prompt-level for writes and enforced only
 - **Prompt-level composition.** opencode has no per-agent `skills:` field — each agent's prompt names the skill set it draws on.
 - **Triggering-quality descriptions.** Skills fire by description match; each description states *when* the skill applies in one sharp sentence.
 - **Read-only analysts.** All four agent files carry `edit: deny`. The three leg subagents additionally carry `task: deny` (leaf specialists — do not dispatch).
+- **Write-capable operators.** `operators/` inverts this: every agent carries `edit: allow`, unscoped, because an operator writes scripts, evidence, and its own `.acordia/ops/` journal. Operators are **not read-only** — the harness parity gaps above apply only to the read-only analyst posture and have no bearing on operators, who are already granted `write`/`edit` in both harnesses.
 
 ## Source of truth
 
@@ -92,6 +105,8 @@ The competency map that drives the analyst artifacts lives at [`docs/roles/opera
 The exploratory history that produced the current shape is preserved under [`openspec/changes/archive/`](openspec/changes/archive/) — the original `derive-analyst-agents-skills` change and the follow-on `credential-harvest-capability` proposal.
 
 Editing the artifacts under `analysts/` without touching the map is a source-of-truth drift bug. When the map changes, regenerate from it.
+
+The operator pillar has no competency map and derives nothing from one — it is a provenance-tracked port of an existing offensive agent/skill roster. Its source of truth is [`docs/roles/operator.md`](docs/roles/operator.md): the CyberStrike-agent-to-operator-agent table, the skill-clone provenance, and what was deliberately left out of the port. Editing `operators/` without checking that provenance record is the same class of drift bug as editing `analysts/` without checking the competency map.
 
 ## How to extend
 
