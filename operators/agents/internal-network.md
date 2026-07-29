@@ -1,5 +1,5 @@
 ---
-description: Internal network and Active Directory specialist conducting AD attacks, Kerberos abuse, credential access, and lateral movement across Windows, Linux, and internal network services.
+description: ACORDIA Operations — Internal network and Active Directory specialist conducting AD attacks, Kerberos abuse, credential access, and lateral movement across Windows, Linux, and internal network services.
 mode: subagent
 permission:
   edit: allow

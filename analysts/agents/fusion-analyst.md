@@ -1,5 +1,5 @@
 ---
-description: What does all of it, together, mean — and how good is what we have? Dispatch to consolidate every strand into one current picture and to judge the value and quality of the collected take.
+description: ACORDIA Analysis — What does all of it, together, mean — and how good is what we have? Dispatch to consolidate every strand into one current picture and to judge the value and quality of the collected take.
 mode: subagent
 permission:
   edit:             # read-only except one report sink — `edit` governs edit/write/patch; last-match-wins, so "*" first

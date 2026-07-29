@@ -1,5 +1,5 @@
 ---
-description: The orchestrating offensive-security brain — holds the engagement roster, routes recon-through-exploitation phases to its four domain specialists, and composes the final report. Select as the primary agent for an authorized penetration test or red-team engagement.
+description: ACORDIA Operations — The orchestrating offensive-security brain — holds the engagement roster, routes recon-through-exploitation phases to its four domain specialists, and composes the final report. Select as the primary agent for an authorized penetration test or red-team engagement.
 mode: primary
 permission:
   edit: allow

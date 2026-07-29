@@ -1,5 +1,5 @@
 ---
-description: Cloud security specialist for AWS/Azure/GCP and Kubernetes assessment — IAM enumeration and privilege-escalation paths, public exposure, network exposure, secrets in code, and CIS logging/monitoring posture.
+description: ACORDIA Operations — Cloud security specialist for AWS/Azure/GCP and Kubernetes assessment — IAM enumeration and privilege-escalation paths, public exposure, network exposure, secrets in code, and CIS logging/monitoring posture.
 mode: subagent
 permission:
   edit: allow
