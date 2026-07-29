@@ -18,6 +18,7 @@ Everything the repo does is deployment or spec-workflow. There is no lint, no te
 ./install.sh --dry-run               # print actions, do nothing
 ./install.sh --pillar analysts       # restrict to a single pillar
 ./install.sh --target DIR            # override target root
+./install.sh --force                 # replace artifacts this repo does not own
 ./uninstall.sh                       # remove links/copies this repo owns
 
 opencode debug agent operational-analyst          # verify resolved mode, permissions, prompt
@@ -56,7 +57,7 @@ Follow opencode's frontmatter, not CyberStrike's superset. `docs/agents-skills-e
 
 ### Agents (`analysts/agents/<name>.md`)
 
-- Required frontmatter: `description` (dispatch signal — the leg's italic operating question, verbatim in meaning) and `mode` (`primary` for the orchestrator, `subagent` for the three legs).
+- Required frontmatter: `description` (dispatch signal — the leg's italic operating question, verbatim in meaning, preceded by the pillar provenance tag `ACORDIA Analysis — `) and `mode` (`primary` for the orchestrator, `subagent` for the three legs).
 - **Read-only posture is the default.** Every analyst denies edit (in opencode `edit` governs edit/write/patch collectively; there is no separate `write` key, and a top-level `"*": deny` does *not* deny-default because per-tool built-ins override it — express read-only as `edit: deny`). **Scoped-write exception:** the two agents holding the "Briefing & written reporting" grid competency — `operational-analyst` (● Core) and `fusion-analyst` (○ Fus) — carry a path-scoped `edit` (`"*": deny` then `".acordia/reports/**": allow`, last-match-wins) so they can persist reports to `.acordia/reports/`; `target-network-analyst` and `defender-detection-analyst` keep the blanket `edit: deny` (added by change `analyst-report-write-scope`). `edit: deny` is a posture signal, not a hard sandbox — `bash: "*": allow` already permits scripted writes.
 - **Legs additionally carry `task: deny`** — they are leaf specialists and never dispatch subagents.
 - **The orchestrator's `task` block whitelists only the three legs** (`"*": deny` then `target-network-analyst`, `defender-detection-analyst`, `fusion-analyst` allowed). Never route to a general-purpose or explore agent from the primary.
@@ -72,7 +73,7 @@ Follow opencode's frontmatter, not CyberStrike's superset. `docs/agents-skills-e
 
 ### Agents (`operators/agents/<name>.md`)
 
-- Required frontmatter: `description`, `mode` (`primary` for `operator`, `subagent` for `web-application`/`mobile-application`/`cloud-security`/`internal-network`).
+- Required frontmatter: `description` (opening with the pillar provenance tag `ACORDIA Operations — `, then the domain sentence), `mode` (`primary` for `operator`, `subagent` for `web-application`/`mobile-application`/`cloud-security`/`internal-network`).
 - **Write-capable by default — the deliberate opposite of the analyst posture.** Every operator agent sets `edit: allow`, unscoped. There is no path-scoped write: omp cannot express a path scope for a tool, so a scoped rule would hold in opencode and silently evaporate in omp.
 - `bash: allow` carries per-pattern `deny` rules for destructive/RCE primitives (SQL DDL, `INTO OUTFILE`/`DUMPFILE`, `xp_cmdshell` and siblings, `sqlmap --os-*`/`--file-write`/`--reg-*`), ported from CyberStrike's injection-tester ruleset (`injectionAgentPermission` in `agent.ts`). Under omp these per-command denies are **prompt-level only** — omp has no per-pattern `bash` enforcement the way opencode's `permission` map provides.
 - **`operator`'s `task` block whitelists exactly its four specialists** (`"*": deny` then `web-application`, `mobile-application`, `cloud-security`, `internal-network` allowed). Each specialist carries `task: deny` as a leaf agent.
@@ -105,6 +106,8 @@ Every normative claim in a spec must trace to either an artifact in this repo (a
 ## Extending the repo
 
 Read `docs/agents-skills-extension-workbook.md` **before** authoring new pillars, new agents, or new skills — it is the frontmatter and permission contract, with the opencode-vs-CyberStrike differences that bite documented in §6. Key portable rules: plural `agents/` and `skills/` directory names under opencode config; kebab-case slugs with no prefix; the agent filename becomes the agent name; unknown skill fields are silently ignored; there is no agent→skill binding — skills fire by `description` and the agent prompt names its set.
+
+Names stay unprefixed on purpose. Provenance is carried by the agent `description` (the `ACORDIA <pillar> — ` tag above), never by the agent name or the skill slug: the name is the dispatch handle wired into the orchestrators' `task` whitelists, and the slug is bound to the folder by the skill-library bijection and to the `·`-separated autoload lines `tools/translate-omp.py --autoload deep` parses. Skills are selected by `description` match, so a slug prefix would isolate nothing anyway. The collision risk a prefix would have addressed is handled at deploy time instead: `install.sh` refuses to overwrite an artifact this repository did not deploy (ownership evidence lives in `tools/ownership.sh`, shared with `uninstall.sh`), and `--force` is the explicit override.
 
 ## Guardrails baked into every analyst
 
