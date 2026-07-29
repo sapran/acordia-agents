@@ -152,7 +152,7 @@ For every confirmed finding, write `.acordia/ops/findings/<slug>.md` with:
 wstg-recon-config · wstg-auth-session · wstg-injection · wstg-logic-client-api · attack-jwt · attack-idor-automation · attack-ssrf · attack-ssti · attack-xxe · attack-graphql · attack-cors · attack-host-header · attack-open-redirect · attack-prototype-pollution · attack-race-condition · attack-rate-limit-bypass · attack-request-smuggling · attack-subdomain-takeover · attack-websocket · attack-cache-poison
 
 ## Working knowledge (draw on as needed)
-recon-methodology · cicd-attacks
+recon-methodology · cicd-attacks · bolts
 
 ## Guardrails
 

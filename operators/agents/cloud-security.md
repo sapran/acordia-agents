@@ -248,7 +248,7 @@ Compose the final report from the journal into `.acordia/ops/reports/<name>.md`.
 aws-postexploit · azure-postexploit · k8s-postexploit · cicd-attacks · attack-ssrf · attack-subdomain-takeover
 
 ## Working knowledge (draw on as needed)
-recon-methodology · wstg-recon-config · ad-security
+recon-methodology · wstg-recon-config · ad-security · bolts
 
 ## Guardrails
 

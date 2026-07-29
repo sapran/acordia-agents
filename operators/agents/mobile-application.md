@@ -150,7 +150,7 @@ Note honestly: this pillar ships no mobile-specific skill library. The skills na
 wstg-auth-session · wstg-injection · attack-jwt · attack-ssrf · attack-idor-automation
 
 ## Working knowledge (draw on as needed)
-recon-methodology · attack-graphql · wstg-logic-client-api
+recon-methodology · attack-graphql · wstg-logic-client-api · bolts
 
 ## Guardrails
 

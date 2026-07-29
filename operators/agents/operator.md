@@ -200,7 +200,7 @@ You operate against a flat-file journal under `.acordia/ops/` — the state mech
 recon-methodology · wstg-recon-config · wstg-auth-session · wstg-injection · wstg-logic-client-api
 
 ## Working knowledge (draw on as needed)
-ad-security · kerberos-attacks · aws-postexploit · azure-postexploit · k8s-postexploit · windows-postexploit · macos-postexploit · cicd-attacks · ebpf-attacks · attack-jwt · attack-ssrf · attack-idor-automation
+ad-security · kerberos-attacks · aws-postexploit · azure-postexploit · k8s-postexploit · windows-postexploit · macos-postexploit · cicd-attacks · ebpf-attacks · attack-jwt · attack-ssrf · attack-idor-automation · bolts
 
 ## Guardrails
 - **Evidence first** — every finding must be reproducible with concrete proof.

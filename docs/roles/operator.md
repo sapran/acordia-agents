@@ -4,11 +4,11 @@
 
 **Version 1.0 · 29 July 2026**
 
-This is the operator pillar's source of truth, and it is shaped differently from `docs/roles/operational-analyst.md`. The analyst pillar derives its agents and skills from a competency grid — rows of skills scored `●`/`○` against columns of specialisations, compiled forward into files by an openspec contract. The operator pillar has no such grid, and this document does not manufacture one. `operators/` is a **port**: five agents and thirty skills carried over verbatim in methodology from an existing offensive fork, CyberStrike (`~/git/CyberStrike`, commit `359655518`, 2026-07-27), rather than a role derived from ACORDIA source material. Its source of truth is therefore provenance — which CyberStrike file each artifact came from, and which CyberStrike artifacts were deliberately left behind — not a skill-to-agent derivation.
+This is the operator pillar's source of truth, and it is shaped differently from `docs/roles/operational-analyst.md`. The analyst pillar derives its agents and skills from a competency grid — rows of skills scored `●`/`○` against columns of specialisations, compiled forward into files by an openspec contract. The operator pillar has no such grid, and this document does not manufacture one. `operators/` is a **port plus extension**: five agents and thirty-one skills — thirty carried over verbatim in methodology from an existing offensive fork, CyberStrike (`~/git/CyberStrike`, commit `359655518`, 2026-07-27), and one locally authored. Its source of truth is therefore provenance — which CyberStrike file each cloned artifact came from, which artifacts were not ported and why, and which locally-authored skills extend the library with what ancestry.
 
 ## What the pillar is
 
-`operators/` is the execution counterpart to `analysts/`. Every analyst prompt in this repo ends on the same guardrail — *"execution belongs to the operators you advise"* — and until this pillar existed, that advice had nowhere to land. CyberStrike is a fork of opencode carrying a compiled offensive agent roster and a large skill library authored in the same markdown contract this repo already writes to, which is what makes the transferable part of it portable here: five agents whose value is methodology, not fork-specific plumbing, plus thirty hand-authored technique skills.
+`operators/` is the execution counterpart to `analysts/`. Every analyst prompt in this repo ends on the same guardrail — *"execution belongs to the operators you advise"* — and until this pillar existed, that advice had nowhere to land. CyberStrike is a fork of opencode carrying a compiled offensive agent roster and a large skill library authored in the same markdown contract this repo already writes to, which is what makes the transferable part of it portable here: five agents whose value is methodology, not fork-specific plumbing, plus thirty hand-authored technique skills and one locally-authored extension.
 
 Where the analyst pillar is read-only by design (`edit: deny`, no target interaction), the operator pillar is the first **write-capable** pillar in this repository: it writes scripts, evidence, and its own operation journal. The substitution and permission contracts that make that posture portable are recorded in the workbook, referenced below rather than restated here.
 
@@ -28,7 +28,7 @@ Five agent files under `operators/agents/`, each derived from the correspondingl
 
 ## Skill provenance
 
-Thirty skills under `operators/skills/`, each cloned from `.cyberstrike/skill/<path>/SKILL.md` (the per-skill source path is mechanical: the skill's own slug under that root, or under `.cyberstrike/skill/WEB/OWASP_WSTG_4.2/` for the four WSTG bundles).
+Thirty-one skills under `operators/skills/`. Thirty are cloned from `.cyberstrike/skill/<path>/SKILL.md` (the per-skill source path is mechanical: the skill's own slug under that root, or under `.cyberstrike/skill/WEB/OWASP_WSTG_4.2/` for the four WSTG bundles). One is locally authored.
 
 **Attack family — 16:** `attack-cache-poison`, `attack-cors`, `attack-graphql`, `attack-host-header`, `attack-idor-automation`, `attack-jwt`, `attack-open-redirect`, `attack-prototype-pollution`, `attack-race-condition`, `attack-rate-limit-bypass`, `attack-request-smuggling`, `attack-ssrf`, `attack-ssti`, `attack-subdomain-takeover`, `attack-websocket`, `attack-xxe`.
 
@@ -36,7 +36,11 @@ Thirty skills under `operators/skills/`, each cloned from `.cyberstrike/skill/<p
 
 **WSTG bundles — 4:** `wstg-recon-config`, `wstg-auth-session`, `wstg-injection`, `wstg-logic-client-api`.
 
-16 + 10 + 4 = 30. Each skill's `metadata.cyberstrike.source` records the `.cyberstrike/skill/...` path it was cloned from, so a re-port against a newer CyberStrike commit is a diff, not an archaeology exercise. Frontmatter is reduced to opencode's contract (`name`, `description`, optional `metadata`); bodies keep upstream payloads, commands, tables, and phase order — cloning is not an occasion to rewrite methodology.
+16 + 10 + 4 = 30 cloned. Each cloned skill's `metadata.cyberstrike.source` records the `.cyberstrike/skill/...` path it was cloned from, so a re-port against a newer CyberStrike commit is a diff, not an archaeology exercise. Frontmatter is reduced to opencode's contract (`name`, `description`, optional `metadata`); bodies keep upstream payloads, commands, tables, and phase order — cloning is not an occasion to rewrite methodology.
+
+**Locally authored — 1:** `bolts`. Descended from CyberStrike's Bolt remote tool server concept (Ed25519-paired MCP tool servers managed from the TUI), but not cloned from any CyberStrike source — the mechanism here is plain SSH. Records `metadata.acordia.authored: operator-bolts` and `metadata.acordia.ancestor: CyberStrike Bolt` instead of a `metadata.cyberstrike` block. Introduced by OpenSpec change `operator-bolts`.
+
+30 + 1 = 31 total.
 
 ## What was not ported, and why
 

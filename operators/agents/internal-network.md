@@ -293,7 +293,7 @@ Do not compose the final assessment report — that is composed by the primary o
 ad-security · kerberos-attacks · windows-postexploit · macos-postexploit · ebpf-attacks · aws-postexploit · azure-postexploit · k8s-postexploit · cicd-attacks
 
 ## Working knowledge (draw on as needed)
-recon-methodology
+recon-methodology · bolts
 
 ## Guardrails
 
