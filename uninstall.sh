@@ -74,36 +74,11 @@ harness_root() {
   esac
 }
 
-# A name match is not proof of ownership: a user may keep an unrelated agent or
-# skill under the same name. Removing that would be data loss, so every removal
-# is gated on evidence that this repository put the file there.
-#
-#   symlink      -> must resolve inside this repository
-#   copied agent -> must be byte-identical to the source, or be a translated
-#                   file whose provenance names that source
-#   copied skill -> its SKILL.md must be byte-identical to the source's
-owned_by_repo() {
-  local dst="$1" src="$2" kind="$3"
-
-  if [[ -L "$dst" ]]; then
-    local resolved
-    resolved="$(cd "$(dirname "$dst")" && readlink -f "$(basename "$dst")" 2>/dev/null || true)"
-    [[ -n "$resolved" && "$resolved" == "$REPO_ROOT"/* ]]
-    return
-  fi
-
-  case "$kind" in
-    agent)
-      cmp -s "$dst" "$src" && return 0
-      # Translated omp agents differ from their source by construction; they
-      # carry the source path in their generated provenance block.
-      grep -qF "from: ${src#$REPO_ROOT/}" "$dst" 2>/dev/null
-      ;;
-    skill)
-      cmp -s "$dst/SKILL.md" "$src/SKILL.md"
-      ;;
-  esac
-}
+# Ownership evidence — what counts as "this repository put the file here" — is
+# defined once in tools/ownership.sh and shared with install.sh, which must
+# decline to overwrite exactly what this script declines to remove.
+# shellcheck source=tools/ownership.sh
+source "$REPO_ROOT/tools/ownership.sh"
 
 count_removed=0
 count_skipped=0
