@@ -32,7 +32,7 @@ owned_by_repo() {
       cmp -s "$dst" "$src" && return 0
       # Translated omp agents differ from their source by construction; they
       # carry the source path in their generated provenance block.
-      grep -qF "from: ${src#$REPO_ROOT/}" "$dst" 2>/dev/null
+      grep -qF "from: ${src#"$REPO_ROOT/"}" "$dst" 2>/dev/null
       ;;
     skill)
       cmp -s "$dst/SKILL.md" "$src/SKILL.md"
