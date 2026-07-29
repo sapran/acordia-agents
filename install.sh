@@ -17,6 +17,7 @@
 #   ./install.sh --pillar analysts      # deploy only the named pillar
 #   ./install.sh --target DIR           # override the selected harness's root
 #   ./install.sh --autoload deep        # omp: preload each agent's deep skills
+#   ./install.sh --force                # replace artifacts this repo does not own
 
 set -euo pipefail
 
@@ -29,10 +30,16 @@ DRY_RUN=0
 HARNESS="opencode"
 TARGET_OVERRIDE=""
 AUTOLOAD="none"
+FORCE=0
 PILLARS=()
 
+# Ownership evidence is shared with uninstall.sh: a destination that script
+# declines to remove is one this script must decline to overwrite.
+# shellcheck source=tools/ownership.sh
+source "$REPO_ROOT/tools/ownership.sh"
+
 usage() {
-  sed -n '1,19p' "$0" | sed 's/^# \{0,1\}//'
+  sed -n '1,20p' "$0" | sed 's/^# \{0,1\}//'
   exit 0
 }
 
@@ -45,6 +52,7 @@ while [[ $# -gt 0 ]]; do
     --target)   TARGET_OVERRIDE="$2"; shift 2 ;;
     --harness)  HARNESS="$2"; shift 2 ;;
     --autoload) AUTOLOAD="$2"; shift 2 ;;
+    --force)    FORCE=1; shift ;;
     -h|--help)  usage ;;
     *) echo "unknown arg: $1" >&2; exit 1 ;;
   esac
@@ -86,6 +94,50 @@ run() {
   else
     "$@"
   fi
+}
+
+# Both harness roots are flat namespaces shared with the harness's own built-in
+# agents and skills. Deploying used to remove whatever sat at the destination
+# without asking what it was, so a name collision silently destroyed a foreign
+# artifact. Now every destination needs the same ownership evidence uninstall.sh
+# requires before it removes anything; --force is the deliberate override.
+assert_replaceable() {
+  local dst="$1" own_src="$2" kind="$3"
+  [[ -e "$dst" || -L "$dst" ]] || return 0
+  if owned_by_repo "$dst" "$own_src" "$kind"; then
+    return 0
+  fi
+  if [[ "$FORCE" -eq 1 ]]; then
+    echo "  forced over unowned $kind: $dst" >&2
+    count_forced=$((count_forced + 1))
+    return 0
+  fi
+  echo "refusing to overwrite $dst — this repository did not deploy it." >&2
+  echo "move it aside, or re-run with --force to replace it." >&2
+  exit 1
+}
+
+# Every destination is checked before anything is written, so a collision aborts
+# with the harness untouched instead of leaving a half-deployed pillar whose
+# orchestrator references legs that never arrived. Reads only, so it runs
+# unchanged under --dry-run.
+preflight() {
+  local harness root pillar pillar_root agent skill_dir
+  for harness in "${HARNESSES[@]}"; do
+    root="$(harness_root "$harness")"
+    for pillar in "${PILLARS[@]}"; do
+      pillar_root="$REPO_ROOT/$pillar"
+      [[ -d "$pillar_root" ]] || continue
+      for agent in "$pillar_root/agents"/*.md; do
+        [[ -e "$agent" ]] || continue
+        assert_replaceable "$root/agents/$(basename "$agent")" "$agent" agent
+      done
+      for skill_dir in "$pillar_root/skills"/*/; do
+        [[ -e "$skill_dir/SKILL.md" ]] || continue
+        assert_replaceable "$root/skills/$(basename "$skill_dir")" "${skill_dir%/}" skill
+      done
+    done
+  done
 }
 
 deploy_file() {
@@ -140,7 +192,10 @@ translate_pillar() {
 }
 
 count_deployed=0
+count_forced=0
 warned_link=0
+
+preflight
 
 for harness in "${HARNESSES[@]}"; do
   root="$(harness_root "$harness")"
@@ -199,4 +254,8 @@ if [[ "$DRY_RUN" -eq 1 ]]; then
   echo "dry-run: would deploy $count_deployed artifact(s) via $MODE"
 else
   echo "deployed $count_deployed artifact(s) via $MODE"
+fi
+
+if [[ "$count_forced" -gt 0 ]]; then
+  echo "replaced $count_forced artifact(s) this repository did not deploy (--force)"
 fi
