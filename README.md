@@ -117,15 +117,18 @@ tools/build-plugins.py --check    # build to a tempdir, diff, exit 1 on drift
 
 `--check` is the gate. **Editing a file under `plugins/` is a drift bug** of the same class as editing `analysts/` without touching the competency grid — the next build silently reverts it.
 
-#### The version is derived, and deliberately not semver
+#### Bump `VERSION` on every change
 
-`version` is `1.0-<hash>`: a hand-kept epoch plus seven hex characters of a sha256 over `analysts/`, `operators/`, `commands/acordia/`, and `tools/build-plugins.py`. Bump the epoch when the roster changes; the hash takes care of everything else. The generator is hashed alongside the sources so that a change to *what it emits* also reaches installed users.
+`VERSION` in `tools/build-plugins.py` is the **only** update signal either plugin harness has. omp compares it against the installed version and skips when they match, so an unbumped version means your edit never reaches anyone who already installed the plugin — silently, with no error and no warning.
 
-It is content-derived rather than a git revision because the version is written into six committed files: a commit that lands a rebuild would change the SHA that rebuild embeds, and `--check` would then fail on every push forever. Content hashing has no such fixpoint, and keeps working in a dirty tree, a shallow clone, or a tarball with no `.git`.
+- **MINOR** — any change that reaches a user: an agent prompt, a skill body, a command wrapper, the generator's output.
+- **MAJOR** — a serious change: the roster (an agent or pillar added or removed), or the shape of the distribution.
 
-It is **not valid semver on purpose.** Verified against omp 17.1.8 — `omp plugin upgrade` with no argument is the path that compares versions, and it reinstalls when two non-semver strings are unequal, in either direction. Two semver versions differing only in build metadata (`1.0.0+aaa` → `1.0.0+bbb`) compare **equal** and never upgrade, so the obvious-looking `1.0.0+<hash>` would have been a silent no-op. Note that `omp plugin upgrade <name>@<marketplace>` with an explicit target reinstalls unconditionally and compares nothing — do not use it to test this.
+Bump it, then rebuild, so the new version lands in the six generated files that carry it.
 
-Claude Code accepts the non-semver string (install, `details`, and `list` all render it), though its own upgrade behaviour for one is **unverified**: a directory-sourced marketplace is read live there, so the question can only be answered from a git source.
+Real semver, and monotonic on purpose. Verified against omp 17.1.8: bare `omp plugin upgrade` is the path that compares versions, a newer semver upgrades, and an older one is skipped. Two things to avoid — never hang a hash or build metadata off it, because `1.0.0+aaa` and `1.0.0+bbb` compare **equal** and would never upgrade; and note that `omp plugin upgrade <name>@<marketplace>` with an explicit target reinstalls unconditionally and compares nothing, so it is useless for testing this.
+
+Claude Code's own upgrade behaviour is **unverified** — a directory-sourced marketplace is read live there, so the question is only answerable from a git source.
 
 Two trees exist because one `agents/*.md` cannot serve both harnesses: they read `tools` from the same fixed `<plugin-root>/agents/` path, but Claude Code expects capitalised Claude tool names while omp expects lowercase omp names and additionally needs `spawns`. Skills and commands are byte-identical across the trees; only `agents/` differs. Two catalogs exist for the same reason: omp reads `.omp-plugin/marketplace.json` in preference to `.claude-plugin/marketplace.json`, so shipping both hands each harness its own tree from one checkout.
 

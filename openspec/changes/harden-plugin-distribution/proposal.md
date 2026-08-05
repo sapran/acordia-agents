@@ -14,15 +14,13 @@ Current behaviour: an unshippable version, an unverified posture, a false instru
 
 ## What Changes
 
-### The version derives from source content
+### The version is hand-maintained and bumped on every change
 
-`1.0-<hash>`: a hand-kept `VERSION_EPOCH` plus seven hex characters of a sha256 over `analysts/`, `operators/`, `commands/acordia/`, and `tools/build-plugins.py`. The generator is hashed with the sources deliberately — a change to what it *emits* must reach installed users, and hashing only the sources would miss one.
+`VERSION` in the generator, now `2.0.0` — MAJOR, because this change reshapes the distribution. MINOR moves for any change that reaches a user; MAJOR for the roster or the shape of the distribution.
 
-Not a git revision. The version is written into six committed files, so the commit that lands a rebuild would change the SHA that rebuild embeds, and `--check` would then never pass. Content hashing has no fixpoint and keeps working in a dirty tree, a shallow clone, or an export with no `.git`.
+Real semver and monotonic, so both harnesses order it correctly by precedence. Verified against omp 17.1.8: a newer semver reinstalls, an older one is skipped. Never a content hash and never build metadata — `1.0.0+aaa` and `1.0.0+bbb` compare **equal** and would never upgrade, which is worse than a frozen version because it looks like it works.
 
-Not valid semver, on evidence. Verified against omp 17.1.8: the upgrade-all path reinstalls when two non-semver versions are unequal, in either direction, while two semver versions differing only in build metadata compare **equal** and never upgrade — so `1.0.0+<hash>` would have been a silent no-op, worse than the frozen version it replaced.
-
-Only files that actually ship feed the hash. Paths with a dot-prefixed component or a `__pycache__` segment are skipped, because a stray `.DS_Store` present in one checkout and absent in a clone otherwise makes the version depend on whose machine built it.
+The obligation is written into `CLAUDE.md` as a top-level rule rather than left implicit, because the failure mode is silent: forget the bump and users keep running old prompts with nothing to indicate it.
 
 ### The build closes the command bijection
 
@@ -41,7 +39,7 @@ Claude Code namespaces plugin agents (`acordia-analysts:<agent>`; the bare name 
 
 ## Impact
 
-- **Modified:** `tools/build-plugins.py` (version derivation, wrapper bijection), `README.md`, `CLAUDE.md`, and the 6 generated files carrying the version.
+- **Modified:** `tools/build-plugins.py` (version, wrapper bijection), `README.md`, `CLAUDE.md`, and the 6 generated files carrying the version.
 - **Unchanged:** every source agent, skill, and command wrapper.
 - **Verified during this change:** Claude Code enforces `disallowedTools` (a leg analyst's tools were `Bash, Read, Skill, ToolSearch` — `Edit`/`Write`/`NotebookEdit`/`Task` all absent) and honours the scoped mapping (`fusion-analyst` retains `Write`). A fresh clone of the branch is complete, so relative plugin sources resolve.
 - **Still unverified:** Claude Code's upgrade behaviour for a non-semver version, answerable only from a git source once this reaches the default branch.

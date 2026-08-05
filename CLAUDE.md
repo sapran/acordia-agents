@@ -10,6 +10,17 @@ It reaches three harnesses two ways. omp and Claude Code install it as a **plugi
 
 Two pillars are wired, shipped as two independently installable plugins: **`analysts/`** → `acordia-analysts` (the ACORDIA Analysis pillar) — one primary orchestrator (`operational-analyst`) plus three subagent legs (`target-network-analyst`, `defender-detection-analyst`, `fusion-analyst`) and a 43-skill library, read-only (`edit: deny`) — and **`operators/`** → `acordia-operators` (the ACORDIA Operations pillar) — one primary orchestrator (`operator`) plus four subagent specialists (`web-application`, `mobile-application`, `cloud-security`, `internal-network`) and a 30-skill library, write-capable (`edit: allow`), ported from the CyberStrike fork (`~/git/CyberStrike`, commit `359655518`). Future pillars (Collection, Reflection, Direction, Independent action) may follow the same shape once compiled.
 
+## Bump the version on every change — no exceptions
+
+`VERSION` in `tools/build-plugins.py` is the **only** update signal either plugin harness has. omp compares it against the installed version and skips when they match, so an unbumped version means your edit never reaches anyone who already installed the plugin. It fails silently: no error, no warning, users just keep running the old prompts.
+
+- **MINOR** (`2.0.0` → `2.1.0`) — any change that reaches a user: an agent prompt, a skill body, a command wrapper, the generator's output.
+- **MAJOR** (`2.0.0` → `3.0.0`) — a serious change: the roster (an agent or pillar added or removed), or the shape of the distribution itself.
+
+Real semver, and monotonic — never hang a hash or build metadata off it. `1.0.0+aaa` and `1.0.0+bbb` compare **equal** and would never upgrade (verified, omp 17.1.8). Bump, then rebuild, so the version lands in the six generated files that carry it.
+
+Editing any source under `analysts/`, `operators/`, or `commands/acordia/` without bumping `VERSION` is a release bug of the same class as editing an artifact without touching the competency grid.
+
 ## Commands
 
 Everything the repo does is build, deployment, or spec-workflow. There is no lint and no test suite; the build is one deterministic generator and `--check` is its gate.
@@ -111,7 +122,7 @@ Follow opencode's frontmatter, not CyberStrike's superset. `docs/agents-skills-e
 
 - **Generated build output, committed.** `tools/build-plugins.py` produces every file under those three paths from `analysts/`, `operators/`, and `commands/acordia/`. They are committed because a marketplace install clones the repository, and a plain build deletes them wholesale before regenerating so a renamed artifact cannot leave an orphan.
 - **`tools/build-plugins.py --check` is the gate.** It builds to a tempdir and diffs, naming every missing, extra, and differing path. Run it after touching any source. **Editing a file under `plugins/` is a drift bug of the same class as editing `analysts/` without touching the competency grid** — the next build reverts it silently.
-- **The version is content-derived and not semver.** `1.0-<hash>`: `VERSION_EPOCH` by hand (bump on a roster or pillar change), plus 7 hex of sha256 over `VERSION_INPUTS` — the two pillars, `commands/acordia/`, and the generator itself. Never a git revision: the version lands in six committed files, so a git SHA would make the rebuild commit invalidate its own embedded SHA and `--check` would fail on every push forever. Non-semver is load-bearing — verified on omp 17.1.8, bare `omp plugin upgrade` reinstalls on unequal non-semver in either direction, while `1.0.0+aaa` → `1.0.0+bbb` compares equal and never upgrades. Claude Code accepts the string; its upgrade behaviour for one is unverified.
+- **The version is hand-maintained semver.** `VERSION` in the generator, bumped per the rule at the top of this file — MINOR on any change that reaches a user, MAJOR on a roster or distribution-shape change. Real semver and monotonic, so both harnesses compare it correctly by precedence; verified on omp 17.1.8 that a newer semver upgrades and an older one is skipped. Never derive it from content or a git revision, and never hang build metadata off it.
 - **Agent-name resolution differs by harness.** Claude Code namespaces plugin agents, so its Task tool needs `acordia-analysts:<agent>` and the bare name fails; omp and opencode are flat. Wrappers absorb the difference by naming the agent in prose.
 - **Two trees, because one `agents/*.md` cannot serve both harnesses.** Both read `tools` from the fixed `<plugin-root>/agents/` path, but Claude Code expects capitalised Claude tool names and omp expects lowercase omp names plus `spawns`; Claude Code's `agents` path override supplements rather than replaces `./agents`, so the two cannot be pointed elsewhere. Skills and commands are byte-identical across the trees; only `agents/` differs.
 - **Two catalogs, for the same reason.** omp reads `.omp-plugin/marketplace.json` in preference to `.claude-plugin/marketplace.json` and only falls back when the former is absent, so shipping both hands each harness its own tree from one checkout. They differ in exactly the two `source` paths.

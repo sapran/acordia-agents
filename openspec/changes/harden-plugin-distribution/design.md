@@ -10,27 +10,19 @@ Three defects in a freshly archived change, all the same family: a normative cla
 
 ## Decisions
 
-### Version: content hash, non-semver, epoch by hand
+### Version: hand-maintained semver
 
-Four candidates. Three fail:
+The version must change when content changes, or omp's upgrade path skips and an edit never reaches an installed user. Two ways: derive it, or type it.
 
-- **`git describe` / commit SHA.** Fatal fixpoint. The version lands in 6 committed files; committing the rebuild changes HEAD; a rebuild then embeds the new HEAD; `--check` never passes.
-- **Git SHA scoped to source paths** converges, since the rebuild commit touches only `plugins/`. But it embeds a stale SHA when sources are edited and uncommitted, and breaks in a shallow clone or an export.
-- **`1.0.0+<hash>`.** Valid semver, lint-clean, and it *never upgrades* — build metadata is excluded from precedence. Strictly worse than the frozen `1.0.0` it would replace, because it looks like it works.
+Derivation was implemented first — a sha256 over the sources and the generator — and then removed. It worked, and it was disproportionate: forty lines of hashing plus a checkout-reproducibility bug (a gitignored `.DS_Store` made the version depend on whose machine built it) in a repository that is markdown plus one generator. The same argument that removed the CI removed this.
 
-Content hashing has no fixpoint (the output carries the hash, the inputs do not), needs no git, is correct in a dirty tree, and is deterministic given sorted traversal.
+What remains is `VERSION = "2.0.0"` in the generator, bumped by hand. The failure mode is the honest cost: forgetting is silent, where a stale derived version would have been caught by `--check`. That is mitigated by writing the obligation into `CLAUDE.md` as a top-level rule with explicit MINOR and MAJOR criteria, not by adding machinery.
 
-The hash covers the generator as well as the sources. Without that, a change to emitted output — a new provenance comment, a reordered key — would ship to nobody, which is the original defect in a narrower form. A pure refactor of the generator therefore bumps the version; that is the right trade, since the generator's output *is* the product.
+Hand-maintaining it buys back something the hash could not have: **real semver.** A hash has no ordering, which is why the derived scheme had to be deliberately non-semver to exploit omp's inequality branch — and that left Claude Code, which compares by precedence, with no upgrade path even in principle. A monotonic hand-bumped version is ordered, so both harnesses compare it correctly and the per-harness divergence problem disappears entirely.
 
-The epoch stays human because a hash conveys nothing to a person reading `plugin details`. Nothing forces the bump; accepted, since automating it would mean inventing semantics for what counts as a roster change.
+Build metadata remains prohibited: `1.0.0+aaa` and `1.0.0+bbb` compare equal and never upgrade.
 
-**A simpler option exists and was weighed:** a hand-edited version string, bumped when you remember. Proportionate to a markdown repo, and it survives on the same argument that killed the CI. It lost on one point only — the failure mode is silent. A forgotten bump means users keep running old prompts with no signal, which is the exact defect being fixed, reintroduced as a habit. Deriving it costs ~20 lines in a script that is already the single source of plugin identity, and the epoch keeps the human-readable half a person can still bump on purpose.
-
-### Only shipped files feed the hash
-
-The first implementation walked every file under the version inputs. A gitignored `.DS_Store` inside `analysts/` was present locally and absent from a clone — 101 files against 100 — so the version depended on whose checkout built it, and a fresh clone disagreed with the committed tree. Paths with a dot-prefixed component or a `__pycache__` segment are now skipped. Verified by building in a clean clone and comparing the hash.
-
-### Evidence for the non-semver choice, and a trap in gathering it
+### Evidence for the version semantics, and a trap in gathering it
 
 Established empirically, and the first attempt was **wrong in a way worth recording**. Using `omp plugin upgrade <name>@<marketplace>` with an explicit target, every transition appeared to upgrade — including identical versions and downgrades. That command reinstalls unconditionally and compares nothing. Controls (equal version, older semver) exposed it. The comparing path is bare `omp plugin upgrade`, exactly as `omp://marketplace.md` states: "Upgrading all plugins compares only catalog entries that declare `version`."
 
@@ -52,10 +44,9 @@ The retired `--harness omp` path left translated agents under `~/.omp/agent/agen
 
 ## Risks / Trade-offs
 
-- **Every source edit now dirties 6 generated files.** Inherent to embedding a content version in committed output.
-- **The epoch can rot.** Human-kept by choice.
+- **A forgotten bump is silent.** The accepted cost of hand-maintaining it. `CLAUDE.md` carries the rule; nothing enforces it.
 - **`--check` is still run by hand.** No automation enforces it, deliberately. Drift is caught by whoever next runs the generator.
-- **Claude upgrade propagation is unresolved.** Documented as unverified rather than assumed. If Claude Code turns out to need semver ordering, the version has to diverge per harness — non-semver in the omp catalog, semver in the Claude tree — which would break the "two catalogs differ only in `source`" property and need its own change.
+- **Claude upgrade propagation is unresolved.** Documented as unverified rather than assumed. Real semver removes the risk that drove this: if Claude Code does compare by precedence, a monotonic hand-bumped version already satisfies it, so no per-harness divergence is needed.
 
 ## Open Questions
 

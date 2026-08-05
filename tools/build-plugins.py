@@ -29,7 +29,6 @@ from __future__ import annotations
 
 import argparse
 import filecmp
-import hashlib
 import json
 import re
 import shutil
@@ -39,22 +38,21 @@ from pathlib import Path
 
 import yaml
 
-# The human half of the version. Bump MINOR when the roster changes — an agent
-# or a pillar added or removed — and MAJOR for a change in the shape of the
-# distribution itself. It conveys nothing a hash could; it exists so a person
-# reading `plugin details` learns something.
-VERSION_EPOCH = "1.0"
-
-# Paths whose content decides the machine half. The generator is included
-# deliberately: a change to what it emits — a new provenance comment, a
-# reordered key — must reach installed users, and without this it would not,
-# because the sources it reads would be untouched.
-VERSION_INPUTS = (
-    "analysts",
-    "operators",
-    "commands/acordia",
-    "tools/build-plugins.py",
-)
+# BUMP THIS ON EVERY CHANGE THAT REACHES A USER. It is the only update signal
+# either plugin harness has: omp's upgrade path compares this string against the
+# installed one and skips when they match, so an unbumped version means an
+# edited prompt never reaches anyone who already installed the plugin.
+#
+#   MINOR — any change to an agent prompt, a skill body, or a command wrapper
+#   MAJOR — a serious change: the roster, a pillar, or the shape of the
+#           distribution itself
+#
+# Real semver, because a hand-maintained version is monotonic and both
+# harnesses then compare it correctly by precedence. Verified against omp
+# 17.1.8: a newer semver upgrades and an older one is skipped. Do NOT hang a
+# hash or build metadata off it — `1.0.0+aaa` and `1.0.0+bbb` compare EQUAL and
+# would never upgrade.
+VERSION = "2.0.0"
 MARKETPLACE_NAME = "acordia"
 OWNER = {"name": "ACORDIA"}
 REPOSITORY = "https://github.com/sapran/acordia-agents"
@@ -244,48 +242,6 @@ def repo_relative(source: Path) -> str:
         if (parent / ".git").exists():
             return str(resolved.relative_to(parent))
     return str(source)
-
-
-def source_version(repo_root: Path) -> str:
-    """Derive `<epoch>-<hash>` from the content of every version input.
-
-    Deliberately not a git revision. A git SHA cannot work here: the version is
-    written into six committed files, so the commit that lands a rebuild would
-    change the SHA the rebuild embeds, and `--check` would fail on every push
-    forever. Content hashing has no such fixpoint — the output carries the
-    hash, the inputs do not.
-
-    It also keeps working where git does not: a dirty tree hashes what is
-    actually on disk, and a shallow clone or a source tarball with no `.git`
-    still produces the right answer.
-
-    The result is intentionally NOT valid semver. Verified against omp 17.1.8:
-    the upgrade-all path treats unequal non-semver versions as changed and
-    reinstalls, whereas two semver versions differing only in build metadata
-    (`1.0.0+aaa` vs `1.0.0+bbb`) compare equal and never upgrade. Claude Code
-    accepts the non-semver string — install, `details`, and `list` all render
-    it — though its own upgrade semantics for one are unverified.
-    """
-    digest = hashlib.sha256()
-    for entry in VERSION_INPUTS:
-        path = repo_root / entry
-        files = sorted(path.rglob("*")) if path.is_dir() else [path]
-        for item in files:
-            if not item.is_file():
-                continue
-            relative = item.relative_to(repo_root)
-            # Only what actually ships may feed the hash. A stray `.DS_Store`,
-            # editor swapfile, or `__pycache__` entry is present on one machine
-            # and absent in a clone, which would make the version depend on
-            # whose checkout built it — CI caught exactly that on its first run.
-            if any(part.startswith(".") or part == "__pycache__" for part in relative.parts):
-                continue
-            # The relative path is hashed alongside the bytes so that renaming a
-            # skill changes the version even when its content does not.
-            digest.update(str(relative).encode("utf-8"))
-            digest.update(b"\0")
-            digest.update(item.read_bytes())
-    return f"{VERSION_EPOCH}-{digest.hexdigest()[:7]}"
 
 
 def rewrite_body(body: str, source: Path) -> str:
@@ -513,11 +469,11 @@ def render_command(wrapper: Path) -> tuple[str, str]:
     return command_agent(wrapper, body), f"{FRONTMATTER_FENCE}\n{frontmatter}{FRONTMATTER_FENCE}\n{body}"
 
 
-def plugin_manifest(name: str, version: str) -> str:
+def plugin_manifest(name: str) -> str:
     spec = PLUGINS[name]
     manifest = {
         "name": name,
-        "version": version,
+        "version": VERSION,
         "description": spec["description"],
         "author": OWNER,
         "repository": REPOSITORY,
@@ -526,7 +482,7 @@ def plugin_manifest(name: str, version: str) -> str:
     return json.dumps(manifest, indent=2, ensure_ascii=False) + "\n"
 
 
-def marketplace(harness: str, version: str) -> str:
+def marketplace(harness: str) -> str:
     catalog = {
         "name": MARKETPLACE_NAME,
         "owner": OWNER,
@@ -537,7 +493,7 @@ def marketplace(harness: str, version: str) -> str:
             {
                 "name": name,
                 "source": f"./plugins/{harness}/{name}",
-                "version": version,
+                "version": VERSION,
                 "description": spec["description"],
                 "category": spec["category"],
                 "keywords": spec["keywords"],
@@ -550,7 +506,6 @@ def marketplace(harness: str, version: str) -> str:
 
 def build(repo_root: Path, dest_root: Path) -> None:
     """Materialise every generated artifact under `dest_root`."""
-    version = source_version(repo_root)
     agent_owner: dict[str, str] = {}
 
     for plugin, spec in PLUGINS.items():
@@ -571,7 +526,7 @@ def build(repo_root: Path, dest_root: Path) -> None:
             # supplement rather than replace, so a redundant entry risks
             # double-loading.
             (root / ".claude-plugin" / "plugin.json").write_text(
-                plugin_manifest(plugin, version), encoding="utf-8"
+                plugin_manifest(plugin), encoding="utf-8"
             )
 
             for source in agents:
@@ -629,9 +584,7 @@ def build(repo_root: Path, dest_root: Path) -> None:
     for dirname, harness in ((".claude-plugin", "claude"), (".omp-plugin", "omp")):
         catalog_dir = dest_root / dirname
         catalog_dir.mkdir(parents=True, exist_ok=True)
-        (catalog_dir / "marketplace.json").write_text(
-            marketplace(harness, version), encoding="utf-8"
-        )
+        (catalog_dir / "marketplace.json").write_text(marketplace(harness), encoding="utf-8")
 
 
 GENERATED_PATHS = ("plugins", ".claude-plugin", ".omp-plugin")
