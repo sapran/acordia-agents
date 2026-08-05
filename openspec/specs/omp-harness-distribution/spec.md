@@ -77,11 +77,23 @@ The emitted `tools` allowlist SHALL be derived from the source `permission` map 
 - `browser` is present when the source `permission.browser` is `allow`
 - `task` is present, and `spawns` lists the allowed agent names, when the source `permission.task` map names at least one allowed agent
 
+The generated file SHALL additionally carry a `color`, because omp renders every agent in one flat picker shared with its own built-ins and the user's own agents — the same visual-namespace problem the `ACORDIA <pillar> — ` description tag solves for text. The colour SHALL be derived from the `metadata.acordia` block the source already declares rather than from a filename table, so the pillar keeps one source of truth for which agent is the orchestrator: the analyst pillar names it in `leg`, the operators pillar in `role`, and either field reading `orchestrator` emits `cyan`. Every other value — and a source carrying no `metadata.acordia` block at all — emits `blue`, the specialist default.
+
 #### Scenario: Required fields emitted
 
 - **WHEN** any `<pillar>/agents/<stem>.md` is translated
 - **THEN** the output frontmatter contains `name: <stem>`
 - **AND** the output frontmatter contains the source `description` unchanged
+
+#### Scenario: Orchestrator and legs are visually distinguishable
+
+- **WHEN** an agent declaring `metadata.acordia.leg: orchestrator` (analyst pillar) or `metadata.acordia.role: orchestrator` (operators pillar) is translated alongside an agent declaring any other value
+- **THEN** the orchestrator's output carries `color: cyan` and the other carries `color: blue`
+
+#### Scenario: Colour falls back for an agent with no orchestrator declaration
+
+- **WHEN** an agent carrying no `metadata.acordia` block, or one naming neither `leg` nor `role` as `orchestrator`, is translated
+- **THEN** the output frontmatter carries `color: blue`
 
 #### Scenario: Read-only posture becomes an absent tool
 
@@ -130,13 +142,13 @@ The emitted `tools` allowlist SHALL be derived from the source `permission` map 
 
 ### Requirement: Prompt text corrected for omp's tool set
 
-omp provides no `list` tool; a directory path given to `read` enumerates it. Where a source prompt carries the shared "Tool discipline" paragraph, the translator SHALL replace it with an omp-correct version. Prompts that do not carry that paragraph SHALL translate unchanged in that respect — its absence is not an error, because it is an analyst-pillar convention rather than a repository-wide one.
+omp provides no `list` tool; a directory path given to `read` enumerates it. The translator SHALL fail rather than emit a prompt naming a `list` tool, and that check — a `list` token surviving in the body after rewriting — is the enforced guarantee, whichever pillar the prompt comes from.
 
-Regardless of which pillar a prompt comes from, the translator SHALL fail rather than emit a prompt that names a `list` tool.
+Two rewrites feed that check. The translator SHALL replace the inline `` `read`/`grep`/`glob`/`list` `` token wherever it appears, and SHALL replace the legacy analyst Tool-discipline paragraph, byte-exact, with an omp-correct version naming no `list`. Both rewrites are **best-effort fallbacks for wording that still names the tool**: their absence from a prompt is not an error, because a prompt that never names `list` needs no correction. In particular, a prompt carrying a `## Tool discipline` section in wording the rewrite does not recognise SHALL translate cleanly so long as no `list` token survives — the translator SHALL NOT require a Tool-discipline paragraph to match a fixed text.
 
-#### Scenario: Paragraph rewritten
+#### Scenario: Legacy paragraph rewritten
 
-- **WHEN** an agent file whose Tool-discipline paragraph names `list` is translated
+- **WHEN** an agent file whose Tool-discipline paragraph matches the legacy wording naming `list` is translated
 - **THEN** the emitted paragraph does not name a `list` tool
 - **AND** the emitted paragraph states that `read` on a directory path lists its entries
 
@@ -145,15 +157,14 @@ Regardless of which pillar a prompt comes from, the translator SHALL fail rather
 - **WHEN** an agent file carrying no Tool-discipline paragraph and no `list` reference is translated
 - **THEN** translation succeeds and the body is emitted unchanged
 
+#### Scenario: Unrecognised Tool-discipline wording is not an error
+
+- **WHEN** an agent file carrying a `## Tool discipline` section in wording other than the legacy paragraph, and naming no `list` tool, is translated
+- **THEN** translation succeeds and the section is emitted unchanged
+
 #### Scenario: Surviving `list` reference aborts translation
 
 - **WHEN** a source prompt names a `list` tool in wording the translator cannot rewrite
-- **THEN** the translator exits non-zero naming the offending file
-- **AND** no output file is written for it
-
-#### Scenario: Unrecognised paragraph aborts translation
-
-- **WHEN** a source agent file carries the Tool-discipline paragraph but in wording that differs from the expected text
 - **THEN** the translator exits non-zero naming the offending file
 - **AND** no output file is written for it
 

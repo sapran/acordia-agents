@@ -56,6 +56,7 @@ acordia-agents/
 ./install.sh --dry-run          # print what would happen, do nothing
 ./install.sh --pillar analysts  # explicit pillar select (default: all)
 ./install.sh --pillar operators # operators only (write-capable — read the posture above first)
+./install.sh --no-commands      # skip the /acordia command wrappers
 ```
 
 Uninstall takes the same `--harness` selector:
@@ -66,6 +67,22 @@ Uninstall takes the same `--harness` selector:
 ```
 
 Both scripts are idempotent — safe to re-run.
+
+### Invoking them: the `/acordia` namespace
+
+Agents are dispatched by bare name, in a picker shared with the harness's own. So the install also deploys one slash-command wrapper per agent, giving a namespaced entry point:
+
+```
+/acordia:fusion      what all of it together means, and how good the take is
+/acordia:webapp      OWASP WSTG testing of a web target
+/acordia:operator    hand an authorized engagement to the orchestrator
+```
+
+Short handles — `analyst`, `target`, `defender`, `fusion`, `webapp`, `mobile`, `cloud`, `internal` — sit beside a canonical wrapper named for each agent (`/acordia:fusion-analyst`), so both spellings work. The canonical set is the source of truth; the aliases are generated from it, and a check asserts every wrapper names an agent that actually exists.
+
+The colon form comes from **directory placement**, not from renaming anything: a wrapper at `~/.claude/commands/acordia/<agent>.md` registers as `acordia:<agent>`, and omp reads that tree as well as Claude Code. opencode's command discovery is flat, so there the same wrappers deploy as `acordia-<agent>` — the split this repository already uses for its own `/opsx:*` commands.
+
+**Agent names and skill slugs stay unprefixed on purpose.** Agent dispatch is an exact-name lookup and skills are selected by description match, so a slug prefix would isolate nothing — while breaking the grid bijection, the `·`-separated autoload lines the omp translator parses, and every `skill://` reference. Provenance rides on the `ACORDIA <pillar> — ` description tag, the generated `color`, and this command namespace instead.
 
 ### Namespace safety
 

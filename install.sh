@@ -18,6 +18,8 @@
 #   ./install.sh --target DIR           # override the selected harness's root
 #   ./install.sh --autoload deep        # omp: preload each agent's deep skills
 #   ./install.sh --force                # replace artifacts this repo does not own
+#   ./install.sh --no-commands          # skip the /acordia: command wrappers
+#   ./install.sh --commands-target DIR  # place the command tree explicitly
 
 set -euo pipefail
 
@@ -31,6 +33,8 @@ HARNESS="opencode"
 TARGET_OVERRIDE=""
 AUTOLOAD="none"
 FORCE=0
+COMMANDS=1
+COMMANDS_TARGET=""
 PILLARS=()
 
 # Ownership evidence is shared with uninstall.sh: a destination that script
@@ -38,8 +42,14 @@ PILLARS=()
 # shellcheck source=tools/ownership.sh
 source "$REPO_ROOT/tools/ownership.sh"
 
+# Where the /acordia command namespace lands, shared with uninstall.sh for the
+# same reason. Sourced after harness_root's inputs are set; it calls that
+# function, which is defined below.
+# shellcheck source=tools/command-layout.sh
+source "$REPO_ROOT/tools/command-layout.sh"
+
 usage() {
-  sed -n '1,20p' "$0" | sed 's/^# \{0,1\}//'
+  sed -n '1,22p' "$0" | sed 's/^# \{0,1\}//'
   exit 0
 }
 
@@ -53,6 +63,8 @@ while [[ $# -gt 0 ]]; do
     --harness)  HARNESS="$2"; shift 2 ;;
     --autoload) AUTOLOAD="$2"; shift 2 ;;
     --force)    FORCE=1; shift ;;
+    --no-commands)     COMMANDS=0; shift ;;
+    --commands-target) COMMANDS_TARGET="$2"; shift 2 ;;
     -h|--help)  usage ;;
     *) echo "unknown arg: $1" >&2; exit 1 ;;
   esac
@@ -122,7 +134,7 @@ assert_replaceable() {
 # orchestrator references legs that never arrived. Reads only, so it runs
 # unchanged under --dry-run.
 preflight() {
-  local harness root pillar pillar_root agent skill_dir
+  local harness root pillar pillar_root agent skill_dir wrapper cmd_dir cmd_shape
   for harness in "${HARNESSES[@]}"; do
     root="$(harness_root "$harness")"
     for pillar in "${PILLARS[@]}"; do
@@ -137,6 +149,16 @@ preflight() {
         assert_replaceable "$root/skills/$(basename "$skill_dir")" "${skill_dir%/}" skill
       done
     done
+
+    if [[ "$COMMANDS" -eq 1 && -d "$REPO_ROOT/commands/acordia" ]]; then
+      read -r cmd_dir cmd_shape <<<"$(commands_root "$harness")"
+      if [[ -n "${cmd_dir:-}" ]]; then
+        for wrapper in "$REPO_ROOT/commands/acordia"/*.md; do
+          [[ -e "$wrapper" ]] || continue
+          assert_replaceable "$(command_dest "$cmd_dir" "$cmd_shape" "$(basename "$wrapper" .md)")" "$wrapper" command
+        done
+      fi
+    fi
   done
 }
 
@@ -248,6 +270,28 @@ for harness in "${HARNESSES[@]}"; do
       done
     fi
   done
+
+  if [[ "$COMMANDS" -eq 1 && -d "$REPO_ROOT/commands/acordia" ]]; then
+    read -r cmd_dir cmd_shape <<<"$(commands_root "$harness")"
+    if [[ -z "${cmd_dir:-}" ]]; then
+      echo "  -- /acordia commands -- skipped: --target overrides the harness root, but the" >&2
+      echo "     command tree lives elsewhere. Name it with --commands-target DIR." >&2
+    else
+      echo "  -- /acordia commands --"
+      if [[ "$harness" == "omp" ]]; then
+        echo "  note: omp's own commands/ is not recursive, so the namespace is deployed"
+        echo "        to $cmd_dir/acordia/ — omp reads it and so does Claude Code"
+      fi
+      for wrapper in "$REPO_ROOT/commands/acordia"/*.md; do
+        [[ -e "$wrapper" ]] || continue
+        stem="$(basename "$wrapper" .md)"
+        dst="$(command_dest "$cmd_dir" "$cmd_shape" "$stem")"
+        echo "  command: $(command_label "$cmd_shape" "$stem")"
+        deploy_file "$wrapper" "$dst" "$MODE"
+        count_deployed=$((count_deployed + 1))
+      done
+    fi
+  fi
 done
 
 if [[ "$DRY_RUN" -eq 1 ]]; then

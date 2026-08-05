@@ -61,9 +61,10 @@ Follow opencode's frontmatter, not CyberStrike's superset. `docs/agents-skills-e
 - **Read-only posture is the default.** Every analyst denies edit (in opencode `edit` governs edit/write/patch collectively; there is no separate `write` key, and a top-level `"*": deny` does *not* deny-default because per-tool built-ins override it — express read-only as `edit: deny`). **Scoped-write exception:** the two agents holding the "Briefing & written reporting" grid competency — `operational-analyst` (● Core) and `fusion-analyst` (○ Fus) — carry a path-scoped `edit` (`"*": deny` then `".acordia/reports/**": allow`, last-match-wins) so they can persist reports to `.acordia/reports/`; `target-network-analyst` and `defender-detection-analyst` keep the blanket `edit: deny` (added by change `analyst-report-write-scope`). `edit: deny` is a posture signal, not a hard sandbox — `bash: "*": allow` already permits scripted writes.
 - **Legs additionally carry `task: deny`** — they are leaf specialists and never dispatch subagents.
 - **The orchestrator's `task` block whitelists only the three legs** (`"*": deny` then `target-network-analyst`, `defender-detection-analyst`, `fusion-analyst` allowed). Never route to a general-purpose or explore agent from the primary.
-- **Bash is fully allowed (`bash: allow`) on every analyst:** the read-only CLI tools used for file and data analysis (`cat`/`head`/`tail`/`less`/`more`/`ls`, `grep`/`egrep`/`rg`/`find`/`fd`) are ungated, as is scripting (python, jq, custom tooling). The read-only *posture* lives in `edit`/`task`, not `bash` (`bash: "*": allow` already permitted scripted writes). Preferring opencode-native `read`/`grep`/`glob`/`list` over shelling out is advisory guidance in the agent prompts, not a permission gate.
+- **Bash is fully allowed (`bash: allow`) on every analyst:** the read-only CLI tools used for file and data analysis (`cat`/`head`/`tail`/`less`/`more`/`ls`, `grep`/`egrep`/`rg`/`find`/`fd`) are ungated, as is scripting (python, jq, custom tooling). The read-only *posture* lives in `edit`/`task`, not `bash` (`bash: "*": allow` already permitted scripted writes). Preferring opencode-native `read`/`grep`/`glob` over shelling out is advisory guidance in the agent prompts, not a permission gate.
 - Body = agent prompt. It must name the skill set the agent draws on (opencode has **no per-agent `skills:` field**; composition is by prompt reference plus triggering-quality skill descriptions).
-- Every prompt must carry a `## Credential harvest` H2 section describing that agent's role in the triage flow (added by change `2026-07-22-credential-harvest-capability`, PR #2). Adding/removing sections must not touch the `edit`/`bash`/`task` permission blocks.
+- Every prompt must carry a `## Credential harvest` H2 section containing a one-line reference to `credential-harvest-triage` (added by change `2026-07-22-credential-harvest-capability`, PR #2; relaxed by `loosen-analyst-interagent`); the skill carries the full procedure — schema, bucket partition, routing — and a prompt must not restate it. A prompt may name its credential-adjacent skills and one domain-specific lens. Adding/removing sections must not touch the `edit`/`bash`/`task` permission blocks.
+- The `## Exhaustive data processing`, `## What to return`, and `## Output discipline` sections are **advisory prose** — they state principles and defaults, not schemas or mandatory return formats. Each must exist and name its skill where one owns the method (`exhaustive-data-processing`); none prescribes a template the agent fills in.
 
 ### Skills (`analysts/skills/<slug>/SKILL.md`)
 
@@ -87,11 +88,20 @@ Follow opencode's frontmatter, not CyberStrike's superset. `docs/agents-skills-e
 - Cloned skills record `metadata.cyberstrike.source` (`.cyberstrike/skill/<path>/SKILL.md`) and `metadata.cyberstrike.commit` (`359655518`), so a re-port against a newer CyberStrike checkout is a diff.
 - Library membership is fixed at exactly 30 — 16 `attack-*`, 10 infrastructure, 4 WSTG bundles — listed in full in `docs/roles/operator.md`. Do not add a 31st skill without updating that provenance record.
 
+### Commands (`commands/acordia/<stem>.md`)
+
+- **Canonical wrapper per agent**, filename stem equal to the agent's — one handle guaranteed to exist, named for what it dispatches. Adding an agent means adding a canonical wrapper.
+- **Short aliases are allowed beside it** (`fusion` → `fusion-analyst`), generated from the canonical wrapper so the brief cannot diverge, declaring their counterpart in a frontmatter comment. An alias name must not equal any agent stem. The drift guard is a check, not a prohibition: **every wrapper must name a live agent**, which covers canonical wrappers too.
+- Body dispatches that agent with `$ARGUMENTS` as the brief. `$ARGUMENTS` is the only placeholder both harnesses honour. A wrapper is an entry point — it never restates the prompt or redefines scope.
+- **The namespace is directory placement, never a rename.** A Claude-format tree gets `<root>/acordia/<stem>.md` → `/acordia:<stem>` (scanned recursively, subdirectory registers the `foo:bar` alias — omp reads this tree too). opencode gets `<root>/commands/acordia-<stem>.md` → `/acordia-<stem>`, because opencode command discovery is flat. omp's own `commands/` is non-recursive and cannot carry a namespace, so the omp install writes to the Claude tree and says so.
+- Layout lives once in `tools/command-layout.sh`, sourced by both scripts, like `tools/ownership.sh`. `commands/` carries no `agents/` or `skills/`, so pillar auto-discovery already excludes it.
+- **Slugs stay bare.** The command namespace is the only prefixed surface: agent dispatch is flat exact-name and skills are picked by description match, so a slug prefix would isolate nothing while breaking the grid bijection and the translator's autoload lines.
+
 ## OpenSpec workflow
 
 Spec-driven changes are how this repo evolves. Config lives at `openspec/config.yaml`; active proposals in `openspec/changes/<slug>/`; archived changes in `openspec/changes/archive/<date>-<slug>/`; published specs in `openspec/specs/<capability>/spec.md`.
 
-Slash commands (available under both `.claude/commands/opsx/` and `.opencode/commands/opsx/`):
+Slash commands (`.claude/commands/opsx/*.md` → `/opsx:*`; the opencode copies are flat `.opencode/commands/opsx-*.md`, because opencode does not namespace commands by directory):
 
 - `/opsx:explore` — think through an idea before proposing.
 - `/opsx:propose` — create a change with proposal / design / tasks / delta specs.
@@ -112,5 +122,5 @@ Names stay unprefixed on purpose. Provenance is carried by the agent `descriptio
 ## Guardrails baked into every analyst
 
 - Read, model, judge — do not modify files or throw payloads. Execution belongs to the operators the analyst advises.
-- The orchestrator delegates only to its three named legs; work that fits none of them stays in the orchestrator using native `read`/`grep`/`glob`/`list`.
+- The orchestrator delegates only to its three named legs; work that fits none of them stays in the orchestrator using native `read`/`grep`/`glob`.
 - Skill and agent bodies never carry raw credential values — classifications, sources, and priorities only.
