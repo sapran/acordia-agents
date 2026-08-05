@@ -4,16 +4,26 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 ## What this repo is
 
-Markdown-only distribution of [opencode](https://opencode.ai) agents and skills derived from the ACORDIA operational-role framework. **No application code, no build, no runtime, no tests.** Only frontmatter-carrying markdown files plus a shell installer that symlinks (or copies) them into `~/.config/opencode/`.
+Markdown-only distribution of agents and skills derived from the ACORDIA operational-role framework. **No application code, no runtime, no tests.** Frontmatter-carrying markdown files, one Python generator, and a shell installer.
 
-Two pillars are wired: **`analysts/`** (the ACORDIA Analysis pillar) — one primary orchestrator (`operational-analyst`) plus three subagent legs (`target-network-analyst`, `defender-detection-analyst`, `fusion-analyst`) and a 39-skill library, read-only (`edit: deny`) — and **`operators/`** (the ACORDIA Operations pillar) — one primary orchestrator (`operator`) plus four subagent specialists (`web-application`, `mobile-application`, `cloud-security`, `internal-network`) and a 30-skill library, write-capable (`edit: allow`), ported from the CyberStrike fork (`~/git/CyberStrike`, commit `359655518`). Future pillars (Collection, Reflection, Direction, Independent action) may follow the same shape once compiled.
+It reaches three harnesses two ways. omp and Claude Code install it as a **plugin**, from the marketplace catalogs at `.omp-plugin/marketplace.json` and `.claude-plugin/marketplace.json`; the plugin trees under `plugins/` are generated from the opencode sources by `tools/build-plugins.py` and committed, because a marketplace install clones the repository. opencode has no plugin system — its "plugins" are JS/TS hook modules that cannot ship markdown — so `install.sh` symlinks (or copies) the sources into `~/.config/opencode/`.
+
+Two pillars are wired, shipped as two independently installable plugins: **`analysts/`** → `acordia-analysts` (the ACORDIA Analysis pillar) — one primary orchestrator (`operational-analyst`) plus three subagent legs (`target-network-analyst`, `defender-detection-analyst`, `fusion-analyst`) and a 43-skill library, read-only (`edit: deny`) — and **`operators/`** → `acordia-operators` (the ACORDIA Operations pillar) — one primary orchestrator (`operator`) plus four subagent specialists (`web-application`, `mobile-application`, `cloud-security`, `internal-network`) and a 30-skill library, write-capable (`edit: allow`), ported from the CyberStrike fork (`~/git/CyberStrike`, commit `359655518`). Future pillars (Collection, Reflection, Direction, Independent action) may follow the same shape once compiled.
 
 ## Commands
 
-Everything the repo does is deployment or spec-workflow. There is no lint, no test suite, no build.
+Everything the repo does is build, deployment, or spec-workflow. There is no lint and no test suite; the build is one deterministic generator and `--check` is its gate.
 
 ```sh
-./install.sh                         # symlink agents + skills into ~/.config/opencode/
+tools/build-plugins.py               # regenerate plugins/, .claude-plugin/, .omp-plugin/
+tools/build-plugins.py --check       # diff the committed trees against the generator; exit 1 on drift
+
+omp plugin marketplace add .         # omp install, from this checkout
+omp plugin install acordia-analysts@acordia --scope user
+claude plugin marketplace add .      # Claude Code install, from this checkout
+claude plugin install acordia-analysts@acordia --scope local
+
+./install.sh                         # opencode only: symlink agents + skills into ~/.config/opencode/
 ./install.sh --copy                  # frozen snapshot instead of live symlinks
 ./install.sh --dry-run               # print actions, do nothing
 ./install.sh --pillar analysts       # restrict to a single pillar
@@ -27,7 +37,7 @@ opencode debug skill reasoning-under-uncertainty  # verify a skill loads
 openspec validate --all --strict     # gate any change touching openspec/
 ```
 
-Both `install.sh` and `uninstall.sh` are idempotent — safe to re-run.
+Both `install.sh` and `uninstall.sh` are idempotent — safe to re-run. `tools/build-plugins.py` is deterministic: a second run leaves the tree byte-identical.
 
 ## Source of truth — do not skip this
 
@@ -79,7 +89,7 @@ Follow opencode's frontmatter, not CyberStrike's superset. `docs/agents-skills-e
 - `bash: allow` carries per-pattern `deny` rules for destructive/RCE primitives (SQL DDL, `INTO OUTFILE`/`DUMPFILE`, `xp_cmdshell` and siblings, `sqlmap --os-*`/`--file-write`/`--reg-*`), ported from CyberStrike's injection-tester ruleset (`injectionAgentPermission` in `agent.ts`). Under omp these per-command denies are **prompt-level only** — omp has no per-pattern `bash` enforcement the way opencode's `permission` map provides.
 - **`operator`'s `task` block whitelists exactly its four specialists** (`"*": deny` then `web-application`, `mobile-application`, `cloud-security`, `internal-network` allowed). Each specialist carries `task: deny` as a leaf agent.
 - Every prompt records state under `## Operation journal` — the `.acordia/ops/` files (`scope.md`, `intel.md`, `coverage.md`, `findings/<slug>.md`, `reports/<name>.md`), named in prose, never as a permission scope. The fixed substitution table this journal replaces is in `docs/agents-skills-extension-workbook.md` §8.
-- Every prompt names its skill set under `## Your specialist depth (deep)`, whose heading line must be followed **immediately** — no blank line — by one `·`-separated line of skill names. `tools/translate-omp.py --autoload deep` reads exactly that line to populate omp's `autoloadSkills`; breaking the shape breaks the flag, not just the prose. A `## Working knowledge (draw on as needed)` section follows the same one-line shape for the broader skill set.
+- Every prompt names its skill set under `## Your specialist depth (deep)`, whose heading line must be followed **immediately** — no blank line — by one `·`-separated line of skill names. `tools/build-plugins.py` parses exactly that line on every build and fails when it is empty or missing; breaking the shape breaks the build, not just the prose. A `## Working knowledge (draw on as needed)` section follows the same one-line shape for the broader skill set.
 - **Source of truth is provenance, not a competency grid** — see `docs/roles/operator.md` and the note above.
 
 ### Skills (`operators/skills/<slug>/SKILL.md`)
@@ -92,10 +102,18 @@ Follow opencode's frontmatter, not CyberStrike's superset. `docs/agents-skills-e
 
 - **Canonical wrapper per agent**, filename stem equal to the agent's — one handle guaranteed to exist, named for what it dispatches. Adding an agent means adding a canonical wrapper.
 - **Short aliases are allowed beside it** (`fusion` → `fusion-analyst`), generated from the canonical wrapper so the brief cannot diverge, declaring their counterpart in a frontmatter comment. An alias name must not equal any agent stem. The drift guard is a check, not a prohibition: **every wrapper must name a live agent**, which covers canonical wrappers too.
-- Body dispatches that agent with `$ARGUMENTS` as the brief. `$ARGUMENTS` is the only placeholder both harnesses honour. A wrapper is an entry point — it never restates the prompt or redefines scope.
-- **The namespace is directory placement, never a rename.** A Claude-format tree gets `<root>/acordia/<stem>.md` → `/acordia:<stem>` (scanned recursively, subdirectory registers the `foo:bar` alias — omp reads this tree too). opencode gets `<root>/commands/acordia-<stem>.md` → `/acordia-<stem>`, because opencode command discovery is flat. omp's own `commands/` is non-recursive and cannot carry a namespace, so the omp install writes to the Claude tree and says so.
-- Layout lives once in `tools/command-layout.sh`, sourced by both scripts, like `tools/ownership.sh`. `commands/` carries no `agents/` or `skills/`, so pillar auto-discovery already excludes it.
-- **Slugs stay bare.** The command namespace is the only prefixed surface: agent dispatch is flat exact-name and skills are picked by description match, so a slug prefix would isolate nothing while breaking the grid bijection and the translator's autoload lines.
+- Body dispatches that agent with `$ARGUMENTS` as the brief, opening either "Dispatch the `<agent>` agent" or "Hand the work below to the `<agent>` agent" — `tools/build-plugins.py` reads that sentence to decide which plugin the wrapper belongs to, and fails on a wrapper it cannot resolve. `$ARGUMENTS` is the only placeholder every harness honours. A wrapper is an entry point — it never restates the prompt or redefines scope.
+- **The namespace is the plugin name, not directory placement.** In omp and Claude Code the wrapper ships at `plugins/<harness>/<plugin>/commands/<stem>.md`, flat, and the harness prefixes it: `/acordia-analysts:<stem>`. Flat is mandatory — omp's plugin command provider scans `<plugin-root>/commands/*.md` non-recursively. The source tree keeps its `acordia/` directory purely as the opencode-facing layout, where `install.sh` deploys `<root>/commands/acordia-<stem>.md` → `/acordia-<stem>` because opencode command discovery is flat and carries no namespace.
+- The opencode layout lives once in `tools/command-layout.sh`, sourced by both scripts, like `tools/ownership.sh`. `commands/` carries no `agents/` or `skills/`, so pillar auto-discovery already excludes it — and neither does `plugins/` at its top level.
+- **Slugs stay bare.** The command namespace is the only prefixed surface: agent dispatch is flat exact-name and skills are picked by description match, so a slug prefix would isolate nothing while breaking the grid bijection and the generator's `(deep)` skill lines.
+
+### Generated plugin trees (`plugins/**`, `.claude-plugin/`, `.omp-plugin/`)
+
+- **Generated build output, committed.** `tools/build-plugins.py` produces every file under those three paths from `analysts/`, `operators/`, and `commands/acordia/`. They are committed because a marketplace install clones the repository, and a plain build deletes them wholesale before regenerating so a renamed artifact cannot leave an orphan.
+- **`tools/build-plugins.py --check` is the gate.** It builds to a tempdir and diffs, naming every missing, extra, and differing path. **Editing a file under `plugins/` is a drift bug of the same class as editing `analysts/` without touching the competency grid** — the next build reverts it silently.
+- **Two trees, because one `agents/*.md` cannot serve both harnesses.** Both read `tools` from the fixed `<plugin-root>/agents/` path, but Claude Code expects capitalised Claude tool names and omp expects lowercase omp names plus `spawns`; Claude Code's `agents` path override supplements rather than replaces `./agents`, so the two cannot be pointed elsewhere. Skills and commands are byte-identical across the trees; only `agents/` differs.
+- **Two catalogs, for the same reason.** omp reads `.omp-plugin/marketplace.json` in preference to `.claude-plugin/marketplace.json` and only falls back when the former is absent, so shipping both hands each harness its own tree from one checkout. They differ in exactly the two `source` paths.
+- **Claude posture is a denylist.** Plugin agents get `disallowedTools`, never `tools`: an allowlist would enumerate Claude's whole vocabulary and silently strip tools this repo never audited. `edit: deny` → `Edit, Write, NotebookEdit`; a path-scoped `edit` → `Edit, NotebookEdit` (keeps `Write`, because the two reporting analysts must still produce reports and Claude Code cannot express the path scope); `edit: allow` → nothing; `task: deny` → `Task`. Plugin agents silently ignore `metadata`, so provenance and the three unexpressible-posture notes (no spawn allowlist, no path scope, no per-command bash rules) are emitted as YAML comments above the keys.
 
 ## OpenSpec workflow
 
@@ -117,7 +135,7 @@ Every normative claim in a spec must trace to either an artifact in this repo (a
 
 Read `docs/agents-skills-extension-workbook.md` **before** authoring new pillars, new agents, or new skills — it is the frontmatter and permission contract, with the opencode-vs-CyberStrike differences that bite documented in §6. Key portable rules: plural `agents/` and `skills/` directory names under opencode config; kebab-case slugs with no prefix; the agent filename becomes the agent name; unknown skill fields are silently ignored; there is no agent→skill binding — skills fire by `description` and the agent prompt names its set.
 
-Names stay unprefixed on purpose. Provenance is carried by the agent `description` (the `ACORDIA <pillar> — ` tag above), never by the agent name or the skill slug: the name is the dispatch handle wired into the orchestrators' `task` whitelists, and the slug is bound to the folder by the skill-library bijection and to the `·`-separated autoload lines `tools/translate-omp.py --autoload deep` parses. Skills are selected by `description` match, so a slug prefix would isolate nothing anyway. The collision risk a prefix would have addressed is handled at deploy time instead: `install.sh` refuses to overwrite an artifact this repository did not deploy (ownership evidence lives in `tools/ownership.sh`, shared with `uninstall.sh`), and `--force` is the explicit override.
+Names stay unprefixed on purpose. Provenance is carried by the agent `description` (the `ACORDIA <pillar> — ` tag above), the generated `color`, and the plugin-name command namespace — never by the agent name or the skill slug: the name is the dispatch handle wired into the orchestrators' `task` whitelists, and the slug is bound to the folder by the skill-library bijection and to the `·`-separated `(deep)` lines `tools/build-plugins.py` parses. Skills are selected by `description` match, so a slug prefix would isolate nothing anyway. The collision risk a prefix would have addressed is handled per harness: the plugin harnesses namespace commands themselves and keep each plugin's artifacts attributable, and for opencode `install.sh` refuses to overwrite an artifact this repository did not deploy (ownership evidence lives in `tools/ownership.sh`, shared with `uninstall.sh`), with `--force` as the explicit override.
 
 ## Guardrails baked into every analyst
 

@@ -125,7 +125,7 @@ Every operator prompt SHALL open with an authorization and scope gate: confirm w
 
 Because opencode has no per-agent `skills:` field, each operator prompt SHALL name the operator-library skills it draws on, under a `## Your specialist depth (deep)` heading followed by a single `·`-separated line of skill names. The skills named SHALL exist in `operators/skills/`.
 
-The single-line-under-the-heading shape is load-bearing: `tools/translate-omp.py --autoload deep` reads exactly the line following that heading to populate omp's `autoloadSkills`.
+The single-line-under-the-heading shape remains load-bearing, but for a different reason than before. No emitter consumes the line any more — the generated omp agents leave `autoloadSkills` unset unconditionally, because a prebuilt plugin is installed by the harness rather than by a user-invoked command and so has no flag to carry. `tools/build-plugins.py` nonetheless parses the line on every build and SHALL fail when the heading is absent or the line names no skills, so the shape this requirement mandates cannot rot unnoticed.
 
 #### Scenario: Deep heading present with a skill line
 
@@ -137,10 +137,11 @@ The single-line-under-the-heading shape is load-bearing: `tools/translate-omp.py
 - **WHEN** the skill names in any operator prompt are resolved against `operators/skills/`
 - **THEN** every named skill has a directory with a `SKILL.md`
 
-#### Scenario: Autoload reads the deep line
+#### Scenario: A broken deep line fails the build
 
-- **WHEN** the translator runs with the deep-autoload flag on an operator agent
-- **THEN** the generated `autoloadSkills` lists exactly the skills on that line
+- **WHEN** an operator prompt's `(deep)` heading is removed, or the line beneath it is blanked
+- **THEN** `tools/build-plugins.py` exits non-zero naming that source file
+- **AND** no plugin tree is regenerated
 
 ### Requirement: Journal discipline section in every prompt
 

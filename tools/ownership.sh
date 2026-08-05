@@ -12,8 +12,7 @@
 # evidence, and the evidence is defined here once so the two cannot drift.
 #
 #   symlink      -> must resolve inside this repository
-#   copied agent -> must be byte-identical to the source, or be a translated
-#                   file whose provenance names that source
+#   copied agent -> must be byte-identical to the source
 #   copied skill -> its SKILL.md must be byte-identical to the source's
 #   copied command -> must be byte-identical to the source wrapper
 #
@@ -30,10 +29,10 @@ owned_by_repo() {
 
   case "$kind" in
     agent)
-      cmp -s "$dst" "$src" && return 0
-      # Translated omp agents differ from their source by construction; they
-      # carry the source path in their generated provenance block.
-      grep -qF "from: ${src#"$REPO_ROOT/"}" "$dst" 2>/dev/null
+      # No opencode deployment is ever a translated file — the plugin trees are
+      # the only generated form, and they are installed by the harnesses'
+      # plugin machinery, not by this repository. Byte-identity is the whole test.
+      cmp -s "$dst" "$src"
       ;;
     skill)
       cmp -s "$dst/SKILL.md" "$src/SKILL.md"
