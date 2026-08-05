@@ -2,69 +2,31 @@
 
 ## Purpose
 
-How the opencode-native source artifacts under `<pillar>/` reach a second harness, omp (`oh-my-pi`): the agent frontmatter translation contract, the deployment locations and selector, the rule that translated agents are build output rather than tracked files, and the permission-model gaps that translation cannot close.
+How the opencode-native source artifacts under `<pillar>/` reach omp (`oh-my-pi`): the agent frontmatter translation contract, the committed plugin tree the translated agents are generated into, and the permission-model gaps that translation cannot close.
 ## Requirements
 ### Requirement: Source artifacts stay opencode-native
 
-The files under `<pillar>/agents/` and `<pillar>/skills/` SHALL remain written to the opencode contract and SHALL be the only editable source for both harnesses. Deployment to omp SHALL be produced by translating those files, never by maintaining a parallel set.
+The files under `<pillar>/agents/` and `<pillar>/skills/` SHALL remain written to the opencode contract and SHALL be the only editable source for every harness. Distribution to omp SHALL be produced by translating those files, never by maintaining a parallel set.
 
-#### Scenario: No committed omp agent copies
+The translated form is no longer transient. It is generated into the committed plugin tree at `plugins/omp/<plugin>/agents/`, because a marketplace install clones the repository and performs no build on the installing machine. That tree is build output all the same: it is regenerated wholesale on every build and gated by `tools/build-plugins.py --check`, so editing it is a drift bug rather than a change.
+
+#### Scenario: Committed omp agent copies are generated, never authored
 
 - **WHEN** the repository is inspected for tracked agent files
-- **THEN** the only tracked agent prompts are `<pillar>/agents/*.md` in opencode frontmatter form
-- **AND** any omp-form agent file present on disk lives under a gitignored build directory
+- **THEN** the only editable agent prompts are `<pillar>/agents/*.md` in opencode frontmatter form
+- **AND** every omp-form agent file lives under `plugins/omp/`, is committed, and declares in its generated metadata the source path it came from
+- **AND** `tools/build-plugins.py --check` reproduces every one of them byte-for-byte
 
-#### Scenario: Source edit reaches both harnesses
+#### Scenario: Source edit reaches every harness
 
-- **WHEN** a prompt body in `<pillar>/agents/*.md` is edited and both harnesses are reinstalled
-- **THEN** the opencode deployment and the omp deployment both carry the edited body
+- **WHEN** a prompt body in `<pillar>/agents/*.md` is edited
+- **THEN** rebuilding the plugin trees carries the edited body into both the omp and the Claude agent files
+- **AND** reinstalling for opencode carries it into the opencode deployment
 
-### Requirement: Harness selector on install and uninstall
+#### Scenario: Editing the generated tree is caught
 
-`install.sh` and `uninstall.sh` SHALL accept `--harness opencode|omp|both`. The default SHALL be `opencode`, so that an invocation with no harness argument behaves as it did before this capability existed.
-
-#### Scenario: Default is unchanged behaviour
-
-- **WHEN** `./install.sh` runs with no `--harness` argument
-- **THEN** artifacts are deployed only under `~/.config/opencode/`
-- **AND** nothing is written under `~/.omp/`
-
-#### Scenario: omp harness selected
-
-- **WHEN** `./install.sh --harness omp` runs
-- **THEN** translated agent files are deployed to `~/.omp/agent/agents/`
-- **AND** skill directories are deployed to `~/.omp/agent/skills/`
-- **AND** nothing is written under `~/.config/opencode/`
-
-#### Scenario: Both harnesses selected
-
-- **WHEN** `./install.sh --harness both` runs
-- **THEN** both deployments described above are performed in one invocation
-
-#### Scenario: Unknown harness rejected
-
-- **WHEN** `--harness` is given a value other than `opencode`, `omp`, or `both`
-- **THEN** the script exits non-zero with a message naming the accepted values
-- **AND** no files are deployed
-
-#### Scenario: Uninstall is scoped to the harness
-
-- **WHEN** `./uninstall.sh --harness omp` runs after an omp install
-- **THEN** the agent files and skill entries this repository deployed under `~/.omp/agent/` are removed
-- **AND** files under `~/.omp/agent/` that this repository did not deploy are left in place
-
-#### Scenario: A name match alone is not grounds for removal
-
-- **WHEN** a harness config holds an agent file or skill directory whose name matches a repository artifact but whose content this repository did not deploy
-- **THEN** `uninstall.sh` leaves it in place
-- **AND** reports how many name-matching artifacts it declined to remove
-
-#### Scenario: Ownership is established by deployment evidence
-
-- **WHEN** `uninstall.sh` considers a deployed artifact
-- **THEN** it removes a symlink only if the link resolves inside this repository
-- **AND** removes a copied agent only if it is byte-identical to its source or carries generated provenance naming that source
-- **AND** removes a copied skill only if its `SKILL.md` is byte-identical to the source's
+- **WHEN** a file under `plugins/omp/` is edited without editing its source
+- **THEN** `tools/build-plugins.py --check` exits non-zero naming that path
 
 ### Requirement: Frontmatter translation contract
 
@@ -190,54 +152,42 @@ omp allowlists whole tools, cannot scope a tool to a path, and cannot remove `wr
 
 ### Requirement: Skill autoloading is opt-in
 
-omp can inject named skill bodies into a subagent at start via `autoloadSkills`. Because opencode has no equivalent and binds skills by prose reference, the translator SHALL leave `autoloadSkills` unset by default so that both harnesses behave alike.
+omp can inject named skill bodies into a subagent at start via `autoloadSkills`. Because opencode has no equivalent and binds skills by prose reference, the generated omp agent files SHALL leave `autoloadSkills` unset, so that every harness behaves alike. There is no flag to enable it: a prebuilt plugin is installed by the harness rather than by a user-invoked command, so there is no invocation to carry one.
 
-#### Scenario: Default omits autoloading
+The `(deep)` skill heading in each prompt SHALL nonetheless still be parsed on every build, and a heading that is missing or names no skills SHALL fail the build, because the one-line shape remains normative in the roster specifications.
 
-- **WHEN** an agent is translated with no autoload flag
+#### Scenario: Generated agents declare no autoloading
+
+- **WHEN** any agent is generated for the omp tree
 - **THEN** the output frontmatter declares no `autoloadSkills`
 
-#### Scenario: Deep skills autoloaded on request
+#### Scenario: A broken deep heading still fails the build
 
-- **WHEN** the translator is invoked with the deep-autoload flag
-- **THEN** the output `autoloadSkills` lists exactly the skills named in the source prompt's `(deep)` heading
-
-### Requirement: Translated agents are materialised, never symlinked
-
-Because translated agents are build output that is regenerated on each install, the omp harness SHALL deploy them as real files. A request to symlink SHALL not silently produce a link into the build directory.
-
-#### Scenario: Copy regardless of link mode
-
-- **WHEN** `./install.sh --harness omp --link` runs
-- **THEN** the files under `~/.omp/agent/agents/` are regular files, not symlinks
-- **AND** the script reports that link mode does not apply to translated agents
-
-#### Scenario: Skills still honour link mode
-
-- **WHEN** `./install.sh --harness omp --link` runs
-- **THEN** the entries under `~/.omp/agent/skills/` are symlinks into the repository
+- **WHEN** an agent prompt's `(deep)` heading is followed by a blank line, or is absent
+- **THEN** the generator exits non-zero naming that source file
 
 ### Requirement: Installation is idempotent and inspectable
 
-Both harnesses SHALL support repeated invocation without accumulating state, and SHALL support previewing an invocation without touching the filesystem.
+`install.sh` SHALL support repeated invocation without accumulating state, and SHALL support previewing an invocation without touching the filesystem. Because it now serves opencode alone, the guarantee is stated for one destination rather than for a harness selector.
+
+The dry run no longer exercises a translator: nothing is translated at install time, so a dry run's fidelity is the destination list it prints, not a parse it performs. Translation failures surface at build time instead, where `tools/build-plugins.py` fails the build.
 
 #### Scenario: Re-running changes nothing
 
-- **WHEN** `./install.sh --harness both` runs twice in succession
+- **WHEN** `./install.sh` runs twice in succession
 - **THEN** the second run leaves the same set of deployed files as the first
 
 #### Scenario: Dry run writes nothing
 
-- **WHEN** `./install.sh --harness omp --dry-run` runs
+- **WHEN** `./install.sh --dry-run` runs
 - **THEN** the intended actions are printed
 - **AND** no file is created, removed, or modified anywhere on disk
 
-#### Scenario: A clean dry run predicts a clean install
+#### Scenario: The dry run names only opencode destinations
 
-- **WHEN** `./install.sh --harness omp --dry-run` runs
-- **THEN** the translator is exercised in a mode that parses every source agent without writing output
-- **AND** a source file that would fail translation makes the dry run exit non-zero
-- **AND** the printed plan names the translated build path as each agent's source, matching what a real run copies
+- **WHEN** `./install.sh --dry-run` runs
+- **THEN** every destination printed lies under the opencode root or the command target
+- **AND** no path under `~/.omp/` is named
 
 ### Requirement: Pillar auto-discovery is limited to distributable directories
 
@@ -282,7 +232,9 @@ Because omp cannot deny `write` while `tools.xdev` is on, the generated metadata
 
 ### Requirement: Ownership evidence is defined once for install and uninstall
 
-The evidence that this repository deployed a given artifact SHALL be defined in exactly one place, sourced by both `install.sh` and `uninstall.sh`, because a destination the uninstaller declines to remove is by definition a destination the installer must decline to overwrite. The evidence SHALL be: a symlink resolving inside this repository, a copied file byte-identical to its source, a copied skill whose `SKILL.md` is byte-identical to its source's, or a translated agent whose generated provenance names its source path.
+The evidence that this repository deployed a given artifact SHALL be defined in exactly one place, sourced by both `install.sh` and `uninstall.sh`, because a destination the uninstaller declines to remove is by definition a destination the installer must decline to overwrite. The evidence SHALL be: a symlink resolving inside this repository, a copied file byte-identical to its source, or a copied skill whose `SKILL.md` is byte-identical to its source's.
+
+The translated-agent branch is gone. It existed because `install.sh` deployed generated omp agents, which differ from their source by construction and so could only be recognised by the provenance line naming that source. No opencode deployment is ever a translated file — the plugin trees are the only generated form, and the harnesses' own plugin machinery installs them — so byte-identity is now the whole agent test.
 
 #### Scenario: Both scripts consult the same definition
 
@@ -295,9 +247,16 @@ The evidence that this repository deployed a given artifact SHALL be defined in 
 - **WHEN** `./install.sh` runs with pillars auto-discovered
 - **THEN** the shared ownership file is not deployed to any harness root
 
+#### Scenario: A generated agent is not recognised by provenance
+
+- **WHEN** a file carrying a generated provenance line occupies an opencode agent destination but is not byte-identical to its source
+- **THEN** `install.sh` refuses to overwrite it and `uninstall.sh` declines to remove it
+
 ### Requirement: Installation refuses to overwrite an artifact it does not own
 
-`install.sh` SHALL, before removing or replacing any destination path, require ownership evidence for that path, and SHALL exit non-zero naming the path when the evidence is absent, because both harness roots are flat namespaces shared with harness built-ins and with the user's own artifacts.
+`install.sh` SHALL, before removing or replacing any destination path, require ownership evidence for that path, and SHALL exit non-zero naming the path when the evidence is absent, because the opencode root is a flat namespace shared with the harness's built-ins and with the user's own artifacts.
+
+A destination deployed by a previous run SHALL still test as owned after its source is edited, on the strength of the symlink resolving into this repository or of byte-identity in copy mode. The generated-provenance route to ownership is gone with the translated agents it existed for.
 
 #### Scenario: Foreign agent of the same name is refused
 
@@ -323,16 +282,9 @@ The evidence that this repository deployed a given artifact SHALL be defined in 
 
 #### Scenario: A previous deployment is owned and is replaced
 
-- **WHEN** `./install.sh` runs twice in succession in any mode, for either harness
+- **WHEN** `./install.sh` runs twice in succession in any mode
 - **THEN** the second run replaces its own artifacts without error
 - **AND** the deployed set is the same as after the first run
-
-#### Scenario: A translated agent whose source changed is still owned
-
-- **WHEN** an omp agent was deployed by a previous run and its source agent has since been edited
-- **AND** `./install.sh --harness omp` runs again
-- **THEN** the destination tests as owned on the strength of its generated provenance
-- **AND** the run replaces it without error
 
 #### Scenario: Dry run detects the collision
 

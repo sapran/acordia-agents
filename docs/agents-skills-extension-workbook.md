@@ -480,18 +480,27 @@ name.
 
 omp reads more frontmatter than opencode does — `globs`, `alwaysApply`, `hide`,
 `disableModelInvocation` — and ignores the rest. `name` defaults to the
-directory name. Nothing in this repo's skill files needs to change.
+directory name. Nothing in this repo's skill files needs to change, which is
+why the plugin trees carry a verbatim copy of each pillar's `skills/` rather
+than a translated one: the same bytes are valid in opencode, omp, and Claude
+Code.
 
 ### 7.2 Agents need translation
 
 omp discovers task agents from `<project>/.omp/agents`, `~/.omp/agent/agents`,
-and Claude plugin `agents/` directories. It **deliberately skips**
+and installed plugin roots' `agents/` directories. It **deliberately skips**
 `.claude/agents`, `.codex/agents`, and `.gemini/agents` because their
 frontmatter is not the omp contract, and it does not look at
 `~/.config/opencode/agents` at all. An opencode agent file is invisible to omp
 no matter where it sits.
 
-The mapping `tools/translate-omp.py` implements:
+This repository reaches omp through the plugin path: `tools/build-plugins.py`
+generates the omp-form agents into `plugins/omp/<plugin>/agents/`, and omp's
+marketplace installer places that tree. **Plugin agents are surfaced only while
+the `claude-plugins` capability provider is enabled** — listed in
+`disabledProviders`, the plugin installs cleanly and contributes nothing.
+
+The mapping `tools/build-plugins.py` implements for omp:
 
 | Concern | opencode | omp |
 | --- | --- | --- |
@@ -550,18 +559,28 @@ omp has no `mode: primary`. An opencode primary agent has two possible landings:
 ### 7.5 Deploy and verify
 
 ```sh
-./install.sh --harness omp          # translate + deploy
-./install.sh --harness both         # both harnesses in one run
-./install.sh --harness omp --autoload deep   # preload each agent's deep skills
+tools/build-plugins.py                                    # regenerate the plugin trees
+omp plugin marketplace add <owner>/acordia-agents         # or ./. for a local checkout
+omp plugin install acordia-analysts@acordia --scope user  # acordia-operators for the offensive pillar
 ```
 
-Translated agents land in `~/.omp/agent/agents/` as **copies**, generated into
-the gitignored `.build/omp/`. They are build output: edit
-`analysts/agents/*.md` and reinstall, never the generated file.
+`/reload-plugins` refreshes skills and commands in a running session; new tools
+or hooks need a restart.
+
+The omp-form agents live at `plugins/omp/<plugin>/agents/` and are **committed
+build output** — a marketplace install clones the repository and performs no
+build on the installing machine. Edit `analysts/agents/*.md` and rebuild, never
+the generated file; `tools/build-plugins.py --check` is the drift gate.
+
+`autoloadSkills` is left unset unconditionally. A prebuilt plugin is installed
+by the harness rather than by a user-invoked command, so there is no invocation
+to carry a flag; the `(deep)` heading is still parsed on every build, and a
+broken one still fails it.
 
 To verify, start omp and check that the four analysts appear in the agent
-roster the `task` tool advertises, and that `operational-analyst` can spawn its
-three legs while the legs cannot spawn anything.
+roster the `task` tool advertises, that `/acordia-analysts:fusion` is
+registered, and that `operational-analyst` can spawn its three legs while the
+legs cannot spawn anything.
 
 ---
 
