@@ -73,14 +73,7 @@ In omp, `/reload-plugins` refreshes skills and commands after an install; new to
 
 #### Upgrading from the old omp install
 
-Before this became a marketplace, `./install.sh --harness omp` copied translated agents into `~/.omp/agent/agents/`. Those files are not merely stale — omp resolves `~/.omp/agent/agents` **before** plugin roots and dedups first-wins, so an old copy **silently shadows the plugin's agent of the same name** and you run last month's prompts with no indication. Clear it before or after installing the plugin:
-
-```sh
-./tools/migrate-omp.sh           # report what would be removed
-./tools/migrate-omp.sh --apply   # remove it
-```
-
-It removes only what this repository demonstrably deployed — a translated agent whose generated provenance names a source that really exists here, or a skill that is a symlink into this checkout or byte-identical to its source — and reports anything else, untouched.
+Before this became a marketplace, `./install.sh --harness omp` copied translated agents into `~/.omp/agent/agents/`. Those files are not merely stale — omp resolves `~/.omp/agent/agents` **before** plugin roots and dedups first-wins, so an old copy **silently shadows the plugin's agent of the same name** and you run last month's prompts with no indication. Remove the old deployment, then install the plugin: `rm -rf ~/.omp/agent/agents ~/.omp/agent/skills` if those directories hold nothing but this repository's artifacts.
 
 The opencode installer keeps its own flags:
 
@@ -122,7 +115,7 @@ tools/build-plugins.py            # regenerate the trees in place
 tools/build-plugins.py --check    # build to a tempdir, diff, exit 1 on drift
 ```
 
-`--check` runs in CI on every pull request and push, so drift fails the build. **Editing a file under `plugins/` is a drift bug** of the same class as editing `analysts/` without touching the competency grid — the next build silently reverts it.
+`--check` is the gate. **Editing a file under `plugins/` is a drift bug** of the same class as editing `analysts/` without touching the competency grid — the next build silently reverts it.
 
 #### The version is derived, and deliberately not semver
 

@@ -60,28 +60,6 @@ The consuming harnesses' acceptance of a non-semver string SHALL be recorded hon
 - **THEN** it does not emit a semver string carrying the hash as build metadata
 - **AND** the reason is recorded, because that form is accepted by both harnesses yet never upgrades
 
-### Requirement: Continuous integration enforces the declared gates
-
-The drift check SHALL be run by automation on every pull request and on every push to a long-lived branch, because a committed generated tree whose gate is only documented will drift. The same automation SHALL validate the specifications and lint the shell entry points, those being the other properties this repository declares normative and does not otherwise test.
-
-On drift the automation SHALL fail. It SHALL NOT regenerate and commit the tree on the contributor's behalf: the generated diff belongs inside the reviewed change, where a mistaken source edit is visible as its full blast radius.
-
-#### Scenario: Drift fails the build
-
-- **WHEN** a generated file is committed out of step with its sources
-- **THEN** the automation exits non-zero naming that path
-- **AND** no rebuild is committed on the contributor's behalf
-
-#### Scenario: An invalid specification fails the build
-
-- **WHEN** a change or specification does not validate strictly
-- **THEN** the automation exits non-zero
-
-#### Scenario: A shell entry point regression fails the build
-
-- **WHEN** `install.sh`, `uninstall.sh`, or a sourced file under `tools/` acquires a lint error
-- **THEN** the automation exits non-zero
-
 ### Requirement: Agent-name resolution differs by harness and is documented
 
 A plugin agent's dispatch handle SHALL be documented per harness, because the harnesses disagree and a single documented form would be wrong for one of them. Verified against Claude Code 2.1.220: plugin agents are namespaced there, so the dispatch name is `<plugin>:<agent>` and the bare agent name fails as an unrecognised type. omp and opencode register agents flat, by bare name.

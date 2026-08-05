@@ -23,9 +23,6 @@ omp plugin install acordia-analysts@acordia --scope user
 claude plugin marketplace add ./     # Claude Code install from this checkout
 claude plugin install acordia-analysts@acordia --scope local
 
-./tools/migrate-omp.sh               # clear the retired ~/.omp/agent deployment that shadows the plugin
-./tools/migrate-omp.sh --apply
-
 ./install.sh                         # opencode only: symlink agents + skills into ~/.config/opencode/
 ./install.sh --copy                  # frozen snapshot instead of live symlinks
 ./install.sh --dry-run               # print actions, do nothing
@@ -38,7 +35,6 @@ opencode debug agent operational-analyst          # verify resolved mode, permis
 opencode debug skill reasoning-under-uncertainty  # verify a skill loads
 
 openspec validate --all --strict     # gate any change touching openspec/
-shellcheck -x install.sh uninstall.sh tools/*.sh
 ```
 
 Both `install.sh` and `uninstall.sh` are idempotent — safe to re-run. `tools/build-plugins.py` is deterministic: a second run leaves the tree byte-identical.
@@ -114,7 +110,7 @@ Follow opencode's frontmatter, not CyberStrike's superset. `docs/agents-skills-e
 ### Generated plugin trees (`plugins/**`, `.claude-plugin/`, `.omp-plugin/`)
 
 - **Generated build output, committed.** `tools/build-plugins.py` produces every file under those three paths from `analysts/`, `operators/`, and `commands/acordia/`. They are committed because a marketplace install clones the repository, and a plain build deletes them wholesale before regenerating so a renamed artifact cannot leave an orphan.
-- **`tools/build-plugins.py --check` is the gate, and CI runs it.** `.github/workflows/check.yml` runs it plus `openspec validate --all --strict` and `shellcheck -x` on every PR and push, and **fails** rather than auto-committing a rebuild. It builds to a tempdir and diffs, naming every missing, extra, and differing path. **Editing a file under `plugins/` is a drift bug of the same class as editing `analysts/` without touching the competency grid** — the next build reverts it silently.
+- **`tools/build-plugins.py --check` is the gate.** It builds to a tempdir and diffs, naming every missing, extra, and differing path. Run it after touching any source. **Editing a file under `plugins/` is a drift bug of the same class as editing `analysts/` without touching the competency grid** — the next build reverts it silently.
 - **The version is content-derived and not semver.** `1.0-<hash>`: `VERSION_EPOCH` by hand (bump on a roster or pillar change), plus 7 hex of sha256 over `VERSION_INPUTS` — the two pillars, `commands/acordia/`, and the generator itself. Never a git revision: the version lands in six committed files, so a git SHA would make the rebuild commit invalidate its own embedded SHA and `--check` would fail on every push forever. Non-semver is load-bearing — verified on omp 17.1.8, bare `omp plugin upgrade` reinstalls on unequal non-semver in either direction, while `1.0.0+aaa` → `1.0.0+bbb` compares equal and never upgrades. Claude Code accepts the string; its upgrade behaviour for one is unverified.
 - **Agent-name resolution differs by harness.** Claude Code namespaces plugin agents, so its Task tool needs `acordia-analysts:<agent>` and the bare name fails; omp and opencode are flat. Wrappers absorb the difference by naming the agent in prose.
 - **Two trees, because one `agents/*.md` cannot serve both harnesses.** Both read `tools` from the fixed `<plugin-root>/agents/` path, but Claude Code expects capitalised Claude tool names and omp expects lowercase omp names plus `spawns`; Claude Code's `agents` path override supplements rather than replaces `./agents`, so the two cannot be pointed elsewhere. Skills and commands are byte-identical across the trees; only `agents/` differs.
