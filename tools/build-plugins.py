@@ -273,9 +273,16 @@ def source_version(repo_root: Path) -> str:
         for item in files:
             if not item.is_file():
                 continue
+            relative = item.relative_to(repo_root)
+            # Only what actually ships may feed the hash. A stray `.DS_Store`,
+            # editor swapfile, or `__pycache__` entry is present on one machine
+            # and absent in a clone, which would make the version depend on
+            # whose checkout built it — CI caught exactly that on its first run.
+            if any(part.startswith(".") or part == "__pycache__" for part in relative.parts):
+                continue
             # The relative path is hashed alongside the bytes so that renaming a
             # skill changes the version even when its content does not.
-            digest.update(str(item.relative_to(repo_root)).encode("utf-8"))
+            digest.update(str(relative).encode("utf-8"))
             digest.update(b"\0")
             digest.update(item.read_bytes())
     return f"{VERSION_EPOCH}-{digest.hexdigest()[:7]}"
