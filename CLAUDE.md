@@ -29,10 +29,10 @@ Everything the repo does is build, deployment, or spec-workflow. There is no lin
 tools/build-plugins.py               # regenerate plugins/, .claude-plugin/, .omp-plugin/
 tools/build-plugins.py --check       # diff the committed trees against the generator; exit 1 on drift
 
-omp plugin marketplace add ./.       # omp install from this checkout — note `./.`, a bare `.` is rejected
-omp plugin install acordia-analysts@acordia --scope user
-claude plugin marketplace add ./     # Claude Code install from this checkout
+claude plugin marketplace add ./     # Claude Code install from this checkout — also serves omp
 claude plugin install acordia-analysts@acordia --scope local
+omp plugin marketplace add ./.       # omp-only install — note `./.`, a bare `.` is rejected
+omp plugin install acordia-analysts@acordia --scope user
 
 ./install.sh                         # opencode only: symlink agents + skills into ~/.config/opencode/
 ./install.sh --copy                  # frozen snapshot instead of live symlinks
@@ -49,6 +49,10 @@ openspec validate --all --strict     # gate any change touching openspec/
 ```
 
 Both `install.sh` and `uninstall.sh` are idempotent — safe to re-run. `tools/build-plugins.py` is deterministic: a second run leaves the tree byte-identical.
+
+**One plugin runtime serves both plugin harnesses; the canonical install is Claude Code's.** omp has no marketplace runtime of its own: `listClaudePluginRoots()` reads `~/.claude/plugins/installed_plugins.json` alongside omp's own registry, and skills, agents, commands, hooks, tools, and MCP servers all arrive through the single `claude-plugins` capability provider — omp's docs: *"Marketplace roots are excluded here [`omp-plugins`] to avoid duplicate discovery and are handled by `claude-plugins`."* So registering the marketplace in both harnesses is double registration (omp wins duplicate ids); do it in omp alone only when Claude Code is absent, or to test a checkout inside an omp profile. Private-repo clones need the SSH source form — `https://` fails with `Repository not found` unless git itself is credentialed, which an authenticated `gh` does not do.
+
+**Verify against `disabledProviders` before believing an install failed.** With `claude-plugins` listed in the profile's `config.yml`, both plugins install cleanly and contribute nothing at all — `skill://` answers `Available skills: none`, the agent roster shows no ACORDIA agent (verified, omp 17.2.9). The switch is all-or-nothing and machine-wide: enabling it also loads every user-scoped Claude Code plugin into omp, hooks included, and omp offers no per-marketplace or per-plugin filter (`skills.includeSkills` allowlists skill names only; agents, commands, and hooks have no equivalent). Do not answer "the plugin does not load in omp" with a native-directory install — `~/.omp/agent/agents/` shadows plugin agents first-wins and silently freezes users on stale prompts.
 
 ## Source of truth — do not skip this
 

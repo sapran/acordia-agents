@@ -6,7 +6,7 @@ Runnable [opencode](https://opencode.ai) agents and skills derived from the ACOR
 
 Markdown-only artifacts — agent files and skill files — authored to opencode's schema. No application code. Each artifact traces back to a specific row or paragraph in a source competency map maintained separately (see [Source of truth](#source-of-truth)).
 
-Three harnesses can load them. omp and Claude Code install them as **plugins**, from the marketplace catalogs this repository ships at its root; the plugin trees under `plugins/` are generated from the opencode sources by `tools/build-plugins.py` and committed, because a marketplace install clones the repository. opencode has no plugin system of any kind — its "plugins" are JS/TS hook modules that cannot ship markdown — so it keeps `install.sh`, which symlinks the sources into `~/.config/opencode/`.
+Three harnesses can load them. omp and Claude Code install them as **plugins**, from the marketplace catalogs this repository ships at its root; the plugin trees under `plugins/` are generated from the opencode sources by `tools/build-plugins.py` and committed, because a marketplace install clones the repository. The two plugin harnesses share one runtime: omp reads Claude Code's plugin registry alongside its own, so a single Claude Code install serves both (see [Install](#install)). opencode has no plugin system of any kind — its "plugins" are JS/TS hook modules that cannot ship markdown — so it keeps `install.sh`, which symlinks the sources into `~/.config/opencode/`.
 
 ## Scope
 
@@ -54,22 +54,31 @@ acordia-agents/
 
 ## Install
 
-Three paths, one per harness.
+Two paths for three harnesses. **omp inherits Claude Code's plugin installs — install once, in Claude Code, and omp has it too.**
 
 ```sh
-# omp
-omp plugin marketplace add sapran/acordia-agents
-omp plugin install acordia-analysts@acordia      # add acordia-operators@acordia to opt into the offensive pillar
-
-# Claude Code
-/plugin marketplace add sapran/acordia-agents
-/plugin install acordia-analysts@acordia
+# omp + Claude Code — one install serves both
+claude plugin marketplace add sapran/acordia-agents
+claude plugin install acordia-analysts@acordia   # add acordia-operators@acordia to opt into the offensive pillar
 
 # opencode — it has no plugin system
 ./install.sh
 ```
 
-In omp, `/reload-plugins` refreshes skills and commands after an install; new tools or hooks would need a restart. **omp only surfaces marketplace plugins while the `claude-plugins` capability provider is enabled** — if `claude-plugins` appears in `disabledProviders` in `~/.omp/agent/config.yml`, the plugin installs cleanly and contributes nothing. Remove that line.
+Use the SSH form (`git@github.com:sapran/acordia-agents.git`) when the clone needs a key — a private repository over `https://` fails with `Repository not found` unless git itself is credentialed, and an authenticated `gh` does not credential git.
+
+Why one install covers both: omp has no marketplace runtime of its own. `listClaudePluginRoots()` reads Claude Code's `~/.claude/plugins/installed_plugins.json` **and** omp's own registry, and every capability it yields — skills, agents, commands, hooks, tools, MCP servers — hangs off the single `claude-plugins` capability provider. omp's own documentation states the split: *"Marketplace roots are excluded here [the `omp-plugins` provider] to avoid duplicate discovery and are handled by `claude-plugins`."* So `omp plugin marketplace add` on top of a Claude Code install is double registration of the same trees — omp is authoritative for duplicate plugin ids, so it buys nothing but upkeep. Reach for it only where Claude Code is absent:
+
+```sh
+omp plugin marketplace add sapran/acordia-agents
+omp plugin install acordia-analysts@acordia
+```
+
+**The gate is `disabledProviders`.** While `claude-plugins` is listed in the active profile's `config.yml` (`~/.omp/agent/config.yml`, or `~/.omp/profiles/<name>/agent/config.yml` under `--profile`), the plugin installs cleanly and contributes **exactly nothing**: `skill://<any>` answers `Available skills: none` and no ACORDIA agent joins the roster, whichever marketplace registered it (verified, omp 17.2.9). Remove that entry.
+
+Removing it is all-or-nothing. The same switch also loads every user-scoped Claude Code plugin on the machine into omp — their skills, agents, commands, *and hooks*. omp exposes no per-marketplace, per-root, or per-plugin filter; `skills.includeSkills` can allowlist skill names, but agents, commands, and hooks have no equivalent. If keeping your Claude Code plugins out of omp matters more than ACORDIA being live there, the provider stays disabled and neither loads.
+
+In omp, `/reload-plugins` refreshes skills and commands after an install; new tools or hooks need a restart.
 
 #### Upgrading from the old omp install
 
