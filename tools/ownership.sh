@@ -15,8 +15,9 @@
 #   copied agent -> must be byte-identical to the source, or be a translated
 #                   file whose provenance names that source
 #   copied skill -> its SKILL.md must be byte-identical to the source's
+#   copied command -> must be byte-identical to the source wrapper
 #
-# Usage: owned_by_repo <destination> <source> <agent|skill>
+# Usage: owned_by_repo <destination> <source> <agent|skill|command>
 owned_by_repo() {
   local dst="$1" src="$2" kind="$3"
 
@@ -36,6 +37,11 @@ owned_by_repo() {
       ;;
     skill)
       cmp -s "$dst/SKILL.md" "$src/SKILL.md"
+      ;;
+    command)
+      # A command wrapper is deployed verbatim — there is no translated form,
+      # so byte-identity is the whole test.
+      cmp -s "$dst" "$src"
       ;;
   esac
 }
