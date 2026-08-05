@@ -30,10 +30,11 @@ import yaml
 BASE_TOOLS = ["read", "grep", "glob", "bash", "web_search", "todo"]
 
 # opencode's `list` tool has no omp counterpart — in omp a directory path
-# handed to `read` enumerates it. This paragraph is byte-identical across all
-# four analyst files, so an exact match is a safe contract; a miss means the
-# prompts changed shape and the translation must be revisited rather than
-# quietly shipping a prompt that names a nonexistent tool.
+# handed to `read` enumerates it. This is the legacy analyst Tool-discipline
+# paragraph: a byte-exact fallback for prompts still carrying that wording.
+# The current analyst prompts name no `list` tool, so the rewrite is a no-op
+# for them; the post-rewrite assertion below is what actually guarantees no
+# `list` token survives into a generated prompt, whatever the wording.
 TOOL_DISCIPLINE_SRC = (
     "Use native tools for the filesystem: `read` for contents, `grep` for content "
     "search, `glob` for path/name search, `list` for directories. Reach for `bash` "
@@ -56,6 +57,15 @@ TOOL_DISCIPLINE_OMP = (
 # the post-rewrite assertion below is what actually guarantees no `list` survives.
 INLINE_LIST_SRC = "`read`/`grep`/`glob`/`list`"
 INLINE_LIST_OMP = "`read`/`grep`/`glob`"
+
+# omp renders every agent in one flat picker shared with its own built-ins and
+# the user's own agents, so the pillar needs a visual signal the way the
+# `ACORDIA <pillar> — ` description tag carries the textual one. The value is
+# derived from the `metadata.acordia` block each source already declares —
+# analysts name the orchestrator in `leg`, operators in `role` — rather than
+# from a filename table, which would be a second source of the same fact.
+ORCHESTRATOR_COLOR = "cyan"
+SPECIALIST_COLOR = "blue"
 
 DEEP_HEADINGS = ("## Your defining spine (deep)", "## Your specialist depth (deep)")
 
@@ -108,6 +118,23 @@ def has_bash_denies(entry) -> bool:
     become prompt-level guardrails under omp rather than enforced ones.
     """
     return isinstance(entry, dict) and any(verdict == "deny" for verdict in entry.values())
+
+
+def agent_color(meta: dict) -> str:
+    """Orchestrators read apart from their specialists in omp's flat picker.
+
+    The analyst pillar declares the distinction in `metadata.acordia.leg`, the
+    operators pillar in `metadata.acordia.role`; either naming `orchestrator`
+    is the primary. Anything else — including a source with no `acordia` block
+    at all — is a specialist.
+    """
+    metadata = meta.get("metadata")
+    acordia = metadata.get("acordia") if isinstance(metadata, dict) else None
+    if not isinstance(acordia, dict):
+        return SPECIALIST_COLOR
+    if "orchestrator" in (acordia.get("leg"), acordia.get("role")):
+        return ORCHESTRATOR_COLOR
+    return SPECIALIST_COLOR
 
 
 def deep_skills(body: str, source: Path) -> list[str]:
@@ -216,7 +243,12 @@ def translate(source: Path, *, autoload: str) -> str:
             "prompt-level for writes and enforced only for `edit`"
         )
 
-    out: dict = {"name": name, "description": description, "tools": tools}
+    out: dict = {
+        "name": name,
+        "description": description,
+        "color": agent_color(meta),
+        "tools": tools,
+    }
     if spawns:
         out["spawns"] = spawns
     if autoload == "deep":
