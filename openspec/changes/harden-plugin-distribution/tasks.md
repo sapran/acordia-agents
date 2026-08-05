@@ -34,7 +34,8 @@
 - [x] 6.3 Claude Code honours the scoped mapping: `fusion-analyst` **has** `Write` while `target-network-analyst` does not, proving the distinction and not merely that something is denied. The write itself was not executed: Claude Code's permission layer gates external-directory writes in headless mode for any agent.
 - [x] 6.4 A fresh single-branch clone carries all four plugin trees complete, each with its manifest — nothing needed is gitignored, so relative plugin sources resolve from a clone.
 - [x] 6.5 `openspec validate --all --strict` passes.
-- [ ] 6.6 **Blocked until this is on the default branch (`develop`):** `omp plugin marketplace add sapran/acordia-agents` — the GitHub shorthand clones the default branch and `add` takes no ref flag — and Claude Code's upgrade behaviour from a git source.
+- [x] 6.6 GitHub-source install, verified after merging to `develop`: `omp plugin marketplace add sapran/acordia-agents` resolves the clone, selects the **omp** tree over the Claude one, and installs `2.0.0`. Claude Code installs from the same shorthand and reports `2.0.0`.
+- [x] 6.7 Claude Code's upgrade path, now answerable from a git source: **there isn't one.** `claude plugin update <name>` fails with "Plugin not found" for a marketplace plugin from either a directory or a GitHub source, and `claude plugin install` on an already-installed plugin reports "already installed" without refreshing. Only uninstall-then-reinstall updates it. The version string is therefore informational in Claude Code, which retroactively confirms the semver-versus-non-semver question was an omp-only concern.
 
 ## 7. Written and then reverted during this change
 

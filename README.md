@@ -128,7 +128,7 @@ Bump it, then rebuild, so the new version lands in the six generated files that 
 
 Real semver, and monotonic on purpose. Verified against omp 17.1.8: bare `omp plugin upgrade` is the path that compares versions, a newer semver upgrades, and an older one is skipped. Two things to avoid — never hang a hash or build metadata off it, because `1.0.0+aaa` and `1.0.0+bbb` compare **equal** and would never upgrade; and note that `omp plugin upgrade <name>@<marketplace>` with an explicit target reinstalls unconditionally and compares nothing, so it is useless for testing this.
 
-Claude Code's own upgrade behaviour is **unverified** — a directory-sourced marketplace is read live there, so the question is only answerable from a git source.
+**Claude Code has no working upgrade path for marketplace plugins** (verified, 2.1.220): `claude plugin update` fails with "Plugin not found" from either a directory or a GitHub source, and re-running `install` reports "already installed" without refreshing. Only uninstall-then-reinstall picks up a new version, so the version string is informational there. Bump it anyway — omp is the harness that acts on it.
 
 Two trees exist because one `agents/*.md` cannot serve both harnesses: they read `tools` from the same fixed `<plugin-root>/agents/` path, but Claude Code expects capitalised Claude tool names while omp expects lowercase omp names and additionally needs `spawns`. Skills and commands are byte-identical across the trees; only `agents/` differs. Two catalogs exist for the same reason: omp reads `.omp-plugin/marketplace.json` in preference to `.claude-plugin/marketplace.json`, so shipping both hands each harness its own tree from one checkout.
 
