@@ -71,6 +71,17 @@ omp plugin install acordia-analysts@acordia      # add acordia-operators@acordia
 
 In omp, `/reload-plugins` refreshes skills and commands after an install; new tools or hooks would need a restart. **omp only surfaces marketplace plugins while the `claude-plugins` capability provider is enabled** — if `claude-plugins` appears in `disabledProviders` in `~/.omp/agent/config.yml`, the plugin installs cleanly and contributes nothing. Remove that line.
 
+#### Upgrading from the old omp install
+
+Before this became a marketplace, `./install.sh --harness omp` copied translated agents into `~/.omp/agent/agents/`. Those files are not merely stale — omp resolves `~/.omp/agent/agents` **before** plugin roots and dedups first-wins, so an old copy **silently shadows the plugin's agent of the same name** and you run last month's prompts with no indication. Clear it before or after installing the plugin:
+
+```sh
+./tools/migrate-omp.sh           # report what would be removed
+./tools/migrate-omp.sh --apply   # remove it
+```
+
+It removes only what this repository demonstrably deployed — a translated agent whose generated provenance names a source that really exists here, or a skill that is a symlink into this checkout or byte-identical to its source — and reports anything else, untouched.
+
 The opencode installer keeps its own flags:
 
 ```sh
@@ -86,7 +97,7 @@ Both scripts are idempotent — safe to re-run.
 
 ### Invoking them: the plugin namespace
 
-Agents are dispatched by bare name, in a picker shared with the harness's own. So the distribution also carries one slash-command wrapper per agent, giving a namespaced entry point. **The namespace is the plugin name**, applied by the harness itself:
+Agents are dispatched by name, in a picker shared with the harness's own. So the distribution also carries one slash-command wrapper per agent, giving a namespaced entry point. **The namespace is the plugin name**, applied by the harness itself:
 
 ```
 /acordia-analysts:fusion       what all of it together means, and how good the take is
@@ -100,6 +111,8 @@ Short handles — `analyst`, `target`, `defender`, `fusion`, `webapp`, `mobile`,
 
 **Agent names and skill slugs stay unprefixed on purpose.** Agent dispatch is an exact-name lookup and skills are selected by description match, so a slug prefix would isolate nothing — while breaking the grid bijection and every `skill://` reference. Provenance rides on the `ACORDIA <pillar> — ` description tag, the generated `color`, and this command namespace instead.
 
+**How the agent name itself resolves differs by harness.** Verified against Claude Code 2.1.220: plugin agents are namespaced there too, so the Task tool takes `acordia-analysts:target-network-analyst` and the **bare name fails** with "agent type is not available". omp registers plugin agents flat, by bare name — `fusion-analyst` dispatches. opencode reads the source files directly, also flat. The command wrappers paper over the difference: a wrapper names the agent in prose and the harness resolves it in its own idiom.
+
 ### Generated plugin trees
 
 Everything under `plugins/`, `.claude-plugin/`, and `.omp-plugin/` is build output produced by `tools/build-plugins.py` from the sources under `analysts/`, `operators/`, and `commands/acordia/`. It is committed because a marketplace install clones the repository, and it is regenerated wholesale on every build so a renamed skill cannot leave an orphan behind.
@@ -109,7 +122,17 @@ tools/build-plugins.py            # regenerate the trees in place
 tools/build-plugins.py --check    # build to a tempdir, diff, exit 1 on drift
 ```
 
-`--check` is the gate. **Editing a file under `plugins/` is a drift bug** of the same class as editing `analysts/` without touching the competency grid — the next build silently reverts it.
+`--check` runs in CI on every pull request and push, so drift fails the build. **Editing a file under `plugins/` is a drift bug** of the same class as editing `analysts/` without touching the competency grid — the next build silently reverts it.
+
+#### The version is derived, and deliberately not semver
+
+`version` is `1.0-<hash>`: a hand-kept epoch plus seven hex characters of a sha256 over `analysts/`, `operators/`, `commands/acordia/`, and `tools/build-plugins.py`. Bump the epoch when the roster changes; the hash takes care of everything else. The generator is hashed alongside the sources so that a change to *what it emits* also reaches installed users.
+
+It is content-derived rather than a git revision because the version is written into six committed files: a commit that lands a rebuild would change the SHA that rebuild embeds, and `--check` would then fail on every push forever. Content hashing has no such fixpoint, and keeps working in a dirty tree, a shallow clone, or a tarball with no `.git`.
+
+It is **not valid semver on purpose.** Verified against omp 17.1.8 — `omp plugin upgrade` with no argument is the path that compares versions, and it reinstalls when two non-semver strings are unequal, in either direction. Two semver versions differing only in build metadata (`1.0.0+aaa` → `1.0.0+bbb`) compare **equal** and never upgrade, so the obvious-looking `1.0.0+<hash>` would have been a silent no-op. Note that `omp plugin upgrade <name>@<marketplace>` with an explicit target reinstalls unconditionally and compares nothing — do not use it to test this.
+
+Claude Code accepts the non-semver string (install, `details`, and `list` all render it), though its own upgrade behaviour for one is **unverified**: a directory-sourced marketplace is read live there, so the question can only be answered from a git source.
 
 Two trees exist because one `agents/*.md` cannot serve both harnesses: they read `tools` from the same fixed `<plugin-root>/agents/` path, but Claude Code expects capitalised Claude tool names while omp expects lowercase omp names and additionally needs `spawns`. Skills and commands are byte-identical across the trees; only `agents/` differs. Two catalogs exist for the same reason: omp reads `.omp-plugin/marketplace.json` in preference to `.claude-plugin/marketplace.json`, so shipping both hands each harness its own tree from one checkout.
 
@@ -168,4 +191,4 @@ tools/build-plugins.py --check              # the plugin trees match their sourc
 opencode debug agent operational-analyst    # resolves permissions, mode, prompt
 ```
 
-Expect `edit: deny` on all four analyst agents (with the `.acordia/reports/**` exception on `operational-analyst` and `fusion-analyst`); `task: deny` on the three legs. In omp and Claude Code, confirm the plugin's commands appear as `/acordia-analysts:*` and that the agents resolve by bare name.
+Expect `edit: deny` on all four analyst agents (with the `.acordia/reports/**` exception on `operational-analyst` and `fusion-analyst`); `task: deny` on the three legs. In omp and Claude Code, confirm the plugin's commands appear as `/acordia-analysts:*`. Agents resolve by bare name in omp, and as `acordia-analysts:<agent>` in Claude Code.

@@ -6,3 +6,5 @@
 .vscode/
 .claude/worktrees/
 .worktrees/
+__pycache__/
+*.pyc
