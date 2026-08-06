@@ -1,6 +1,6 @@
 ---
 name: exhaustive-data-processing
-description: Use when bulk collected material lands for analysis — a file dump, archive, log bundle, memory capture, or dataset too large for a single read to capture — and it must be processed in full: cover 100% of it with a script-first tool pass, read only located regions into context, and prove coverage rather than concluding from the opening portion.
+description: 'Use when bulk collected material lands for analysis — a file dump, archive, log bundle, memory capture, or dataset too large for a single read to capture — and it must be processed in full: cover 100% of it with a script-first tool pass, read only located regions into context, and prove coverage rather than concluding from the opening portion.'
 metadata:
   acordia:
     grid_row: null

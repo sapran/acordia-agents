@@ -20,10 +20,12 @@ After an operational action, determine whether the target system genuinely chang
 
 ## Method
 - Define the expected effect concretely before acting: what state must be true on the target if it worked.
-- Gather independent observables — not just the tool's own success return, but second-source confirmation (behaviour change, downstream signal, out-of-band indicator).
-- Distinguish delivery success from effect: code executed vs objective achieved vs objective persisted.
+- Inventory the observable channels before reading them — command return, target-side logs, downstream service signals, out-of-band indicators — and record which are first-party (the tool's own report) and which are independent, because the split decides how much each is worth.
+- Gather independent observables with bounded, exhaustive reads: scope each source to the action's time window, but process every matching record in that window rather than the first hit, so a delayed or buffered effect is not missed; never rest a verdict on the tool's own success return alone.
+- Distinguish delivery success from effect: code executed vs objective achieved vs objective persisted, and cite each supporting observable as `<log>:<offset>` or `<log>@L<line>`, capturing any transient downstream or out-of-band signal to a file first so the verdict stays auditable back to evidence.
 - Watch for deception and honeypot tells — effects that are too clean, mirrored responses, or verification channels the defender controls.
 - Judge landed / partial / failed / uncertain, and decide whether to re-attempt, wait, or back off to avoid burning access.
+- Degradation: if only the first-party return is available and no independent channel can be read, cap the verdict at "delivered, effect unconfirmed" and say so rather than reporting success; if a verification channel is one the defender may control, treat it as untrusted and flag the gap.
 
 ## Signals / outputs
 - Verdict on effect with the independent evidence supporting it.

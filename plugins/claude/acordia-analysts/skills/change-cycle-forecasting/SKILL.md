@@ -19,11 +19,13 @@ Predict the timing of target-side change — patches, version upgrades, migratio
 - When deciding whether to move now or wait for change-induced exposure (migration windows, fresh deployments, transition states).
 
 ## Method
+- Inventory the change evidence before forecasting: enumerate the sources you hold — changelogs, version banners, cert transparency records, tender notices, job postings, DNS/host snapshots — with `ls`/`find`/`glob` or a saved-query list, and record each with its capture date, since a forecast is only as fresh as its stalest input.
 - Identify the target's change drivers: vendor patch cadence, compliance deadlines, contract/renewal cycles, fiscal timing, EOL/support dates.
-- Read observable change signals — job postings, tender notices, changelog/version drift, cert renewals, new subdomains/hosts appearing.
+- Read observable change signals over exhaustive coverage — scan the full changelog or cert history rather than the latest entry, process every version string and host record a query returns, and read only the located deltas into context; a rotation cadence inferred from the most recent entry alone is a head sample.
 - Model the maintenance rhythm: change windows, freeze periods, who approves, how slow they historically are to patch.
-- Forecast the specific transition and its exposure: what is briefly weaker during a migration or rollout, and for how long.
+- Forecast the specific transition and its exposure: what is briefly weaker during a migration or rollout, and for how long, citing the evidence behind each predicted date as `<source>:<offset>` or `<source>@L<line>` (or source-plus-capture-date for a live-queried signal).
 - Convert to an operational timeline — act-before-close vs exploit-the-churn — with confidence and refresh triggers.
+- Degradation: if a changelog or release feed is unavailable, fall back to observable drift (banners, cert dates, host churn) and lower the forecast's confidence explicitly; if no change evidence is obtainable at all, say the timing is unknown rather than anchoring on cadence priors.
 
 ## Signals / outputs
 - Forecast of likely patch/upgrade/rotation dates with confidence and the evidence behind each.
