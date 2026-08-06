@@ -643,9 +643,10 @@ way:
 The path mirrors the analyst pillar's existing `.acordia/reports/` sink, so the
 two pillars share one operator-visible convention. The journal is **discipline,
 not a permission scope**: it is described in every operator prompt's body, but
-no `edit` rule attempts to confine writes to it — omp scopes a tool by name
-only, never by path, so a scoped rule would hold in opencode and silently
-evaporate in omp. `scope_check`'s substitution follows the same logic as the
-analyst pillar's read-only posture: an absent or silent scope file means a
-target is **untested**, never implicitly in scope.
+no `edit` rule attempts to confine writes to it — a path scope on a write tool
+is unenforceable in every harness, because `bash: allow` is an open write
+channel at any path. That omp scopes a tool by name only, never by path, is an
+additional limitation rather than the reason. `scope_check`'s substitution
+follows the same logic as the analyst pillar's read-only posture: an absent or
+silent scope file means a target is **untested**, never implicitly in scope.
 
