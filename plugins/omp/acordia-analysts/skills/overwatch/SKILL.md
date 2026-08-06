@@ -19,11 +19,13 @@ Maintain a live read on whether the defender has detected the operation by fusin
 - The moment any anomaly on the blue side or in your own channels suggests attention.
 
 ## Method
-- Collect from inside where you have reach: SIEM/EDR consoles, alert queues, ticketing/SOAR, analyst chat, email — and read what the defender knows and is doing.
+- Inventory your reach into the defender's surfaces first — which SIEM/EDR consoles, alert queues, ticketing/SOAR boards, analyst chat channels, and mailboxes you can actually see — and record each source with its access path before reading, so coverage is known rather than assumed.
+- Collect from inside with bounded, exhaustive queries: scope each console read to a time window or a rule/host filter rather than scrolling the whole feed, but process every alert and ticket that window returns, not just the first screenful — a missed alert in the tail is the one that ends the operation.
 - Fuse with external signals: sudden credential/token invalidation, blocked C2, sinkholed domains, new EDR pushes, threat-intel or vendor chatter, staff behavior changes.
-- Correlate blue activity to your own timeline — did an alert or investigation follow a specific action of yours? — to gauge whether they are onto the operation vs. routine noise.
+- Correlate blue activity to your own timeline — did an alert or investigation follow a specific action of yours? — to gauge whether they are onto the operation vs. routine noise, and cite each corroborating observation by its source and timestamp (`<console-or-queue>@<query>#<timestamp/alert-id>`), since a console read has no file offset to anchor to.
 - Track dwell indicators: is the response widening, targeting your artifacts, or preparing containment (isolation, resets, forensics collection).
 - Produce a standing detection-likelihood estimate and a trigger threshold for each response option; never let the estimate go stale.
+- Degradation: if a console or queue is unreachable, fall back to the external signals and say plainly which internal source is dark and how much that widens the uncertainty; if you have no blue-side visibility at all, flag the blind spot rather than reporting a false all-clear.
 
 ## Signals / outputs
 - A live detection-likelihood read with the evidence behind it and its confidence.

@@ -53,7 +53,7 @@ import yaml
 # 17.1.8: a newer semver upgrades and an older one is skipped. Do NOT hang a
 # hash or build metadata off it — `1.0.0+aaa` and `1.0.0+bbb` compare EQUAL and
 # would never upgrade.
-VERSION = "2.3.0"
+VERSION = "2.4.0"
 MARKETPLACE_NAME = "acordia"
 OWNER = {"name": "ACORDIA"}
 REPOSITORY = "https://github.com/sapran/acordia-agents"
