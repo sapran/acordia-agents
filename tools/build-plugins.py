@@ -328,7 +328,7 @@ def read_skill(source: Path) -> dict:
 
     description = meta.get("description")
     if not isinstance(description, str) or not 1 <= len(description) <= 1024:
-        length = len(description) if isinstance(description, str) else "absent"
+        length = len(description) if isinstance(description, str) else repr(description)
         raise TranslationError(
             f"{source}: `description` must be 1–1024 characters, got {length} "
             "(both harnesses select skills by description match)"
@@ -674,11 +674,14 @@ def relative_files(root: Path) -> set[Path]:
     return files
 
 
-# Paths whose contents reach an installed user. `tools/` is excluded on
-# purpose: changing the generator without changing its output reaches nobody,
-# and when it does change output, the drift comparison below catches it
-# independently. `docs/` and `openspec/` reach no installed user at all.
-VERSIONED_SOURCES = ("analysts", "operators", "commands/acordia")
+# The version guards what actually reaches an installed user: the generated
+# trees. Gating on the sources (`analysts/`, `operators/`, `commands/acordia/`)
+# would miss a generator change that alters output without touching a source
+# file, and the drift comparison does not backstop that — it compares built
+# bytes against committed bytes, and both carry the new output once the author
+# rebuilds. A generator refactor that produces identical output leaves these
+# paths untouched and correctly demands no bump.
+VERSIONED_SOURCES = GENERATED_PATHS
 
 # Tried in order. `develop` is the integration branch; `origin/HEAD` points at
 # `main`. The base is a merge base rather than HEAD so the obligation is one
@@ -693,7 +696,8 @@ def git_output(repo_root: Path, *args: str) -> str | None:
             ["git", *args],
             cwd=repo_root,
             capture_output=True,
-            text=True,
+            encoding="utf-8",
+            errors="replace",
             check=True,
         )
     except (OSError, subprocess.CalledProcessError):
@@ -718,35 +722,47 @@ def base_version(repo_root: Path, base: str) -> tuple[int, int, int] | None:
 
 
 def version_gate(repo_root: Path) -> list[str]:
-    """Refuse a source change that carries no version bump.
+    """Refuse a generated-output change that carries no version bump.
 
     Absence of evidence never fails: no git, no base branch, or an unparseable
     version skips the gate. A missed bump is a silent no-op the next release
     corrects, while a wedged `--check` costs trust in every gate it carries.
     """
-    base = None
+    tip = base = None
     for ref in BASE_REFS:
         if git_output(repo_root, "rev-parse", "--verify", "--quiet", ref) is None:
             continue
         merge_base = git_output(repo_root, "merge-base", "HEAD", ref)
         if merge_base and merge_base.strip():
-            base = merge_base.strip()
+            tip, base = ref, merge_base.strip()
             break
 
     if base is None:
         print("build-plugins: version gate skipped (no comparison base)", file=sys.stderr)
         return []
 
+    # Diff the generated surface against the merge base — everything this branch
+    # changed — and add files git has never been told about, so a new skill's
+    # freshly generated output is not invisible to `git diff`.
     changed = git_output(repo_root, "diff", "--name-only", base, "--", *VERSIONED_SOURCES)
     if changed is None:
         print("build-plugins: version gate skipped (git could not diff)", file=sys.stderr)
         return []
+    untracked = git_output(
+        repo_root, "ls-files", "--others", "--exclude-standard", "--", *VERSIONED_SOURCES
+    )
 
-    sources = [line for line in changed.splitlines() if line.strip()]
+    sources = sorted(
+        {line for line in (changed + "\n" + (untracked or "")).splitlines() if line.strip()}
+    )
     if not sources:
         return []
 
-    was = base_version(repo_root, base)
+    # The obligation is relative to what is already published, so read the base
+    # version from the integration branch's tip, not the fork point: two
+    # branches forking at the same version must not both ship it, and a branch
+    # that later merges the integration branch must not regress below it.
+    was = base_version(repo_root, tip)
     now = semver(VERSION)
     if was is None or now is None:
         print("build-plugins: version gate skipped (unparseable version)", file=sys.stderr)
@@ -759,7 +775,7 @@ def version_gate(repo_root: Path) -> list[str]:
         return ".".join(str(part) for part in parts)
 
     problems = [
-        f"  source changed since {base[:9]} but VERSION did not move "
+        f"  generated output changed but VERSION did not move past {tip} "
         f"({dotted(was)} -> {dotted(now)}):"
     ]
     problems += [f"    {path}" for path in sources]

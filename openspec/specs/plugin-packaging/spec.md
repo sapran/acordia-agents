@@ -191,9 +191,9 @@ The version SHALL NOT be derived from source content or from a git revision, and
 
 A targeted upgrade naming one plugin reinstalls unconditionally and compares nothing. It SHALL NOT be used as evidence of version semantics.
 
-The obligation SHALL additionally be gate-checked, because stating it in contributor guidance did not prevent a source artifact from being committed without a bump. `tools/build-plugins.py --check` SHALL compare the working tree against a git base and SHALL exit non-zero when any tracked file under `analysts/`, `operators/`, or `commands/acordia/` differs from that base while the declared version does not exceed the base's version, compared as a semver tuple.
+The obligation SHALL additionally be gate-checked, because stating it in contributor guidance did not prevent a source artifact from being committed without a bump. `tools/build-plugins.py --check` SHALL exit non-zero when any generated artifact under `plugins/`, `.claude-plugin/`, or `.omp-plugin/` — the surface that actually reaches an installed user — differs from the git base, whether that artifact is already tracked or newly added, while the declared version does not exceed the published version, compared as a semver tuple. Gating on the generated surface rather than on the source directories is deliberate: a change to the generator itself can alter emitted output without touching any source file, and the drift comparison does not backstop that, because it compares built bytes against committed bytes and both carry the new output once the author rebuilds.
 
-The base SHALL be the merge base with the integration branch, so the obligation is one bump per release rather than one per commit; a branch that bumps once and then edits further sources SHALL pass. When git is unavailable, the tree is not a git checkout, or no base branch resolves, the check SHALL report that the version gate was skipped and SHALL NOT fail — an unresolvable base is not evidence of a missing bump.
+The set of changed artifacts SHALL be diffed against the merge base with the integration branch, so the obligation is one bump per release rather than one per commit; a branch that bumps once and then edits further artefacts SHALL pass. The published version SHALL be read from the integration branch's tip, not from the merge base, because the obligation is relative to what is already released: two branches forking at the same version must not both ship it, and a branch that later merges the integration branch must not regress below it. When git is unavailable, the tree is not a git checkout, no base branch resolves, or a version cannot be parsed, the check SHALL report that the version gate was skipped and SHALL NOT fail — an unresolvable base is not evidence of a missing bump.
 
 The gate SHALL apply to `--check` only and SHALL NOT apply to a plain build, because a plain build runs continuously while editing and failing it on an unbumped version would make the generator unusable for its primary purpose.
 
@@ -221,24 +221,24 @@ The gate SHALL apply to `--check` only and SHALL NOT apply to a plain build, bec
 - **THEN** it carries no hash and no build metadata
 - **AND** the reason is recorded, because that form is accepted by both harnesses yet never upgrades
 
-#### Scenario: A source change with no bump fails the check
+#### Scenario: A generated change with no bump fails the check
 
-- **WHEN** a tracked file under `analysts/`, `operators/`, or `commands/acordia/` differs from the base and the declared version equals the base's version
-- **THEN** `tools/build-plugins.py --check` exits non-zero naming the changed source paths and both versions
+- **WHEN** a generated artifact under `plugins/`, `.claude-plugin/`, or `.omp-plugin/` differs from the base — whether already tracked or newly added — and the declared version does not exceed the published version
+- **THEN** `tools/build-plugins.py --check` exits non-zero naming the changed artifacts and both versions
 
-#### Scenario: A source change with a bump passes
+#### Scenario: A generated change with a bump passes
 
-- **WHEN** source artifacts differ from the base and the declared version is strictly greater than the base's version
+- **WHEN** generated artifacts differ from the base and the declared version is strictly greater than the published version
 - **THEN** the version gate passes and `--check` reports only whatever generated-tree drift it finds independently
 
 #### Scenario: One bump covers a whole branch
 
-- **WHEN** a branch has already bumped the version above the base and then changes further source artifacts without bumping again
+- **WHEN** a branch has already bumped the version above the published version and then changes further artefacts without bumping again
 - **THEN** the version gate passes, because the obligation is one bump per release rather than one per commit
 
-#### Scenario: A change touching no source artifact needs no bump
+#### Scenario: A change touching no generated artifact needs no bump
 
-- **WHEN** the only differences from the base lie outside `analysts/`, `operators/`, and `commands/acordia/` — documentation or planning artifacts, for example
+- **WHEN** the only differences from the base leave the generated trees untouched — a documentation or planning-artifact edit, for example
 - **THEN** the version gate passes with the version unchanged
 
 #### Scenario: An unresolvable base skips rather than fails
