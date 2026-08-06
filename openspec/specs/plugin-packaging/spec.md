@@ -191,6 +191,12 @@ The version SHALL NOT be derived from source content or from a git revision, and
 
 A targeted upgrade naming one plugin reinstalls unconditionally and compares nothing. It SHALL NOT be used as evidence of version semantics.
 
+The obligation SHALL additionally be gate-checked, because stating it in contributor guidance did not prevent a source artifact from being committed without a bump. `tools/build-plugins.py --check` SHALL compare the working tree against a git base and SHALL exit non-zero when any tracked file under `analysts/`, `operators/`, or `commands/acordia/` differs from that base while the declared version does not exceed the base's version, compared as a semver tuple.
+
+The base SHALL be the merge base with the integration branch, so the obligation is one bump per release rather than one per commit; a branch that bumps once and then edits further sources SHALL pass. When git is unavailable, the tree is not a git checkout, or no base branch resolves, the check SHALL report that the version gate was skipped and SHALL NOT fail — an unresolvable base is not evidence of a missing bump.
+
+The gate SHALL apply to `--check` only and SHALL NOT apply to a plain build, because a plain build runs continuously while editing and failing it on an unbumped version would make the generator unusable for its primary purpose.
+
 #### Scenario: A newer version propagates
 
 - **WHEN** the catalog version is bumped above the installed version
@@ -214,6 +220,37 @@ A targeted upgrade naming one plugin reinstalls unconditionally and compares not
 - **WHEN** the version scheme is inspected
 - **THEN** it carries no hash and no build metadata
 - **AND** the reason is recorded, because that form is accepted by both harnesses yet never upgrades
+
+#### Scenario: A source change with no bump fails the check
+
+- **WHEN** a tracked file under `analysts/`, `operators/`, or `commands/acordia/` differs from the base and the declared version equals the base's version
+- **THEN** `tools/build-plugins.py --check` exits non-zero naming the changed source paths and both versions
+
+#### Scenario: A source change with a bump passes
+
+- **WHEN** source artifacts differ from the base and the declared version is strictly greater than the base's version
+- **THEN** the version gate passes and `--check` reports only whatever generated-tree drift it finds independently
+
+#### Scenario: One bump covers a whole branch
+
+- **WHEN** a branch has already bumped the version above the base and then changes further source artifacts without bumping again
+- **THEN** the version gate passes, because the obligation is one bump per release rather than one per commit
+
+#### Scenario: A change touching no source artifact needs no bump
+
+- **WHEN** the only differences from the base lie outside `analysts/`, `operators/`, and `commands/acordia/` — documentation or planning artifacts, for example
+- **THEN** the version gate passes with the version unchanged
+
+#### Scenario: An unresolvable base skips rather than fails
+
+- **WHEN** git is unavailable, the tree is not a git checkout, or no integration branch resolves
+- **THEN** `--check` reports that the version gate was skipped
+- **AND** the absence of a base does not by itself fail the check
+
+#### Scenario: A plain build is never blocked by the version gate
+
+- **WHEN** source artifacts have changed with no version bump and `tools/build-plugins.py` runs without `--check`
+- **THEN** the build succeeds, because the gate is scoped to the check path
 
 ### Requirement: Agent-name resolution differs by harness and is documented
 
