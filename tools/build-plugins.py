@@ -52,7 +52,7 @@ import yaml
 # 17.1.8: a newer semver upgrades and an older one is skipped. Do NOT hang a
 # hash or build metadata off it — `1.0.0+aaa` and `1.0.0+bbb` compare EQUAL and
 # would never upgrade.
-VERSION = "2.0.0"
+VERSION = "2.2.0"
 MARKETPLACE_NAME = "acordia"
 OWNER = {"name": "ACORDIA"}
 REPOSITORY = "https://github.com/sapran/acordia-agents"
@@ -325,9 +325,10 @@ def translate(source: Path, *, plugin: str) -> str:
         )
     elif edit_posture == "scoped":
         write_note = (
-            "source scoped writes to `.acordia/reports/**`; omp cannot express a "
-            "path-scoped permission and cannot deny `write` at all while "
-            "`tools.xdev` is on, so this agent can write anywhere"
+            "source declares `.acordia/reports/**` as its report sink; that sink is a "
+            "prompt-level convention no harness enforces — every analyst carries "
+            "`bash: allow`, an open write channel at any path — and omp additionally "
+            "cannot deny `write` while `tools.xdev` is on, so this agent can write anywhere"
         )
     else:
         write_note = (
@@ -389,10 +390,11 @@ def translate_claude(source: Path) -> str:
     if edit_posture == "denied":
         disallowed += ["Edit", "Write", "NotebookEdit"]
     elif edit_posture == "scoped":
-        # opencode confines these writes to `.acordia/reports/**`. Claude Code
-        # cannot express a path scope in plugin-agent frontmatter, and denying
-        # `Write` outright would leave the reporting agents unable to produce
-        # the reports their prompts require. Grant `Write`, record the gap.
+        # The source declares `.acordia/reports/**` as a report sink. That sink is a
+        # prompt-level convention no harness enforces — `bash: allow` is an open
+        # write channel everywhere — and denying `Write` outright would leave the
+        # reporting agents unable to produce the reports their prompts require.
+        # Grant `Write`, record the convention.
         disallowed += ["Edit", "NotebookEdit"]
     if not spawns:
         disallowed.append("Task")
@@ -407,8 +409,8 @@ def translate_claude(source: Path) -> str:
         )
     if edit_posture == "scoped":
         notes.append(
-            "# Source scoped writes to `.acordia/reports/**`; Claude Code cannot express a path\n"
-            "# scope, so the confinement is prompt-level here."
+            "# Source declares `.acordia/reports/**` as its report sink. That sink is a\n"
+            "# prompt-level convention no harness enforces: `bash` is an open write channel."
         )
     if has_bash_denies(permission_entry(permission, "bash")):
         notes.append(

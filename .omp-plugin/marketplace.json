@@ -10,7 +10,7 @@
     {
       "name": "acordia-analysts",
       "source": "./plugins/omp/acordia-analysts",
-      "version": "2.0.0",
+      "version": "2.2.0",
       "description": "ACORDIA Analysis — four read-only decision-support agents and a 43-skill analytic library.",
       "category": "security",
       "keywords": [
@@ -23,7 +23,7 @@
     {
       "name": "acordia-operators",
       "source": "./plugins/omp/acordia-operators",
-      "version": "2.0.0",
+      "version": "2.2.0",
       "description": "ACORDIA Operations — five write-capable offensive-security agents and a 30-skill technique library.",
       "category": "security",
       "keywords": [

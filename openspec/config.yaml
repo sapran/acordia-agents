@@ -34,19 +34,24 @@ context: |
   Future pillars (Collection, Reflection, Direction, Independent action) may
   follow the same shape once compiled from their role models.
 
-  Conventions: all analyst agents are read-only (`edit: deny`, with a scoped
-  `.acordia/reports/**` write exception on the two reporting agents); operators
-  invert this (`edit: allow`, unscoped). Bash is fully allowed (`bash: allow`),
-  so the read-only CLI tools used for file and data analysis
-  (`cat`/`head`/`tail`/`less`/`more`/`ls`, `grep`/`egrep`/`rg`/`find`/`fd`) are
-  ungated — opencode-native `read`/`grep`/`glob`/`list` remain the preferred way
-  to inspect the filesystem, but only as advice, not a permission gate; each
-  orchestrator dispatches only its own named specialists, never a general or
-  explore agent; skill binding is by prompt reference (opencode has no per-agent
-  `skills:` field), so each agent prompt names its skill set explicitly. The
-  read-only posture is enforced to different depths per harness: fully in
-  Claude Code (`disallowedTools`) and opencode, partially in omp (`write`
-  survives as an `xd://` transport tool).
+  Conventions: all analyst agents are read-only (`edit: deny`); the two
+  reporting agents carry a path-scoped `.acordia/reports/**` rule that
+  *declares* their report sink. Operators invert the posture (`edit: allow`,
+  unscoped). Bash is fully allowed (`bash: allow`), so the read-only CLI tools
+  used for file and data analysis (`cat`/`head`/`tail`/`less`/`more`/`ls`,
+  `grep`/`egrep`/`rg`/`find`/`fd`) are ungated — opencode-native
+  `read`/`grep`/`glob`/`list` remain the preferred way to inspect the
+  filesystem, but only as advice, not a permission gate; each orchestrator
+  dispatches only its own named specialists, never a general or explore agent;
+  skill binding is by prompt reference (opencode has no per-agent `skills:`
+  field), so each agent prompt names its skill set explicitly.
+
+  The read-only posture means "holds no file-editing tool", and it is enforced
+  to different depths per harness: fully in Claude Code (`disallowedTools`) and
+  opencode, partially in omp (`write` survives as an `xd://` transport tool).
+  The report sink is different in kind — it is a prompt-level convention that
+  **no harness enforces, opencode included**, because `bash: allow` is an open
+  write channel at any path. Never describe the sink as enforced anywhere.
 
 rules:
   proposal:

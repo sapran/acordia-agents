@@ -109,7 +109,7 @@ A Claude Code plugin agent SHALL carry `disallowedTools`, never a `tools` allowl
 
 `disallowedTools` SHALL be omitted entirely when the derived list is empty.
 
-The path-scoped row deliberately diverges from the omp emitter, which drops the tool. opencode confines the two reporting analysts' writes to `.acordia/reports/**`; Claude Code cannot express a path scope in plugin-agent frontmatter, and denying `Write` outright would leave those agents unable to produce the reports the competency grid assigns them. `Write` is therefore granted and the confinement is recorded as prompt-level.
+The path-scoped row deliberately diverges from the omp emitter, which drops the tool. `Write` is retained because denying it outright would leave the two reporting analysts unable to produce the reports the competency grid assigns them, and the report sink they write into is a prompt-level convention rather than an enforced scope — in opencode as much as here, since `bash: allow` is an unrestricted write channel in every harness (see `analyst-agent-roster`). The rationale SHALL be stated in those terms and SHALL NOT read as opencode confining the writes while Claude Code fails to.
 
 #### Scenario: Read-only analyst is denied every write tool
 
@@ -131,6 +131,8 @@ The path-scoped row deliberately diverges from the omp emitter, which drops the 
 
 Claude Code plugin agents silently ignore `metadata`, `hooks`, `mcpServers`, and `permissionMode`, so the provenance and permission-gap record the omp emitter places in `metadata.generated` has no frontmatter home. The Claude emitter SHALL therefore write comment lines above the frontmatter keys: always the generating tool and the repo-relative source path, and conditionally one note per posture the harness cannot express — the spawn allowlist, the path-scoped write, and the per-command bash denies.
 
+The path-scoped-write note SHALL describe the report sink as a convention no harness enforces, on the same grounds as the omp emitter's note. It SHALL NOT state or imply that the confinement is prompt-level *here* in contrast to being enforced in the source harness.
+
 #### Scenario: Provenance is always present
 
 - **WHEN** any Claude plugin agent file is read
@@ -141,10 +143,11 @@ Claude Code plugin agents silently ignore `metadata`, `hooks`, `mcpServers`, and
 - **WHEN** an agent whose source allows dispatch to named agents is emitted for Claude Code
 - **THEN** a comment states that plugin agents cannot express a spawn allowlist and that the prompt names the agents this one dispatches
 
-#### Scenario: Path scope gap recorded
+#### Scenario: Path scope gap recorded as a universal convention
 
 - **WHEN** an agent whose source scopes writes to a report path is emitted for Claude Code
-- **THEN** a comment states that the harness cannot express a path scope and that the confinement is prompt-level
+- **THEN** a comment states that the sink is a prompt-level convention enforced by no harness
+- **AND** the comment does not contrast Claude Code against the source harness
 
 #### Scenario: Bash deny gap recorded
 
