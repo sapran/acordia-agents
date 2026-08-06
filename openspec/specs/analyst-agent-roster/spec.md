@@ -62,7 +62,9 @@ edit:
 
 Every other analyst — `target-network-analyst` and `defender-detection-analyst`, which carry no reporting competency in the grid — SHALL set a blanket `edit: deny`. Analysis capability (read, grep, glob, bash, webfetch, websearch, skill) remains allowed by opencode's default. Each leg subagent SHALL additionally set `task: deny` (leaf specialist — does not dispatch).
 
-Because `bash: "*": allow` already permits file creation via scripting (`python`, `jq`), `edit: deny` expresses read-only **posture**, not a hard sandbox; the path-scoped exception declares the one sanctioned report destination for the reporting agents rather than granting a new capability class.
+**The report sink is a convention, not a boundary, in every harness including opencode.** Because every analyst carries `bash: allow` (`analysts/agents/*.md`), file creation via scripting (`python`, `jq`, a shell redirection) is permitted at any path, and the path-scoped `edit` rule does not constrain it. `edit: deny` therefore expresses read-only **posture** — the agent holds no file-editing tool — and the scoped rule **declares** the one sanctioned report destination rather than enforcing it. The scoped rule is retained because it is the clearest available expression of that convention in opencode's vocabulary, not because it confines anything.
+
+Documentation, generated notes, and prompt guardrails SHALL NOT describe the sink as enforced in opencode and unenforced elsewhere. The non-enforcement is universal and follows from `bash: allow`, which is retained because `analytic-tooling-scripting` and `exhaustive-data-processing` depend on it.
 
 #### Scenario: File modification denied
 - **WHEN** an analyst agent attempts to edit, write, or patch a file outside its sanctioned report sink
@@ -76,6 +78,16 @@ Because `bash: "*": allow` already permits file creation via scripting (`python`
 - **WHEN** `target-network-analyst` or `defender-detection-analyst` attempts to edit, write, or patch any file
 - **THEN** the resolved `edit` permission is `deny` and the action is refused
 
+#### Scenario: A scripted write outside the sink is refused by no harness
+- **WHEN** any analyst agent writes a file outside `.acordia/reports/` using `bash`
+- **THEN** the write succeeds, in opencode as in omp and Claude Code
+- **AND** the scoped `edit` rule does not apply to it, because `bash: allow` is a separate and unrestricted write channel
+
+#### Scenario: The sink is documented as a convention
+- **WHEN** the repository's documentation, the generated agent notes, or an analyst's guardrails describe the report sink
+- **THEN** the confinement is stated as prompt discipline holding in every harness
+- **AND** no harness is credited with enforcing it
+
 #### Scenario: Analysis allowed by default
 - **WHEN** an analyst agent reads a file or fetches a web resource
 - **THEN** the action is allowed (opencode default)
@@ -83,6 +95,23 @@ Because `bash: "*": allow` already permits file creation via scripting (`python`
 #### Scenario: Legs do not dispatch
 - **WHEN** a leg subagent is inspected
 - **THEN** its resolved `task` permission is `deny`
+
+### Requirement: Analyst guardrails state the product destination uniformly
+
+Each analyst's `## Guardrails` section SHALL state, in wording consistent across all four agents, where that agent's written product goes and that the destination is prompt discipline rather than an enforced scope.
+
+The two reporting analysts (`operational-analyst`, `fusion-analyst`) SHALL name `.acordia/reports/` as the sink. The two non-reporting legs (`target-network-analyst`, `defender-detection-analyst`) SHALL state that they return their product in-message, because they hold no write tool — a fact their guardrails previously omitted entirely, leaving the destination unstated.
+
+The guardrails SHALL NOT attribute the non-enforcement to a specific harness. The prior per-agent divergence — `defender-detection-analyst` and `target-network-analyst` naming only "Under OMP, write access is prompt-level only", against `operational-analyst` and `fusion-analyst` naming "Under OMP … confine writes to `.acordia/reports/`" — is the drift this requirement removes.
+
+#### Scenario: All four guardrails share one wording
+- **WHEN** the `## Guardrails` sections of the four analyst agents are compared
+- **THEN** each states the sink or the in-message destination in the same form
+- **AND** none names a single harness as the reason the confinement is prompt-level
+
+#### Scenario: Read-only legs state where the product goes
+- **WHEN** `target-network-analyst` or `defender-detection-analyst` guardrails are read
+- **THEN** they state that the product is returned in-message
 
 ### Requirement: Prompt names the skill set from the grid column
 
@@ -290,4 +319,46 @@ The section SHALL NOT mandate a coverage-receipt format, a declared-to-covered r
 
 - **WHEN** the frontmatter of any analyst agent is compared before and after the amendment
 - **THEN** `edit`, `bash`, and `task` permission blocks are unchanged, and the orchestrator's three-leg `task` whitelist is intact
+
+### Requirement: Aleph-corpora section in every agent prompt
+
+Every analyst agent prompt SHALL carry a named `## Aleph corpora` H2 section containing a one-line reference to the `aleph-entity-graph` skill, so that take which has already been ingested into an Aleph instance is worked as an entity graph rather than re-ground as a pile of documents.
+
+This exists because the skill is non-grid and therefore appears in no agent's compiled skill set: with no prompt reference at all, selection depends entirely on opencode's description-match, and the capability is reachable only by accident. A prose H2 section is the mechanism this repository already uses for exactly that problem — `## Credential harvest` and `## Exhaustive data processing` are both required in all four prompts for the same reason — and it does not touch the grid-derived list, so the bijection between grid column and prompt skill set is unaffected.
+
+The section MAY carry one agent-specific lens that belongs to the agent rather than to the corpus procedure: for `operational-analyst`, routing corpus work to a leg; for `fusion-analyst`, correlation across collections; for `target-network-analyst`, reading ownership and address edges as target structure; for `defender-detection-analyst`, operation-owned exposure surfacing in an indexed collection as an own-footprint finding.
+
+The section SHALL NOT restate the skill's method, its tool list, or its ceilings — `analysts/skills/aleph-entity-graph/SKILL.md` is the single source for the inventory-first and facet-first method, the 9999 search window, the per-property expansion cap and the `_stream` WRITE requirement, and a second copy in four prompt bodies drifts from it. In particular a prompt SHALL NOT name individual MCP tools, because the skill states that the harness decides what those are called.
+
+The section SHALL remain additive — existing sections (defining spine, baseline, dispatch topology, tool discipline, credential harvest, exhaustive data processing, guardrails) are not rewritten — and SHALL NOT add `aleph-entity-graph` to any agent's grid-derived skill set. No permission change SHALL result.
+
+#### Scenario: Section present in all four agents
+
+- **WHEN** any of the four analyst agent files is inspected
+- **THEN** it contains an `## Aleph corpora` H2 section naming `aleph-entity-graph`
+
+#### Scenario: Primary routes corpus work
+
+- **WHEN** `operational-analyst`'s Aleph-corpora section is read
+- **THEN** it names `aleph-entity-graph` as what carries the method, routes corpus work to a leg by default, and requires a coverage claim over a corpus to name which collections were searched
+
+#### Scenario: Each leg carries its own lens
+
+- **WHEN** any leg agent's Aleph-corpora section is read
+- **THEN** it names `aleph-entity-graph`, and any lens it adds is that leg's own analytic angle rather than a restatement of the corpus procedure
+
+#### Scenario: Method is not duplicated
+
+- **WHEN** any agent's Aleph-corpora section is compared with `aleph-entity-graph`
+- **THEN** the section does not reproduce the facet-first method, the tool names, the 9999 window, or the expansion cap
+
+#### Scenario: Grid-derived skill set is unchanged
+
+- **WHEN** each agent's compiled skill set is compared with its column in the competency grid
+- **THEN** the two still correspond exactly, and `aleph-entity-graph` appears in no agent's skill set
+
+#### Scenario: Permissions unchanged
+
+- **WHEN** the frontmatter of any analyst agent is compared before and after the amendment
+- **THEN** `edit`, `bash`, and `task` permission blocks are unchanged
 

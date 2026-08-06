@@ -19,11 +19,13 @@ Provide the data-handling muscle behind fusion: ingest, normalise, and correlate
 - When repeated correlation on the same keys justifies a pipeline over one-off inspection.
 
 ## Method
-- Ingest and normalise: parse each source into a common schema, standardising identities, timestamps, IPs, and hosts so cross-source joins are possible.
+- Inventory the sources before joining: enumerate each input with `ls`/`find`/`glob`, type it, and record its expected record count, so the pipeline reconciles against a known denominator rather than absorbing a truncated feed silently.
+- Ingest and normalise over exhaustive coverage: parse each source in full into a common schema — standardising identities, timestamps, IPs, and hosts — and assert the ingested row count against the inventory, never sampling the head of a large export as a stand-in for the whole.
 - Choose the join model — relational, graph, or time-series — that fits the question; graph for relationships, time-series for sequence and cadence.
 - Correlate at scale: link entities across datasets, deduplicate, and enrich with reference data to turn raw records into resolved objects.
 - Query for the analytic question, not the data — build repeatable queries/pipelines that answer "who touched what, when, from where."
-- Guard data integrity: track provenance, preserve originals, and keep transformations reversible so a conclusion can be audited back to source.
+- Guard data integrity: track provenance so every resolved object carries its source rows as `<source-path>:<offset>` or `<source>@L<line>`, preserve originals, and keep transformations reversible so a conclusion can be audited back to source.
+- Degradation: if a source cannot be parsed into the schema, hold it out of the join explicitly and report the coverage gap and its effect on any conclusion, rather than joining the parseable remainder and presenting it as complete.
 
 ## Signals / outputs
 - A normalised, correlatable dataset with entities resolved across sources.

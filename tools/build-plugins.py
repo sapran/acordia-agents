@@ -32,6 +32,7 @@ import filecmp
 import json
 import re
 import shutil
+import subprocess
 import sys
 import tempfile
 from pathlib import Path
@@ -52,7 +53,7 @@ import yaml
 # 17.1.8: a newer semver upgrades and an older one is skipped. Do NOT hang a
 # hash or build metadata off it — `1.0.0+aaa` and `1.0.0+bbb` compare EQUAL and
 # would never upgrade.
-VERSION = "2.0.0"
+VERSION = "2.4.0"
 MARKETPLACE_NAME = "acordia"
 OWNER = {"name": "ACORDIA"}
 REPOSITORY = "https://github.com/sapran/acordia-agents"
@@ -154,7 +155,15 @@ def split_frontmatter(text: str, source: Path) -> tuple[dict, str]:
         raise TranslationError(f"{source}: unterminated YAML frontmatter")
     raw = text[len(FRONTMATTER_FENCE) + 1 : end + 1]
     body = text[end + len(FRONTMATTER_FENCE) + 2 :]
-    meta = yaml.safe_load(raw)
+    # A raw ScannerError escapes `main()`'s handler as a traceback that buries
+    # the offending path in a stack. Every other failure here names its source
+    # file; a parse failure has to as well, or the author cannot tell which of
+    # the 73 skills broke.
+    try:
+        meta = yaml.safe_load(raw)
+    except yaml.YAMLError as err:
+        detail = str(err).replace("\n", " ")
+        raise TranslationError(f"{source}: invalid YAML frontmatter — {detail}") from err
     if not isinstance(meta, dict):
         raise TranslationError(f"{source}: frontmatter is not a mapping")
     return meta, body
@@ -290,6 +299,58 @@ def read_agent(source: Path) -> tuple[dict, str, dict, str, list[str]]:
     return meta, body, permission, mode, spawns
 
 
+# The contract below is not this gate's invention: `analyst-skill-library`
+# states it (opencode frontmatter contract, slug-equals-name) and
+# `operator-skill-library` states the rest (frontmatter reduction, signing
+# triple removed). Both were stated and never executed, which is how a skill
+# with unparseable YAML reached both committed plugin trees. `--check` cannot
+# catch that: it compares staged bytes against committed bytes, so a defect
+# present in both compares equal. Only parsing the source finds it.
+SKILL_NAME_RE = re.compile(r"^[a-z0-9]+(-[a-z0-9]+)*$")
+SKILL_KEYS = {"name", "description", "metadata"}
+SKILL_SIGNING_KEYS = ("sha256", "signature", "signed_by")
+
+
+def read_skill(source: Path) -> dict:
+    """Validate one skill's frontmatter; raise rather than package a broken file."""
+    meta, _ = split_frontmatter(source.read_text(encoding="utf-8"), source)
+
+    name = meta.get("name")
+    if not isinstance(name, str) or not SKILL_NAME_RE.match(name) or len(name) > 64:
+        raise TranslationError(
+            f"{source}: `name` must be kebab-case and at most 64 characters, got {name!r}"
+        )
+    if name != source.parent.name:
+        raise TranslationError(
+            f"{source}: `name` {name!r} does not match its folder slug "
+            f"{source.parent.name!r} — the harness discovers by folder and binds by name"
+        )
+
+    description = meta.get("description")
+    if not isinstance(description, str) or not 1 <= len(description) <= 1024:
+        length = len(description) if isinstance(description, str) else repr(description)
+        raise TranslationError(
+            f"{source}: `description` must be 1–1024 characters, got {length} "
+            "(both harnesses select skills by description match)"
+        )
+
+    signing = [key for key in SKILL_SIGNING_KEYS if key in meta]
+    if signing:
+        raise TranslationError(
+            f"{source}: frontmatter carries {', '.join(signing)} — a stale hash makes "
+            "CyberStrike drop the skill as tampered while the other harnesses ignore it"
+        )
+
+    unknown = sorted(set(meta) - SKILL_KEYS)
+    if unknown:
+        raise TranslationError(
+            f"{source}: unknown frontmatter key(s) {', '.join(unknown)}; "
+            "the contract allows only `name`, `description`, and `metadata`"
+        )
+
+    return meta
+
+
 def translate(source: Path, *, plugin: str) -> str:
     """Emit the omp task-agent form of one opencode agent file."""
     meta, body, permission, mode, spawns = read_agent(source)
@@ -325,9 +386,10 @@ def translate(source: Path, *, plugin: str) -> str:
         )
     elif edit_posture == "scoped":
         write_note = (
-            "source scoped writes to `.acordia/reports/**`; omp cannot express a "
-            "path-scoped permission and cannot deny `write` at all while "
-            "`tools.xdev` is on, so this agent can write anywhere"
+            "source declares `.acordia/reports/**` as its report sink; that sink is a "
+            "prompt-level convention no harness enforces — every analyst carries "
+            "`bash: allow`, an open write channel at any path — and omp additionally "
+            "cannot deny `write` while `tools.xdev` is on, so this agent can write anywhere"
         )
     else:
         write_note = (
@@ -389,10 +451,11 @@ def translate_claude(source: Path) -> str:
     if edit_posture == "denied":
         disallowed += ["Edit", "Write", "NotebookEdit"]
     elif edit_posture == "scoped":
-        # opencode confines these writes to `.acordia/reports/**`. Claude Code
-        # cannot express a path scope in plugin-agent frontmatter, and denying
-        # `Write` outright would leave the reporting agents unable to produce
-        # the reports their prompts require. Grant `Write`, record the gap.
+        # The source declares `.acordia/reports/**` as a report sink. That sink is a
+        # prompt-level convention no harness enforces — `bash: allow` is an open
+        # write channel everywhere — and denying `Write` outright would leave the
+        # reporting agents unable to produce the reports their prompts require.
+        # Grant `Write`, record the convention.
         disallowed += ["Edit", "NotebookEdit"]
     if not spawns:
         disallowed.append("Task")
@@ -407,8 +470,8 @@ def translate_claude(source: Path) -> str:
         )
     if edit_posture == "scoped":
         notes.append(
-            "# Source scoped writes to `.acordia/reports/**`; Claude Code cannot express a path\n"
-            "# scope, so the confinement is prompt-level here."
+            "# Source declares `.acordia/reports/**` as its report sink. That sink is a\n"
+            "# prompt-level convention no harness enforces: `bash` is an open write channel."
         )
     if has_bash_denies(permission_entry(permission, "bash")):
         notes.append(
@@ -514,6 +577,15 @@ def build(repo_root: Path, dest_root: Path) -> None:
         if not agents:
             raise TranslationError(f"{pillar}/agents: no agent files found")
 
+        # Parsed, not merely copied. Runs before anything is written for this
+        # pillar so a malformed skill cannot reach a staged tree, let alone the
+        # committed one.
+        skills = sorted((pillar / "skills").glob("*/SKILL.md"))
+        if not skills:
+            raise TranslationError(f"{pillar}/skills: no skill files found")
+        for source in skills:
+            read_skill(source)
+
         for harness in HARNESSES:
             root = dest_root / "plugins" / harness / plugin
             (root / "agents").mkdir(parents=True, exist_ok=True)
@@ -602,6 +674,115 @@ def relative_files(root: Path) -> set[Path]:
     return files
 
 
+# The version guards what actually reaches an installed user: the generated
+# trees. Gating on the sources (`analysts/`, `operators/`, `commands/acordia/`)
+# would miss a generator change that alters output without touching a source
+# file, and the drift comparison does not backstop that — it compares built
+# bytes against committed bytes, and both carry the new output once the author
+# rebuilds. A generator refactor that produces identical output leaves these
+# paths untouched and correctly demands no bump.
+VERSIONED_SOURCES = GENERATED_PATHS
+
+# Tried in order. `develop` is the integration branch; `origin/HEAD` points at
+# `main`. The base is a merge base rather than HEAD so the obligation is one
+# bump per release, not one per commit.
+BASE_REFS = ("origin/develop", "origin/main", "develop", "main")
+
+
+def git_output(repo_root: Path, *args: str) -> str | None:
+    """Run one git command, or return None if git cannot answer."""
+    try:
+        result = subprocess.run(
+            ["git", *args],
+            cwd=repo_root,
+            capture_output=True,
+            encoding="utf-8",
+            errors="replace",
+            check=True,
+        )
+    except (OSError, subprocess.CalledProcessError):
+        return None
+    return result.stdout
+
+
+def semver(text: str) -> tuple[int, int, int] | None:
+    """Parse a strict MAJOR.MINOR.PATCH. Compared as integers: "2.10.0" sorts
+    above "2.9.0" numerically and below it lexicographically."""
+    match = re.fullmatch(r"(\d+)\.(\d+)\.(\d+)", text.strip())
+    return tuple(int(part) for part in match.groups()) if match else None
+
+
+def base_version(repo_root: Path, base: str) -> tuple[int, int, int] | None:
+    """The VERSION declared in this file as of `base`."""
+    blob = git_output(repo_root, "show", f"{base}:tools/build-plugins.py")
+    if blob is None:
+        return None
+    match = re.search(r'^VERSION = "([^"]+)"', blob, re.M)
+    return semver(match.group(1)) if match else None
+
+
+def version_gate(repo_root: Path) -> list[str]:
+    """Refuse a generated-output change that carries no version bump.
+
+    Absence of evidence never fails: no git, no base branch, or an unparseable
+    version skips the gate. A missed bump is a silent no-op the next release
+    corrects, while a wedged `--check` costs trust in every gate it carries.
+    """
+    tip = base = None
+    for ref in BASE_REFS:
+        if git_output(repo_root, "rev-parse", "--verify", "--quiet", ref) is None:
+            continue
+        merge_base = git_output(repo_root, "merge-base", "HEAD", ref)
+        if merge_base and merge_base.strip():
+            tip, base = ref, merge_base.strip()
+            break
+
+    if base is None:
+        print("build-plugins: version gate skipped (no comparison base)", file=sys.stderr)
+        return []
+
+    # Diff the generated surface against the merge base — everything this branch
+    # changed — and add files git has never been told about, so a new skill's
+    # freshly generated output is not invisible to `git diff`.
+    changed = git_output(repo_root, "diff", "--name-only", base, "--", *VERSIONED_SOURCES)
+    if changed is None:
+        print("build-plugins: version gate skipped (git could not diff)", file=sys.stderr)
+        return []
+    untracked = git_output(
+        repo_root, "ls-files", "--others", "--exclude-standard", "--", *VERSIONED_SOURCES
+    )
+
+    sources = sorted(
+        {line for line in (changed + "\n" + (untracked or "")).splitlines() if line.strip()}
+    )
+    if not sources:
+        return []
+
+    # The obligation is relative to what is already published, so read the base
+    # version from the integration branch's tip, not the fork point: two
+    # branches forking at the same version must not both ship it, and a branch
+    # that later merges the integration branch must not regress below it.
+    was = base_version(repo_root, tip)
+    now = semver(VERSION)
+    if was is None or now is None:
+        print("build-plugins: version gate skipped (unparseable version)", file=sys.stderr)
+        return []
+
+    if now > was:
+        return []
+
+    def dotted(parts: tuple[int, int, int]) -> str:
+        return ".".join(str(part) for part in parts)
+
+    problems = [
+        f"  generated output changed but VERSION did not move past {tip} "
+        f"({dotted(was)} -> {dotted(now)}):"
+    ]
+    problems += [f"    {path}" for path in sources]
+    problems.append("  bump VERSION in tools/build-plugins.py and rebuild")
+    return problems
+
+
 def check(repo_root: Path) -> int:
     with tempfile.TemporaryDirectory() as tmp:
         staged = Path(tmp)
@@ -619,10 +800,16 @@ def check(repo_root: Path) -> int:
             if not filecmp.cmp(staged / path, repo_root / path, shallow=False):
                 problems.append(f"  differs:  {path}")
 
+    version_problems = version_gate(repo_root)
+
     if problems:
         print("build-plugins: committed tree does not match the generator", file=sys.stderr)
         print("\n".join(problems), file=sys.stderr)
         print("run tools/build-plugins.py and commit the result", file=sys.stderr)
+    if version_problems:
+        print("build-plugins: the version bump obligation is unmet", file=sys.stderr)
+        print("\n".join(version_problems), file=sys.stderr)
+    if problems or version_problems:
         return 1
     return 0
 

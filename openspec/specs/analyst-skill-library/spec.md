@@ -147,7 +147,7 @@ The skill SHALL declare its cross-cutting/procedural nature and SHALL NOT be add
 
 Skills whose `Objective` involves reading collected material (files, memory dumps, logs, packet captures, configuration archives) SHALL structure their `## Method` section as four ordered elements: (a) an **inventory step** that names the tool used to enumerate the input (e.g. `find`, `glob`, `list`, or a file-typing tool); (b) a **bounded-context, exhaustive-coverage discipline** — reads into the analyst's context stay scoped (offset, line-range, or a targeted tool hit) and never wholesale-load a multi-megabyte artefact into context, **and** the input SHALL be covered in full by a prior tool pass (a script, `grep`/`rg`, or a parser processing 100% of the bytes or records) that drives which scoped regions are read; a finding or conclusion SHALL NOT rest on the opening portion of an artefact while the remainder goes unprocessed, and every located hit SHALL be processed, not only the first; (c) a **citation format** that anchors each observation to `<path>:<offset>` or `<path>@L<line>`; (d) a **degradation policy** stating what the analyst does when each optional external tool named in the body is unavailable.
 
-The requirement applies to the following fifteen skills only: `disk-memory-forensics`, `log-artefact-interpretation`, `cloud-controlplane-analysis`, `web-api-authflow-analysis`, `os-host-internals`, `implant-payload-re`, `identity-directory-trust`, `packet-traffic-analysis`, `endpoint-telemetry-edr`, `c2-beacon-exfil-analysis`, `protocol-routing-architecture`, `own-footprint-analysis`, `evasion-antianalysis`, `pattern-of-life-baselining`, `vuln-attacksurface-mapping`. Analytic-spine skills (whose input is analyst reasoning, not collected material) SHALL NOT be subject to this requirement.
+The criterion above is normative and determines scope on its own. A skill meeting it SHALL carry the four elements whether or not it appears in any enumeration, because a closed list makes coverage depend on whether a name was remembered rather than on what the skill does. The following twenty-two skills currently meet the criterion: `analytic-tooling-scripting`, `assessing-take-value`, `c2-beacon-exfil-analysis`, `change-cycle-forecasting`, `cloud-controlplane-analysis`, `data-integration-tooling`, `disk-memory-forensics`, `effect-on-target-verification`, `endpoint-telemetry-edr`, `evasion-antianalysis`, `identity-directory-trust`, `implant-payload-re`, `log-artefact-interpretation`, `os-host-internals`, `ot-embedded`, `overwatch`, `own-footprint-analysis`, `packet-traffic-analysis`, `pattern-of-life-baselining`, `protocol-routing-architecture`, `vuln-attacksurface-mapping`, `web-api-authflow-analysis`. This enumeration records the present membership and SHALL be extended whenever a skill that reads collected material is added or an existing skill's Method begins to direct such reading; it SHALL NOT be read as narrowing the criterion. Analytic-spine skills (whose input is analyst reasoning, not collected material) SHALL NOT be subject to this requirement.
 
 #### Scenario: Method starts with an inventory step
 
@@ -178,6 +178,16 @@ The requirement applies to the following fifteen skills only: `disk-memory-foren
 
 - **WHEN** an analytic-spine skill's `## Method` is inspected
 - **THEN** it is not required to follow the four-element contract, because the skill has no file inventory step and no optional tools to degrade
+
+#### Scenario: The criterion governs, not the enumeration
+
+- **WHEN** a skill's `Objective` involves reading collected material but its name is absent from the enumeration
+- **THEN** the requirement still binds it, and the omission is a defect in the enumeration rather than an exemption for the skill
+
+#### Scenario: Every enumerated skill carries the elements
+
+- **WHEN** each of the twenty-two enumerated skills is inspected
+- **THEN** its `## Method` carries an inventory step, bounded-and-exhaustive reading language, a citation shape, and a degradation policy for each optional tool it names
 
 ### Requirement: Procedural skills MAY co-locate reference files
 
@@ -244,13 +254,23 @@ The `## Method` contract for evidence-reading skills SHALL NOT apply to this ski
 
 The library SHALL contain a skill `analysts/skills/aleph-entity-graph/SKILL.md` naming the discipline of working collected material that has already been ingested into an Aleph instance as a FollowTheMoney entity graph, rather than as a pile of documents. It SHALL be a first-class procedural cross-cutting skill, SHALL declare its cross-cutting/procedural nature in its body, and SHALL NOT be added as a row to the competency grid.
 
-The skill body SHALL contain: (a) a **cross-cutting notice** declaring the skill procedural and non-grid and naming the grid rows it composes; (b) a **data-model** section stating that Aleph stores FollowTheMoney entities grouped into collections, that schemata inherit, and that `entity`-typed properties are the graph edges; (c) a **conditional tooling** paragraph naming the `aleph_*` MCP tools as available only where the harness mounts them and naming the `bash` + HTTP API fallback otherwise; (d) an **inventory-first, facet-first method** — enumerate collections and read their statistics, survey a result set with facets at `limit=0` before pulling rows, narrow with `filter:` constraints, pivot on entities via expand/tags/similar/match/entitysets/xref, and read document text last and bounded; (e) a **limits** section stating the three ceilings that change the method; and (f) a **take-assessment** section feeding `assessing-take-value`.
+The skill body SHALL contain: (a) a **cross-cutting notice** declaring the skill procedural and non-grid and naming the grid rows it composes; (b) a **data-model** section stating that Aleph stores FollowTheMoney entities grouped into collections, that schemata inherit, and that `entity`-typed properties are the graph edges; (c) a **conditional tooling** paragraph naming the MCP server's registered read tools by their bare verbs, stating that a harness may expose them under a mount prefix, and naming the `bash` + HTTP API fallback otherwise; (d) an **inventory-first, facet-first method** — enumerate collections and read their statistics, survey a result set with facets at `limit=0` before pulling rows, narrow with `filter:` constraints, pivot on entities and on resolved identities via expand/tags/similar/match/profiles/entitysets/xref, and read document text last and bounded; (e) a **limits** section stating the ceilings and query semantics that change the method; and (f) a **take-assessment** section feeding `assessing-take-value`.
+
+Clause (c) SHALL NOT mandate a prefixed tool-name form. The `aleph-mcp` server registers its tools unprefixed and its own specification explicitly refuses to guarantee any prefix, stating that the mount configuration is where that expectation is satisfied; a prefix a caller observes is composed by the host from the mount name. The tooling paragraph SHALL therefore name the tool verbs, SHALL state that a harness may apply a mount prefix and give the observed form as an example rather than a requirement, and SHALL direct the analyst to match on the verb rather than on a literal prefix.
+
+The tooling paragraph SHALL state what the `bash` + HTTP fallback gives up relative to the tools, because on that path the analyst inherits the obligations the server was discharging: no refusal at the search ceiling, no expansion cap, no stripping of document-sized text properties, no derived `caption`, and no read-only allowlist between the caller and a write endpoint.
+
+The method's pivot step SHALL name profile-scoped pivots alongside entity-scoped ones, and SHALL name the `profile_id` field carried on search and expansion results as their entry point. It SHALL state the analytic rule that a profile-scoped pivot is preferred over an entity-scoped one where a profile exists, because the entity in hand is one fragment of an actor whose other fragments carry edges invisible from it.
 
 The limits section SHALL state all three of the following as method-changing facts, not as trivia:
 
 - Entity search cannot page past `limit + offset = 9999`, so a total above that means the result set is **unenumerated** and must be split by facet or narrowed — deep pagination is not a way to read a collection.
 - Graph expansion is capped separately and far lower (200 entities per property by default), so a reported `count` above the cap means that edge was **sampled**, and the analyst SHALL say so.
 - The unbounded `_stream` export requires WRITE on the collection, so a read-only analyst key cannot bulk-export; a full local copy is a human-run `aleph-coldbackup` job rather than a session action.
+
+The skill SHALL additionally state Aleph's real entity-search query semantics, because assuming otherwise manufactures false negatives on the name variants that matter: `q` is **not fuzzy** on entity search, so a misspelt or transliterated name will not match and `match_entity` is the tolerant name-lookup path; and a multi-term `q` requires only 66% of its terms, so precision comes from `filter:` constraints rather than from adding words.
+
+Where the skill states a limit that the MCP tools discharge but the fallback does not, it SHALL attribute the limit to the path rather than asserting it unconditionally. `caption` is the case in point: the server derives one from the instance's own per-schema property ordering, so it is populated under the tools and the analyst's own problem under `curl`.
 
 The skill's `description` SHALL be authored for trigger quality — stating WHEN the discipline applies (the take lives in an Aleph instance) — so opencode's description-match selection fires, because opencode provides no per-agent skill binding.
 
@@ -285,8 +305,28 @@ The `## Method` contract for evidence-reading skills SHALL NOT apply to this ski
 
 #### Scenario: Tool references degrade instead of assuming a harness
 
-- **WHEN** the skill runs in a harness where no `aleph_*` MCP tool is mounted
-- **THEN** the body has already stated that condition and named the `bash` + HTTP API fallback, satisfying `harness-tool-translation`
+- **WHEN** the skill runs in a harness that mounts the MCP tools under a different prefix from the one an example gives, or mounts none at all
+- **THEN** the body has already stated that the prefix is the harness's and not the server's, directing the analyst to match on the tool verb, and has named the `bash` + HTTP API fallback for the no-mount case, satisfying `harness-tool-translation`
+
+#### Scenario: Fallback names what it costs
+
+- **WHEN** the tooling paragraph's fallback branch is read
+- **THEN** it states that the analyst inherits bounding, text-stripping, caption derivation and the read-only allowlist, so the fallback is a transfer of responsibility rather than an equivalent path
+
+#### Scenario: Resolved identities are reachable from a search hit
+
+- **WHEN** the method's pivot step is read
+- **THEN** it names the profile-scoped pivots and the `profile_id` field that reaches them, and states that a profile-scoped pivot is preferred where a profile exists
+
+#### Scenario: Query semantics are stated, not assumed
+
+- **WHEN** the narrowing step or the limits section is read
+- **THEN** it states that entity-search `q` is not fuzzy, names `match_entity` as the tolerant name-lookup path, and states that a multi-term `q` matches on 66% of its terms
+
+#### Scenario: A profile is distinguished from a candidate match
+
+- **WHEN** the take-assessment section is read
+- **THEN** an unjudged `xref_results` or `similar_entities` match is still routed to `hypothesis-testing`, and a profile is named as a recorded human decision that can itself be wrong and is scoped per collection
 
 #### Scenario: Read-only posture is explicit
 

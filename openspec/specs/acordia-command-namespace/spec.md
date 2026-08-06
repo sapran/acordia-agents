@@ -7,11 +7,13 @@ How this distribution is invoked: one slash-command wrapper per agent, namespace
 
 The repository SHALL carry a **canonical** slash-command wrapper for every agent, at `commands/acordia/<stem>.md`, where `<stem>` is that agent's filename stem under `<pillar>/agents/`. Every agent SHALL have exactly one canonical wrapper, so each agent has one handle that is guaranteed to exist and is named for the thing it dispatches.
 
+Both directions of that bijection SHALL be enforced by the build, not merely asserted. The generator already failed on a wrapper naming no live agent; it SHALL additionally fail when an agent has no wrapper whose stem is its own, because adding an agent could otherwise ship a roster with no handle for it and nothing would object.
+
 A wrapper MAY additionally exist under a **short alias**, because the namespace exists to be typed and the stem form is the longest available spelling of each handle. An alias SHALL dispatch exactly one live agent and SHALL declare, in its frontmatter, which canonical wrapper it stands for. An alias name SHALL NOT equal any agent's filename stem, so an alias can never shadow a different agent's canonical wrapper.
 
 Every wrapper, canonical or alias, SHALL name a live agent: a wrapper dispatching a name no agent answers to is a defect. This check — not a prohibition on second names — is what protects the namespace from a renamed agent, and it covers the canonical wrappers too, which a prohibition never did.
 
-Each wrapper SHALL carry `description` frontmatter conveying that agent's operating question, and a body that dispatches the named agent passing `$ARGUMENTS` as the brief. `$ARGUMENTS` SHALL be the only argument placeholder used, because it is the one form both target harnesses honour. A wrapper for an agent whose `mode` is `primary` SHALL name the session-switch fallback for harnesses that cannot dispatch a primary agent as a subagent.
+Each wrapper SHALL carry `description` frontmatter conveying that agent's operating question, and a body that dispatches the named agent passing `$ARGUMENTS` as the brief. `$ARGUMENTS` SHALL be the only argument placeholder used, because it is the one form every target harness honours. A wrapper for an agent whose `mode` is `primary` SHALL name the session-switch fallback for harnesses that cannot dispatch a primary agent as a subagent.
 
 An alias SHALL be derived from its canonical wrapper rather than authored separately, so that description, argument hint, and dispatch body cannot diverge between the two.
 
@@ -21,6 +23,12 @@ A wrapper SHALL NOT restate the agent's prompt, redefine its scope, or grant it 
 
 - **WHEN** `commands/acordia/` is compared with the union of `analysts/agents/*.md` and `operators/agents/*.md`
 - **THEN** every agent has a wrapper whose filename stem equals the agent's filename stem
+
+#### Scenario: A missing canonical wrapper fails the build
+
+- **WHEN** an agent exists with no wrapper whose stem equals its own
+- **THEN** the generator exits non-zero naming that agent
+- **AND** no plugin tree is written
 
 #### Scenario: Every wrapper dispatches a live agent
 
