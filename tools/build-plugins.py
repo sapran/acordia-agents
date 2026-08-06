@@ -52,7 +52,7 @@ import yaml
 # 17.1.8: a newer semver upgrades and an older one is skipped. Do NOT hang a
 # hash or build metadata off it — `1.0.0+aaa` and `1.0.0+bbb` compare EQUAL and
 # would never upgrade.
-VERSION = "2.2.0"
+VERSION = "2.3.0"
 MARKETPLACE_NAME = "acordia"
 OWNER = {"name": "ACORDIA"}
 REPOSITORY = "https://github.com/sapran/acordia-agents"
@@ -154,7 +154,15 @@ def split_frontmatter(text: str, source: Path) -> tuple[dict, str]:
         raise TranslationError(f"{source}: unterminated YAML frontmatter")
     raw = text[len(FRONTMATTER_FENCE) + 1 : end + 1]
     body = text[end + len(FRONTMATTER_FENCE) + 2 :]
-    meta = yaml.safe_load(raw)
+    # A raw ScannerError escapes `main()`'s handler as a traceback that buries
+    # the offending path in a stack. Every other failure here names its source
+    # file; a parse failure has to as well, or the author cannot tell which of
+    # the 73 skills broke.
+    try:
+        meta = yaml.safe_load(raw)
+    except yaml.YAMLError as err:
+        detail = str(err).replace("\n", " ")
+        raise TranslationError(f"{source}: invalid YAML frontmatter — {detail}") from err
     if not isinstance(meta, dict):
         raise TranslationError(f"{source}: frontmatter is not a mapping")
     return meta, body
@@ -288,6 +296,58 @@ def read_agent(source: Path) -> tuple[dict, str, dict, str, list[str]]:
     deep_skills(body, source)
 
     return meta, body, permission, mode, spawns
+
+
+# The contract below is not this gate's invention: `analyst-skill-library`
+# states it (opencode frontmatter contract, slug-equals-name) and
+# `operator-skill-library` states the rest (frontmatter reduction, signing
+# triple removed). Both were stated and never executed, which is how a skill
+# with unparseable YAML reached both committed plugin trees. `--check` cannot
+# catch that: it compares staged bytes against committed bytes, so a defect
+# present in both compares equal. Only parsing the source finds it.
+SKILL_NAME_RE = re.compile(r"^[a-z0-9]+(-[a-z0-9]+)*$")
+SKILL_KEYS = {"name", "description", "metadata"}
+SKILL_SIGNING_KEYS = ("sha256", "signature", "signed_by")
+
+
+def read_skill(source: Path) -> dict:
+    """Validate one skill's frontmatter; raise rather than package a broken file."""
+    meta, _ = split_frontmatter(source.read_text(encoding="utf-8"), source)
+
+    name = meta.get("name")
+    if not isinstance(name, str) or not SKILL_NAME_RE.match(name) or len(name) > 64:
+        raise TranslationError(
+            f"{source}: `name` must be kebab-case and at most 64 characters, got {name!r}"
+        )
+    if name != source.parent.name:
+        raise TranslationError(
+            f"{source}: `name` {name!r} does not match its folder slug "
+            f"{source.parent.name!r} — the harness discovers by folder and binds by name"
+        )
+
+    description = meta.get("description")
+    if not isinstance(description, str) or not 1 <= len(description) <= 1024:
+        length = len(description) if isinstance(description, str) else "absent"
+        raise TranslationError(
+            f"{source}: `description` must be 1–1024 characters, got {length} "
+            "(both harnesses select skills by description match)"
+        )
+
+    signing = [key for key in SKILL_SIGNING_KEYS if key in meta]
+    if signing:
+        raise TranslationError(
+            f"{source}: frontmatter carries {', '.join(signing)} — a stale hash makes "
+            "CyberStrike drop the skill as tampered while the other harnesses ignore it"
+        )
+
+    unknown = sorted(set(meta) - SKILL_KEYS)
+    if unknown:
+        raise TranslationError(
+            f"{source}: unknown frontmatter key(s) {', '.join(unknown)}; "
+            "the contract allows only `name`, `description`, and `metadata`"
+        )
+
+    return meta
 
 
 def translate(source: Path, *, plugin: str) -> str:
@@ -515,6 +575,15 @@ def build(repo_root: Path, dest_root: Path) -> None:
         agents = sorted((pillar / "agents").glob("*.md"))
         if not agents:
             raise TranslationError(f"{pillar}/agents: no agent files found")
+
+        # Parsed, not merely copied. Runs before anything is written for this
+        # pillar so a malformed skill cannot reach a staged tree, let alone the
+        # committed one.
+        skills = sorted((pillar / "skills").glob("*/SKILL.md"))
+        if not skills:
+            raise TranslationError(f"{pillar}/skills: no skill files found")
+        for source in skills:
+            read_skill(source)
 
         for harness in HARNESSES:
             root = dest_root / "plugins" / harness / plugin
