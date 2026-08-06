@@ -32,6 +32,7 @@ import filecmp
 import json
 import re
 import shutil
+import subprocess
 import sys
 import tempfile
 from pathlib import Path
@@ -673,6 +674,99 @@ def relative_files(root: Path) -> set[Path]:
     return files
 
 
+# Paths whose contents reach an installed user. `tools/` is excluded on
+# purpose: changing the generator without changing its output reaches nobody,
+# and when it does change output, the drift comparison below catches it
+# independently. `docs/` and `openspec/` reach no installed user at all.
+VERSIONED_SOURCES = ("analysts", "operators", "commands/acordia")
+
+# Tried in order. `develop` is the integration branch; `origin/HEAD` points at
+# `main`. The base is a merge base rather than HEAD so the obligation is one
+# bump per release, not one per commit.
+BASE_REFS = ("origin/develop", "origin/main", "develop", "main")
+
+
+def git_output(repo_root: Path, *args: str) -> str | None:
+    """Run one git command, or return None if git cannot answer."""
+    try:
+        result = subprocess.run(
+            ["git", *args],
+            cwd=repo_root,
+            capture_output=True,
+            text=True,
+            check=True,
+        )
+    except (OSError, subprocess.CalledProcessError):
+        return None
+    return result.stdout
+
+
+def semver(text: str) -> tuple[int, int, int] | None:
+    """Parse a strict MAJOR.MINOR.PATCH. Compared as integers: "2.10.0" sorts
+    above "2.9.0" numerically and below it lexicographically."""
+    match = re.fullmatch(r"(\d+)\.(\d+)\.(\d+)", text.strip())
+    return tuple(int(part) for part in match.groups()) if match else None
+
+
+def base_version(repo_root: Path, base: str) -> tuple[int, int, int] | None:
+    """The VERSION declared in this file as of `base`."""
+    blob = git_output(repo_root, "show", f"{base}:tools/build-plugins.py")
+    if blob is None:
+        return None
+    match = re.search(r'^VERSION = "([^"]+)"', blob, re.M)
+    return semver(match.group(1)) if match else None
+
+
+def version_gate(repo_root: Path) -> list[str]:
+    """Refuse a source change that carries no version bump.
+
+    Absence of evidence never fails: no git, no base branch, or an unparseable
+    version skips the gate. A missed bump is a silent no-op the next release
+    corrects, while a wedged `--check` costs trust in every gate it carries.
+    """
+    base = None
+    for ref in BASE_REFS:
+        if git_output(repo_root, "rev-parse", "--verify", "--quiet", ref) is None:
+            continue
+        merge_base = git_output(repo_root, "merge-base", "HEAD", ref)
+        if merge_base and merge_base.strip():
+            base = merge_base.strip()
+            break
+
+    if base is None:
+        print("build-plugins: version gate skipped (no comparison base)", file=sys.stderr)
+        return []
+
+    changed = git_output(repo_root, "diff", "--name-only", base, "--", *VERSIONED_SOURCES)
+    if changed is None:
+        print("build-plugins: version gate skipped (git could not diff)", file=sys.stderr)
+        return []
+
+    sources = [line for line in changed.splitlines() if line.strip()]
+    if not sources:
+        return []
+
+    was = base_version(repo_root, base)
+    now = semver(VERSION)
+    if was is None or now is None:
+        print("build-plugins: version gate skipped (unparseable version)", file=sys.stderr)
+        return []
+
+    if now > was:
+        return []
+
+    def dotted(parts: tuple[int, int, int]) -> str:
+        return ".".join(str(part) for part in parts)
+
+    problems = [
+        f"  source changed since {base[:9]} but VERSION did not move "
+        f"({dotted(was)} -> {dotted(now)}):"
+    ]
+    problems += [f"    {path}" for path in sources]
+    problems.append("  bump VERSION in tools/build-plugins.py and rebuild")
+    return problems
+
+
 def check(repo_root: Path) -> int:
     with tempfile.TemporaryDirectory() as tmp:
         staged = Path(tmp)
@@ -690,10 +784,16 @@ def check(repo_root: Path) -> int:
             if not filecmp.cmp(staged / path, repo_root / path, shallow=False):
                 problems.append(f"  differs:  {path}")
 
+    version_problems = version_gate(repo_root)
+
     if problems:
         print("build-plugins: committed tree does not match the generator", file=sys.stderr)
         print("\n".join(problems), file=sys.stderr)
         print("run tools/build-plugins.py and commit the result", file=sys.stderr)
+    if version_problems:
+        print("build-plugins: the version bump obligation is unmet", file=sys.stderr)
+        print("\n".join(version_problems), file=sys.stderr)
+    if problems or version_problems:
         return 1
     return 0
 
