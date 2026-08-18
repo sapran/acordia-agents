@@ -25,6 +25,10 @@ Usage:
   tools/build-plugins.py --check    # build to a tempdir and diff; exit 1 on drift
   tools/build-plugins.py --doctor   # report install skew, shadowing, and prompt hygiene
   tools/build-plugins.py --doctor --strict   # same, but exit 1 on an install-state finding
+
+`--strict` only modifies `--doctor` and is a usage error without it: on its own
+it would otherwise fall through to a full in-place rebuild, and with `--check`
+it would be silently ignored.
 """
 
 from __future__ import annotations
@@ -144,7 +148,18 @@ DEEP_HEADINGS = ("## Your defining spine (deep)", "## Your specialist depth (dee
 # well-formed slugs would make a line carrying one mistyped slug stop looking
 # like a skill line at all, and the whole list would go unchecked. A malformed
 # token is caught by the resolution gate instead, which names it.
-SKILL_LINE_RE = re.compile(r"^[A-Za-z0-9][A-Za-z0-9._-]*(?: · [A-Za-z0-9][A-Za-z0-9._-]*)+$")
+#
+# The separator count is zero-or-more, not one-or-more, because a skill list
+# naming exactly one slug is a real shape — `operators/agents/internal-network.md`
+# has one — and requiring a separator left that slug unresolved, so a typo on a
+# one-entry list would have shipped unchecked. A bare token is far too weak a
+# signal on its own, though, so `named_skills()` pairs this shape test with a
+# position test: the nearest preceding non-blank line must be a Markdown
+# heading. A skill list is always introduced by one; a one-word prose line or a
+# shell keyword inside a fenced block (`done`, in two operator prompts) never
+# is. Shape plus position is what keeps the matcher off prose now that shape
+# alone no longer can.
+SKILL_LINE_RE = re.compile(r"^[A-Za-z0-9][A-Za-z0-9._-]*(?: · [A-Za-z0-9][A-Za-z0-9._-]*)*$")
 
 # `metadata.acordia.role` is the single declaration of an agent's standing. It
 # must agree with `mode`, because the harnesses read the mode and the picker
@@ -157,6 +172,14 @@ ACORDIA_ROLES = ("orchestrator", "specialist")
 # source file. But five hand-synced copies drift, and one edited frontmatter
 # leaves the bypass open in the other four; this generator is the only place
 # that ever sees all five files at once, so equality is asserted here.
+#
+# Every primitive is listed in both upper and lower case, because opencode
+# resolves the map by literal glob match: a single-cased pattern is bypassed by
+# retyping the command in the other case, and SQL Server and MySQL both accept
+# either spelling. That is why the four SQL-to-RCE routines carry their second
+# case here, and why `sp_OACreate` — mixed-case in the source spelling opencode
+# already matched — needs both an all-lower and an all-upper twin rather than
+# one.
 OPERATOR_BASH_DENIES = (
     "*DROP TABLE*",
     "*drop table*",
@@ -171,9 +194,14 @@ OPERATOR_BASH_DENIES = (
     "*INTO DUMPFILE*",
     "*into dumpfile*",
     "*xp_cmdshell*",
+    "*XP_CMDSHELL*",
     "*sp_OACreate*",
+    "*sp_oacreate*",
+    "*SP_OACREATE*",
     "*sys_exec*",
+    "*SYS_EXEC*",
     "*sys_eval*",
+    "*SYS_EVAL*",
     "*COPY * TO PROGRAM*",
     "*copy * to program*",
     "*--os-shell*",
@@ -183,6 +211,19 @@ OPERATOR_BASH_DENIES = (
     "*--reg-add*",
     "*--reg-del*",
 )
+
+# Which pillars are held to that set. It is the Operations-pillar contract and
+# no other: `operator-agent-roster` states it under "Destructive and RCE
+# primitives denied in bash", and no analysis spec states anything like it. The
+# two scoped analysts carry a bare `bash: allow` with no deny map by design —
+# and a destructive-SQL denylist on an agent that cannot edit files would
+# protect nothing `bash: allow` does not already expose, so requiring it there
+# would invent a contract and the wrong one.
+#
+# Declared here rather than spelled out at the gate so a third write-capable
+# pillar joins the contract by gaining a name in this set, with no change to
+# the gate itself.
+BASH_DENY_PILLARS = frozenset({"operators"})
 
 FRONTMATTER_FENCE = "---"
 
@@ -301,30 +342,52 @@ def named_skills(body: str) -> list[str]:
     every skill line in the body, so a slug named under any heading — the five
     in use today or one written next month — is still resolved against the
     pillar's skill directory.
+
+    A line qualifies on shape *and* on position: `SKILL_LINE_RE` accepts a list
+    of one slug, which a bare prose word also satisfies, so the nearest
+    preceding non-blank line must additionally be a Markdown heading. The
+    heading is part of the signal because a skill list is always introduced by
+    one, while the lone-token lines that are not skill lists — a shell `done`
+    closing a loop in a fenced block, a one-word sentence — never follow a
+    heading directly. Without the position test the one-slug list under
+    `operators/agents/internal-network.md`'s working-knowledge heading either
+    stays unresolved (shape requiring a separator) or drags prose in with it.
     """
     named: list[str] = []
+    under_heading = False
     for line in body.splitlines():
         stripped = line.strip()
-        if SKILL_LINE_RE.match(stripped):
+        # A blank line separates a heading from its list without ending it, so
+        # it neither qualifies nor disqualifies what follows.
+        if not stripped:
+            continue
+        if under_heading and SKILL_LINE_RE.match(stripped):
             named += [part.strip() for part in stripped.split("·")]
+        under_heading = stripped.startswith("#")
     return list(dict.fromkeys(named))
 
 
 def check_bash_denies(entry, source: Path) -> None:
-    """A write-capable source must carry the canonical deny set, exactly.
+    """A write-capable source must carry the canonical deny set, exactly and in order.
 
     Set equality, not containment: a pattern present here and nowhere else is
     as much a sync failure as a missing one, and either way the author has to
     decide which of the two lists is right.
+
+    Order is checked too, not just membership, because opencode resolves this
+    map last-match-wins. Two things follow. `"*": allow` has to be the first
+    entry — a deny written above that floor is overridden by it and enforces
+    nothing, so a reordered copy can look complete while being dead — and the
+    denies themselves have to appear in the canonical order, which is what lets
+    a source be diffed against OPERATOR_BASH_DENIES positionally instead of by
+    eye across a couple of dozen near-identical lines.
     """
-    denies = (
-        {pattern for pattern, verdict in entry.items() if verdict == "deny"}
-        if isinstance(entry, dict)
-        else set()
-    )
-    canonical = set(OPERATOR_BASH_DENIES)
-    missing = sorted(canonical - denies)
-    extra = sorted(denies - canonical)
+    canonical = list(OPERATOR_BASH_DENIES)
+    keys = list(entry) if isinstance(entry, dict) else []
+    ordered = [pattern for pattern in keys if entry[pattern] == "deny"]
+    denies = set(ordered)
+    missing = sorted(set(canonical) - denies)
+    extra = sorted(denies - set(canonical))
     if missing:
         raise TranslationError(
             f"{source}: write-capable agent does not deny {missing[0]!r} "
@@ -336,6 +399,20 @@ def check_bash_denies(entry, source: Path) -> None:
             f"{source}: bash deny {extra[0]!r} is not in the canonical set; add it to "
             "OPERATOR_BASH_DENIES and to every write-capable source, or drop it here"
         )
+    if not keys or keys[0] != "*" or entry["*"] != "allow":
+        opener = f"{keys[0]!r}: {entry[keys[0]]!r}" if keys else "nothing (the map is empty)"
+        raise TranslationError(
+            f'{source}: `permission.bash` opens with {opener}, not `"*": allow` — '
+            "opencode resolves the map last-match-wins, so every deny written above the "
+            '`"*": allow` floor is overridden by it and enforces nothing'
+        )
+    for position, (found, want) in enumerate(zip(ordered, canonical), start=1):
+        if found != want:
+            raise TranslationError(
+                f"{source}: bash deny {position} of {len(canonical)} is {found!r} where "
+                f"OPERATOR_BASH_DENIES has {want!r}; the denies must appear in the "
+                "canonical order so the two lists diff positionally"
+            )
 
 
 def repo_relative(source: Path) -> str:
@@ -423,7 +500,19 @@ def read_agent(source: Path, *, skills: set[str]) -> tuple[dict, str, dict, str,
     if mode == "primary" and not spawns:
         raise TranslationError(f"{source}: primary agent names no dispatchable agents")
 
-    if write_posture(permission_entry(permission, "edit")) == "allowed":
+    # Keyed on write capability, not on the `edit: allow` spelling of it.
+    # `write_posture()` returns `scoped` for a path map, and this build grants
+    # omp `write` on exactly the reasoning that a scoped source holds a write
+    # capability — so scoping an operator's `edit` to, say, `.acordia/ops/**`
+    # must not drop it out of the destructive-bash gate while leaving it able to
+    # write. That escape is what the old `== "allowed"` test left open.
+    #
+    # And keyed on the pillar, because the deny set is a per-pillar contract:
+    # see BASH_DENY_PILLARS for why the analysis pillar is not held to it. The
+    # pillar check is deliberate, not an oversight.
+    if pillar in BASH_DENY_PILLARS and write_posture(
+        permission_entry(permission, "edit")
+    ) in ("allowed", "scoped"):
         check_bash_denies(permission_entry(permission, "bash"), source)
 
     body = rewrite_body(body, source)
@@ -523,28 +612,33 @@ def translate(source: Path, *, plugin: str, skills: set[str]) -> str:
 
     tools.append("yield")
 
-    # Verified against omp 17.1.8: omitting `write` from the allowlist does not
-    # remove it. `read` and `write` are omp's XDEV_TRANSPORT_TOOLS — the channel
-    # every `xd://` device is driven through — so they are present whenever
-    # `tools.xdev` is on, which is the default. `edit` and `task` ARE removed by
-    # omission; `write` is the one hole, and it is stamped here rather than
-    # papered over.
+    # The note below records an observation, never a mechanism. Verified against
+    # omp 17.1.8 and written down in README.md: an agent whose allowlist omitted
+    # `write` created a scratch file with it anyway, while `edit` and `task`
+    # really were absent. omp's own documentation describes something narrower
+    # than "always registered" — `write` stays available while a deferrable tool
+    # is active or in plan mode — so the note must claim neither that omp keeps
+    # `write` forever nor that omitting a tool removes it. It says what was seen
+    # on the version that was tested and leaves the guarantee unclaimed, because
+    # a note promising a restriction the harness may drop is worse than none.
     if edit_posture == "allowed":
         write_note = (
-            "source granted write access; the allowlist carries `edit` and `write`"
+            "source granted write access; the allowlist carries `edit` and `write`, so "
+            "no restriction is claimed here"
         )
     elif edit_posture == "scoped":
         write_note = (
             "source scopes `edit` to `.acordia/reports/**` as a report sink; the "
             "allowlist carries `write` (not `edit`) so the agent can produce those "
-            "reports, and the sink itself is a prompt-level convention no harness "
-            "enforces — `bash: allow` is an open write channel at any path"
+            "reports. The sink is a prompt-level convention: no harness enforces the "
+            "path, and `bash: allow` is an open write channel at any path"
         )
     else:
         write_note = (
-            "source granted no write access; omp still exposes `write` as an "
-            "`xd://` transport tool while `tools.xdev` is on, so read-only is "
-            "prompt-level for writes and enforced only for `edit`"
+            "source granted no write access and this allowlist omits `edit` and "
+            "`write`, but omission is not known to remove `write`: verified against "
+            "omp 17.1.8 (recorded in README.md), an agent that omitted it wrote a file "
+            "anyway. Treat writes as prompt-level here rather than blocked"
         )
 
     out: dict = {
@@ -1048,10 +1142,17 @@ def installed_versions(registry: Path) -> dict[str, list[str]] | None:
 
     None means the registry is absent or unreadable, which is the normal state
     of a harness the user never installed into — not a finding.
+
+    "Unreadable" includes well-formed JSON that is not a registry: `[]`, `null`,
+    or a bare string all parse cleanly and then have no `.get`, and `main()`
+    catches only `TranslationError`, so an `AttributeError` here would surface
+    as a traceback instead of the line this docstring promises.
     """
     try:
         data = json.loads(registry.read_text(encoding="utf-8"))
     except (OSError, ValueError):
+        return None
+    if not isinstance(data, dict):
         return None
     plugins = data.get("plugins")
     if not isinstance(plugins, dict):
@@ -1321,9 +1422,19 @@ def main() -> int:
     parser.add_argument(
         "--strict",
         action="store_true",
-        help="with --doctor, exit non-zero on an install-state or shadowing finding",
+        help="requires --doctor: exit non-zero on an install-state or shadowing finding. "
+        "It is a usage error on its own or with --check, because neither of those runs "
+        "would honour it",
     )
     args = parser.parse_args()
+
+    # `--strict` modifies `--doctor` and nothing else, and the dispatch below
+    # falls through to a full in-place rebuild — which deletes and rewrites the
+    # generated trees. A bare `--strict` therefore rebuilt when the caller asked
+    # for a report, and `--check --strict` silently ignored the flag. Both are
+    # now refused rather than reinterpreted.
+    if args.strict and not args.doctor:
+        parser.error("--strict requires --doctor (it modifies the doctor report only)")
 
     repo_root = Path(__file__).resolve().parent.parent
 
