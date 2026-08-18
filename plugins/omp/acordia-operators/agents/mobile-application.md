@@ -28,7 +28,7 @@ metadata:
     from: operators/agents/mobile-application.md
     harness: omp
     plugin: acordia-operators
-    write_access: source granted write access; the allowlist carries `edit` and `write`
+    write_access: source granted write access; the allowlist carries `edit` and `write`, so no restriction is claimed here
     bash_denies: omp has no per-command bash equivalent; the source's per-pattern denies are prompt-level guardrails under omp, not enforced ones
 ---
 
