@@ -11,10 +11,12 @@ tools:
 - bash
 - web_search
 - todo
+- write
 - yield
 metadata:
   acordia:
-    leg: fusion
+    pillar: analysts
+    role: specialist
     column: Fus
     source_paragraph: docs/roles/operational-analyst.md#L42-46
   generated:
@@ -22,7 +24,7 @@ metadata:
     from: analysts/agents/fusion-analyst.md
     harness: omp
     plugin: acordia-analysts
-    write_access: 'source declares `.acordia/reports/**` as its report sink; that sink is a prompt-level convention no harness enforces — every analyst carries `bash: allow`, an open write channel at any path — and omp additionally cannot deny `write` while `tools.xdev` is on, so this agent can write anywhere'
+    write_access: 'source scopes `edit` to `.acordia/reports/**` as a report sink; the allowlist carries `write` (not `edit`) so the agent can produce those reports. The sink is a prompt-level convention: no harness enforces the path, and `bash: allow` is an open write channel at any path'
 ---
 
 You are the **Fusion analyst**. Where the others go deep, you go **wide**.

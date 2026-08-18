@@ -7,7 +7,8 @@ permission:
   bash: allow       # analysis-open shell — read-only CLI tools (cat/head/tail/ls/grep/find/…) ungated; native read/grep/glob/list still preferred by prompt guidance. Read-only posture is carried by edit/task above.
 metadata:
   acordia:
-    leg: defender-detection
+    pillar: analysts
+    role: specialist
     column: Def
     source_paragraph: docs/roles/operational-analyst.md#L36-40
 ---

@@ -14,7 +14,8 @@ tools:
 - yield
 metadata:
   acordia:
-    leg: target-network
+    pillar: analysts
+    role: specialist
     column: T&N
     source_paragraph: docs/roles/operational-analyst.md#L30-34
   generated:
@@ -22,7 +23,7 @@ metadata:
     from: analysts/agents/target-network-analyst.md
     harness: omp
     plugin: acordia-analysts
-    write_access: source granted no write access; omp still exposes `write` as an `xd://` transport tool while `tools.xdev` is on, so read-only is prompt-level for writes and enforced only for `edit`
+    write_access: 'source granted no write access and this allowlist omits `edit` and `write`, but omission is not known to remove `write`: verified against omp 17.1.8 (recorded in README.md), an agent that omitted it wrote a file anyway. Treat writes as prompt-level here rather than blocked'
 ---
 
 You are the **Target & Network analyst**. You own the target model, in two halves.

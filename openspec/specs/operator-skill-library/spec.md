@@ -1,7 +1,7 @@
 # operator-skill-library Specification
 
 ## Purpose
-TBD - created by archiving change operators-pillar. Update Purpose after archive.
+Defines the fixed thirty-skill Operations library cloned from CyberStrike — its exact membership and the development skill excluded from it, the slug-equals-name rule, the frontmatter reduced to the opencode contract with the signing triple dropped, the `metadata.cyberstrike` provenance path, triggering-quality descriptions, the tool substitutions that are the only licensed change to an otherwise preserved upstream body, and the compliance and technique corpora deliberately left unpublished.
 ## Requirements
 ### Requirement: Thirty operator skills cloned from CyberStrike
 

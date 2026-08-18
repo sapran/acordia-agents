@@ -1,8 +1,10 @@
 # operator-agent-roster Specification
 
 ## Purpose
-TBD - created by archiving change operators-pillar. Update Purpose after archive.
+Defines the five opencode Operations agents ported from the CyberStrike roster recorded in `docs/roles/operator.md` — one primary orchestrator plus four domain specialists — including their modes and dispatch descriptions, the unscoped write-capable `edit: allow` posture and the destructive-bash denylist beside it, the authorization and scope gate every prompt opens with, the prompt-named skill sets, the `.acordia/ops/` operation-journal section, and the delegation discipline retained in the primary.
+
 ## Requirements
+
 ### Requirement: Five operator agents ported from the CyberStrike roster
 
 The `operators/` pillar SHALL contain exactly five agent files under `operators/agents/`: `operator.md`, `web-application.md`, `mobile-application.md`, `cloud-security.md`, and `internal-network.md`. Each SHALL be derived from the correspondingly named CyberStrike agent recorded in `docs/roles/operator.md`, whose native definitions live in `packages/cyberstrike/src/agent/agent.ts` with prompt bodies under `packages/cyberstrike/src/agent/prompt/`.
@@ -102,6 +104,8 @@ Every operator agent SHALL set `bash: allow` with per-pattern `deny` rules cover
 
 This ruleset is ported from the `injectionAgentPermission` block in `packages/cyberstrike/src/agent/agent.ts`, where CyberStrike applies it to its injection tester. It is defence in depth beside the prompt rules, not a substitute for them.
 
+The deny set SHALL be identical across all five agents, and that identity SHALL be enforced at build time against a canonical copy declared once in the generator. Five hand-synced copies of a safety list is a bypass waiting for the next edit: a pattern removed from one file and not the others leaves four agents guarded and one not, with nothing to report the difference. The rules SHALL nonetheless remain present in every source file, because opencode enforces them by reading the source, and only omp and Claude Code reduce them to prompt-level notes. The set SHALL match the ported `injectionAgentPermission` ruleset; changing it is a divergence from the port and SHALL be recorded in `docs/roles/operator.md` first.
+
 #### Scenario: Destructive SQL denied
 
 - **WHEN** an operator agent attempts a bash command containing `DROP TABLE` or `drop table`
@@ -117,6 +121,15 @@ This ruleset is ported from the `injectionAgentPermission` block in `packages/cy
 - **WHEN** an operator agent runs a non-matching command such as `nmap`, `ffuf`, `curl`, or a read-only CLI tool
 - **THEN** the resolved `bash` permission is `allow`
 
+#### Scenario: The five deny sets cannot diverge
+
+- **WHEN** one operator agent's deny set differs from the canonical copy in the generator by any pattern, or lists the patterns in a different order
+- **THEN** the build fails naming that agent and the offending pattern or position
+
+#### Scenario: The source remains the enforced artifact
+
+- **WHEN** an operator agent is deployed to opencode
+- **THEN** its own frontmatter carries the full deny map, so enforcement does not depend on the generator having run
 ### Requirement: Authorization and scope gate stated in every prompt
 
 Every operator prompt SHALL open with an authorization and scope gate: confirm written authorization for the target, establish in-scope and out-of-scope assets, and never assume authorization. Each prompt SHALL state that scope is read from `.acordia/ops/scope.md` and that an absent or silent scope file means a target is **untested**, never implicitly in scope.
@@ -181,3 +194,13 @@ Every operator prompt SHALL carry a `## Operation journal` H2 section describing
 - **WHEN** the delegation section is read
 - **THEN** it states that independent assets or phases are dispatched in parallel rather than serially
 
+### Requirement: Operator agents carry the pillar and role anchor
+
+Every operator agent's `metadata.acordia` block SHALL declare `pillar: operators` and `role` — `orchestrator` for `operator`, `specialist` for the four domain agents — and SHALL carry no `leg` key. The block is validated at build time, because the generator derives each agent's `color` from `role` and a malformed anchor otherwise produces a mislabelled agent in the picker rather than a failure.
+
+The separate `metadata.cyberstrike` provenance block is unaffected.
+
+#### Scenario: The anchor agrees with the mode
+
+- **WHEN** an operator agent declares `mode: primary`
+- **THEN** its `role` is `orchestrator`, and every `mode: subagent` operator declares `role: specialist`

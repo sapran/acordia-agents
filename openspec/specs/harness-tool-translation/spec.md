@@ -1,7 +1,7 @@
 # harness-tool-translation Specification
 
 ## Purpose
-TBD - created by archiving change operators-pillar. Update Purpose after archive.
+How a prompt or skill body ported from another fork is made shippable: the rule that no distributed artifact names a tool the target harness lacks, the fixed substitution table that rewrites each CyberStrike platform tool call while preserving its upstream intent, the `.acordia/ops/` file journal that replaces CyberStrike's methodology-engine database — its fixed layout, and why it is prompt discipline rather than a permission scope — and the requirement that both be documented once in the workbook instead of restated per pillar.
 ## Requirements
 ### Requirement: No shipped artifact names a tool the harness lacks
 
