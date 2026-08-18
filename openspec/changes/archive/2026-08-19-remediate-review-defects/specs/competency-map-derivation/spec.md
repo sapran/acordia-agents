@@ -28,10 +28,10 @@ For a skill the block SHALL carry `grid_row` — the anchored row, or `null` tog
 - **WHEN** `analysts/skills/credential-harvest-triage/SKILL.md` is inspected
 - **THEN** its `metadata.acordia` contains `grid_row: null`, `procedural: true`, and `source` pointing at an openspec change
 
-#### Scenario: Agent carries leg, column, and paragraph anchor
+#### Scenario: Agent carries pillar, role, column, and paragraph anchor
 
 - **WHEN** any `analysts/agents/*.md` file is inspected
-- **THEN** its frontmatter contains `metadata.acordia` with `leg`, `column`, and `source_paragraph`
+- **THEN** its frontmatter contains `metadata.acordia` with `pillar`, `role`, `column`, and `source_paragraph`, and carries no `leg` key
 
 #### Scenario: Column-mark set matches marks in the grid
 

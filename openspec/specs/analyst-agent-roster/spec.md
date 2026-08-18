@@ -387,7 +387,7 @@ The section SHALL remain additive — existing sections (defining spine, baselin
 
 Every analyst agent SHALL declare `webfetch: allow` and `websearch: allow` in its `permission` map.
 
-This closes a gap between the source contract and what the harnesses actually grant, in the direction the sources were already wrong. The generator's baseline tool list gives every generated agent `web_search` unconditionally, so all four analysts search the web in omp today while their opencode sources grant no web permission at all — the grant was missing by omission, not by decision. `fusion-analyst` compounds it: its body claims responsibility for open sources under a frontmatter that permits no fetch of any kind.
+This states in the source contract what the harnesses already grant; it does not close a denial. opencode's permission default is **allow** (see *Read-only file access via `edit: deny`* above, and `docs/agents-skills-extension-workbook.md` §6), so no analyst was ever barred from the web there by the omission, and in omp the generator's baseline tool list gives every generated agent `web_search` unconditionally. What the declaration adds is explicitness and durability: opencode merges an agent's own `permission` rules over the global configuration and the agent's rules take precedence, so a declared grant survives a deployer whose `opencode.json` denies `webfetch`/`websearch` globally, where silence would not. `fusion-analyst` is the sharpest case — its body claims responsibility for open sources while its frontmatter said nothing about fetching either way.
 
 The read-only posture is unaffected. In this distribution read-only means "holds no file-editing tool", carried by `edit` and `task`; fetching a page is collection, not modification.
 
@@ -400,6 +400,11 @@ The read-only posture is unaffected. In this distribution read-only means "holds
 
 - **WHEN** the web permissions are added
 - **THEN** each agent's `edit`, `task`, and `bash` values are unchanged, including the two report-sink rules
+
+#### Scenario: The declaration outranks a restrictive global configuration
+
+- **WHEN** an analyst runs under an `opencode.json` that denies `webfetch` and `websearch` globally
+- **THEN** the agent's own declared `allow` takes precedence, because agent-level permission rules are merged over the global ones
 
 ### Requirement: Analyst agents carry the pillar and role anchor
 

@@ -8,14 +8,14 @@ Nothing in the repository could have detected that. The generator sees only its 
 
 The remaining defects share a shape: contracts this repository states in prose and nothing executes.
 
-- Five operator agents carry a byte-identical 22-glob destructive-bash deny map, hand-synced. An edit to one leaves a bypass in four.
+- Five operator agents carry a byte-identical destructive-bash deny map, hand-synced across five frontmatters — 24 globs as the review found it, and 29 once the single-cased SQL-to-RCE patterns gain the case variants a literal glob match needs. An edit to one leaves a bypass in four.
 - An agent may name a skill slug that does not exist. Nothing resolves the `·`-separated lists the prompts use to declare their skill sets, and `deep_skills()` already parses one of those lines and throws the result away.
 - `metadata.acordia` forks by pillar — `{leg, column, source_paragraph}` for analysts, `{pillar, role}` for operators — under one key name, so `agent_color()` has to accept either.
 - A path-scoped `edit` posture yields opposite capability per harness: no write tool at all in omp, `Write` still allowed in Claude Code. The source states one intent; the two targets disagree about it.
 - `browser: allow` is translated for omp and dropped for Claude Code with no note, unlike every other unmappable posture.
 - `--check` reports a macOS `.DS_Store` under `plugins/` as generator drift and exits 1.
 - `operational-analyst` names `analyst-loop` in prose as the skill formalising its own cycle, and declares it in neither of its own skill lists.
-- All four analysts hold `web_search` in omp through the generator's `BASE_TOOLS` while their opencode sources grant no web permission at all; `fusion-analyst` claims open sources in its body under that omission.
+- All four analysts hold `web_search` in omp through the generator's `BASE_TOOLS`, while their opencode sources declare no web permission at all and rely on opencode's `allow` default to supply one. Nothing is denied there, but nothing is stated either: `fusion-analyst`'s body claims responsibility for open sources under a frontmatter that says nothing about fetching.
 - Three published specs still carry the literal placeholder `TBD - created by archiving change <slug>. Update Purpose after archive.`, and `docs/implementation-notes.md` parks a note about a script that no longer exists.
 
 ## What Changes
@@ -40,7 +40,7 @@ The remaining defects share a shape: contracts this repository states in prose a
 
 ### The analyst roster gains two declarations it already had in effect
 
-`analyst-loop` joins `operational-analyst`'s defining spine, first in the line, because the other spine skills are steps inside it. All four analysts gain `webfetch: allow` and `websearch: allow` — which does not widen omp (`web_search` is already in `BASE_TOOLS`) and closes the gap in opencode, where the grant was missing only by omission.
+`analyst-loop` joins `operational-analyst`'s defining spine, first in the line, because the other spine skills are steps inside it. All four analysts gain `webfetch: allow` and `websearch: allow` — which widens nothing, since omp's `BASE_TOOLS` already carries `web_search` and opencode's permission default is `allow`, and instead makes the posture explicit in the source, where it also survives a deployer whose global `opencode.json` denies those tools.
 
 ### Three heading capitalisations and four stale documents
 
@@ -78,5 +78,5 @@ None.
 - **Modified:** `tools/build-plugins.py` (gates, `--doctor`, two translation corrections, `VERSION`); all nine `*/agents/*.md` (metadata, and for analysts the spine line and web permissions); `internal-network.md` (three heading casings); three `openspec/specs/*/spec.md` Purpose lines; `docs/implementation-notes.md`; `CLAUDE.md`; `README.md`.
 - **Regenerated:** both `plugins/` trees — every agent file (metadata, colour, and the two translation corrections) plus the six files carrying the version.
 - **Unchanged:** all 73 skill bodies, all 17 command wrappers, `install.sh`, `uninstall.sh`, and every prompt body except three heading lines and one skill list.
-- **Behavioral risk:** the four fatal gates run against sources that have never been checked. Each was evaluated against the current tree during the review, and the expected failures are exactly the ones this change repairs; a gate failing on anything else is new information and should be treated as a finding rather than worked around. The scoped-`edit` correction gives `operational-analyst` and `fusion-analyst` a `write` tool in omp that the previous translation withheld — a capability they already had in practice, since `write` survives as an `xd://` transport tool while `tools.xdev` is on, and since `bash: allow` is an open write channel in every harness.
+- **Behavioral risk:** the four fatal gates run against sources that have never been checked. Each was evaluated against the current tree during the review, and the expected failures are exactly the ones this change repairs; a gate failing on anything else is new information and should be treated as a finding rather than worked around. The scoped-`edit` correction gives `operational-analyst` and `fusion-analyst` a `write` tool in omp that the previous translation withheld — a capability they already had in practice, on two grounds recorded rather than assumed: an omp agent whose allowlist omitted `write` still wrote a file when asked (verified against omp 17.1.8), and `bash: allow` is an open write channel in every harness. omp's own documentation describes a narrower mechanism than "omission does not remove a tool", so the claim rests on that observation and is not generalised past it.
 - **Verified before this change:** the workstation shadow and its exact staleness (the four analyst prompts, pre-trim, 2026-07-31 vintage), the 2.0.0-against-2.4.0 registry skew, `acordia-operators` installed nowhere, the 73 skill symlinks, `--check` exiting 1 on `plugins/.DS_Store`, and the two divergent scoped-`edit` translation paths.

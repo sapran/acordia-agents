@@ -37,11 +37,13 @@ The translator SHALL convert one opencode agent file into one omp task-agent fil
 The emitted `tools` allowlist SHALL be derived from the source `permission` map rather than from a fixed list, so that a write-capable pillar translates as faithfully as a read-only one. The derivation is:
 
 - always present: `read`, `grep`, `glob`, `bash`, `web_search`, `todo`, and `yield` (omp appends `yield` itself; naming it keeps the generated file honest)
-- `edit` and `write` are present when the source `permission.edit` is not a denial — that is, when it is `allow`, or a path map with at least one `allow`
+- `edit` and `write` are both present when the source `permission.edit` is the scalar `allow`
+- `write` alone is present, and `edit` is absent, when the source `permission.edit` is a path map carrying at least one `allow` — the scoped report-sink posture, whose reasoning is stated under *Unmappable permissions are surfaced, not silently resolved* below
+- neither is present when the source `permission.edit` is a denial
 - `browser` is present when the source `permission.browser` is `allow`
 - `task` is present, and `spawns` lists the allowed agent names, when the source `permission.task` map names at least one allowed agent
 
-The generated file SHALL additionally carry a `color`, because omp renders every agent in one flat picker shared with its own built-ins and the user's own agents — the same visual-namespace problem the `ACORDIA <pillar> — ` description tag solves for text. The colour SHALL be derived from the `metadata.acordia` block the source already declares rather than from a filename table, so the pillar keeps one source of truth for which agent is the orchestrator: the analyst pillar names it in `leg`, the operators pillar in `role`, and either field reading `orchestrator` emits `cyan`. Every other value — and a source carrying no `metadata.acordia` block at all — emits `blue`, the specialist default.
+The generated file SHALL additionally carry a `color`, because omp renders every agent in one flat picker shared with its own built-ins and the user's own agents — the same visual-namespace problem the `ACORDIA <pillar> — ` description tag solves for text. The colour SHALL be derived from the `metadata.acordia` block the source already declares rather than from a filename table, so the pillar keeps one source of truth for which agent is the orchestrator: both pillars declare that standing in one key, `role`, and `role: orchestrator` emits `cyan` while `role: specialist` emits `blue`. There is no colour fallback: a source carrying no `metadata.acordia` block, or declaring no recognised `role`, fails the build under the anchor gate specified in `plugin-packaging`, because a defaulted colour would ship a mislabelled agent in the picker instead of reporting the defect.
 
 #### Scenario: Required fields emitted
 
@@ -49,15 +51,15 @@ The generated file SHALL additionally carry a `color`, because omp renders every
 - **THEN** the output frontmatter contains `name: <stem>`
 - **AND** the output frontmatter contains the source `description` unchanged
 
-#### Scenario: Orchestrator and legs are visually distinguishable
+#### Scenario: Orchestrator and specialists are visually distinguishable
 
-- **WHEN** an agent declaring `metadata.acordia.leg: orchestrator` (analyst pillar) or `metadata.acordia.role: orchestrator` (operators pillar) is translated alongside an agent declaring any other value
-- **THEN** the orchestrator's output carries `color: cyan` and the other carries `color: blue`
+- **WHEN** an agent declaring `metadata.acordia.role: orchestrator` is translated alongside an agent declaring `metadata.acordia.role: specialist`
+- **THEN** the orchestrator's output carries `color: cyan` and the specialist's carries `color: blue`
 
-#### Scenario: Colour falls back for an agent with no orchestrator declaration
+#### Scenario: A missing anchor is a build failure, not a colour default
 
-- **WHEN** an agent carrying no `metadata.acordia` block, or one naming neither `leg` nor `role` as `orchestrator`, is translated
-- **THEN** the output frontmatter carries `color: blue`
+- **WHEN** an agent carrying no `metadata.acordia` block, or declaring no recognised `role`, is translated
+- **THEN** the translator exits non-zero naming that source file, and no colour is defaulted for it
 
 #### Scenario: Read-only posture becomes an absent tool
 
@@ -69,6 +71,11 @@ The generated file SHALL additionally carry a `color`, because omp renders every
 
 - **WHEN** a source agent carries `permission.edit: allow`
 - **THEN** the output `tools` allowlist contains both `edit` and `write`
+
+#### Scenario: Scoped posture becomes the write tool alone
+
+- **WHEN** a source agent carries `permission.edit` as a path map denying `"*"` and allowing one path
+- **THEN** the output `tools` allowlist contains `write` and does not contain `edit`
 
 #### Scenario: Browser capability carried over
 
@@ -134,13 +141,13 @@ Two rewrites feed that check. The translator SHALL replace the inline `` `read`/
 
 ### Requirement: Unmappable permissions are surfaced, not silently resolved
 
-omp allowlists whole tools, cannot scope a tool to a path, and cannot remove `write` at all while its `tools.xdev` setting is on, because `read` and `write` are the transport for every `xd://` device. The source files' `".acordia/reports/**": allow` write exception therefore has no faithful translation.
+omp allowlists whole tools and cannot scope a tool to a path. Nor is omitting `write` from the allowlist known to remove it: verified against omp 17.1.8 and recorded in `README.md`, an agent whose allowlist omitted `write` created a scratch file with it anyway, while `edit` and `task` really were absent. This specification asserts that observation and not a mechanism — omp's own documentation states a narrower condition than "always present", and only the observation has been verified here. The source files' `".acordia/reports/**": allow` write exception therefore has no faithful translation.
 
 Where a source declares a path-scoped `edit`, the translator SHALL emit `write` and SHALL NOT emit `edit`, and SHALL record in the generated file that the path scope is a prompt-level convention no harness enforces. This resolves a divergence in which one source posture produced opposite capability in the two plugin harnesses: the omp emitter withheld every write tool while the Claude emitter kept `Write` allowed, so an agent whose prompt requires it to produce a report held the means to do so in one harness and not the other.
 
-The emitted capability is the honest one. `write` survives in omp as an `xd://` transport tool whenever `tools.xdev` is on, and `bash: allow` is an open write channel at any path in all three harnesses, so an agent with a scoped `edit` can already write anywhere; the generated note SHALL state that outcome rather than imply a boundary the harness keeps.
+The emitted capability is the honest one. A write tool was seen to work in omp from an allowlist that omitted it, and `bash: allow` is an open write channel at any path in all three harnesses, so an agent with a scoped `edit` can already write anywhere; the generated note SHALL state that outcome rather than imply a boundary the harness keeps.
 
-A blanket `edit: deny` SHALL continue to emit neither `edit` nor `write`, with the note recording that omp exposes `write` regardless while `tools.xdev` is on.
+A blanket `edit: deny` SHALL continue to emit neither `edit` nor `write`, with the note recording that the omission is not known to remove `write`, citing the recorded omp 17.1.8 result, and directing that writes be treated as prompt-level rather than blocked.
 
 #### Scenario: A path-scoped edit yields a write tool
 
@@ -156,12 +163,13 @@ A blanket `edit: deny` SHALL continue to emit neither `edit` nor `write`, with t
 #### Scenario: A blanket denial is unchanged
 
 - **WHEN** a source agent declares a bare `edit: deny`
-- **THEN** the generated omp agent's `tools` list contains neither `edit` nor `write`, and the note records that omp exposes `write` anyway while `tools.xdev` is on
+- **THEN** the generated omp agent's `tools` list contains neither `edit` nor `write`, and the note records that the omission is not known to remove `write`, cites the omp 17.1.8 result, and directs that writes be treated as prompt-level rather than blocked
 
 #### Scenario: Write access is never silently claimed
 
 - **WHEN** any agent is translated
-- **THEN** the output frontmatter records, under generated metadata, that omp exposes `write` as an `xd://` transport tool irrespective of the allowlist
+- **THEN** the output frontmatter records, under generated metadata, exactly which write capability the agent holds
+- **AND** it claims no restriction this repository has not verified the harness to keep
 
 #### Scenario: Scoped report sink is reported as an unenforced convention
 
@@ -242,7 +250,7 @@ When no pillar is named explicitly, `install.sh` and `uninstall.sh` SHALL treat 
 
 ### Requirement: Write-capable pillars are translated without a false read-only claim
 
-Because omp cannot deny `write` while `tools.xdev` is on, the generated metadata note about write access SHALL distinguish three source postures: a blanket denial, a path-scoped exception, and an outright `allow`. A write-capable source SHALL NOT be stamped with the read-only note.
+Because omitting `write` from an omp allowlist is not known to remove it, the generated metadata note about write access SHALL distinguish three source postures: a blanket denial, a path-scoped exception, and an outright `allow`. A write-capable source SHALL NOT be stamped with the read-only note.
 
 The path-scoped note's wording is **no longer frozen**. `harden-plugin-distribution` fixed a scenario requiring the analysts' generated write-access note to be unchanged from before that change; its purpose was to prove that change did not disturb the note, not to make the wording permanent. `reframe-report-sink-convention` rewords it deliberately, per the reframing requirement above.
 
@@ -252,10 +260,11 @@ The path-scoped note's wording is **no longer frozen**. `harden-plugin-distribut
 - **THEN** the generated metadata states that the source granted write access and that the allowlist carries `edit` and `write`
 - **AND** it does not claim a read-only posture
 
-#### Scenario: Blanket read-only note is unchanged by this change
+#### Scenario: Blanket read-only note claims no restriction it cannot keep
 
 - **WHEN** an agent whose source denies `edit` outright is translated
-- **THEN** its generated write-access note still states that omp exposes `write` as an `xd://` transport tool and that read-only is prompt-level for writes
+- **THEN** its generated write-access note states that the omission is not known to remove `write`, cites the recorded omp 17.1.8 result, and directs that writes be treated as prompt-level rather than blocked
+- **AND** it asserts no mechanism for why `write` remains available
 
 #### Scenario: Path-scoped note is reworded
 
