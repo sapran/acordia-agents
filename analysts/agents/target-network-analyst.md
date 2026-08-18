@@ -5,9 +5,12 @@ permission:
   edit: deny        # read-only analyst — in opencode `edit` governs edit/write/patch; everything else defaults to allow
   task: deny        # leaf specialist — does not dispatch subagents
   bash: allow       # analysis-open shell — read-only CLI tools (cat/head/tail/ls/grep/find/…) ungated; native read/grep/glob/list still preferred by prompt guidance. Read-only posture is carried by edit/task above.
+  webfetch: allow   # read the open web — collection, not modification; the read-only posture lives in `edit`/`task` above
+  websearch: allow  # omp already grants `web_search` via the generator's BASE_TOOLS; opencode denied it only by omission
 metadata:
   acordia:
-    leg: target-network
+    pillar: analysts
+    role: specialist
     column: 'T&N'
     source_paragraph: docs/roles/operational-analyst.md#L30-34
 ---
