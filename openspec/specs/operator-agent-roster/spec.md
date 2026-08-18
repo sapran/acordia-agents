@@ -1,7 +1,7 @@
 # operator-agent-roster Specification
 
 ## Purpose
-TBD - created by archiving change operators-pillar. Update Purpose after archive.
+Defines the five opencode Operations agents ported from the CyberStrike roster recorded in `docs/roles/operator.md` — one primary orchestrator plus four domain specialists — including their modes and dispatch descriptions, the unscoped write-capable `edit: allow` posture and the destructive-bash denylist beside it, the authorization and scope gate every prompt opens with, the prompt-named skill sets, the `.acordia/ops/` operation-journal section, and the delegation discipline retained in the primary.
 ## Requirements
 ### Requirement: Five operator agents ported from the CyberStrike roster
 
