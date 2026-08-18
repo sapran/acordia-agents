@@ -1,5 +1,8 @@
 ---
 # Generated from operators/agents/cloud-security.md by tools/build-plugins.py. Do not edit.
+# Source granted the `browser` tool; Claude Code plugin agents cannot add a tool
+# the harness does not ship, so browser-driven steps in the prompt fall back to
+# scripted HTTP here. omp carries the tool.
 # Source denied specific bash patterns; Claude Code plugin agents cannot express
 # per-command bash rules, so those denies are prompt-level here.
 name: cloud-security

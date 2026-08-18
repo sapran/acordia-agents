@@ -14,7 +14,8 @@ tools:
 - yield
 metadata:
   acordia:
-    leg: defender-detection
+    pillar: analysts
+    role: specialist
     column: Def
     source_paragraph: docs/roles/operational-analyst.md#L36-40
   generated:

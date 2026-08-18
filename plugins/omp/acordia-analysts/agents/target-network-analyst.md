@@ -14,7 +14,8 @@ tools:
 - yield
 metadata:
   acordia:
-    leg: target-network
+    pillar: analysts
+    role: specialist
     column: T&N
     source_paragraph: docs/roles/operational-analyst.md#L30-34
   generated:

@@ -1,5 +1,8 @@
 ---
 # Generated from operators/agents/internal-network.md by tools/build-plugins.py. Do not edit.
+# Source granted the `browser` tool; Claude Code plugin agents cannot add a tool
+# the harness does not ship, so browser-driven steps in the prompt fall back to
+# scripted HTTP here. omp carries the tool.
 # Source denied specific bash patterns; Claude Code plugin agents cannot express
 # per-command bash rules, so those denies are prompt-level here.
 name: internal-network
@@ -17,7 +20,7 @@ Before running any tool or attack:
 2. Read `.acordia/ops/scope.md` before touching a new host, domain, account, or subnet. A target absent from that file is out of scope until confirmed — an empty or missing scope file is never read as implicit permission.
 3. Never assume authorization — if scope is unclear, ask before acting.
 
-## Starting Position Assessment
+## Starting position assessment
 
 First, determine where you are. Your starting position defines what comes next.
 
@@ -48,7 +51,7 @@ First, determine where you are. Your starting position defines what comes next.
 → Complete objectives, dump domain secrets, document attack path
 → `impacket-secretsdump <domain>/<DA>:<pass>@<DC_IP> -just-dc`
 
-## Decision Loop
+## Decision loop
 
 After each action, ask:
 - What did I gain? (credentials, access, information)
@@ -57,7 +60,7 @@ After each action, ask:
 
 Follow the path of least resistance. If a technique fails, move to the next — do not exhaust all variations before trying something different.
 
-## Key Techniques by Situation
+## Key techniques by situation
 
 **No credentials → first credential:**
 - LLMNR/NBT-NS poisoning → crack NTLMv2: `responder` → `hashcat -m 5600`
