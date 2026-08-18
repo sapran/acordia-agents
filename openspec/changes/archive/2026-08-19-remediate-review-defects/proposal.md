@@ -8,7 +8,7 @@ Nothing in the repository could have detected that. The generator sees only its 
 
 The remaining defects share a shape: contracts this repository states in prose and nothing executes.
 
-- Five operator agents carry a byte-identical destructive-bash deny map, hand-synced across five frontmatters — 24 globs as the review found it, and 29 once the single-cased SQL-to-RCE patterns gain the case variants a literal glob match needs. An edit to one leaves a bypass in four.
+- Five operator agents carry a byte-identical 24-glob destructive-bash deny map, hand-synced across five frontmatters. An edit to one leaves a bypass in four, and nothing compares them.
 - An agent may name a skill slug that does not exist. Nothing resolves the `·`-separated lists the prompts use to declare their skill sets, and `deep_skills()` already parses one of those lines and throws the result away.
 - `metadata.acordia` forks by pillar — `{leg, column, source_paragraph}` for analysts, `{pillar, role}` for operators — under one key name, so `agent_color()` has to accept either.
 - A path-scoped `edit` posture yields opposite capability per harness: no write tool at all in omp, `Write` still allowed in Claude Code. The source states one intent; the two targets disagree about it.
@@ -40,7 +40,7 @@ The remaining defects share a shape: contracts this repository states in prose a
 
 ### The analyst roster gains two declarations it already had in effect
 
-`analyst-loop` joins `operational-analyst`'s defining spine, first in the line, because the other spine skills are steps inside it. All four analysts gain `webfetch: allow` and `websearch: allow` — which widens nothing, since omp's `BASE_TOOLS` already carries `web_search` and opencode's permission default is `allow`, and instead makes the posture explicit in the source, where it also survives a deployer whose global `opencode.json` denies those tools.
+`analyst-loop` joins `operational-analyst`'s defining spine, first in the line, because the other spine skills are steps inside it.
 
 ### Three heading capitalisations and four stale documents
 

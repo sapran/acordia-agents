@@ -37,7 +37,6 @@ Second, the most damaging failure was invisible to that file by construction. Th
 
 - **The gates run against never-checked sources.** Mitigated by having measured the current tree first: the expected failure set is exactly what this change repairs.
 - **`--doctor` reads outside the repository.** It touches `~/.omp` and `~/.claude` read-only, tolerates their absence, and prints paths rather than contents, so it reveals nothing a maintainer cannot already see.
-- **Granting `webfetch`/`websearch` widens nothing; it states a posture.** opencode's permission default is `allow`, so the analysts already fetch and search there, and omp's `BASE_TOOLS` already carries `web_search`. What the declaration buys is an explicit source contract, and survival: an agent that names the permission keeps it under a deployer's restrictive global `opencode.json`, where silence would not. Read-only in this distribution has always meant "holds no file-editing tool", and fetching is collection, not modification. The alternative — narrowing `fusion-analyst`'s body claim about open sources — would have made the prompt describe less than the role model does.
 - **Five gates and a report add roughly 200 lines to a single-file generator that is already the repository's most complex artifact.** Accepted: the alternative is a second tool, and the same precedent that refused CI refuses that too.
 
 ## Migration Plan

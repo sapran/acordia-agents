@@ -27,14 +27,9 @@ permission:
     "*INTO DUMPFILE*": deny
     "*into dumpfile*": deny
     "*xp_cmdshell*": deny
-    "*XP_CMDSHELL*": deny
     "*sp_OACreate*": deny
-    "*sp_oacreate*": deny
-    "*SP_OACREATE*": deny
     "*sys_exec*": deny
-    "*SYS_EXEC*": deny
     "*sys_eval*": deny
-    "*SYS_EVAL*": deny
     "*COPY * TO PROGRAM*": deny
     "*copy * to program*": deny
     "*--os-shell*": deny

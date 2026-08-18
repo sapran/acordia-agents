@@ -14,8 +14,7 @@
 
 - [x] 2.1 All nine agents carry `metadata.acordia.{pillar, role}`; `leg` removed; analysts keep `column` and `source_paragraph`
 - [x] 2.2 `analyst-loop` joins `operational-analyst`'s defining-spine line, first
-- [x] 2.3 All four analysts declare `webfetch: allow` and `websearch: allow`
-- [x] 2.4 `internal-network.md`'s three title-cased H2 headings move to sentence case
+- [x] 2.3 `internal-network.md`'s three title-cased H2 headings move to sentence case
 
 ## 3. Documents
 
