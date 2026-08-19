@@ -7,7 +7,7 @@ metadata:
     grid_row: detection-capability-analysis
     grid_deep_in: [Def]
     grid_working_in: [Core]
-    source: docs/roles/operational-analyst.md#L91
+    source: docs/roles/operational-analyst.md#L90
 ---
 
 # Detection-Capability Analysis

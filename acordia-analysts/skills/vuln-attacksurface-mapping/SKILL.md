@@ -7,7 +7,7 @@ metadata:
     grid_row: vuln-attacksurface-mapping
     grid_deep_in: ['T&N']
     grid_working_in: [Core, Def]
-    source: docs/roles/operational-analyst.md#L89
+    source: docs/roles/operational-analyst.md#L88
 ---
 
 # Vulnerability & Attack-Surface Mapping

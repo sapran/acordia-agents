@@ -7,7 +7,7 @@ metadata:
     grid_row: cloud-controlplane-analysis
     grid_deep_in: ['T&N']
     grid_working_in: [Def, Fus]
-    source: docs/roles/operational-analyst.md#L87
+    source: docs/roles/operational-analyst.md#L86
 ---
 
 # Cloud Control-Plane & Service Analysis

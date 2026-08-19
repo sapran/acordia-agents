@@ -7,7 +7,7 @@ metadata:
     grid_row: cloud-identity-log-analysis
     grid_deep_in: [Def]
     grid_working_in: ['T&N', Fus]
-    source: docs/roles/operational-analyst.md#L93
+    source: docs/roles/operational-analyst.md#L92
 ---
 
 # Cloud & Identity Log Analysis

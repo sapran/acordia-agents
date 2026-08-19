@@ -74,6 +74,9 @@ openspec change that introduced it, and MAY additionally carry `cross_cutting: t
 `composes` list of the grid-row slugs it draws together. `source` SHALL resolve to a path that
 exists in the repository.
 
+Every such block also carries the `family` key required by `skill-library`, which sits in the same
+`metadata.acordia` block alongside the anchor.
+
 **Agents SHALL carry no anchor.** An agent file's frontmatter is exactly `name`, `description` and
 `color`, so the pillar, role, column and source paragraph that the anchor used to carry are recorded
 in `docs/roles/operational-analyst.md` and in the agent's own prompt body instead. The anchor existed
@@ -107,13 +110,13 @@ the reader is a person, and a fifth and sixth frontmatter key on an agent buys n
 
 #### Scenario: Every analyst skill is anchored and its source resolves
 
-- **WHEN** all 43 analyst skills' `metadata.acordia` blocks are enumerated
+- **WHEN** all 42 analyst skills' `metadata.acordia` blocks are enumerated
 - **THEN** each declares `grid_row` (a row slug or `null`) and a `source` whose path exists in the repository
 
 #### Scenario: Skill anchor schema is exhaustive
 
 - **WHEN** a skill's `metadata.acordia` is inspected
-- **THEN** it contains only the keys declared for its class — `grid_row`/`grid_deep_in`/`grid_working_in`/`source` for a grid-row skill, `grid_row`/`procedural`/`source` plus the optional `cross_cutting`/`composes` for a procedural one — and no others
+- **THEN** it contains only the keys declared for its class — `family` plus `grid_row`/`grid_deep_in`/`grid_working_in`/`source` for a grid-row skill, and `family` plus `grid_row`/`procedural`/`source` with the optional `cross_cutting`/`composes` for a procedural one — and no others
 
 ### Requirement: Merging two rows moves the grid first and preserves both marks
 

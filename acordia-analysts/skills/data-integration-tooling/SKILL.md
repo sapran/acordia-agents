@@ -7,7 +7,7 @@ metadata:
     grid_row: data-integration-tooling
     grid_deep_in: [Fus]
     grid_working_in: [Core]
-    source: docs/roles/operational-analyst.md#L105
+    source: docs/roles/operational-analyst.md#L104
 ---
 
 # Data Integration & Correlation Tooling

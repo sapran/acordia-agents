@@ -7,7 +7,7 @@ metadata:
     grid_row: maintaining-operating-picture
     grid_deep_in: [Fus]
     grid_working_in: [Core]
-    source: docs/roles/operational-analyst.md#L103
+    source: docs/roles/operational-analyst.md#L102
 ---
 
 # Maintaining the Operating Picture

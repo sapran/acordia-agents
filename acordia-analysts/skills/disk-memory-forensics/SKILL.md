@@ -7,7 +7,7 @@ metadata:
     grid_row: disk-memory-forensics
     grid_deep_in: [Def]
     grid_working_in: ['T&N']
-    source: docs/roles/operational-analyst.md#L99
+    source: docs/roles/operational-analyst.md#L98
 ---
 
 # Disk & Memory Forensics

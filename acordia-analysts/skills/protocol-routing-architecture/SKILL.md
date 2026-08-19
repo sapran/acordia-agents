@@ -7,7 +7,7 @@ metadata:
     grid_row: protocol-routing-architecture
     grid_deep_in: ['T&N']
     grid_working_in: [Def]
-    source: docs/roles/operational-analyst.md#L84
+    source: docs/roles/operational-analyst.md#L83
 ---
 
 # Protocol, Routing & Network Architecture

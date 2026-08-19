@@ -7,7 +7,7 @@ metadata:
     grid_row: overwatch
     grid_deep_in: [Def]
     grid_working_in: [Core]
-    source: docs/roles/operational-analyst.md#L96
+    source: docs/roles/operational-analyst.md#L95
 ---
 
 # Overwatch (Live "Are We Detected?")

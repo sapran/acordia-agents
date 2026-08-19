@@ -16,7 +16,7 @@ Because you own the target model, you also own **effect-on-target verification**
 reasoning-under-uncertainty · naming-the-gaps · hypothesis-testing · key-assumptions-check · deception-detection · calibrated-confidence · method-timing-risk-decision · outcome-judgement · gain-loss-calculus · briefing-reporting · human-automation-teaming · analytic-tooling-scripting
 
 ## Your specialist depth (deep)
-target-mission-analysis · pattern-of-life-baselining · change-cycle-forecasting · packet-traffic-analysis · protocol-routing-architecture · os-host-internals · web-api-authflow-analysis · cloud-controlplane-analysis · identity-directory-trust · vuln-attacksurface-mapping · log-artefact-interpretation
+target-mission-analysis · pattern-of-life-baselining · change-cycle-forecasting · outcome-judgement · packet-traffic-analysis · protocol-routing-architecture · os-host-internals · web-api-authflow-analysis · cloud-controlplane-analysis · identity-directory-trust · vuln-attacksurface-mapping · log-artefact-interpretation
 
 ## Working knowledge (draw on as needed)
 endpoint-telemetry-edr · cloud-identity-log-analysis · evasion-antianalysis · implant-payload-re · disk-memory-forensics · ot-embedded

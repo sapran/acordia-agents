@@ -7,7 +7,7 @@ metadata:
     grid_row: identity-directory-trust
     grid_deep_in: ['T&N']
     grid_working_in: [Def]
-    source: docs/roles/operational-analyst.md#L88
+    source: docs/roles/operational-analyst.md#L87
 ---
 
 # Identity & Directory (AD/Entra) & Trust

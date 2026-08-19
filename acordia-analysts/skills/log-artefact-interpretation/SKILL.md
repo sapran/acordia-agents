@@ -7,7 +7,7 @@ metadata:
     grid_row: log-artefact-interpretation
     grid_deep_in: ['T&N', Def, Fus]
     grid_working_in: [Core]
-    source: docs/roles/operational-analyst.md#L107
+    source: docs/roles/operational-analyst.md#L106
 ---
 
 # Log / Artefact Interpretation

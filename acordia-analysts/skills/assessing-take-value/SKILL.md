@@ -7,7 +7,7 @@ metadata:
     grid_row: assessing-take-value
     grid_deep_in: [Fus]
     grid_working_in: [Core]
-    source: docs/roles/operational-analyst.md#L104
+    source: docs/roles/operational-analyst.md#L103
 ---
 
 # Assessing Value/Quality of the Collected Take

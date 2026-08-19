@@ -55,6 +55,12 @@ Distinguish before bypassing. Bypassing root detection when the real check was o
 - Each is a boolean in the end. Locate it, watch it, then set its return value — the same three objection commands as above.
 - Attestation performed *server-side* cannot be hooked away on the device; note it as a control that held rather than forcing it
 
+## Biometric-gate bypass
+
+- A biometric prompt (Android `BiometricPrompt`, iOS `LocalAuthentication` `evaluatePolicy`) is a client-side self-protection gate, so it bypasses the same way as any other: `objection -g <pkg> explore` → `android biometrics bypass`, which hooks the success callback so the gate returns authenticated without a fingerprint or face.
+- Where the app rolls its own check, locate the callback and flip it: `android hooking search methods biometric`, then `android hooking set return_value <class>.<method> true`.
+- The tell that it is worth attacking: the gate protects only UI navigation. When the biometric result also unlocks a Keychain/Keystore-held key (`setUserAuthenticationRequired(true)`), hooking the callback does not release the key — note that as a control that held, and hand the key-material question to `mobile-crypto-keys`.
+
 ## Repackaging for a durable bypass
 
 Runtime hooks last one session. When the bypass must survive a restart, patch the app.

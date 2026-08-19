@@ -7,7 +7,7 @@ metadata:
     grid_row: evasion-antianalysis
     grid_deep_in: [Def]
     grid_working_in: ['T&N']
-    source: docs/roles/operational-analyst.md#L94
+    source: docs/roles/operational-analyst.md#L93
 ---
 
 # Evasion & Anti-Analysis Reasoning

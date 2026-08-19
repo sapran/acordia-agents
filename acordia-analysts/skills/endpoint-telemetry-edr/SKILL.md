@@ -7,7 +7,7 @@ metadata:
     grid_row: endpoint-telemetry-edr
     grid_deep_in: [Def]
     grid_working_in: ['T&N']
-    source: docs/roles/operational-analyst.md#L92
+    source: docs/roles/operational-analyst.md#L91
 ---
 
 # Endpoint Telemetry & EDR Internals

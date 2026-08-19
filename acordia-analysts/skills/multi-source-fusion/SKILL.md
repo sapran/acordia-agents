@@ -7,7 +7,7 @@ metadata:
     grid_row: multi-source-fusion
     grid_deep_in: [Fus]
     grid_working_in: [Core]
-    source: docs/roles/operational-analyst.md#L101
+    source: docs/roles/operational-analyst.md#L100
 ---
 
 # Multi-Source Fusion & Correlation

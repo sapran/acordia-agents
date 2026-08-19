@@ -7,7 +7,7 @@ metadata:
     grid_row: nontechnical-context-integration
     grid_deep_in: [Fus]
     grid_working_in: []
-    source: docs/roles/operational-analyst.md#L102
+    source: docs/roles/operational-analyst.md#L101
 ---
 
 # Non-Technical Context Integration

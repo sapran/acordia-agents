@@ -48,7 +48,7 @@ Each area names the skill that carries its method; read that skill for the comma
 - **On-device storage** (SharedPreferences/Keychain, SQLite, logs, clipboard, screenshots) → `mobile-data-storage`
 - **Cryptography and keys** (weak algorithms, hardcoded keys, runtime key capture) → `mobile-crypto-keys`
 - **Platform interaction & IPC** (exported activities and providers, deep links, WebView) → `mobile-platform-ipc`
-- **Resilience controls** (root/jailbreak detection, anti-debug, repackaging, anti-tamper) → `mobile-resilience-bypass`
+- **Resilience controls** (root/jailbreak detection, anti-debug, biometric-gate bypass, repackaging, anti-tamper) → `mobile-resilience-bypass`
 - **Instrumentation** (attaching, hooking, decompiling, proxying with frida/objection/drozer/jadx/apktool) → `mobile-instrumentation`
 - **Network, authentication and business logic** the app talks to → `wstg-auth-session`, `attack-jwt`, `attack-idor-automation`, `attack-race-condition`, and the API surface via `wstg-logic-client-api`
 

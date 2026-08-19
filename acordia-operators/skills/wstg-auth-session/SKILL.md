@@ -86,6 +86,8 @@ admin' OR '1'='1
 ') OR ('1'='1
 ```
 
+These are login-bypass payloads only, kept here because auth bypass is this bundle's WSTG-ATHN remit. Detection across every input, DB fingerprinting, union and blind extraction, and `sqlmap` use are owned by `attack-sqli`.
+
 ### JWT Vulnerabilities
 
 Decoding, `alg:none`, weak-secret cracking, RS256→HS256 key confusion, `kid` and `jwk` header injection → see `attack-jwt`.

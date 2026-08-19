@@ -7,7 +7,7 @@ metadata:
     grid_row: ot-embedded
     grid_deep_in: []
     grid_working_in: ['T&N', Def]
-    source: docs/roles/operational-analyst.md#L109
+    source: docs/roles/operational-analyst.md#L108
 ---
 
 # Operational-Technology / Embedded

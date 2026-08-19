@@ -7,7 +7,7 @@ metadata:
     grid_row: own-footprint-analysis
     grid_deep_in: [Def]
     grid_working_in: []
-    source: docs/roles/operational-analyst.md#L95
+    source: docs/roles/operational-analyst.md#L94
 ---
 
 # Own-Footprint / Emitted-Indicator Analysis

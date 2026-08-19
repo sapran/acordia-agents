@@ -7,7 +7,7 @@ metadata:
     grid_row: os-host-internals
     grid_deep_in: ['T&N', Def]
     grid_working_in: [Core]
-    source: docs/roles/operational-analyst.md#L85
+    source: docs/roles/operational-analyst.md#L84
 ---
 
 # OS & Host Internals
