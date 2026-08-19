@@ -1,6 +1,6 @@
 ---
 name: wstg-injection
-description: Use when testing input handling on a web target for injection classes — SQLi, XSS, SSTI, SSRF, command injection, XXE.
+description: Sweep every input a web target accepts for injection, covering WSTG-INPV — cross-site scripting by rendering context with filter bypasses, OS command injection, LFI and path traversal, HTTP parameter pollution and mass assignment carried in full, while SQLi, SSTI, SSRF, XXE and Host-header work route to their dedicated attack skills. Reach for it to decide which injection class a parameter belongs to.
 metadata:
   acordia:
     family: web-methodology

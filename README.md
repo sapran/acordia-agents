@@ -12,8 +12,8 @@ One tree serves both because both accept the same agent file: omp's `parseAgentF
 
 Two pillars, shipped as two independently installable plugins so either can be taken without the other:
 
-- **`acordia-analysts/`** — the Analysis pillar: one orchestrator plus three specialist legs, and the 43-skill library realising their shared analytic spine. Decision support and target understanding; no target interaction, no active testing.
-- **`acordia-operators/`** — the Operations pillar, ported from the CyberStrike fork (`~/git/CyberStrike`, commit `359655518`): one orchestrator plus four domain specialists and a 30-skill technique library. Offensive, and gated on written authorisation by the prompts rather than by the harness. Provenance and divergence are recorded in [`docs/roles/operator.md`](docs/roles/operator.md).
+- **`acordia-analysts/`** — the Analysis pillar: one orchestrator plus three specialist legs, and the 42-skill library realising their shared analytic spine. Decision support and target understanding; no target interaction, no active testing.
+- **`acordia-operators/`** — the Operations pillar, ported from the CyberStrike fork (`~/git/CyberStrike`, commit `359655518`): one orchestrator plus four domain specialists and a 39-skill technique library (31 ported, 8 authored here). Offensive, and gated on written authorisation by the prompts rather than by the harness. Provenance and divergence are recorded in [`docs/roles/operator.md`](docs/roles/operator.md).
 
 Future pillars (Collection, Reflection, Direction, Independent action) may follow the same shape as they get compiled.
 
@@ -24,13 +24,13 @@ acordia-agents/
 │   ├── agents/     operational-analyst · target-network-analyst
 │   │               defender-detection-analyst · fusion-analyst
 │   ├── commands/   8 command wrappers
-│   └── skills/     43 skills, one SKILL.md each
+│   └── skills/     42 skills, one SKILL.md each
 ├── acordia-operators/                # plugin root — installed as-is
 │   ├── .claude-plugin/plugin.json
 │   ├── agents/     operator · web-application · mobile-application
 │   │               cloud-security · internal-network
 │   ├── commands/   9 command wrappers
-│   └── skills/     30 skills, one SKILL.md each
+│   └── skills/     39 skills, one SKILL.md each
 ├── .claude-plugin/marketplace.json   # Claude Code reads this catalog
 ├── .omp-plugin/marketplace.json      # omp prefers this one; byte-identical
 ├── docs/roles/                       # the two sources of truth
@@ -143,7 +143,7 @@ metadata:
     source: docs/roles/operational-analyst.md#L101
 ```
 
-39 of the 43 anchor to a row that way. The other four are procedural rather than derived: each carries `grid_row: null`, `procedural: true` and the change that authorised it as its `source`, and `aleph-entity-graph` additionally declares `cross_cutting` over the skills it composes. A skill with neither a row nor such a record is inventing capability the map does not claim. An operator skill instead keeps its `metadata.cyberstrike` block naming the `.cyberstrike/skill/…` path and commit it was cloned from — attribution rather than machinery, and what makes a re-port against a newer CyberStrike commit a diff instead of an archaeology exercise.
+38 of the 42 anchor to a row that way. The other four are procedural rather than derived: each carries `grid_row: null`, `procedural: true` and the change that authorised it as its `source`, and `aleph-entity-graph` additionally declares `cross_cutting` over the skills it composes. A skill with neither a row nor such a record is inventing capability the map does not claim. An operator skill instead keeps its `metadata.cyberstrike` block naming the `.cyberstrike/skill/…` path and commit it was cloned from — attribution rather than machinery, and what makes a re-port against a newer CyberStrike commit a diff instead of an archaeology exercise.
 
 ## Verifying an install
 

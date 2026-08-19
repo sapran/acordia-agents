@@ -1,6 +1,6 @@
 ---
 name: deception-detection
-description: Use when the data reaching you is suspiciously convenient, too clean, or arrives just when the target would want you to see it — treat yourself as the one being targeted and test whether the picture is planted.
+description: Test whether the picture you are acting on has been planted, denied or shaped to steer your decision, reading denial and deception as paired tells and weighting channels the target does not know you hold over what was merely made observable to you, when the evidence is suspiciously convenient, one-sided or confirms your favoured hypothesis too neatly.
 metadata:
   acordia:
     family: analytic-spine

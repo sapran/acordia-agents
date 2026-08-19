@@ -1,6 +1,6 @@
 ---
 name: attack-host-header
-description: Use when a target application trusts the Host header (or X-Forwarded-Host) for routing, links, or cache decisions and you need to test for password-reset poisoning, cache poisoning, or internal routing bypass.
+description: Exploit an application's trust in the Host and X-Forwarded-Host headers — poison password-reset links towards a domain you control, confuse routing with duplicate hosts, port injection and absolute-URL request lines, and reach internal virtual hosts. Reach for it when the target builds links or routes requests from the host the client supplies.
 metadata:
   acordia:
     family: web-attack

@@ -1,6 +1,6 @@
 ---
 name: attack-xxe
-description: Apply when an endpoint parses XML (SOAP, file upload of SVG/DOCX/XLSX, SAML, RSS), to test whether external entity resolution allows file read, SSRF, or blind data exfiltration.
+description: Turn an XML parser into a file reader and an outbound channel — in-band entity file disclosure, parameter-entity and out-of-band exfiltration for the blind case, and delivery through SVG, DOCX and XLSX uploads, SOAP, SAML or a JSON endpoint switched to XML by content type. Reach for it wherever the target accepts XML.
 metadata:
   acordia:
     family: web-attack

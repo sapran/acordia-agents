@@ -1,6 +1,6 @@
 ---
 name: key-assumptions-check
-description: Use when an operational plan or target read rests on things everyone is treating as given — access will hold, the target behaves as profiled, defenders are asleep — and you need to test the load-bearing ones before they fail mid-operation.
+description: Surface the assumptions a plan silently rests on, mark which of them are load-bearing, stress each for supporting evidence and freshness, and name the analyst biases in play — confirmation, anchoring on first access, mirror-imaging the defender, sunk cost — when success depends on the target or defender behaving as expected, or the team converged fast on one read.
 metadata:
   acordia:
     family: analytic-spine

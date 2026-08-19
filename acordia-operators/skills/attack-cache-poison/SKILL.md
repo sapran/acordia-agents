@@ -1,6 +1,6 @@
 ---
 name: attack-cache-poison
-description: Use when a target sits behind a caching layer (CDN, reverse proxy, Varnish) and you need to test whether unkeyed headers or parameters let you poison cached responses served to other users.
+description: Poison a shared cache so unrelated users are served attacker content — find the inputs the cache key ignores (X-Forwarded-Host, X-Original-URL, fat GET bodies, unkeyed parameters), plant a payload in the stored response, then prove a clean request gets it back. Reach for it when a CDN, reverse proxy or Varnish layer fronts the target and its X-Cache and Age headers show responses being reused.
 metadata:
   acordia:
     family: web-attack

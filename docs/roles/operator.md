@@ -28,25 +28,26 @@ Five agent files under `acordia-operators/agents/`, each derived from the corres
 
 ## Skill provenance
 
-Thirty skills under `acordia-operators/skills/`, each cloned from `.cyberstrike/skill/<path>/SKILL.md` (the per-skill source path is mechanical: the skill's own slug under that root, or under `.cyberstrike/skill/WEB/OWASP_WSTG_4.2/` for the four WSTG bundles).
+Thirty-one skills under `acordia-operators/skills/` carry CyberStrike provenance, each with a `metadata.cyberstrike.source` naming the `.cyberstrike/skill/<path>/SKILL.md` it was cloned from (the per-skill source path is mechanical: the skill's own slug under that root, or under `.cyberstrike/skill/WEB/OWASP_WSTG_4.2/` for the WSTG material). Thirty were cloned directly; the thirty-first, `attack-sqli`, was split in 3.2.0 out of the `wstg-injection` bundle and carries that bundle's source path, because its payloads are the bundle's upstream SQL-injection text moved rather than authored.
 
-**Attack family — 16:** `attack-cache-poison`, `attack-cors`, `attack-graphql`, `attack-host-header`, `attack-idor-automation`, `attack-jwt`, `attack-open-redirect`, `attack-prototype-pollution`, `attack-race-condition`, `attack-rate-limit-bypass`, `attack-request-smuggling`, `attack-ssrf`, `attack-ssti`, `attack-subdomain-takeover`, `attack-websocket`, `attack-xxe`.
+**Attack family — 17:** `attack-cache-poison`, `attack-cors`, `attack-graphql`, `attack-host-header`, `attack-idor-automation`, `attack-jwt`, `attack-open-redirect`, `attack-prototype-pollution`, `attack-race-condition`, `attack-rate-limit-bypass`, `attack-request-smuggling`, `attack-sqli`, `attack-ssrf`, `attack-ssti`, `attack-subdomain-takeover`, `attack-websocket`, `attack-xxe`.
 
 **Infrastructure — 10:** `ad-security`, `kerberos-attacks`, `ebpf-attacks`, `cicd-attacks`, `recon-methodology`, `aws-postexploit`, `azure-postexploit`, `k8s-postexploit`, `windows-postexploit`, `macos-postexploit`.
 
 **WSTG bundles — 4:** `wstg-recon-config`, `wstg-auth-session`, `wstg-injection`, `wstg-logic-client-api`.
 
-16 + 10 + 4 = 30. Each skill's `metadata.cyberstrike.source` records the `.cyberstrike/skill/...` path it was cloned from, so a re-port against a newer CyberStrike commit is a diff, not an archaeology exercise. Frontmatter is reduced to the skill contract (`name`, `description`, optional `metadata`); bodies keep upstream payloads, commands, tables, and phase order — cloning is not an occasion to rewrite methodology.
+17 + 10 + 4 = 31. Each carries `metadata.cyberstrike.source`, so a re-port against a newer CyberStrike commit is a diff, not an archaeology exercise. Frontmatter is reduced to the skill contract (`name`, `description`, optional `metadata`); bodies keep upstream payloads, commands, tables, and phase order — cloning is not an occasion to rewrite methodology.
 
-## Authored here, not ported — 7 (as of 3.1.0)
+## Authored here, not ported — 8 (as of 3.2.0)
 
-Seven operator skills were written in this repository rather than cloned from CyberStrike, so they carry **no `metadata.cyberstrike`** block — claiming upstream attribution for local text would corrupt the port record above. They are recorded here so this document stays a complete account of the pillar, not only of its ported half.
+Eight operator skills were written in this repository rather than cloned from CyberStrike, so they carry **no `metadata.cyberstrike`** block — claiming upstream attribution for local text would corrupt the port record above. They are recorded here so this document stays a complete account of the pillar, not only of its ported half.
 
 - `operation-journal` — the `.acordia/ops/` recording contract (file layout, severity/confidence scales, evidence and chaining rules) that the five operator prompts previously each restated. Written from `operator`'s own journal section, the fullest of the five.
 - `gcp-postexploit` — Google Cloud post-exploitation, on the pattern of the ported `aws-`/`azure-`/`k8s-postexploit`. Added because `cloud-security` claimed GCP with no skill behind it.
 - `mobile-data-storage`, `mobile-crypto-keys`, `mobile-platform-ipc`, `mobile-resilience-bypass`, `mobile-instrumentation` — the mobile technique library `mobile-application` previously admitted it lacked, lifted from that prompt's own `## Key techniques by area`.
+- `linux-postexploit` — ordinary-userland Linux post-exploitation (SUID/sudo/capabilities, cron and systemd persistence, credential and key theft, container-escape triage), added in 3.2.0. Its boundary with the ported `ebpf-attacks` is stated in both bodies: `ebpf-attacks` owns the `CAP_BPF` loaded-program path, `linux-postexploit` owns what an ordinary shell reaches.
 
-The operator library is therefore **30 ported + 7 authored = 37** as of 3.1.0.
+The operator library is therefore **31 ported + 8 authored = 39** as of 3.2.0.
 
 ## What was not ported, and why
 

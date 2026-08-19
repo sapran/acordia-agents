@@ -1,6 +1,6 @@
 ---
 name: wstg-recon-config
-description: Use when reconnoitering a web target or auditing its configuration, security headers, TLS/SSL setup, and error handling before deeper testing — WSTG-INFO, WSTG-CONF, WSTG-ERRH, WSTG-CRYP.
+description: Audit a web target's deployment rather than its code — Google dorks, directory, file and virtual-host discovery, backup-file patterns, the security-header checklist, TLS and SSL posture, dangerous HTTP methods, error verbosity and exposed cloud storage, covering WSTG-INFO, CONF, ERRH and CRYP. Claiming a dangling name routes to attack-subdomain-takeover.
 metadata:
   acordia:
     family: web-methodology

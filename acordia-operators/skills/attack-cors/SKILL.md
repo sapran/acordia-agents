@@ -1,6 +1,6 @@
 ---
 name: attack-cors
-description: Use when a target API reflects a browser Origin header and you need to test for CORS misconfigurations that expose credentialed cross-origin data access.
+description: Turn a reflected Origin header into credentialed cross-origin data theft — sweep arbitrary, null, subdomain, prefix-match and suffix-match origins against the returned Access-Control-Allow-Origin, then read authenticated responses wherever credentials are also allowed. Reach for it when a browser-facing API echoes the requesting origin back.
 metadata:
   acordia:
     family: web-attack

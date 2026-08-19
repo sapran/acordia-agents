@@ -1,6 +1,6 @@
 ---
 name: attack-ssti
-description: Apply when user input is rendered through a server-side template engine (search, mail, report, or page-render parameter), to detect and, if confirmed, escalate template injection toward remote code execution.
+description: Confirm server-side template injection and drive it to code execution — arithmetic and syntax probes that fingerprint Jinja2, Twig, FreeMarker, Velocity and ERB, then the engine-specific escape from the sandbox to the runtime. Reach for it when input is rendered back through a template rather than merely echoed.
 metadata:
   acordia:
     family: web-attack

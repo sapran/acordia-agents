@@ -1,6 +1,6 @@
 ---
 name: ad-security
-description: Use when an Active Directory domain is in scope and you need to enumerate it, abuse its ACLs, certificate services and trusts, and turn domain access into control.
+description: Chart the route from a domain foothold to domain control — BloodHound, LDAP and NetExec enumeration, an identifier-indexed catalogue of credential-access, escalation, lateral-movement and persistence techniques, ACL, GPO and AD CS certificate-template abuse, trust and SID-history crossing, and two worked attack paths. Reach for it when an Active Directory domain is in scope and the question is which edge to take next.
 metadata:
   acordia:
     family: directory-attack

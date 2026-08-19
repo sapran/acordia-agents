@@ -1,6 +1,6 @@
 ---
 name: gain-loss-calculus
-description: Use when deciding whether the next move is worth it — weigh what the operation stands to gain against what it exposes, burns, or risks, and feed the answer back into the plan.
+description: Weigh a move's concrete gain against its full losses — exposure, burnt access, attribution, the paths it forecloses — and against the null option of waiting, then convert the balance into a go, scale, switch or stop edit to the plan, when the obvious next step buys progress but spends something scarce.
 metadata:
   acordia:
     family: analytic-spine

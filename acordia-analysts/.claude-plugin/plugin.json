@@ -1,7 +1,7 @@
 {
   "name": "acordia-analysts",
-  "version": "3.1.0",
-  "description": "ACORDIA Analysis — four decision-support agents and a 43-skill analytic library.",
+  "version": "3.2.0",
+  "description": "ACORDIA Analysis — four decision-support agents and a 42-skill analytic library.",
   "author": {
     "name": "ACORDIA"
   },

@@ -1,6 +1,6 @@
 ---
 name: attack-request-smuggling
-description: Apply when a target sits behind a front-end proxy or CDN and a distinct back-end server whose Content-Length/Transfer-Encoding handling might disagree, enabling request desync, cache poisoning, or access-control bypass.
+description: Desynchronise a front-end proxy from its back-end by making them disagree on where a request ends — CL.TE, TE.CL, TE.TE and HTTP/2 downgrade probes, confirmed by timing, then used to capture or rewrite another user's request. Reach for it when a CDN or load balancer forwards to a distinct origin server.
 metadata:
   acordia:
     family: web-attack

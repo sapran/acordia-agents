@@ -1,6 +1,6 @@
 ---
 name: attack-websocket
-description: Apply when an application exposes a WebSocket endpoint, to test its origin validation, authentication, and message handling for hijacking or injection flaws.
+description: Attack a WebSocket channel — cross-site hijacking through an unvalidated Origin on the upgrade, tokens still honoured after logout or belonging to another user, injection inside messages the server never revalidates, and cleartext ws:// transport. Reach for it once an endpoint answers an upgrade handshake.
 metadata:
   acordia:
     family: web-attack

@@ -1,6 +1,6 @@
 ---
 name: exhaustive-data-processing
-description: 'Use when bulk collected material lands for analysis — a file dump, archive, log bundle, memory capture, or dataset too large for a single read to capture — and it must be processed in full: cover 100% of it with a script-first tool pass, read only located regions into context, and prove coverage rather than concluding from the opening portion.'
+description: Prove complete coverage of a bulk corpus by putting a script-first tool pass across 100% of it, reading only the located regions into context and reconciling a coverage ledger, so no conclusion rests on the opening portion of an artefact — the reading discipline every evidence skill follows when a dump, image, archive or dataset outgrows a single read.
 metadata:
   acordia:
     family: take-handling

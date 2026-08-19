@@ -1,6 +1,6 @@
 ---
 name: attack-jwt
-description: Use when a target authenticates with JWTs and you need to test signature, algorithm, claim, and key-handling weaknesses.
+description: Forge a JSON Web Token the server will accept — alg=none, weak HMAC secret cracking, RS256-to-HS256 key confusion, and kid, jku and jwk header injection — then escalate the claims carried inside it. Reach for it when authentication rides on a bearer token you can decode.
 metadata:
   acordia:
     family: web-attack

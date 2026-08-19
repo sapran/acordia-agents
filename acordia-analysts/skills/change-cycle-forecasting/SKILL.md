@@ -1,6 +1,6 @@
 ---
 name: change-cycle-forecasting
-description: Use when an operation's window depends on target change — forecast if and when the target will patch, upgrade, migrate, or rotate, so you can time access before it closes or exploit the churn while it's open.
+description: Forecast when the target will patch, upgrade, migrate, rotate credentials or decommission, dating every change-evidence source and reading the drivers behind it — vendor cadence, compliance deadlines, contract and fiscal cycles, EOL dates — to set the operational clock when an access depends on a version or config that may soon vanish, or on the exposure that churn opens.
 metadata:
   acordia:
     family: target-modelling

@@ -1,6 +1,6 @@
 ---
 name: reasoning-under-uncertainty
-description: Use when you must commit to a targeting or movement decision on the operation but the intelligence picture is either too thin or too noisy to read cleanly.
+description: Reach a defensible provisional judgement when the picture is too thin or too noisy to read cleanly, fixing the decision and its deadline first, triaging knowns from unknowables, reasoning from the target's structure and incentives under scarcity and filtering by decision-relevance under overload, so the operation moves with explicit reconsider triggers.
 metadata:
   acordia:
     family: analytic-spine

@@ -1,6 +1,6 @@
 ---
 name: briefing-reporting
-description: Use when you must hand the current picture and a recommended course of action to a decision-maker or teammate and it has to land fast, unambiguous, and act-on-able.
+description: Compose a bottom-line-up-front product — judgement first, then recommended action, marked confidence, key gaps and an explicit ask with a deadline — when a target read or course of action must be handed to a decision-maker or the next operator and acted on without them reconstructing the analysis.
 metadata:
   acordia:
     family: analytic-spine

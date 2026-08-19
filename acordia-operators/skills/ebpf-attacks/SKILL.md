@@ -1,6 +1,6 @@
 ---
 name: ebpf-attacks
-description: Use when a Linux target runs a modern kernel and you need to reason about eBPF-based capability — kernel-level visibility, hooking, and the detection surface it exposes.
+description: Take kernel-level capability on Linux through BPF — attach kprobes, uprobes, tracepoints and LSM hooks to catch credentials in flight, hide files and processes by rewriting getdents64 results, and work the twenty blind-spot monitors that show what a BPF-unaware sensor never sees. Reach for it when the host grants CAP_BPF or CAP_SYS_ADMIN and a program can actually be loaded.
 metadata:
   acordia:
     family: host-postexploit

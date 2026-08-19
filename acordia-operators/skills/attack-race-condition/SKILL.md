@@ -1,6 +1,6 @@
 ---
 name: attack-race-condition
-description: Apply when a state-changing endpoint (payment, coupon, vote, account creation, one-time claim) might process concurrent requests without a consistency lock, to prove a time-of-check-to-time-of-use race is exploitable.
+description: Release concurrent requests through one synchronised barrier to break a time-of-check-to-time-of-use assumption — coupons redeemed twice, duplicated transfers, repeated one-time claims, over-drawn inventory and limits that only hold sequentially. Reach for it when a state-changing operation validates and then commits without a lock.
 metadata:
   acordia:
     family: web-attack

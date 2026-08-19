@@ -1,6 +1,6 @@
 ---
 name: wstg-logic-client-api
-description: Use when testing a web target's business logic flows, client-side JavaScript behavior, and API endpoints for abuse — WSTG-BUSL, WSTG-CLNT, WSTG-APIT.
+description: Test what a web application permits rather than what it parses — price, currency and workflow manipulation, coupon and file-upload abuse, DOM XSS sources and sinks, postMessage, clickjacking, browser storage, REST enumeration and API mass assignment, covering WSTG-BUSL, CLNT and APIT. CORS, GraphQL, WebSocket and throttling work route to their dedicated attack skills.
 metadata:
   acordia:
     family: web-methodology

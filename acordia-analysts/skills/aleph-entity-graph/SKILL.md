@@ -1,6 +1,6 @@
 ---
 name: aleph-entity-graph
-description: Use when the take lives in an Aleph instance — search, pivot and expand the FollowTheMoney entity graph across collections instead of reading documents one by one.
+description: Work a corpus already ingested into an Aleph instance as a FollowTheMoney entity graph — facet before pulling rows, pivot on an entity's neighbours, shared tags, resolved profiles and cross-reference matches, and page document text only where needed — rather than re-grinding by hand the extraction and entity resolution Aleph has already done.
 metadata:
   acordia:
     family: take-handling

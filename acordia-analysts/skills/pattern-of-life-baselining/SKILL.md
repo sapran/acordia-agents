@@ -1,6 +1,6 @@
 ---
 name: pattern-of-life-baselining
-description: Use when you need to know the target's "normal" — profile the routine rhythms of users, admins, and systems so anomalies, quiet windows, and blend-in opportunities become visible.
+description: Baseline the target's normal rhythms from authentication, endpoint-telemetry and calendar sources — working hours and timezone, admin windows, backup, patch and batch jobs, idle periods — so activity can be timed into the routine and genuine deviations such as an admin logon, a new tool or a hunt in progress stand out on demand.
 metadata:
   acordia:
     family: target-modelling

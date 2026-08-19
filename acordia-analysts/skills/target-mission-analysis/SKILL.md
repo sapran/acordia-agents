@@ -1,6 +1,6 @@
 ---
 name: target-mission-analysis
-description: Use when you need to decide WHAT in a target is worth hitting or holding — reverse-engineer what the target exists to do, the processes that carry that mission, and therefore what it cannot afford to lose.
+description: Reverse-engineer what the target organisation exists to produce, trace its mission threads end to end through the systems, data, people and third parties that must all work, and rank the crown jewels and single points of dependence it cannot afford to lose, when a broad target must become a short list of objectives with a defensible so-what.
 metadata:
   acordia:
     family: target-modelling

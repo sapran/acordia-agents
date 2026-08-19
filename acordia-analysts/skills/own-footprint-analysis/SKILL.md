@@ -1,6 +1,6 @@
 ---
 name: own-footprint-analysis
-description: Use to enumerate every indicator your own operation emits — host, network, identity, and infrastructure artifacts — so you know exactly what a defender or responder could find and attribute.
+description: Enumerate and ledger every indicator the operation itself emits, layer by layer — dropped files, registry, services, prefetch and host logs; C2 domains, TLS certificates and User-Agents; created accounts and tokens; redirector and VPS records — so you know exactly what a responder could recover and attribute before you go quiet, hand off or exit.
 metadata:
   acordia:
     family: defender-reading

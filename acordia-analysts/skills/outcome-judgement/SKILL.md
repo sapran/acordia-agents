@@ -1,6 +1,6 @@
 ---
 name: outcome-judgement
-description: Use immediately after an action fires — judge whether the operation's actual end was met (the effect landed, or the intel was collected), not merely whether the technique executed.
+description: Call whether an action achieved the operation's intended end — the effect took hold on the target, or the intelligence was genuinely collected — by inventorying first-party against independent observable channels and separating 'the payload ran' from 'the system actually changed', immediately after any action whose success indicators are ambiguous, delayed or spoofable.
 metadata:
   acordia:
     family: analytic-spine

@@ -1,6 +1,6 @@
 ---
 name: attack-ssrf
-description: Apply when a parameter or feature causes the server to fetch a URL on the client's behalf (webhook, import, preview, PDF/image generation), to test whether that fetch can be redirected to internal services or cloud metadata.
+description: Make the server fetch on your behalf and steer that fetch inward — cloud metadata at 169.254.169.254 across AWS, GCP, Azure and DigitalOcean, internal hosts and ports, reached through decimal, hexadecimal, IPv6, redirect and DNS-rebinding filter bypasses, with an out-of-band listener for the blind case. Reach for it when a webhook, importer, preview or PDF and image generator takes a URL.
 metadata:
   acordia:
     family: web-attack

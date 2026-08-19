@@ -10,8 +10,8 @@ Two harnesses, one authored tree per pillar. omp and Claude Code both install it
 
 Two pillars, shipped as two independently installable plugins:
 
-- **`acordia-analysts/`** — the ACORDIA Analysis pillar. One primary orchestrator (`operational-analyst`) plus three subagent legs (`target-network-analyst`, `defender-detection-analyst`, `fusion-analyst`), a 43-skill analytic library, and 8 command wrappers.
-- **`acordia-operators/`** — the ACORDIA Operations pillar. One primary orchestrator (`operator`) plus four subagent specialists (`web-application`, `mobile-application`, `cloud-security`, `internal-network`), a 37-skill technique library (30 ported from the CyberStrike fork at commit `359655518`, 7 authored here), and 9 command wrappers.
+- **`acordia-analysts/`** — the ACORDIA Analysis pillar. One primary orchestrator (`operational-analyst`) plus three subagent legs (`target-network-analyst`, `defender-detection-analyst`, `fusion-analyst`), a 42-skill analytic library, and 8 command wrappers.
+- **`acordia-operators/`** — the ACORDIA Operations pillar. One primary orchestrator (`operator`) plus four subagent specialists (`web-application`, `mobile-application`, `cloud-security`, `internal-network`), a 39-skill technique library (31 ported from the CyberStrike fork at commit `359655518`, 8 authored here), and 9 command wrappers.
 
 Each pillar directory holds `.claude-plugin/plugin.json`, `agents/`, `commands/` and `skills/` — the layout both harnesses discover from a plugin root. **All nine agents are write-capable.** Capability is granted by omission: an agent file names no `tools`, so omp hands it the full set, and no `spawns`, so its spawn policy is unrestricted. There is no permission frontmatter anywhere in this repository, and a capability problem is never fixed by adding a denylist.
 
@@ -121,7 +121,7 @@ The bijection is normative: one skill row → one `SKILL.md`; each grid column (
 - Required frontmatter: `name` (kebab-case, `^[a-z0-9]+(-[a-z0-9]+)*$`, ≤64 chars, **must equal the folder slug**, no prefix) and `description` (1–1024 chars). The description is how a skill gets selected — both harnesses match on it — so it must discriminate this skill from its siblings, not merely describe the family.
 - Optional: `metadata` only. Do **not** use CyberStrike-only fields (`category`, `cwe_ids`, `chains_with`, `severity_boost`), and never `sha256`/`signature`/`signed_by` — a stale hash silently drops the skill as tampered.
 - **Analyst skills carry `metadata.acordia` as the grid anchor**: `grid_row`, `grid_deep_in`, `grid_working_in` and `source` pointing at the line in `docs/roles/operational-analyst.md` the skill derives from. It is the machine-readable half of the bijection above; keep it correct when the grid moves.
-- **The 30 ported operator skills carry `metadata.cyberstrike`** — `source` (`.cyberstrike/skill/<path>/SKILL.md`) and `commit` (`359655518`) — so a re-port against a newer CyberStrike checkout is a diff. **Do not touch it.** It is upstream attribution for text this repository did not author, not machinery.
+- **The 31 ported operator skills carry `metadata.cyberstrike`** — `source` (`.cyberstrike/skill/<path>/SKILL.md`) and `commit` (`359655518`) — so a re-port against a newer CyberStrike checkout is a diff. **Do not touch it.** It is upstream attribution for text this repository did not author, not machinery.
 - Long enumerations go in a `references/` subdirectory beside the `SKILL.md` rather than inflating the body.
 
 ### Commands (`acordia-<pillar>/commands/<stem>.md`)

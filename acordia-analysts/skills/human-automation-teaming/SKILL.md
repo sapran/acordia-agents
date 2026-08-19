@@ -1,6 +1,6 @@
 ---
 name: human-automation-teaming
-description: Use when deciding what the tooling should do versus what the analyst must judge — before you let automation drive a targeting, triage, or movement decision on the operation.
+description: Divide a workflow between analyst judgement and automation, setting an autonomy level per task from surface-only through recommend-and-confirm to automate-and-act, and designing against automation bias and the failure modes tooling hides, when a filter decides what the analyst ever sees or automation may drive a targeting or effect decision.
 metadata:
   acordia:
     family: analytic-spine

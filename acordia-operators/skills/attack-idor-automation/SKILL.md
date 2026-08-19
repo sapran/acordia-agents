@@ -1,6 +1,6 @@
 ---
 name: attack-idor-automation
-description: Use when a target exposes user-scoped API endpoints and you have two accounts of different privilege levels, to systematically test for Insecure Direct Object Reference and broken access control.
+description: Prove broken object-level authorisation by replaying one endpoint list under two accounts and diffing the responses — sequential identifiers, UUIDs captured from an earlier reply, cookie as well as bearer sessions, HTTP method switching and cross-boundary writes. Reach for it when you hold two accounts of different privilege against user-scoped API endpoints.
 metadata:
   acordia:
     family: web-attack

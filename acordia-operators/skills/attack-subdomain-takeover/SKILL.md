@@ -1,6 +1,6 @@
 ---
 name: attack-subdomain-takeover
-description: Apply when enumerating a target's subdomains turns up a CNAME pointing at a third-party cloud service, to determine whether the referenced resource is unclaimed and can be seized.
+description: Claim a dangling subdomain — enumerate names passively and from certificate transparency, resolve each CNAME to its third-party service, match the unclaimed-resource fingerprint such as NoSuchBucket or a missing Pages site, then register the resource and serve proof content under the target's own name. Reach for it when DNS still points at a cloud service that no longer answers for it.
 metadata:
   acordia:
     family: web-attack

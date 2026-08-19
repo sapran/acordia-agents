@@ -1,6 +1,6 @@
 ---
 name: vuln-attacksurface-mapping
-description: Use when you need to consolidate everything reachable into a ranked attack surface — where the target is weakest, prioritised by exploitability and by what it actually gets you toward the mission.
+description: Consolidate every recon feed — external and internal scan output, cloud-asset inventories, identity enumeration, application and API catalogues, human-surface OSINT — into one ranked attack surface ordered by exploitability times proximity to the crown jewels rather than by CVSS, when terrain and mission analysis must converge on where to strike first.
 metadata:
   acordia:
     family: target-modelling

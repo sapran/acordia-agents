@@ -1,6 +1,6 @@
 ---
 name: web-api-authflow-analysis
-description: Use when a web app or API is the target surface — reason about its application logic and authentication/authorization flows to find where identity, trust, or state can be broken.
+description: Trace a web application or API's business logic and authentication flows from HAR archives, proxy transcripts, OpenAPI exports, SAML metadata and captured tokens — role and object permissions, token issuance and validation, session lifecycle, OAuth, OIDC and federation trust — to locate where identity, trust or state assumptions can be subverted.
 metadata:
   acordia:
     family: target-modelling

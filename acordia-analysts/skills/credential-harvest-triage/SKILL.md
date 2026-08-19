@@ -1,6 +1,6 @@
 ---
 name: credential-harvest-triage
-description: Use when a collected file dump, memory capture, configuration archive, or log bundle lands and you need to inventory, classify, and prioritise the credential material inside it without knowing yet what is there.
+description: Inventory and rank the credential material inside collected material — an LSASS dump, disk image, cloud-state export, config directory, browser profile or log bundle — classifying each finding by type, scope, freshness and reuse potential so the best is acted on first and nothing is lost, and fusing candidates several analysts surfaced without double-counting.
 metadata:
   acordia:
     family: take-handling

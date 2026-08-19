@@ -1,6 +1,6 @@
 ---
 name: identity-directory-trust
-description: Use when Active Directory or Entra ID underpins the target — map the directory, its privileged identities, and the trust relationships that let one compromise reach everything.
+description: Map the target's identity fabric from directory artefacts such as BloodHound exports, LDAP dumps and NTDS extractions — privileged principals, constrained, unconstrained and resource-based delegation, ADCS, LAPS and gMSA material, domain and tenant trust — to find the shortest identity path from a foothold to control of a Windows AD or Entra-backed enterprise.
 metadata:
   acordia:
     family: target-modelling

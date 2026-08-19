@@ -1,6 +1,6 @@
 ---
 name: cloud-identity-log-analysis
-description: Use when the operation moves through cloud or identity infrastructure and you must predict what the audit and sign-in logs record about your authentication, API calls, and resource access.
+description: Predict what cloud control-plane and identity providers will record about a planned action — sign-ins, token issuance, consent grants, audit and API events, and the risk signals such as impossible travel or an unusual client — and prefer the thinner trail by separating logged control-plane events from data-plane access that is often off by default, when operating a tenant with stolen tokens, service principals or federated identities.
 metadata:
   acordia:
     family: defender-reading

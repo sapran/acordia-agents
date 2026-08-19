@@ -1,6 +1,6 @@
 ---
 name: c2-beacon-exfil-analysis
-description: Use to analyze your own command-and-control, beaconing, and exfiltration traffic for the signatures a network defender could detect — before the channel gets you caught.
+description: Examine the operation's own C2, beacon and exfiltration traffic as a network defender would — JA3 and JARM fingerprints, certificate and SNI, domain and IP reputation, beacon interval regularity and jitter, packet sizing, volume and protocol anomalies — and tune the channel below their thresholds, when standing up or migrating it or after finding NDR, proxy, DNS analytics or TLS inspection.
 metadata:
   acordia:
     family: defender-reading

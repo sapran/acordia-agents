@@ -1,6 +1,6 @@
 ---
 name: attack-graphql
-description: Use when a target exposes a GraphQL endpoint and you need to test for schema exposure, query-complexity DoS, batch abuse, or mutation/query authorization bypass.
+description: Break a GraphQL endpoint on its own terms — extract the schema by introspection, abuse query batching and deep nesting for complexity denial of service, and reach queries and mutations the resolvers never authorise. Reach for it once /graphql or a sibling path answers a query.
 metadata:
   acordia:
     family: web-attack

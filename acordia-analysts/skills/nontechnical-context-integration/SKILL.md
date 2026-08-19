@@ -1,6 +1,6 @@
 ---
 name: nontechnical-context-integration
-description: Use when the technical picture alone doesn't explain the target — fold in finance, geopolitics, org structure, and human factors that drive who acts, when, and why on the network.
+description: Fold the non-technical world into the picture — reporting lines and who truly holds access rather than the title, fiscal calendar, deals, funding and vendor dependencies, geopolitical and regulatory pressure, workload and morale — binding each item to a technical consequence, when behaviour is only explicable through a quarter-end freeze, a merger or a layoff, or when choosing timing and pretext.
 metadata:
   acordia:
     family: take-handling

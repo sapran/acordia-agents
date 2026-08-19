@@ -1,6 +1,6 @@
 ---
 name: cloud-controlplane-analysis
-description: Use when the target lives in AWS/Azure/GCP — analyze the cloud control plane, services, and the trust between them to find where API-level access, roles, or misconfiguration yield control.
+description: Model a target's cloud estate at the control plane from collected exports — account and project rosters, IAM policies, service principals, workload identities, assume-role and federation chains, inter-service trust — to find where one API call or a misconfigured grant converts into control, when administration lives in AWS, Azure or GCP rather than on network ports.
 metadata:
   acordia:
     family: target-modelling

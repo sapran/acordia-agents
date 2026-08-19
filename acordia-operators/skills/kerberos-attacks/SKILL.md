@@ -1,6 +1,6 @@
 ---
 name: kerberos-attacks
-description: Use when a Kerberos realm is in reach and you need ticket-based credential access — Kerberoasting, AS-REP roasting, delegation abuse, and ticket forgery.
+description: Work the Kerberos ticket layer for credentials and impersonation — Kerberoast SPN accounts and AS-REP roast preauthentication-disabled ones, crack the resulting hashes, pass-the-ticket and overpass-the-hash from ccache or kirbi material, abuse unconstrained, constrained and resource-based delegation, and forge Golden and Silver tickets. Reach for it when a realm's KDC is reachable.
 metadata:
   acordia:
     family: directory-attack

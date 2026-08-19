@@ -20,13 +20,13 @@ context: |
   The Analysis pillar (`acordia-analysts/`) — one orchestrator
   (`operational-analyst`) plus three specialist legs
   (`target-network-analyst`, `defender-detection-analyst`, `fusion-analyst`)
-  and the 43-skill library that realises their shared analytic spine. Every
+  and the 42-skill library that realises their shared analytic spine. Every
   analyst artifact traces back to a specific row or paragraph in the source
   competency map at `docs/roles/operational-analyst.md` (the role model), with
   the mechanics of the extension surface documented in
   `docs/agents-skills-extension-workbook.md`. The Operations pillar
   (`acordia-operators/`) — one orchestrator (`operator`) plus four domain
-  specialists and a 37-skill technique library — has no competency grid; it is
+  specialists and a 39-skill technique library — has no competency grid; it is
   a provenance-tracked port whose source of truth is `docs/roles/operator.md`.
 
   Future pillars (Collection, Reflection, Direction, Independent action) may

@@ -1,6 +1,6 @@
 ---
 name: analytic-tooling-scripting
-description: Use when manual analysis won't scale or repeat cleanly — script your own parsers, extractors, and transforms to turn raw take into answers instead of grinding it by hand.
+description: Script a parser, extractor or transform of your own for the take's real format, reconciling the output record count against an inventory denominator so a silent parse failure cannot shrink the dataset, when the analysis is repetitive or format-specific enough that no off-the-shelf tool fits and hand-grinding will not scale or repeat cleanly.
 metadata:
   acordia:
     family: analytic-spine

@@ -1,6 +1,6 @@
 ---
 name: implant-payload-re
-description: Use to reverse-engineer an implant or payload's real behavior — ours, a competitor's, or a captured sample — to understand exactly what it does, what it emits, and how it would be detected.
+description: Reverse-engineer an implant or payload binary to ground-truth what it really does on a host and over the wire, triaging statically through headers, named sections, entropy and strings before instrumented dynamic runs in isolation against its anti-analysis, whether to validate your own tooling's footprint before deployment or to read a captured third-party sample's capability and indicators.
 metadata:
   acordia:
     family: evidence-forensics

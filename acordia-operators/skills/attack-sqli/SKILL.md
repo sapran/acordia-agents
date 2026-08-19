@@ -1,6 +1,6 @@
 ---
 name: attack-sqli
-description: Use when testing a web target's input handling for SQL injection — detection payloads, database fingerprinting from errors, union-based and blind extraction, and sqlmap exploitation.
+description: Detect SQL injection in user-controlled input, fingerprint the backend database from its error text, and extract data — UNION in band, boolean and time oracles when blind, and sqlmap for the grind. Reach for it whenever a parameter can reach a database query.
 metadata:
   acordia:
     family: web-attack

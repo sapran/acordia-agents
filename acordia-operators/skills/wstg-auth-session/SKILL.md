@@ -1,6 +1,6 @@
 ---
 name: wstg-auth-session
-description: Use when testing a web target's identity, authentication, authorization, and session management controls — WSTG-IDNT, WSTG-ATHN, WSTG-AUTHZ, WSTG-SESS.
+description: Test who the application believes you are and for how long — username enumeration, default credentials, authentication-bypass payloads, session-token entropy and cookie flags, fixation, CSRF, privilege-escalation patterns and the OAuth checklist, covering WSTG-IDNT, ATHN, AUTHZ and SESS. Token forgery routes to attack-jwt and object-level checks to attack-idor-automation.
 metadata:
   acordia:
     family: web-methodology

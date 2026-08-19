@@ -1,6 +1,6 @@
 ---
 name: evasion-antianalysis
-description: Use when you know what the defender can see and must decide how to shape an action to avoid detection and frustrate later analysis — timing, obfuscation, living-off-the-land, and anti-forensic choices.
+description: Shape a planned action against an already-established visibility model, taking each forecast signal and buying the cheapest reduction for it — blending in with LOLBins, legitimate tooling and normal hours, suppression, timing, obfuscation, anti-forensic handling — without the evasion itself becoming the loudest signal on the wire or the host.
 metadata:
   acordia:
     family: defender-reading

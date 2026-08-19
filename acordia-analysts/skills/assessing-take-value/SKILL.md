@@ -1,6 +1,6 @@
 ---
 name: assessing-take-value
-description: Use after collection lands — before you build on it, judge whether the take is genuine, complete, and worth having, or whether it's noise, stale, partial, or planted.
+description: Judge whether collected take is genuine, complete, current and worth having — the real thing rather than truncated, corrupted, wrongly decrypted or a deception feed planted for you to find — measured against an expected record count and against the requirement it was meant to answer, right after collection and before anything is built on it.
 metadata:
   acordia:
     family: take-handling

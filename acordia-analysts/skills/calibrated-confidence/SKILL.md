@@ -1,6 +1,6 @@
 ---
 name: calibrated-confidence
-description: Use when handing a target judgement to a decision-maker and you need to attach a confidence that honestly reflects the evidence — neither hedged to uselessness nor inflated to sound decisive.
+description: Attach an honest confidence level to a judgement on a stable scale, separating the estimate from its strength and resolvable uncertainty from irreducible, and tracking your own hits and misses, whenever someone will target, time or risk something on that judgement and 'high confidence' is at risk of being rhetoric rather than a measured claim.
 metadata:
   acordia:
     family: analytic-spine

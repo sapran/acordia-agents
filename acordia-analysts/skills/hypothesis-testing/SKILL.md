@@ -1,6 +1,6 @@
 ---
 name: hypothesis-testing
-description: Use when more than one explanation fits the target picture — competing reads of an operator's identity, a system's true function, or whether you have been detected — and you are tempted to lock onto the first one.
+description: Hold every plausible explanation at once and score the evidence against each in a matrix, weighting the items that discriminate between them and hunting the observation that would kill the leader, when the picture admits several readings of attribution, target function, intent or detection status and you are tempted to lock onto the first.
 metadata:
   acordia:
     family: analytic-spine

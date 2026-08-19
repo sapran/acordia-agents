@@ -1,6 +1,6 @@
 ---
 name: detection-capability-analysis
-description: Use before or during an operation to reason from first principles about what the defender's detection stack can and cannot see, so you choose techniques that fall in their blind spots rather than their tripwires.
+description: Model the defender's detection surface from first principles before you act, separating what their sensors and log sources can collect from what is actually collected and what is analysed into an alert, then score each candidate technique for residual risk and flag the canaries and honeytokens that are no-go without mitigation.
 metadata:
   acordia:
     family: defender-reading

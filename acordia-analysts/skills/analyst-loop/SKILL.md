@@ -1,6 +1,6 @@
 ---
 name: analyst-loop
-description: Use when the operator wants a fresh end-neutral analytic pass over the current picture — read the target, read the defender, fuse the strands, judge whether the operation's end (effect or intel) was met, and name the next move. The orchestrator's core loop, run whenever new material lands or a decision point is reached.
+description: Run one full analytic round over a live operation — target read, defender read, fusion, outcome judgement, next move — and close it on the operation's dual end of effect or intel, whenever fresh material lands or a decision point is reached and a single narrow read will not do.
 metadata:
   acordia:
     family: analytic-spine

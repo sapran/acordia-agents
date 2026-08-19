@@ -1,6 +1,6 @@
 ---
 name: attack-prototype-pollution
-description: Use when a target is JavaScript/Node.js-based and accepts deep-merged or recursively-assigned user input (JSON body merge, config patch, query-string parsing) and you need to test for prototype pollution leading to XSS, privilege escalation, or RCE.
+description: Pollute Object.prototype through deep-merged or recursively assigned input — __proto__ and constructor.prototype keys in query strings, JSON bodies and config patches — then chain a gadget to XSS, privilege escalation or child_process code execution. Reach for it when the target is Node.js or browser JavaScript that merges caller-supplied objects.
 metadata:
   acordia:
     family: web-attack

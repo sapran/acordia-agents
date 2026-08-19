@@ -1,6 +1,6 @@
 ---
 name: cicd-attacks
-description: Use when a CI/CD pipeline (GitHub Actions, GitLab CI, Jenkins) is in scope and you need to test workflow injection, secret exposure, and artifact or runner trust.
+description: Attack the build pipeline rather than what it ships — read workflow definitions for injectable triggers and inputs, extract secrets from logs, environments and runner state, inject a job into GitHub Actions, GitLab CI or Jenkins, and abuse self-hosted runner and artefact trust. Reach for it when pipeline configuration, a runner or a build token is in scope.
 metadata:
   acordia:
     family: cloud-postexploit

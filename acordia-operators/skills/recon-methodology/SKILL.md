@@ -1,6 +1,6 @@
 ---
 name: recon-methodology
-description: Use at the start of an engagement when you need a structured reconnaissance pass — passive collection, asset discovery, and technology profiling before any active testing.
+description: Build the target's asset inventory before anything is touched — passive subdomain collection from certificate transparency and archived URLs, then active DNS, resolution, port scanning, service and technology fingerprinting, with screenshots to triage what is live. Reach for it at the opening of an engagement, ahead of any intrusive testing.
 metadata:
   acordia:
     family: web-methodology

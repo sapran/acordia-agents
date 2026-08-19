@@ -1,6 +1,6 @@
 ---
 name: os-host-internals
-description: Use when you are on or reasoning about a specific host and need to command Windows/Linux/macOS internals — to understand its state, escalate, persist, and move without tripping the host's own defenses.
+description: Read one specific host's true state from collected process, service, autorun and scheduled-task material, and work its platform-native mechanisms — token and privilege abuse, SUID and sudo, service, DLL and dylib hijacks, driver exposure, integrity controls — when you must escalate, persist or pivot from that host and predict how it will log and police the attempt.
 metadata:
   acordia:
     family: target-modelling

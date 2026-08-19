@@ -1,6 +1,6 @@
 ---
 name: endpoint-telemetry-edr
-description: Use when an operation touches a monitored endpoint and you must predict what the EDR/host sensor records about your actions and which execution paths slip past its instrumentation.
+description: Reason about what a host sensor genuinely captures and by which mechanism — kernel callbacks, ETW providers, user-mode hooks, minifilters, AMSI, the deployed Sysmon configuration — and where that instrumentation goes blind, so you can choose between execution, injection or persistence primitives when one writes far richer endpoint telemetry than another.
 metadata:
   acordia:
     family: defender-reading

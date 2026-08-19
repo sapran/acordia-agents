@@ -1,6 +1,6 @@
 ---
 name: multi-source-fusion
-description: Use when you hold fragments from several sources — your own implant take, passive collection, OSINT, and non-technical context — and need one coherent target picture instead of a pile of disconnected observations.
+description: Consolidate disconnected strands — your own on-box take, passive collection, open sources, prior operations and human or business context — into one coherent target picture by resolving entities across sources, correlating on shared keys, and naming convergence and contradiction while weighting genuinely independent corroboration over volume from one echoing feed.
 metadata:
   acordia:
     family: take-handling

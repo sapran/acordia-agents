@@ -1,6 +1,6 @@
 ---
 name: attack-open-redirect
-description: Use when a target has a URL parameter that triggers a server-side redirect (login, OAuth callback, logout) and you need to test whether it can be pointed at an attacker-controlled domain.
+description: Point a server-side redirect at a domain you control — protocol-relative, encoded, double-encoded, backslash and at-sign payloads against url, next, returnTo, callback and redirect_uri parameters, escalating to OAuth token theft where the callback is unvalidated. Reach for it when a login, logout or callback parameter carries a URL.
 metadata:
   acordia:
     family: web-attack

@@ -1,6 +1,6 @@
 ---
 name: naming-the-gaps
-description: Use when a target picture feels good enough to act on and you need to force-surface what you still do not know before committing collection or an operation to it.
+description: Convert a vague sense of knowing too little into a ranked list of intelligence gaps, each phrased as an answerable question with a collection route and an owner, plus a decide-anyway line for the gaps you will carry as open risk, when a picture feels good enough to act on or collection is running with nobody able to say what it should answer.
 metadata:
   acordia:
     family: analytic-spine

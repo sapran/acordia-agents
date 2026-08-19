@@ -1,6 +1,6 @@
 ---
 name: attack-rate-limit-bypass
-description: Apply when a login, OTP, password-reset, or other rate-limited endpoint needs its throttling tested for IP-rotation, header, case, or method bypasses before brute-force or credential-stuffing risk can be ruled out.
+description: Establish where throttling actually begins and then defeat it — X-Forwarded-For and header rotation, path case, trailing-character and query-noise variation, method switching, and username distribution against account lockout. Reach for it before brute-force, credential-stuffing or OTP-guessing exposure on a login, reset or one-per-user endpoint can be ruled in or out.
 metadata:
   acordia:
     family: web-attack

@@ -1,6 +1,6 @@
 ---
 name: log-artefact-interpretation
-description: Use whenever you have raw logs or artefacts in hand — host, network, or cloud — and need to reconstruct what happened, what the environment is, and whether your own activity left marks.
+description: Reconstruct an ordered account of events from raw logs and artefacts across host, network and cloud, establishing first what each source actually records and its fidelity, retention and blind spots, then correlating the matched line ranges into one timeline, to answer what happened, what the environment contains, and what marks your own activity wrote.
 metadata:
   acordia:
     family: evidence-forensics

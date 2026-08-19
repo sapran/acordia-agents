@@ -1,6 +1,6 @@
 ---
 name: protocol-routing-architecture
-description: Use when you need the shape of the target network — reconstruct how it is built, routed, and segmented so you can find the paths between where you are and where you want to be.
+description: Reconstruct the target network's shape from device configs, routing tables, firewall rulesets and VPN definitions — L2 and L3 topology, VLANs and subnets, routing domains, tunnels, trust zones, chokepoints and egress paths — to establish what can reach what before planning movement or touching a control that divides two segments.
 metadata:
   acordia:
     family: target-modelling

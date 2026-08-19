@@ -1,6 +1,6 @@
 ---
 name: packet-traffic-analysis
-description: Use when you have pcap or netflow from a target and need to read the wire — infer terrain, live services, trust relationships, and behavioural opportunity from what actually moves across the network.
+description: Read the wire from a capture or flow export, building the conversation graph from Zeek connection aggregates and fingerprinting live hosts, services and stacks from real banners, TLS, DNS, SMB and Kerberos traffic instead of active probing, to get ground truth on reachability, trust and blend-in paths that scanning would miss or be far too noisy to probe.
 metadata:
   acordia:
     family: evidence-forensics

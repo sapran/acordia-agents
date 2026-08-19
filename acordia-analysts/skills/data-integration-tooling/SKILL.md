@@ -1,6 +1,6 @@
 ---
 name: data-integration-tooling
-description: Use when the take is too big or too mixed to correlate by hand — build the data-handling pipeline that ingests, normalises, and joins large heterogeneous datasets so fusion can happen at scale.
+description: Join heterogeneous take into one queryable corpus — normalising identities, timestamps, IPs and hosts into a common schema, picking a relational, graph or time-series join model to fit the question, then resolving, deduplicating and enriching entities across datasets — when repeated correlation on the same keys justifies a pipeline over one-off inspection.
 metadata:
   acordia:
     family: take-handling
