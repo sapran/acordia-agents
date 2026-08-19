@@ -230,6 +230,9 @@ namespaces them by plugin name. Each wrapper SHALL carry `description` and `argu
 frontmatter, SHALL dispatch exactly the agent it is named for, SHALL pass the caller's argument
 through as the brief, and SHALL ask for a brief when none is supplied.
 
+Where renaming a lead agent lengthens its canonical wrapper, the previous single-word wrapper SHALL be
+retained as that agent's short alias, so that an existing invocation keeps working.
+
 #### Scenario: Wrapper count and split
 - **WHEN** the two `commands/` directories are enumerated
 - **THEN** eight analyst and ten operations wrappers are present, 18 in total, each a flat `.md` file
@@ -237,6 +240,10 @@ through as the brief, and SHALL ask for a brief when none is supplied.
 #### Scenario: Wrapper dispatches its own agent
 - **WHEN** any wrapper is read
 - **THEN** it names exactly one agent, the one it is named or aliased for
+
+#### Scenario: A renamed lead keeps its old handle
+- **WHEN** `/operator` and `/analyst` are invoked
+- **THEN** they dispatch `cyber-operator` and `cyber-analyst` respectively
 
 #### Scenario: Empty brief is refused
 - **WHEN** a wrapper is invoked with no argument
@@ -311,3 +318,35 @@ cover.
 
 - **WHEN** `internal-network`'s journal section is read
 - **THEN** it still states that the final assessment report is composed by the orchestrator from this journal, not by the specialist
+
+### Requirement: A lead agent's name is distinct from its pillar's name
+
+Neither pillar's lead agent SHALL be named with a word that also names the pillar, its skill library,
+its prompts or its artifacts. The analyst lead SHALL be `cyber-analyst` and the operations lead SHALL
+be `cyber-operator`, so that "the operations pillar" and "the operations prompts" can never be read as
+naming an agent.
+
+Prose SHALL keep the bare word `operator` only where it means a human or a driving session rather than
+the agent — the analyst guardrail *"execution belongs to the operators you advise"*, an operator
+journal, an operator session, operator-deployed artifacts, and technique content such as a
+default-credential pair. Renaming SHALL NOT rewrite those sites.
+
+An archived change SHALL NOT be rewritten to use a later name. It records what was true when it
+shipped.
+
+#### Scenario: Pillar word never resolves to an agent
+- **WHEN** the live tree is searched for `operator` followed by pillar, library, skill, prompt, agent, wrapper, artifact or file
+- **THEN** no match is found, because every such site reads `operations`
+
+#### Scenario: The human sense survives the rename
+- **WHEN** an analyst prompt's closing guardrail is read
+- **THEN** it still says execution belongs to the operators it advises, naming no agent
+
+#### Scenario: Archived changes keep their original names
+- **WHEN** any file under `openspec/changes/archive/` is read
+- **THEN** it still names `operational-analyst` and `operator` as they were at the time it shipped
+
+#### Scenario: A provenance document keeps its filename and its anchors
+- **WHEN** `docs/roles/operational-analyst.md` is read
+- **THEN** its grid rows are still at lines L67–L108, every skill anchor still resolves to a row, and a
+  closing note records that the shipped agent is now `cyber-analyst`
