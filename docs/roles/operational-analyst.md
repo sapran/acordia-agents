@@ -139,3 +139,11 @@ The shipped agent is now `cyber-analyst` (wrapper `/cyber-analyst`, short handle
 renamed with `operator` → `cyber-operator` so that neither lead agent shares a word with the pillar
 it leads. The role in this document and the file on disk are no longer spelled the same way; the
 grid rows below are unaffected, because a row describes a competency, not an agent.
+
+The three legs were renamed in the same release. **T&N** ships as `target-analyst` (wrapper
+`/target-analyst`, short handle `/target`) and **Def** as `overwatch-analyst` (wrapper
+`/overwatch-analyst`, short handle `/defender`); **Fus** is unchanged as `fusion-analyst`. The grid
+column letters below still read **T&N**, **Def** and **Fus**, because they label the legs of the
+role described in this document, not the agent files that implement them. `overwatch-analyst` takes
+its name from the live register that defines it — overwatch, reading the defender's own security
+operations to judge whether they are onto the operation.

@@ -47,7 +47,7 @@ Post-collection extraction from disk images and memory captures. All work is pas
 - Registry hives — `impacket-secretsdump -sam SAM -security SECURITY -system SYSTEM LOCAL`. Yields local SAM hashes, LSA secrets (cached machine account, service credentials), DPAPI master key pointers.
 - Cached logon (MSCache/MSCache2) — `impacket-secretsdump` from `SYSTEM` + `SECURITY`; brute-forceable offline, do not attempt.
 - Filesystem sweep — carve for `%APPDATA%\Microsoft\Credentials\`, `%LOCALAPPDATA%\Microsoft\Credentials\`, `NTUSER.DAT`, browser profile dirs (`Login Data` SQLite), SSH `known_hosts`/`config`, `.aws/credentials`, `.docker/config.json`.
-- Prefetch / amcache / shimcache — evidence of credential-tool execution (mimikatz.exe, procdump.exe, `comsvcs.dll`), not credentials themselves; feed to `defender-detection-analyst`.
+- Prefetch / amcache / shimcache — evidence of credential-tool execution (mimikatz.exe, procdump.exe, `comsvcs.dll`), not credentials themselves; feed to `overwatch-analyst`.
 
 **Cross-cutting**
 - Every extraction is classified and reported via [`credential-harvest-triage`](../credential-harvest-triage/SKILL.md); this skill never emits raw values.

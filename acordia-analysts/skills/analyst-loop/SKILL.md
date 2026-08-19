@@ -29,8 +29,8 @@ Turn the current state of an operation into a recommended course of action by ru
 
 Five steps, each dispatching to the analyst who owns it:
 
-1. **Target read** — through `target-network-analyst`: what the target is for, what it depends on, where movement is possible, when it will change, and — after an action — whether the target actually changed (effect-on-target verification).
-2. **Defender read** — through `defender-detection-analyst`: will this be seen, is it being seen right now, is the operation still clean, and what does our own footprint reveal (the are-we-seen half of "did it land").
+1. **Target read** — through `target-analyst`: what the target is for, what it depends on, where movement is possible, when it will change, and — after an action — whether the target actually changed (effect-on-target verification).
+2. **Defender read** — through `overwatch-analyst`: will this be seen, is it being seen right now, is the operation still clean, and what does our own footprint reveal (the are-we-seen half of "did it land").
 3. **Fusion** — through `fusion-analyst`: what all of it together means, how good the take is, and — for a collection end — whether the take is real and worth having (the value-of-the-take half of "did it land").
 4. **Judgement** — the orchestrator's own: fuse the three reads into one calibrated call using the analytic spine (`reasoning-under-uncertainty`, `hypothesis-testing`, `key-assumptions-check`, `outcome-judgement`, `gain-loss-calculus`), attributing each hypothesis to the leg that raised it.
 5. **Next move** — name the recommended action and the end it serves: continue, pivot, go quiet, move, or pull out. End-neutral: whichever of effect or intel is in play, say whether it was met and what follows.

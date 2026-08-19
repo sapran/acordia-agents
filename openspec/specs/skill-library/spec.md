@@ -219,10 +219,10 @@ The library SHALL contain a skill `acordia-analysts/skills/credential-harvest-tr
 
 The **bucket partition** step SHALL enumerate five buckets and their target legs:
 
-- Bucket A — identity / directory / cloud-controlplane material → `target-network-analyst`
+- Bucket A — identity / directory / cloud-controlplane material → `target-analyst`
 - Bucket B — host-forensic material (memory, SAM, DPAPI, keychain, shadow) → whichever leg holds the host under analysis
-- Bucket C — web / API auth material → `target-network-analyst`
-- Bucket D — log-artefact material → `defender-detection-analyst`
+- Bucket C — web / API auth material → `target-analyst`
+- Bucket D — log-artefact material → `overwatch-analyst`
 - Bucket E — implant / payload RE material → cross-cutting via `implant-payload-re`, reported to `fusion-analyst`
 
 Each bucket's slice SHALL be dispatched with only that slice. The procedure SHALL state that per-leg classifications feed back into `multi-source-fusion` for cross-leg correlation.
@@ -240,7 +240,7 @@ Each bucket's slice SHALL be dispatched with only that slice. The procedure SHAL
 #### Scenario: Bucket partition maps to existing legs
 
 - **WHEN** the bucket-partition step is read
-- **THEN** every bucket routes to one of `target-network-analyst`, `defender-detection-analyst`, `fusion-analyst`, or the cross-cutting `implant-payload-re` skill, and no bucket routes to a leg not on the current whitelist
+- **THEN** every bucket routes to one of `target-analyst`, `overwatch-analyst`, `fusion-analyst`, or the cross-cutting `implant-payload-re` skill, and no bucket routes to a leg not on the current whitelist
 
 #### Scenario: Not a grid row
 
@@ -284,7 +284,7 @@ The skill SHALL declare its cross-cutting/procedural nature and SHALL NOT be add
 
 #### Scenario: Legs do not reference the loop skill
 
-- **WHEN** any leg agent (`target-network-analyst`, `defender-detection-analyst`, `fusion-analyst`) is inspected
+- **WHEN** any leg agent (`target-analyst`, `overwatch-analyst`, `fusion-analyst`) is inspected
 - **THEN** it does not name `analyst-loop`
 
 ### Requirement: `exhaustive-data-processing` skill exists

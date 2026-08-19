@@ -46,10 +46,10 @@ Every credential finding SHALL be classified along these axes. Analysts record t
 
 1. **Inventory** the archive: list every file, size, mtime, MIME/file-type. Note directory shape (single dump vs. multi-user backup vs. cloud state export). Output: an inventory table.
 2. **Bucket partition**: split the inventory by material class into leg-owned buckets, so that the per-category scan and deep-pass below run in parallel — the orchestrator dispatches each slice to its handling leg with **only that slice**, not the whole archive. Current mapping:
-   - **Bucket A — identity / directory / cloud control-plane** (AD exports, NTDS, Kerberos, LAPS/gMSA, ADCS, IMDS captures, service-account keys, IaC state) → `target-network-analyst`
+   - **Bucket A — identity / directory / cloud control-plane** (AD exports, NTDS, Kerberos, LAPS/gMSA, ADCS, IMDS captures, service-account keys, IaC state) → `target-analyst`
    - **Bucket B — host-forensic** (memory captures, SAM/SECURITY hives, DPAPI, Keychain, `shadow`, SSH agent) → whichever leg holds the host under analysis
-   - **Bucket C — web / API auth** (JWTs, OAuth tokens, session cookies, provider API keys) → `target-network-analyst`
-   - **Bucket D — log-artefact** (application / CI / system logs, connection strings leaked in logs) → `defender-detection-analyst`
+   - **Bucket C — web / API auth** (JWTs, OAuth tokens, session cookies, provider API keys) → `target-analyst`
+   - **Bucket D — log-artefact** (application / CI / system logs, connection strings leaked in logs) → `overwatch-analyst`
    - **Bucket E — implant / payload RE** (malware configs, embedded keys in binaries) → cross-cutting via `implant-payload-re`, findings reported to `fusion-analyst`
    Buckets route to legs, not to skills. Each leg then runs steps 3–5 (first-pass scan, deep-pass, classify) on its own slice, applying its own specialist skills; the legs work in parallel, and step 6 re-merges their classifications. Each leg returns a **coverage receipt** for its bucket — declared scope reconciled to covered scope — per `exhaustive-data-processing`; the orchestrator rejects any bucket whose scan did not cover its whole slice and re-dispatches it. The mapping is fixed by domain — reclassify a bucket only through an openspec change, not an in-file edit.
 3. **First-pass scan**: run the pattern library (see `references/credential-patterns.md`) across text-decodable artefacts (`grep -rHnE`, `rg`, or equivalent). The scan SHALL cover 100% of each bucket's text-decodable bytes and record *every* hit — never a sample — with path + line, not the matched string (see `exhaustive-data-processing`). Flag binary artefacts for deep-pass.

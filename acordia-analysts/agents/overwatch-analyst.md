@@ -1,5 +1,5 @@
 ---
-name: defender-detection-analyst
+name: overwatch-analyst
 description: ACORDIA Analysis — Will this be seen, is it being seen right now, and is our operation still clean? Dispatch for detection-capability analysis, evasion reasoning, own-footprint review, and live overwatch of the defender.
 color: blue
 ---

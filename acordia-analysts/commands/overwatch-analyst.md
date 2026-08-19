@@ -3,7 +3,7 @@ description: Will this be seen, is it being seen right now, and is our operation
 argument-hint: '[action, footprint, or overwatch question]'
 ---
 
-Dispatch the `defender-detection-analyst` agent (ACORDIA Analysis) with the brief below.
+Dispatch the `overwatch-analyst` agent (ACORDIA Analysis) with the brief below.
 
 Use it for detection-capability analysis, evasion reasoning, own-footprint review, and live overwatch of the defender.
 

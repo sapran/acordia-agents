@@ -1,5 +1,5 @@
 ---
-name: target-network-analyst
+name: target-analyst
 description: ACORDIA Analysis — What is the target for, what does it depend on, where can we move, when will it change — and did our action land on it? Dispatch for target modelling, terrain analysis, and effect-on-target verification.
 color: blue
 ---

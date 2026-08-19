@@ -10,7 +10,7 @@ Two harnesses, one authored tree per pillar. omp and Claude Code both install it
 
 Two pillars, shipped as two independently installable plugins:
 
-- **`acordia-analysts/`** — the ACORDIA Analysis pillar. One primary orchestrator (`cyber-analyst`) plus three subagent legs (`target-network-analyst`, `defender-detection-analyst`, `fusion-analyst`), a 42-skill analytic library, and 8 command wrappers.
+- **`acordia-analysts/`** — the ACORDIA Analysis pillar. One primary orchestrator (`cyber-analyst`) plus three subagent legs (`target-analyst`, `overwatch-analyst`, `fusion-analyst`), a 42-skill analytic library, and 8 command wrappers.
 - **`acordia-operators/`** — the ACORDIA Operations pillar. One primary orchestrator (`cyber-operator`) plus four subagent specialists (`web-application`, `mobile-application`, `cloud-security`, `internal-network`), a 39-skill technique library (31 ported from the CyberStrike fork at commit `359655518`, 8 authored here), and 9 command wrappers.
 
 Each pillar directory holds `.claude-plugin/plugin.json`, `agents/`, `commands/` and `skills/` — the layout both harnesses discover from a plugin root. **All nine agents are write-capable.** Capability is granted by omission: an agent file names no `tools`, so omp hands it the full set, and no `spawns`, so its spawn policy is unrestricted. There is no permission frontmatter anywhere in this repository, and a capability problem is never fixed by adding a denylist.

@@ -21,8 +21,8 @@ Future pillars (Collection, Reflection, Direction, Independent action) may follo
 acordia-agents/
 ├── acordia-analysts/                 # plugin root — installed as-is
 │   ├── .claude-plugin/plugin.json
-│   ├── agents/     cyber-analyst · target-network-analyst
-│   │               defender-detection-analyst · fusion-analyst
+│   ├── agents/     cyber-analyst · target-analyst
+│   │               overwatch-analyst · fusion-analyst
 │   ├── commands/   8 command wrappers
 │   └── skills/     42 skills, one SKILL.md each
 ├── acordia-operators/                # plugin root — installed as-is
@@ -77,7 +77,7 @@ Agents are dispatched by name, from a picker shared with the harness's own, so t
 
 Both harnesses scan `<pluginRoot>/commands/*.md` non-recursively and prefix each command with the plugin name, which is why the wrappers live inside a pillar rather than at the repository root. Eighteen of them: one canonical wrapper per agent (`/acordia-analysts:fusion-analyst`) plus nine short handles — `analyst`, `target`, `defender`, `fusion`, `operator`, `webapp`, `mobile`, `cloud`, `internal`.
 
-The agent name itself is not wrapped. omp registers plugin agents flat, so `fusion-analyst` dispatches; Claude Code namespaces them, so its Task tool needs `acordia-analysts:target-network-analyst` (verified at 2.1.220). A wrapper names its agent in prose and leaves each harness to resolve it.
+The agent name itself is not wrapped. omp registers plugin agents flat, so `fusion-analyst` dispatches; Claude Code namespaces them, so its Task tool needs `acordia-analysts:target-analyst` (verified at 2.1.220). A wrapper names its agent in prose and leaves each harness to resolve it.
 
 #### Bump the version on every change
 
@@ -120,7 +120,7 @@ The operations pillar derives from no such map. It is a provenance-tracked port 
 
 ```yaml
 ---
-name: target-network-analyst
+name: target-analyst
 description: ACORDIA Analysis — What is the target for, what does it depend on, where can we move …
 color: blue
 ---
