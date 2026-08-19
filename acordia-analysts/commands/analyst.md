@@ -1,8 +1,6 @@
 ---
-name: "ACORDIA: analyst"
 description: Hand an operation to the senior operational analyst — target picture, method/timing/risk, and the end-neutral loop.
-argument-hint: "[what the operation needs decided]"
-category: ACORDIA Analysis
+argument-hint: '[what the operation needs decided]'
 # Short alias for `operational-analyst`; that wrapper is the canonical one.
 ---
 

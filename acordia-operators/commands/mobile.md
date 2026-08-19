@@ -1,8 +1,6 @@
 ---
-name: "ACORDIA: mobile"
 description: Mobile application security testing against OWASP MASTG/MASVS.
-argument-hint: "[app package or IPA/APK path]"
-category: ACORDIA Operations
+argument-hint: '[app package or IPA/APK path]'
 # Short alias for `mobile-application`; that wrapper is the canonical one.
 ---
 

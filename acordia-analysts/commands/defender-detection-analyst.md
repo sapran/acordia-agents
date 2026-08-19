@@ -1,8 +1,6 @@
 ---
-name: "ACORDIA: defender-detection-analyst"
 description: Will this be seen, is it being seen right now, and is our operation still clean?
-argument-hint: "[action, footprint, or overwatch question]"
-category: ACORDIA Analysis
+argument-hint: '[action, footprint, or overwatch question]'
 ---
 
 Dispatch the `defender-detection-analyst` agent (ACORDIA Analysis) with the brief below.

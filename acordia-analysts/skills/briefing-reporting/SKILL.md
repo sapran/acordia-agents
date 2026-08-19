@@ -29,4 +29,4 @@ Communicate the operational picture and the recommended course of action crisply
 - A bottom-line-up-front judgement and recommendation.
 - Confidence, key assumptions, and gaps flagged inline.
 - An explicit ask: the decision or action required, by when.
-- When the product is written to disk, it lands in the analyst's sanctioned report sink — `.acordia/reports/` for the `operational-analyst` and `fusion-analyst`; the other legs are read-only and return the product in-message.
+- When the product is written to disk it lands in `.acordia/reports/`, the convention every analyst follows; returning it in-message instead is equally correct when the caller only needs the judgement.

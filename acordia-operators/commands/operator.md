@@ -1,8 +1,6 @@
 ---
-name: "ACORDIA: operator"
 description: Hand an authorized engagement to the orchestrating offensive-security brain.
-argument-hint: "[scope and objective of the engagement]"
-category: ACORDIA Operations
+argument-hint: '[scope and objective of the engagement]'
 ---
 
 Hand the work below to the `operator` agent (ACORDIA Operations), which orchestrates this pillar.

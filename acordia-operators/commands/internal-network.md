@@ -1,8 +1,6 @@
 ---
-name: "ACORDIA: internal-network"
 description: Internal network and Active Directory — AD attacks, Kerberos abuse, credential access, lateral movement.
-argument-hint: "[domain, subnet, or host in scope]"
-category: ACORDIA Operations
+argument-hint: '[domain, subnet, or host in scope]'
 ---
 
 Dispatch the `internal-network` agent (ACORDIA Operations) with the brief below.

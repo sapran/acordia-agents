@@ -1,8 +1,6 @@
 ---
-name: "ACORDIA: defender"
 description: Will this be seen, is it being seen right now, and is our operation still clean?
-argument-hint: "[action, footprint, or overwatch question]"
-category: ACORDIA Analysis
+argument-hint: '[action, footprint, or overwatch question]'
 # Short alias for `defender-detection-analyst`; that wrapper is the canonical one.
 ---
 

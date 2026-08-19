@@ -9,9 +9,9 @@
   "plugins": [
     {
       "name": "acordia-analysts",
-      "source": "./plugins/claude/acordia-analysts",
-      "version": "2.5.0",
-      "description": "ACORDIA Analysis — four read-only decision-support agents and a 43-skill analytic library.",
+      "source": "./acordia-analysts",
+      "version": "3.0.0",
+      "description": "ACORDIA Analysis — four decision-support agents and a 43-skill analytic library.",
       "category": "security",
       "keywords": [
         "security",
@@ -22,9 +22,9 @@
     },
     {
       "name": "acordia-operators",
-      "source": "./plugins/claude/acordia-operators",
-      "version": "2.5.0",
-      "description": "ACORDIA Operations — five write-capable offensive-security agents and a 30-skill technique library.",
+      "source": "./acordia-operators",
+      "version": "3.0.0",
+      "description": "ACORDIA Operations — five offensive-security agents and a 30-skill technique library.",
       "category": "security",
       "keywords": [
         "security",

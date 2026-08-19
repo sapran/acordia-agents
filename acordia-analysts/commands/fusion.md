@@ -1,8 +1,6 @@
 ---
-name: "ACORDIA: fusion"
 description: What does all of it, together, mean — and how good is what we have?
-argument-hint: "[strands to fuse or take to assess]"
-category: ACORDIA Analysis
+argument-hint: '[strands to fuse or take to assess]'
 # Short alias for `fusion-analyst`; that wrapper is the canonical one.
 ---
 

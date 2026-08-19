@@ -1,8 +1,6 @@
 ---
-name: "ACORDIA: webapp"
 description: Web application and API security testing — OWASP WSTG methodology.
-argument-hint: "[target URL or API surface]"
-category: ACORDIA Operations
+argument-hint: '[target URL or API surface]'
 # Short alias for `web-application`; that wrapper is the canonical one.
 ---
 

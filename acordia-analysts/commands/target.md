@@ -1,8 +1,6 @@
 ---
-name: "ACORDIA: target"
 description: What is the target for, what does it depend on, where can we move, when will it change — and did our action land?
-argument-hint: "[target, terrain, or effect to read]"
-category: ACORDIA Analysis
+argument-hint: '[target, terrain, or effect to read]'
 # Short alias for `target-network-analyst`; that wrapper is the canonical one.
 ---
 

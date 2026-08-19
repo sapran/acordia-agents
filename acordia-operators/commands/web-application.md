@@ -1,8 +1,6 @@
 ---
-name: "ACORDIA: web-application"
 description: Web application and API security testing — OWASP WSTG methodology.
-argument-hint: "[target URL or API surface]"
-category: ACORDIA Operations
+argument-hint: '[target URL or API surface]'
 ---
 
 Dispatch the `web-application` agent (ACORDIA Operations) with the brief below.

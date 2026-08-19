@@ -1,8 +1,6 @@
 ---
-name: "ACORDIA: operational-analyst"
 description: Hand an operation to the senior operational analyst — target picture, method/timing/risk, and the end-neutral loop.
-argument-hint: "[what the operation needs decided]"
-category: ACORDIA Analysis
+argument-hint: '[what the operation needs decided]'
 ---
 
 Hand the work below to the `operational-analyst` agent (ACORDIA Analysis), which orchestrates this pillar.

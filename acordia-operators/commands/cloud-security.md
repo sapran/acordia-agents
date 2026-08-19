@@ -1,8 +1,6 @@
 ---
-name: "ACORDIA: cloud-security"
 description: Cloud and Kubernetes assessment — AWS/Azure/GCP IAM, exposure, secrets, logging posture.
-argument-hint: "[account, subscription, or cluster in scope]"
-category: ACORDIA Operations
+argument-hint: '[account, subscription, or cluster in scope]'
 ---
 
 Dispatch the `cloud-security` agent (ACORDIA Operations) with the brief below.

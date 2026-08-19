@@ -1,8 +1,6 @@
 ---
-name: "ACORDIA: mobile-application"
 description: Mobile application security testing against OWASP MASTG/MASVS.
-argument-hint: "[app package or IPA/APK path]"
-category: ACORDIA Operations
+argument-hint: '[app package or IPA/APK path]'
 ---
 
 Dispatch the `mobile-application` agent (ACORDIA Operations) with the brief below.

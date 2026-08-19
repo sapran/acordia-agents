@@ -1,8 +1,6 @@
 ---
-name: "ACORDIA: fusion-analyst"
 description: What does all of it, together, mean — and how good is what we have?
-argument-hint: "[strands to fuse or take to assess]"
-category: ACORDIA Analysis
+argument-hint: '[strands to fuse or take to assess]'
 ---
 
 Dispatch the `fusion-analyst` agent (ACORDIA Analysis) with the brief below.
