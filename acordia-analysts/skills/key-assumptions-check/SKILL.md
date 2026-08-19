@@ -3,6 +3,7 @@ name: key-assumptions-check
 description: Use when an operational plan or target read rests on things everyone is treating as given — access will hold, the target behaves as profiled, defenders are asleep — and you need to test the load-bearing ones before they fail mid-operation.
 metadata:
   acordia:
+    family: analytic-spine
     grid_row: key-assumptions-check
     grid_deep_in: [Core]
     grid_working_in: []

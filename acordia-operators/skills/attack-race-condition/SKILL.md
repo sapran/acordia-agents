@@ -2,6 +2,8 @@
 name: attack-race-condition
 description: Apply when a state-changing endpoint (payment, coupon, vote, account creation, one-time claim) might process concurrent requests without a consistency lock, to prove a time-of-check-to-time-of-use race is exploitable.
 metadata:
+  acordia:
+    family: web-attack
   cyberstrike:
     source: .cyberstrike/skill/attack-race-condition/SKILL.md
     commit: 359655518

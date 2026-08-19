@@ -3,6 +3,7 @@ name: identity-directory-trust
 description: Use when Active Directory or Entra ID underpins the target — map the directory, its privileged identities, and the trust relationships that let one compromise reach everything.
 metadata:
   acordia:
+    family: target-modelling
     grid_row: identity-directory-trust
     grid_deep_in: ['T&N']
     grid_working_in: [Def]

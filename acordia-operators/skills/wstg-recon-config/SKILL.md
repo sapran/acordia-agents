@@ -2,6 +2,8 @@
 name: wstg-recon-config
 description: Use when reconnoitering a web target or auditing its configuration, security headers, TLS/SSL setup, and error handling before deeper testing — WSTG-INFO, WSTG-CONF, WSTG-ERRH, WSTG-CRYP.
 metadata:
+  acordia:
+    family: web-methodology
   cyberstrike:
     source: .cyberstrike/skill/WEB/OWASP_WSTG_4.2/wstg-recon-config/SKILL.md
     commit: 359655518
@@ -149,8 +151,7 @@ curl -s -X POST https://TARGET/api/endpoint -H "Content-Type: application/xml" -
 subfinder -d TARGET -silent | tee subs.txt
 cat subs.txt | httpx -silent -status-code -title | tee live.txt
 
-# Subdomain takeover check
-subjack -w subs.txt -t 100 -o takeover.txt
+# Subdomain takeover check → see attack-subdomain-takeover
 
 # Cloud storage checks
 # AWS S3

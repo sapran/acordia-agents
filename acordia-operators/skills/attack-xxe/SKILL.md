@@ -2,6 +2,8 @@
 name: attack-xxe
 description: Apply when an endpoint parses XML (SOAP, file upload of SVG/DOCX/XLSX, SAML, RSS), to test whether external entity resolution allows file read, SSRF, or blind data exfiltration.
 metadata:
+  acordia:
+    family: web-attack
   cyberstrike:
     source: .cyberstrike/skill/attack-xxe/SKILL.md
     commit: 359655518
@@ -20,7 +22,7 @@ Exploit XML parsing vulnerabilities to read local files, perform SSRF, or exfilt
 Look for endpoints accepting:
 - `Content-Type: application/xml` or `text/xml`
 - SOAP endpoints (`.asmx`, `.wsdl`)
-- File upload accepting SVG, DOCX, XLSX
+- File upload accepting SVG, DOCX, XLSX, PPTX
 - RSS/Atom feed processing
 - SAML authentication
 

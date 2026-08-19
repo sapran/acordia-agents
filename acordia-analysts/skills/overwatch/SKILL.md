@@ -3,6 +3,7 @@ name: overwatch
 description: Use during a live operation to read the defender's own security-operations data plus external signals and judge whether or when they are onto you — driving the go-quiet, move, or pull-out decision.
 metadata:
   acordia:
+    family: defender-reading
     grid_row: overwatch
     grid_deep_in: [Def]
     grid_working_in: [Core]

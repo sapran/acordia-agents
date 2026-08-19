@@ -3,6 +3,7 @@ name: endpoint-telemetry-edr
 description: Use when an operation touches a monitored endpoint and you must predict what the EDR/host sensor records about your actions and which execution paths slip past its instrumentation.
 metadata:
   acordia:
+    family: defender-reading
     grid_row: endpoint-telemetry-edr
     grid_deep_in: [Def]
     grid_working_in: ['T&N']

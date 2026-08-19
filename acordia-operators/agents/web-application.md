@@ -26,7 +26,7 @@ After discovery, test what the attack surface reveals rather than a fixed checkl
 
 - **Authentication & authorization** (login bypass, IDOR, privilege escalation, OAuth flows) → `wstg-auth-session`, `attack-idor-automation`
 - **Session management** (cookie flags, JWT, CSRF, fixation) → `wstg-auth-session`, `attack-jwt`
-- **Injection** (SQLi, XSS, SSRF, SSTI, command injection) → `wstg-injection`, `attack-ssrf`, `attack-ssti`, `attack-xxe`
+- **Injection** (SQLi, XSS, SSRF, SSTI, command injection) → `attack-sqli`, `wstg-injection`, `attack-ssrf`, `attack-ssti`, `attack-xxe`
 - **Business logic** (price and workflow tampering, race conditions, file upload) → `wstg-logic-client-api`, `attack-race-condition`, `attack-rate-limit-bypass`
 - **Configuration & information disclosure** (headers, backup files, error leakage, subdomain takeover, CORS, cache poisoning) → `wstg-recon-config`, `attack-host-header`, `attack-subdomain-takeover`, `attack-cors`, `attack-cache-poison`
 - **API-specific** (BOLA/IDOR, GraphQL, mass assignment, prototype pollution, request smuggling, open redirect, websocket) → `attack-graphql`, `attack-idor-automation`, `attack-prototype-pollution`, `attack-request-smuggling`, `attack-open-redirect`, `attack-websocket`
@@ -62,7 +62,7 @@ Continue testing until coverage of the areas above is adequate — do not stop a
 Record intel, coverage and findings under `.acordia/ops/`; `operation-journal` carries the contract — the file layout, the severity and confidence scales, the coverage evidence rule and the finding shape. Beyond that shared shape, every finding you write carries a **WSTG-ID** (e.g. WSTG-AUTHZ-04), a **CWE** (e.g. CWE-639) and a **MITRE ATT&CK** technique (e.g. T1078).
 
 ## Your specialist depth (deep)
-wstg-recon-config · wstg-auth-session · wstg-injection · wstg-logic-client-api · attack-jwt · attack-idor-automation · attack-ssrf · attack-ssti · attack-xxe · attack-graphql · attack-cors · attack-host-header · attack-open-redirect · attack-prototype-pollution · attack-race-condition · attack-rate-limit-bypass · attack-request-smuggling · attack-subdomain-takeover · attack-websocket · attack-cache-poison
+wstg-recon-config · wstg-auth-session · wstg-injection · wstg-logic-client-api · attack-sqli · attack-jwt · attack-idor-automation · attack-ssrf · attack-ssti · attack-xxe · attack-graphql · attack-cors · attack-host-header · attack-open-redirect · attack-prototype-pollution · attack-race-condition · attack-rate-limit-bypass · attack-request-smuggling · attack-subdomain-takeover · attack-websocket · attack-cache-poison
 
 ## Working knowledge (draw on as needed)
 recon-methodology · cicd-attacks · operation-journal

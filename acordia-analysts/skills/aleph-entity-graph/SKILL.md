@@ -3,6 +3,7 @@ name: aleph-entity-graph
 description: Use when the take lives in an Aleph instance — search, pivot and expand the FollowTheMoney entity graph across collections instead of reading documents one by one.
 metadata:
   acordia:
+    family: take-handling
     grid_row: null
     procedural: true
     cross_cutting: true

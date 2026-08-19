@@ -3,6 +3,7 @@ name: method-timing-risk-decision
 description: Use when several ways to reach the objective are on the table and you must choose which method, at what moment, and at what exposure — before committing the operation to one of them.
 metadata:
   acordia:
+    family: analytic-spine
     grid_row: method-timing-risk-decision
     grid_deep_in: [Core]
     grid_working_in: ['T&N', Def, Fus]

@@ -3,6 +3,7 @@ name: analytic-tooling-scripting
 description: Use when manual analysis won't scale or repeat cleanly — script your own parsers, extractors, and transforms to turn raw take into answers instead of grinding it by hand.
 metadata:
   acordia:
+    family: analytic-spine
     grid_row: analytic-tooling-scripting
     grid_deep_in: [Core]
     grid_working_in: ['T&N', Def, Fus]

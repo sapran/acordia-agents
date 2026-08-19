@@ -2,6 +2,8 @@
 name: cicd-attacks
 description: Use when a CI/CD pipeline (GitHub Actions, GitLab CI, Jenkins) is in scope and you need to test workflow injection, secret exposure, and artifact or runner trust.
 metadata:
+  acordia:
+    family: cloud-postexploit
   cyberstrike:
     source: .cyberstrike/skill/cicd-attacks/SKILL.md
     commit: 359655518

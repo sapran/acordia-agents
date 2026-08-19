@@ -2,6 +2,8 @@
 name: attack-cache-poison
 description: Use when a target sits behind a caching layer (CDN, reverse proxy, Varnish) and you need to test whether unkeyed headers or parameters let you poison cached responses served to other users.
 metadata:
+  acordia:
+    family: web-attack
   cyberstrike:
     source: .cyberstrike/skill/attack-cache-poison/SKILL.md
     commit: 359655518

@@ -3,6 +3,7 @@ name: credential-harvest-triage
 description: Use when a collected file dump, memory capture, configuration archive, or log bundle lands and you need to inventory, classify, and prioritise the credential material inside it without knowing yet what is there.
 metadata:
   acordia:
+    family: take-handling
     grid_row: null
     procedural: true
     source: openspec/changes/archive/2026-07-22-credential-harvest-capability/proposal.md

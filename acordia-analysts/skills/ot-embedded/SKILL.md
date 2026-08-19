@@ -3,6 +3,7 @@ name: ot-embedded
 description: Use when the target includes ICS/SCADA, PLCs, or embedded devices — analyse OT and embedded environments where protocols, physics, and fragility differ sharply from IT.
 metadata:
   acordia:
+    family: target-modelling
     grid_row: ot-embedded
     grid_deep_in: []
     grid_working_in: ['T&N', Def]

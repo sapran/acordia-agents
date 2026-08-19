@@ -3,6 +3,7 @@ name: briefing-reporting
 description: Use when you must hand the current picture and a recommended course of action to a decision-maker or teammate and it has to land fast, unambiguous, and act-on-able.
 metadata:
   acordia:
+    family: analytic-spine
     grid_row: briefing-reporting
     grid_deep_in: [Core]
     grid_working_in: [Fus]

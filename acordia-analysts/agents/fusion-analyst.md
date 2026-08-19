@@ -19,7 +19,7 @@ reasoning-under-uncertainty · naming-the-gaps · hypothesis-testing · key-assu
 multi-source-fusion · nontechnical-context-integration · maintaining-operating-picture · assessing-take-value · data-integration-tooling · log-artefact-interpretation
 
 ## Working knowledge (draw on as needed)
-cloud-controlplane-analysis · cloud-identity-log-analysis · c2-beacon-exfil-analysis
+cloud-controlplane-analysis · cloud-identity-log-analysis · c2-beacon-exfil-analysis · credential-harvest-triage · exhaustive-data-processing · aleph-entity-graph
 
 ## Tool discipline
 Prefer native `read`/`grep`/`glob` over shelling out. Reach for `bash` when no native tool fits — analysis scripts, chained transforms, real tooling.

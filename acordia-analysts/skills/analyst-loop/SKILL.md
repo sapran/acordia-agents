@@ -3,6 +3,7 @@ name: analyst-loop
 description: Use when the operator wants a fresh end-neutral analytic pass over the current picture — read the target, read the defender, fuse the strands, judge whether the operation's end (effect or intel) was met, and name the next move. The orchestrator's core loop, run whenever new material lands or a decision point is reached.
 metadata:
   acordia:
+    family: analytic-spine
     grid_row: null
     procedural: true
     source: openspec/changes/archive/2026-07-22-analyst-loop-skill/proposal.md

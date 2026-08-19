@@ -3,6 +3,7 @@ name: os-host-internals
 description: Use when you are on or reasoning about a specific host and need to command Windows/Linux/macOS internals — to understand its state, escalate, persist, and move without tripping the host's own defenses.
 metadata:
   acordia:
+    family: target-modelling
     grid_row: os-host-internals
     grid_deep_in: ['T&N', Def]
     grid_working_in: [Core]

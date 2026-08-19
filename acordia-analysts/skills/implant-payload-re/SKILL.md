@@ -3,6 +3,7 @@ name: implant-payload-re
 description: Use to reverse-engineer an implant or payload's real behavior — ours, a competitor's, or a captured sample — to understand exactly what it does, what it emits, and how it would be detected.
 metadata:
   acordia:
+    family: evidence-forensics
     grid_row: implant-payload-re
     grid_deep_in: [Def]
     grid_working_in: ['T&N']

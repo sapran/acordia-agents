@@ -2,6 +2,8 @@
 name: attack-cors
 description: Use when a target API reflects a browser Origin header and you need to test for CORS misconfigurations that expose credentialed cross-origin data access.
 metadata:
+  acordia:
+    family: web-attack
   cyberstrike:
     source: .cyberstrike/skill/attack-cors/SKILL.md
     commit: 359655518
@@ -58,6 +60,17 @@ curl -s -H "Origin: https://evil.com%0d%0a" TARGET_URL -D-
 
 # Prefix matching bypass
 curl -s -H "Origin: https://evil-TARGET" TARGET_URL -D-
+
+# Suffix concatenation bypass
+curl -s -H "Origin: https://TARGETevil.com" TARGET_URL -D-
+
+# Origin that is itself a subdomain of the target — exploitable where that subdomain
+# carries XSS or is takeover-able
+curl -s -H "Origin: https://evil.TARGET" TARGET_URL -D-
+
+# Wildcard with credentials — Access-Control-Allow-Origin: * together with
+# Access-Control-Allow-Credentials: true. The browser refuses the combination, but it
+# remains a reportable misconfiguration.
 ```
 
 ### Phase 3: Impact Verification

@@ -3,6 +3,7 @@ name: log-artefact-interpretation
 description: Use whenever you have raw logs or artefacts in hand — host, network, or cloud — and need to reconstruct what happened, what the environment is, and whether your own activity left marks.
 metadata:
   acordia:
+    family: evidence-forensics
     grid_row: log-artefact-interpretation
     grid_deep_in: ['T&N', Def, Fus]
     grid_working_in: [Core]

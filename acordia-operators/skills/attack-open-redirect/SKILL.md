@@ -2,6 +2,8 @@
 name: attack-open-redirect
 description: Use when a target has a URL parameter that triggers a server-side redirect (login, OAuth callback, logout) and you need to test whether it can be pointed at an attacker-controlled domain.
 metadata:
+  acordia:
+    family: web-attack
   cyberstrike:
     source: .cyberstrike/skill/attack-open-redirect/SKILL.md
     commit: 359655518

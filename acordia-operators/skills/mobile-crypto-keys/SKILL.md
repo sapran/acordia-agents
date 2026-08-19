@@ -1,6 +1,9 @@
 ---
 name: mobile-crypto-keys
 description: Judge a mobile app's cryptography and recover its key material — weak primitives and modes in decompiled code, hardcoded and predictably derived keys, Keystore and Keychain protection classes, and live key capture by hooking Cipher and CommonCrypto. Reach for it once ciphertext or a protected blob is in hand and the question is which algorithm produced it and where the key lives.
+metadata:
+  acordia:
+    family: mobile
 ---
 
 # Mobile Cryptography and Key Material

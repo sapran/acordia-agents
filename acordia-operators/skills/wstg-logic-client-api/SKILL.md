@@ -2,6 +2,8 @@
 name: wstg-logic-client-api
 description: Use when testing a web target's business logic flows, client-side JavaScript behavior, and API endpoints for abuse — WSTG-BUSL, WSTG-CLNT, WSTG-APIT.
 metadata:
+  acordia:
+    family: web-methodology
   cyberstrike:
     source: .cyberstrike/skill/WEB/OWASP_WSTG_4.2/wstg-logic-client-api/SKILL.md
     commit: 359655518
@@ -49,27 +51,7 @@ curl -X POST https://TARGET/checkout -d '{"step":3,"complete":true}'
 
 ### Rate Limiting & Function Abuse
 
-```bash
-# Test rate limits
-for i in $(seq 1 100); do
-  curl -s -o /dev/null -w "%{http_code}\n" \
-    -X POST https://TARGET/api/send-otp -d '{"phone":"1234567890"}'
-done
-
-# Race condition (send concurrent requests)
-# Multiple redemptions of single-use code
-for i in $(seq 1 10); do
-  curl -s -X POST https://TARGET/api/redeem \
-    -d '{"code":"SINGLE_USE"}' &
-done
-wait
-
-# Vote/like stuffing
-for i in $(seq 1 50); do
-  curl -s -X POST https://TARGET/api/vote -d '{"post_id":1}' \
-    -H "Cookie: session=TOKEN"
-done
-```
+Throttling limits and their bypasses → see `attack-rate-limit-bypass`. Concurrent abuse of a one-shot action — duplicate redemption, double-spend → see `attack-race-condition`.
 
 ### File Upload Abuse
 
@@ -196,27 +178,7 @@ for (let i = 0; i < sessionStorage.length; i++) {
 
 ## CORS Misconfiguration Testing
 
-```bash
-# Test 1: Reflected origin
-curl -sI https://TARGET/api/data -H "Origin: https://evil.com" | grep -i "access-control"
-# Vulnerable if: Access-Control-Allow-Origin: https://evil.com
-# AND: Access-Control-Allow-Credentials: true
-
-# Test 2: Null origin
-curl -sI https://TARGET/api/data -H "Origin: null" | grep -i "access-control"
-# Vulnerable if: Access-Control-Allow-Origin: null
-
-# Test 3: Subdomain match bypass
-curl -sI https://TARGET/api/data -H "Origin: https://evil.TARGET" | grep -i "access-control"
-
-# Test 4: Prefix/suffix bypass
-curl -sI https://TARGET/api/data -H "Origin: https://TARGETevil.com" | grep -i "access-control"
-curl -sI https://TARGET/api/data -H "Origin: https://evil-TARGET" | grep -i "access-control"
-
-# Test 5: Wildcard with credentials
-# Access-Control-Allow-Origin: * WITH Access-Control-Allow-Credentials: true
-# → Browser blocks, but still a misconfiguration
-```
+Origin reflection, `null` origin, subdomain, prefix and suffix match bypasses, and the wildcard-with-credentials case → see `attack-cors`.
 
 ## API Security Testing
 
@@ -246,49 +208,11 @@ curl -s -H "Accept: application/vnd.api.v1+json" https://TARGET/api/users
 
 ### GraphQL Testing
 
-```bash
-# Introspection query
-curl -s -X POST https://TARGET/graphql \
-  -H "Content-Type: application/json" \
-  -d '{"query":"{ __schema { types { name fields { name type { name } } } } }"}'
-
-# Full introspection (save for analysis)
-curl -s -X POST https://TARGET/graphql \
-  -H "Content-Type: application/json" \
-  -d '{"query":"{ __schema { queryType { name } mutationType { name } types { name kind fields { name args { name type { name } } type { name kind ofType { name } } } } } }"}' | jq . > schema.json
-
-# Batch query (test for DoS)
-curl -s -X POST https://TARGET/graphql \
-  -H "Content-Type: application/json" \
-  -d '[{"query":"{ user(id:1) { name } }"},{"query":"{ user(id:2) { name } }"}]'
-
-# Deep nesting (DoS)
-curl -s -X POST https://TARGET/graphql \
-  -H "Content-Type: application/json" \
-  -d '{"query":"{ user { friends { friends { friends { friends { name } } } } } }"}'
-
-# Common endpoints
-# /graphql, /graphiql, /v1/graphql, /api/graphql, /query
-```
+Introspection, schema extraction, batch and deep-nesting DoS, authorization bypass and endpoint discovery → see `attack-graphql`.
 
 ### WebSocket Testing
 
-```bash
-# Connect and test
-wscat -c "wss://TARGET/ws"
-# or
-websocat wss://TARGET/ws
-
-# Test injection in messages
-# Send: {"action":"getUser","id":"1 OR 1=1"}
-# Send: {"msg":"<script>alert(1)</script>"}
-
-# Check for:
-# - No origin validation (CSWSH - Cross-Site WebSocket Hijacking)
-# - No authentication after upgrade
-# - Injection in message handling
-# - Sensitive data in messages without encryption (ws:// vs wss://)
-```
+Origin validation and CSWSH, post-upgrade authentication, message injection and cleartext transport → see `attack-websocket`.
 
 ### Mass Assignment in APIs
 

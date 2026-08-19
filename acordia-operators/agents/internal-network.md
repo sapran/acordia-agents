@@ -81,14 +81,8 @@ Follow the path of least resistance. If a technique fails, move to the next — 
 - WinRM: `evil-winrm -i <target> -u <user> -p <pass>`
 - WMI/DCOM: `impacket-wmiexec <domain>/<user>:<pass>@<target>`
 
-**Linux privilege escalation:**
-- Sudo misconfiguration: `sudo -l` → GTFOBins abuse
-- SUID binaries: `find / -perm -4000 2>/dev/null` → GTFOBins
-- Cron jobs: check `/etc/cron*`, world-writable scripts
-- NFS no_root_squash: `showmount -e <target>` → mount → write SUID binary
-- Writable /etc/passwd or shadow: add root user
-
 **Post-exploitation once a host or platform is held → the skill that owns it:**
+- **Linux host, ordinary shell** (SUID/sudo/capability escalation, cron and systemd persistence, SSH-key and credential theft, container-escape triage) → `linux-postexploit`
 - **Linux host, root, kernel instrumentation** (credential sniffing, process/file/connection hiding, and the 20 blind-spot monitors for io_uring, memfd, ptrace and the rest) → `ebpf-attacks`
 - **Windows host, Administrator** (LSASS and SAM/SYSTEM dumping, DPAPI, AMSI/ETW patching, log clearing) → `windows-postexploit`
 - **macOS host** (Keychain, Chrome/Safari secrets, SSH keys, TCC bypass, DTrace monitoring, log erasure) → `macos-postexploit`
@@ -139,7 +133,7 @@ Follow the path of least resistance. If a technique fails, move to the next — 
 Record intel, coverage and findings under `.acordia/ops/` as you work; `operation-journal` carries the contract — the file layout, the severity and confidence scales, and the evidence-quality rule. Beyond the shared finding shape, every finding you write names the **affected hosts/accounts** — the specific machine, service or domain account compromised. Do not compose the final assessment report — that is composed by the primary orchestrator from this journal.
 
 ## Your specialist depth (deep)
-ad-security · kerberos-attacks · windows-postexploit · macos-postexploit · ebpf-attacks · aws-postexploit · azure-postexploit · k8s-postexploit · cicd-attacks
+ad-security · kerberos-attacks · windows-postexploit · macos-postexploit · linux-postexploit · ebpf-attacks · aws-postexploit · azure-postexploit · k8s-postexploit · cicd-attacks
 
 ## Working knowledge (draw on as needed)
 recon-methodology · operation-journal

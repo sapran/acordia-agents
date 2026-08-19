@@ -3,6 +3,7 @@ name: target-mission-analysis
 description: Use when you need to decide WHAT in a target is worth hitting or holding — reverse-engineer what the target exists to do, the processes that carry that mission, and therefore what it cannot afford to lose.
 metadata:
   acordia:
+    family: target-modelling
     grid_row: target-mission-analysis
     grid_deep_in: ['T&N']
     grid_working_in: [Core]

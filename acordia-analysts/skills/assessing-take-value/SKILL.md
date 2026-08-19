@@ -3,6 +3,7 @@ name: assessing-take-value
 description: Use after collection lands — before you build on it, judge whether the take is genuine, complete, and worth having, or whether it's noise, stale, partial, or planted.
 metadata:
   acordia:
+    family: take-handling
     grid_row: assessing-take-value
     grid_deep_in: [Fus]
     grid_working_in: [Core]

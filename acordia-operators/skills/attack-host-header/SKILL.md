@@ -2,6 +2,8 @@
 name: attack-host-header
 description: Use when a target application trusts the Host header (or X-Forwarded-Host) for routing, links, or cache decisions and you need to test for password-reset poisoning, cache poisoning, or internal routing bypass.
 metadata:
+  acordia:
+    family: web-attack
   cyberstrike:
     source: .cyberstrike/skill/attack-host-header/SKILL.md
     commit: 359655518

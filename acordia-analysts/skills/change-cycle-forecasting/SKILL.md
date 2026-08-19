@@ -3,6 +3,7 @@ name: change-cycle-forecasting
 description: Use when an operation's window depends on target change — forecast if and when the target will patch, upgrade, migrate, or rotate, so you can time access before it closes or exploit the churn while it's open.
 metadata:
   acordia:
+    family: target-modelling
     grid_row: change-cycle-forecasting
     grid_deep_in: ['T&N']
     grid_working_in: []

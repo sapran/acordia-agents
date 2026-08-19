@@ -3,6 +3,7 @@ name: cloud-controlplane-analysis
 description: Use when the target lives in AWS/Azure/GCP — analyze the cloud control plane, services, and the trust between them to find where API-level access, roles, or misconfiguration yield control.
 metadata:
   acordia:
+    family: target-modelling
     grid_row: cloud-controlplane-analysis
     grid_deep_in: ['T&N']
     grid_working_in: [Def, Fus]

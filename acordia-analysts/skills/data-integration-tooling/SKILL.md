@@ -3,6 +3,7 @@ name: data-integration-tooling
 description: Use when the take is too big or too mixed to correlate by hand — build the data-handling pipeline that ingests, normalises, and joins large heterogeneous datasets so fusion can happen at scale.
 metadata:
   acordia:
+    family: take-handling
     grid_row: data-integration-tooling
     grid_deep_in: [Fus]
     grid_working_in: [Core]

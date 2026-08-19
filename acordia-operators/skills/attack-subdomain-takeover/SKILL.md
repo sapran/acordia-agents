@@ -2,6 +2,8 @@
 name: attack-subdomain-takeover
 description: Apply when enumerating a target's subdomains turns up a CNAME pointing at a third-party cloud service, to determine whether the referenced resource is unclaimed and can be seized.
 metadata:
+  acordia:
+    family: web-attack
   cyberstrike:
     source: .cyberstrike/skill/attack-subdomain-takeover/SKILL.md
     commit: 359655518
@@ -59,6 +61,9 @@ while read -r sub; do
     *feedpress.me*)      echo "$body" | grep -qi "The feed has not been found" && echo "TAKEOVER $sub -> $cname (Feedpress)" ;;
   esac
 done < subdomains.txt
+
+# subjack, where installed, fingerprints the same services straight from a list
+subjack -w subs.txt -t 100 -o takeover.txt
 ```
 
 Checks 20 cloud services:
@@ -123,6 +128,7 @@ After confirming a dangling CNAME:
 - `dig` + fingerprint loop (Phase 2) — automated CNAME + fingerprint checker
 - `curl` bucket-probe loop (Phase 4) — S3/Azure/GCP enumeration
 - `subfinder`, `puredns` — subdomain enumeration
+- `subjack -w subs.txt -t 100 -o takeover.txt` (external) — bulk takeover fingerprinting
 
 ## References
 

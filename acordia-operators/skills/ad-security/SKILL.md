@@ -2,6 +2,8 @@
 name: ad-security
 description: Use when an Active Directory domain is in scope and you need to enumerate it, abuse its ACLs, certificate services and trusts, and turn domain access into control.
 metadata:
+  acordia:
+    family: directory-attack
   cyberstrike:
     source: .cyberstrike/skill/ad-security/SKILL.md
     commit: 359655518

@@ -2,6 +2,8 @@
 name: recon-methodology
 description: Use at the start of an engagement when you need a structured reconnaissance pass — passive collection, asset discovery, and technology profiling before any active testing.
 metadata:
+  acordia:
+    family: web-methodology
   cyberstrike:
     source: .cyberstrike/skill/recon-methodology/SKILL.md
     commit: 359655518

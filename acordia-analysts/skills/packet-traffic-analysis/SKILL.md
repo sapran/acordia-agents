@@ -3,6 +3,7 @@ name: packet-traffic-analysis
 description: Use when you have pcap or netflow from a target and need to read the wire — infer terrain, live services, trust relationships, and behavioural opportunity from what actually moves across the network.
 metadata:
   acordia:
+    family: evidence-forensics
     grid_row: packet-traffic-analysis
     grid_deep_in: ['T&N', Def]
     grid_working_in: [Core]

@@ -2,6 +2,8 @@
 name: kerberos-attacks
 description: Use when a Kerberos realm is in reach and you need ticket-based credential access — Kerberoasting, AS-REP roasting, delegation abuse, and ticket forgery.
 metadata:
+  acordia:
+    family: directory-attack
   cyberstrike:
     source: .cyberstrike/skill/kerberos-attacks/SKILL.md
     commit: 359655518

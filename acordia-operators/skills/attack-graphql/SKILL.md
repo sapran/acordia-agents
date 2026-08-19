@@ -2,6 +2,8 @@
 name: attack-graphql
 description: Use when a target exposes a GraphQL endpoint and you need to test for schema exposure, query-complexity DoS, batch abuse, or mutation/query authorization bypass.
 metadata:
+  acordia:
+    family: web-attack
   cyberstrike:
     source: .cyberstrike/skill/attack-graphql/SKILL.md
     commit: 359655518
@@ -51,6 +53,14 @@ print(json.dumps([{'query': '{ __typename }'} for _ in range(100)]))
 curl -s -X POST https://TARGET/graphql \
   -H "Content-Type: application/json" \
   -d '{"query":"{ __schema { types { name fields { name type { name } } } mutationType { fields { name args { name type { name } } } } queryType { fields { name } } } }"}'
+
+# Deeper extraction including type kinds and list/non-null wrappers, saved for analysis
+curl -s -X POST https://TARGET/graphql \
+  -H "Content-Type: application/json" \
+  -d '{"query":"{ __schema { queryType { name } mutationType { name } types { name kind fields { name args { name type { name } } type { name kind ofType { name } } } } } }"}' | jq . > schema.json
+
+# Common endpoints, if /graphql returns 404
+# /graphql, /graphiql, /v1/graphql, /api/graphql, /query
 ```
 
 If introspection is enabled, map all types, queries, mutations, and subscriptions.

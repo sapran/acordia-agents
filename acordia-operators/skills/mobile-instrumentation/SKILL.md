@@ -1,6 +1,9 @@
 ---
 name: mobile-instrumentation
 description: Operate the mobile testing toolchain itself — adb, frida, objection, drozer, jadx, apktool, MobSF and the iOS binary tools — to decompile a package, spawn or attach to a process, enumerate and hook classes, walk the heap and dump memory. Reach for it for the mechanics of getting a decompile or a hook in place; the sibling mobile-* skills say what to look for once you have one.
+metadata:
+  acordia:
+    family: mobile
 ---
 
 # Mobile Instrumentation

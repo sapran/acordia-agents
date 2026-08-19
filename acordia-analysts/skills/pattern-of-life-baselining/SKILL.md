@@ -3,6 +3,7 @@ name: pattern-of-life-baselining
 description: Use when you need to know the target's "normal" — profile the routine rhythms of users, admins, and systems so anomalies, quiet windows, and blend-in opportunities become visible.
 metadata:
   acordia:
+    family: target-modelling
     grid_row: pattern-of-life-baselining
     grid_deep_in: ['T&N']
     grid_working_in: [Core]

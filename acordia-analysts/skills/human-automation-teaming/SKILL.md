@@ -3,6 +3,7 @@ name: human-automation-teaming
 description: Use when deciding what the tooling should do versus what the analyst must judge — before you let automation drive a targeting, triage, or movement decision on the operation.
 metadata:
   acordia:
+    family: analytic-spine
     grid_row: human-automation-teaming
     grid_deep_in: [Core]
     grid_working_in: []

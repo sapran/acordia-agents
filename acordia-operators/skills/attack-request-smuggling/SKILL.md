@@ -2,6 +2,8 @@
 name: attack-request-smuggling
 description: Apply when a target sits behind a front-end proxy or CDN and a distinct back-end server whose Content-Length/Transfer-Encoding handling might disagree, enabling request desync, cache poisoning, or access-control bypass.
 metadata:
+  acordia:
+    family: web-attack
   cyberstrike:
     source: .cyberstrike/skill/attack-request-smuggling/SKILL.md
     commit: 359655518

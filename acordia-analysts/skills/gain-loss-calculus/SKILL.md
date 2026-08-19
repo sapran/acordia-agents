@@ -3,6 +3,7 @@ name: gain-loss-calculus
 description: Use when deciding whether the next move is worth it — weigh what the operation stands to gain against what it exposes, burns, or risks, and feed the answer back into the plan.
 metadata:
   acordia:
+    family: analytic-spine
     grid_row: gain-loss-calculus
     grid_deep_in: [Core]
     grid_working_in: []

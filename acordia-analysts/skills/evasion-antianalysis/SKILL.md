@@ -3,6 +3,7 @@ name: evasion-antianalysis
 description: Use when you know what the defender can see and must decide how to shape an action to avoid detection and frustrate later analysis — timing, obfuscation, living-off-the-land, and anti-forensic choices.
 metadata:
   acordia:
+    family: defender-reading
     grid_row: evasion-antianalysis
     grid_deep_in: [Def]
     grid_working_in: ['T&N']

@@ -3,6 +3,7 @@ name: multi-source-fusion
 description: Use when you hold fragments from several sources — your own implant take, passive collection, OSINT, and non-technical context — and need one coherent target picture instead of a pile of disconnected observations.
 metadata:
   acordia:
+    family: take-handling
     grid_row: multi-source-fusion
     grid_deep_in: [Fus]
     grid_working_in: [Core]

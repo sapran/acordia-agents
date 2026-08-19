@@ -3,6 +3,7 @@ name: own-footprint-analysis
 description: Use to enumerate every indicator your own operation emits — host, network, identity, and infrastructure artifacts — so you know exactly what a defender or responder could find and attribute.
 metadata:
   acordia:
+    family: defender-reading
     grid_row: own-footprint-analysis
     grid_deep_in: [Def]
     grid_working_in: []

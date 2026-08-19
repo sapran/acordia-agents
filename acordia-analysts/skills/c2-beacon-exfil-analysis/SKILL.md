@@ -3,6 +3,7 @@ name: c2-beacon-exfil-analysis
 description: Use to analyze your own command-and-control, beaconing, and exfiltration traffic for the signatures a network defender could detect — before the channel gets you caught.
 metadata:
   acordia:
+    family: defender-reading
     grid_row: c2-beacon-exfil-analysis
     grid_deep_in: [Def]
     grid_working_in: [Fus]

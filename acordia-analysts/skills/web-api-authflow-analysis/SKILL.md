@@ -3,6 +3,7 @@ name: web-api-authflow-analysis
 description: Use when a web app or API is the target surface — reason about its application logic and authentication/authorization flows to find where identity, trust, or state can be broken.
 metadata:
   acordia:
+    family: target-modelling
     grid_row: web-api-authflow-analysis
     grid_deep_in: ['T&N']
     grid_working_in: [Def]

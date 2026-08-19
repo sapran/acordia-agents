@@ -3,6 +3,7 @@ name: disk-memory-forensics
 description: Use to perform forensic reads of disk and memory — to self-check what evidence your operation left on a host, or to understand a target system's state and history the way a responder would.
 metadata:
   acordia:
+    family: evidence-forensics
     grid_row: disk-memory-forensics
     grid_deep_in: [Def]
     grid_working_in: ['T&N']

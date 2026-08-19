@@ -2,6 +2,8 @@
 name: ebpf-attacks
 description: Use when a Linux target runs a modern kernel and you need to reason about eBPF-based capability — kernel-level visibility, hooking, and the detection surface it exposes.
 metadata:
+  acordia:
+    family: host-postexploit
   cyberstrike:
     source: .cyberstrike/skill/ebpf-attacks/SKILL.md
     commit: 359655518

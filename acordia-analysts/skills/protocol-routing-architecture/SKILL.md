@@ -3,6 +3,7 @@ name: protocol-routing-architecture
 description: Use when you need the shape of the target network — reconstruct how it is built, routed, and segmented so you can find the paths between where you are and where you want to be.
 metadata:
   acordia:
+    family: target-modelling
     grid_row: protocol-routing-architecture
     grid_deep_in: ['T&N']
     grid_working_in: [Def]

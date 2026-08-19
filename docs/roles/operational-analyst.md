@@ -71,7 +71,7 @@ Reference grid for the map above. **●** deep / defining · **○** working kno
 | Deception detection / anti-manipulation | ● | | ● | |
 | Calibrated confidence | ● | | | ○ |
 | Method / timing / risk decision | ● | ○ | ○ | ○ |
-| Outcome judgement — end achieved (effect or intel) & what now | ● | ○ | | ○ |
+| Outcome judgement — end achieved (effect or intel), did the system actually change, & what now | ● | ● | | ○ |
 | Gain/loss calculus & feedback into re-planning | ● | | | |
 | Briefing & written reporting | ● | | | ○ |
 | Human–automation teaming | ● | | | |
@@ -79,7 +79,6 @@ Reference grid for the map above. **●** deep / defining · **○** working kno
 | Target business/mission analysis (crown-jewels / mission-thread) | ○ | ● | | |
 | Pattern-of-life / behavioural baselining | ○ | ● | | |
 | Change-cycle forecasting ("when will they patch?") | | ● | | |
-| Effect-on-target verification (did the system actually change?) | ○ | ● | | |
 | Packet & traffic analysis (pcap/netflow) | ○ | ● | ● | |
 | Protocol, routing & network architecture | | ● | ○ | |
 | OS & host internals (Win/Lin/macOS) | ○ | ● | ● | |

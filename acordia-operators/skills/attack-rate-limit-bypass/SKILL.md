@@ -2,6 +2,8 @@
 name: attack-rate-limit-bypass
 description: Apply when a login, OTP, password-reset, or other rate-limited endpoint needs its throttling tested for IP-rotation, header, case, or method bypasses before brute-force or credential-stuffing risk can be ruled out.
 metadata:
+  acordia:
+    family: web-attack
   cyberstrike:
     source: .cyberstrike/skill/attack-rate-limit-bypass/SKILL.md
     commit: 359655518
@@ -14,6 +16,25 @@ metadata:
 Bypass rate limiting mechanisms to enable brute-force attacks, credential stuffing, or abuse of rate-limited functionality.
 
 ## Testing Methodology
+
+### Phase 0: Baseline the Limit & Function Abuse
+
+Establish where the unbypassed limit actually falls before claiming a bypass, and test
+whether a rate-limited function can simply be repeated with one session.
+
+```bash
+# Measure the limit — at which request does the 429 begin?
+for i in $(seq 1 100); do
+  curl -s -o /dev/null -w "%{http_code}\n" \
+    -X POST https://TARGET/api/send-otp -d '{"phone":"1234567890"}'
+done
+
+# Vote/like stuffing — repeat a once-per-user action with a single session
+for i in $(seq 1 50); do
+  curl -s -X POST https://TARGET/api/vote -d '{"post_id":1}' \
+    -H "Cookie: session=TOKEN"
+done
+```
 
 ### Phase 1: Automated Bypass Testing
 

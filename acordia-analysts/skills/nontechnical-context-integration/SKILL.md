@@ -3,6 +3,7 @@ name: nontechnical-context-integration
 description: Use when the technical picture alone doesn't explain the target — fold in finance, geopolitics, org structure, and human factors that drive who acts, when, and why on the network.
 metadata:
   acordia:
+    family: take-handling
     grid_row: nontechnical-context-integration
     grid_deep_in: [Fus]
     grid_working_in: []

@@ -1,6 +1,9 @@
 ---
 name: mobile-platform-ipc
 description: Attack a mobile app through the platform's own component surface — exported activities, services, receivers and content providers, deep links and custom URL schemes, and unsafe WebView bridge settings. Reach for it when the entry point under test is another app or a URL the OS hands to the target, rather than the target's own user interface.
+metadata:
+  acordia:
+    family: mobile
 ---
 
 # Mobile Platform Interaction and IPC

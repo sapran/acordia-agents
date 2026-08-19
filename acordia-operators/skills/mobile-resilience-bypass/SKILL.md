@@ -1,6 +1,9 @@
 ---
 name: mobile-resilience-bypass
 description: Defeat a mobile app's self-protection so testing can begin — root and jailbreak detection, Frida and debugger detection, emulator checks, signature and integrity verification, and obfuscated control flow — then patch or repackage to make the bypass durable. Reach for it when the app refuses to launch, crashes on attach, or silently degrades once it decides the device is untrusted.
+metadata:
+  acordia:
+    family: mobile
 ---
 
 # Mobile Resilience Bypass

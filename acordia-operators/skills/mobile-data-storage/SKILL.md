@@ -1,6 +1,9 @@
 ---
 name: mobile-data-storage
 description: Recover what a mobile app has written into its own sandbox — SharedPreferences and plists, SQLite databases, cached and backed-up files, log spill, clipboard and screenshot residue — on Android and iOS. Reach for it once you can read or pull the app container and the question is which sensitive data persists unprotected on disk.
+metadata:
+  acordia:
+    family: mobile
 ---
 
 # Mobile Data Storage

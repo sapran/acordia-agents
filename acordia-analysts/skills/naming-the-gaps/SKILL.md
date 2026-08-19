@@ -3,6 +3,7 @@ name: naming-the-gaps
 description: Use when a target picture feels good enough to act on and you need to force-surface what you still do not know before committing collection or an operation to it.
 metadata:
   acordia:
+    family: analytic-spine
     grid_row: naming-the-gaps
     grid_deep_in: [Core]
     grid_working_in: [Fus]

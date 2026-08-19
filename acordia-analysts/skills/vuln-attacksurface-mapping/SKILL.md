@@ -3,6 +3,7 @@ name: vuln-attacksurface-mapping
 description: Use when you need to consolidate everything reachable into a ranked attack surface — where the target is weakest, prioritised by exploitability and by what it actually gets you toward the mission.
 metadata:
   acordia:
+    family: target-modelling
     grid_row: vuln-attacksurface-mapping
     grid_deep_in: ['T&N']
     grid_working_in: [Core, Def]
