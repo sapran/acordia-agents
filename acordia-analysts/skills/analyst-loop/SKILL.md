@@ -5,7 +5,7 @@ metadata:
   acordia:
     grid_row: null
     procedural: true
-    source: openspec/changes/2026-07-22-analyst-loop-skill/proposal.md
+    source: openspec/changes/archive/2026-07-22-analyst-loop-skill/proposal.md
 ---
 
 # Analyst Loop

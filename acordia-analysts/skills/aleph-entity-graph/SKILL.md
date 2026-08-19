@@ -3,9 +3,11 @@ name: aleph-entity-graph
 description: Use when the take lives in an Aleph instance — search, pivot and expand the FollowTheMoney entity graph across collections instead of reading documents one by one.
 metadata:
   acordia:
-    cross_cutting: true
+    grid_row: null
     procedural: true
+    cross_cutting: true
     composes: [multi-source-fusion, data-integration-tooling, exhaustive-data-processing, assessing-take-value, analytic-tooling-scripting]
+    source: openspec/changes/archive/2026-07-31-aleph-data-access/proposal.md
 ---
 
 # Aleph Entity Graph
