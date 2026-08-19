@@ -254,6 +254,8 @@ The skill SHALL declare its cross-cutting/procedural nature and SHALL NOT be add
 - **WHEN** `acordia-analysts/agents/operational-analyst.md` is inspected
 - **THEN** it names `analyst-loop` in one sentence within its existing loop-describing paragraph
 
+#### Scenario: Legs do not reference the loop skill
+
 - **WHEN** any leg agent (`target-network-analyst`, `defender-detection-analyst`, `fusion-analyst`) is inspected
 - **THEN** it does not name `analyst-loop`
 
