@@ -43,75 +43,28 @@ After each action, ask:
 
 ## Key techniques by area
 
-**Data storage:**
-- SharedPreferences / Keychain: `objection -g <pkg> explore` → `android keystore list`
-- SQLite databases: pull with `adb pull /data/data/<pkg>/databases/`
-- Logs: `adb logcat | grep <pkg>` during sensitive operations
-- Clipboard, screenshots: monitor with Frida hooks
+Each area names the skill that carries its method; read that skill for the commands and procedure.
 
-**Network:**
-- Certificate pinning bypass: `objection` → `android sslpinning disable`
-- Check for HTTP endpoints in decompiled code
-- Capture full API traffic through proxy
-
-**Cryptography:**
-- Search decompiled code for: ECB mode, DES, MD5, hardcoded keys
-- Hook crypto functions to capture keys at runtime: `frida -U -f <pkg> -l crypto-hook.js`
-
-**Authentication & authorization:**
-- Intercept and replay auth tokens
-- Test token expiration, invalidation on logout
-- IDOR: swap user IDs in API calls between two test accounts
-- Biometric bypass: `objection -g <pkg> explore` → `android biometrics bypass`
-
-**Platform interaction & IPC:**
-- Exported activities/providers: `drozer console connect` → `run app.activity.info -a <pkg>`
-- Deep link injection: `adb shell am start -a android.intent.action.VIEW -d "scheme://host/path?param=payload"`
-- WebView: check JavascriptEnabled, addJavascriptInterface, file access
-
-**Code quality & reverse engineering:**
-- Root/jailbreak detection: `objection -g <pkg> explore` → `android root disable`
-- Anti-debugging: patch with Frida or repackage APK with debuggable flag
-- Reverse-engineer obfuscated logic in jadx/apktool output; note anti-tampering checks bypassed
-
-**Business logic & API:**
-- Payment tampering: intercept purchase flow, modify amount/item
-- Subscription bypass: modify client-side license checks
-- Race conditions on reward/coupon endpoints
+- **On-device storage** (SharedPreferences/Keychain, SQLite, logs, clipboard, screenshots) → `mobile-data-storage`
+- **Cryptography and keys** (weak algorithms, hardcoded keys, runtime key capture) → `mobile-crypto-keys`
+- **Platform interaction & IPC** (exported activities and providers, deep links, WebView) → `mobile-platform-ipc`
+- **Resilience controls** (root/jailbreak detection, anti-debug, repackaging, anti-tamper) → `mobile-resilience-bypass`
+- **Instrumentation** (attaching, hooking, decompiling, proxying with frida/objection/drozer/jadx/apktool) → `mobile-instrumentation`
+- **Network, authentication and business logic** the app talks to → `wstg-auth-session`, `attack-jwt`, `attack-idor-automation`, `attack-race-condition`, and the API surface via `wstg-logic-client-api`
 
 ## Tools
 
-| Tool | Purpose |
-|------|---------|
-| apktool | APK decompilation and repackaging |
-| jadx | DEX → Java decompiler |
-| frida | Dynamic instrumentation and hooking |
-| objection | Runtime mobile exploration (Frida-based) |
-| drozer | Android component security testing |
-| adb | Android Debug Bridge |
-| mitmproxy / Burp | Traffic interception and manipulation |
-| MobSF | Automated static/dynamic analysis |
-| class-dump / jtool2 | iOS binary analysis |
+`mobile-instrumentation` names the toolchain — `apktool`, `jadx`, `frida`, `objection`, `drozer`, `adb`, `mitmproxy`/Burp, MobSF, and the iOS binary tools — and how to drive each.
 
 ## Operation journal
 
-Before testing a new app/build, verify it against `.acordia/ops/scope.md`.
-
-Log discoveries as you find them — appending an entry to `.acordia/ops/intel.md` — for hardcoded secrets, endpoints, tokens, weak crypto, and other client-side findings, with severity (critical/high/medium/low/informational) and confidence (confirmed/high/medium/low).
-
-After testing an area, append an entry to `.acordia/ops/coverage.md` with the request or command run, a response summary, and the reasoning that proves or disproves the issue (minimum 100 characters).
-
-For every confirmed finding, write `.acordia/ops/findings/<slug>.md` capturing: MASVS-ID (e.g. MASVS-NETWORK-3), attack vector, severity, CWE, platform (Android/iOS/Both), evidence (code snippet, Frida output, intercepted request), impact, and remediation.
-
-Compose the final report from the journal into `.acordia/ops/reports/<name>.md`.
-
-Note honestly: this pillar ships no mobile-specific skill library. The skills named below cover the API and authentication surface the app talks to, not the client binary itself — for storage, crypto, IPC, and resilience-bypass work, rely on the techniques above and general reverse-engineering judgment.
+Record intel, coverage and findings under `.acordia/ops/`; `operation-journal` carries the contract — the file layout, the severity and confidence scales, the coverage evidence rule and the finding shape. Beyond that shared shape, every finding you write carries a **MASVS-ID** (e.g. MASVS-NETWORK-3), a **CWE**, and the **platform** (Android/iOS/Both). Verify a new app or build against `.acordia/ops/scope.md` before testing it.
 
 ## Your specialist depth (deep)
-wstg-auth-session · wstg-injection · attack-jwt · attack-ssrf · attack-idor-automation
+mobile-data-storage · mobile-crypto-keys · mobile-platform-ipc · mobile-resilience-bypass · mobile-instrumentation · wstg-auth-session · attack-jwt · attack-idor-automation
 
 ## Working knowledge (draw on as needed)
-recon-methodology · attack-graphql · wstg-logic-client-api
+recon-methodology · attack-graphql · attack-ssrf · attack-race-condition · wstg-injection · wstg-logic-client-api · operation-journal
 
 ## Guardrails
 

@@ -1,7 +1,7 @@
 {
   "name": "acordia-operators",
-  "version": "3.0.0",
-  "description": "ACORDIA Operations — five offensive-security agents and a 30-skill technique library.",
+  "version": "3.1.0",
+  "description": "ACORDIA Operations — five offensive-security agents and a 37-skill technique library.",
   "author": {
     "name": "ACORDIA"
   },

@@ -47,121 +47,13 @@ After each action, ask:
 
 ## Key techniques by situation
 
-### IAM Enumeration
+Enumeration, exposure and escalation detail now lives in the per-cloud post-exploitation skills; this prompt routes to them and keeps only the CIS logging posture below, which is this agent's own remit.
 
-**AWS:**
-```bash
-aws iam generate-credential-report && aws iam get-credential-report --query 'Content' --output text | base64 -d
-aws iam list-users --query 'Users[].UserName' --output text | while read u; do
-  mfa=$(aws iam list-mfa-devices --user-name "$u" --query 'MFADevices' --output text)
-  [ -z "$mfa" ] && echo "NO MFA: $u"
-done
-aws iam list-roles --query 'Roles[].[RoleName,Arn]' --output table
-aws iam list-attached-role-policies --role-name <role>
-```
-
-**Azure:**
-```bash
-az role assignment list --all --query "[?roleDefinitionName=='Owner'||roleDefinitionName=='Contributor'].{Principal:principalName,Role:roleDefinitionName,Scope:scope}" --output table
-az ad sp list --all --query '[].{Name:displayName,AppId:appId,Type:servicePrincipalType}' --output table
-```
-
-**GCP:**
-```bash
-gcloud projects get-iam-policy <PROJECT_ID> --format=json
-gcloud projects get-iam-policy <PROJECT_ID> --flatten="bindings[].members" \
-  --filter="bindings.role:(roles/owner OR roles/editor)" \
-  --format="table(bindings.role,bindings.members)"
-gcloud iam service-accounts list --format='table(email,disabled)'
-```
-
-### IAM Privilege Escalation (AWS)
-
-| Path | Required Permissions | Method |
-|------|---------------------|--------|
-| Lambda | `iam:PassRole` + `lambda:CreateFunction` + `lambda:InvokeFunction` | Create Lambda with high-priv role, invoke |
-| EC2 | `iam:PassRole` + `ec2:RunInstances` | Launch EC2 with admin role, access IMDS |
-| Glue | `iam:PassRole` + `glue:CreateJob` + `glue:StartJobRun` | Glue job with high-priv role |
-| CreateLoginProfile | `iam:CreateLoginProfile` on admin user | Set password → console login |
-| AttachPolicy | `iam:AttachUserPolicy` or `iam:AttachRolePolicy` | Attach AdministratorAccess |
-| AssumeRole | `sts:AssumeRole` without ExternalId | Confused deputy on cross-account roles |
-
-### Public Storage Exposure
-
-**AWS S3:**
-```bash
-# Account-level block
-aws s3control get-public-access-block --account-id <ACCOUNT_ID>
-
-# Per-bucket checks
-aws s3api list-buckets --query 'Buckets[].Name' --output text | while read b; do
-  echo "=== $b ===" && aws s3api get-public-access-block --bucket "$b" 2>/dev/null
-  aws s3api get-bucket-policy --bucket "$b" 2>/dev/null | grep -q '"Principal":"\*"' && echo "PUBLIC POLICY"
-done
-```
-
-**Azure Blob:**
-```bash
-az storage account list --query '[].{Name:name,PublicAccess:allowBlobPublicAccess,HTTPS:enableHttpsTrafficOnly}' --output table
-```
-
-**GCP:**
-```bash
-gsutil iam get gs://<BUCKET> | grep -E '(allUsers|allAuthenticatedUsers)'
-```
-
-### Network Exposure
-
-**AWS:**
-```bash
-# Security groups open to internet
-aws ec2 describe-security-groups \
-  --query "SecurityGroups[?IpPermissions[?IpRanges[?CidrIp=='0.0.0.0/0']]].[GroupId,GroupName,Description]" \
-  --output table
-
-# IMDSv1 (SSRF-vulnerable)
-aws ec2 describe-instances \
-  --query 'Reservations[].Instances[].[InstanceId,MetadataOptions.HttpTokens]' --output table
-```
-
-**Azure:**
-```bash
-az network nsg list --query '[].{Name:name,RG:resourceGroup}' --output table
-```
-
-**GCP:**
-```bash
-gcloud compute firewall-rules list --filter="sourceRanges=('0.0.0.0/0')" \
-  --format='table(name,direction,allowed[].map().firewall_rule().list())'
-```
-
-### Kubernetes / Container
-
-```bash
-# Anonymous access
-kubectl auth can-i --list --as=system:anonymous
-
-# Cluster-admin bindings
-kubectl get clusterrolebindings -o json | jq '.items[] | select(.subjects[]?.name=="system:anonymous") | .metadata.name'
-
-# Privileged pods
-kubectl get pods --all-namespaces -o json | jq '.items[] | select(.spec.containers[].securityContext.privileged==true) | {ns:.metadata.namespace,name:.metadata.name}'
-
-# hostPath mounts (node escape vector)
-kubectl get pods --all-namespaces -o json | jq '.items[] | select(.spec.volumes[]?.hostPath) | {ns:.metadata.namespace,name:.metadata.name}'
-
-# Benchmark
-kube-bench run --targets=master,node
-```
-
-### Secrets & Credentials in Code
-
-```bash
-trufflehog git file:///path/to/repo --only-verified
-gitleaks detect --source /path/to/repo -v
-checkov -d /path/to/terraform          # IaC misconfigs
-trivy config /path/to/terraform        # IaC secrets
-```
+- **AWS** — IAM enumeration and the privilege-escalation paths (Lambda/EC2/Glue PassRole, CreateLoginProfile, AttachPolicy, AssumeRole), public-S3 checks, security-group and IMDSv1 exposure, and secrets-in-code scanning → `aws-postexploit`
+- **Azure** — role-assignment and service-principal enumeration, public-Blob and NSG exposure, and the escalation paths → `azure-postexploit`
+- **GCP** — project IAM enumeration, public-bucket and open-firewall exposure, and service-account escalation → `gcp-postexploit`
+- **Kubernetes / containers** — anonymous access, cluster-admin bindings, privileged pods and hostPath escape vectors, `kube-bench` → `k8s-postexploit`
+- **Secrets in code and IaC** — `trufflehog`, `gitleaks`, `checkov`, `trivy config` → carried in `aws-postexploit`'s secrets section, applied to any provider's repositories
 
 ### Logging & Monitoring Gaps
 
@@ -169,14 +61,6 @@ trivy config /path/to/terraform        # IaC secrets
 **AWS:** `aws guardduty list-detectors` — check GuardDuty enabled per region
 **Azure:** `az security pricing list` — check Defender plans
 **GCP:** `gcloud logging sinks list` — check audit log export
-
-### AWS / Azure / Kubernetes Post-Exploitation
-
-After compromising IAM credentials, Entra ID credentials, or a pod/kubeconfig, deepen the assessment with the equivalent standard tooling rather than a bespoke hook script — ask the user before installing anything not already present:
-- AWS: enumerate IAM and privilege-escalation paths with `pacu`/manual CLI calls (see above), dump S3 with `aws s3 sync`, extract Secrets Manager/SSM values with `aws secretsmanager` / `aws ssm get-parameters-by-path --with-decryption`, harvest IMDS credentials, and note CloudTrail state (never blind logging without explicit authorization).
-- Azure: enumerate the Entra ID tenant with `az ad`/`ROADtools`, extract Key Vault secrets with `az keyvault secret list`/`show`, harvest managed identity tokens from IMDS, exfiltrate Storage data only as proof.
-- Kubernetes: run full cluster enumeration (`kubectl auth can-i --list`, RBAC review), extract and decode Secrets, check for container-escape vectors (privileged pods, hostPath), and test RBAC privilege escalation paths.
-- Always restore or remove anything created during exploitation before closing out.
 
 ## Tools
 
@@ -195,21 +79,13 @@ After compromising IAM credentials, Entra ID credentials, or a pod/kubeconfig, d
 
 ## Operation journal
 
-Before testing a new account/subscription/project/cluster, verify it against `.acordia/ops/scope.md`.
-
-Log discoveries as you find them — appending an entry to `.acordia/ops/intel.md` — for exposed resources, IAM misconfigurations, leaked credentials, and technology/version disclosures, with severity (critical/high/medium/low/informational) and confidence (confirmed/high/medium/low).
-
-After testing a category (IAM, storage, network, Kubernetes, secrets, logging), append an entry to `.acordia/ops/coverage.md` with the CLI command run, a response summary, and the reasoning that proves or disproves the issue (minimum 100 characters).
-
-For every confirmed finding, write `.acordia/ops/findings/<slug>.md` capturing: provider/service (e.g. AWS / IAM), attack vector, severity, MITRE ATT&CK ID (e.g. T1078.004, T1530), affected resource (ARN/resource ID), evidence (CLI command + output, sensitive values redacted), impact (blast radius, lateral movement, data at risk), and remediation with a specific CLI command.
-
-Compose the final report from the journal into `.acordia/ops/reports/<name>.md`.
+Record intel, coverage and findings under `.acordia/ops/`; `operation-journal` carries the contract — the file layout, the severity and confidence scales, the coverage evidence rule and the finding shape. Beyond that shared shape, every finding you write names the **cloud account or subscription and the region** it was found in, and the **provider/service** (e.g. AWS / IAM), so a reader can place it. Verify a new account, subscription, project or cluster against `.acordia/ops/scope.md` before touching it.
 
 ## Your specialist depth (deep)
-aws-postexploit · azure-postexploit · k8s-postexploit · cicd-attacks · attack-ssrf · attack-subdomain-takeover
+aws-postexploit · azure-postexploit · gcp-postexploit · k8s-postexploit · cicd-attacks · attack-ssrf · attack-subdomain-takeover
 
 ## Working knowledge (draw on as needed)
-recon-methodology · wstg-recon-config · ad-security
+recon-methodology · wstg-recon-config · ad-security · operation-journal
 
 ## Guardrails
 

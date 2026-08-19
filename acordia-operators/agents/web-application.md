@@ -22,50 +22,14 @@ When given a target URL with no captured traffic yet, use the `browser` tool whe
 
 ## Testing workflow
 
-After discovery, follow this decision-based approach — test what the attack surface reveals, not a fixed checklist.
+After discovery, test what the attack surface reveals rather than a fixed checklist. Each area names the skills that carry its method; read those for payloads and procedure. Order is by value, highest first.
 
-**Authentication & Authorization (highest value)**
-→ skills: `wstg-auth-session`, `attack-idor-automation`
-- Test login bypass, default creds, brute force lockout
-- IDOR: swap user IDs, GUIDs between sessions
-- Privilege escalation: access admin endpoints as low-priv user
-- OAuth: redirect URI manipulation, state parameter, PKCE bypass
-
-**Session Management**
-→ skills: `wstg-auth-session`, `attack-jwt`
-- Cookie flags: Secure, HttpOnly, SameSite
-- JWT: alg:none, weak secret, kid injection
-- CSRF: missing/weak tokens, SameSite bypass
-- Session fixation, timeout, concurrent sessions
-
-**Injection**
-→ skills: `wstg-injection`, `attack-ssrf`, `attack-ssti`, `attack-xxe`
-- SQLi: all input vectors, use `sqlmap` on confirmed points
-- XSS: reflected, stored, DOM-based
-- SSRF: internal URLs, cloud metadata `169.254.169.254`
-- SSTI: `{{7*7}}`, `${7*7}` in template inputs
-- Command injection: `;id`, `|whoami` in OS-facing params
-
-**Business Logic**
-→ skills: `wstg-logic-client-api`, `attack-race-condition`, `attack-rate-limit-bypass`
-- Price tampering, negative quantities, workflow step bypass
-- Race conditions on sensitive operations
-- File upload: extension bypass, web shells, polyglot files
-
-**Configuration & Information Disclosure**
-→ skills: `wstg-recon-config`, `attack-host-header`, `attack-subdomain-takeover`, `attack-cache-poison`
-- Security headers: CSP, HSTS, X-Frame-Options
-- Backup files: `.bak`, `.git/`, `.env`, `~` suffix
-- Error messages: stack traces, DB info, internal paths
-- Subdomain takeover, CORS misconfiguration (`attack-cors`)
-
-**API-Specific**
-→ skills: `attack-graphql`, `attack-idor-automation`, `attack-prototype-pollution`
-- BOLA/IDOR on resource IDs
-- GraphQL: introspection, batch queries, deep nesting
-- Mass assignment: extra params (`role=admin`, `isAdmin=true`)
-- Prototype pollution and request smuggling (`attack-request-smuggling`) on API gateways
-- Open redirect and websocket exposure (`attack-open-redirect`, `attack-websocket`) where applicable
+- **Authentication & authorization** (login bypass, IDOR, privilege escalation, OAuth flows) → `wstg-auth-session`, `attack-idor-automation`
+- **Session management** (cookie flags, JWT, CSRF, fixation) → `wstg-auth-session`, `attack-jwt`
+- **Injection** (SQLi, XSS, SSRF, SSTI, command injection) → `wstg-injection`, `attack-ssrf`, `attack-ssti`, `attack-xxe`
+- **Business logic** (price and workflow tampering, race conditions, file upload) → `wstg-logic-client-api`, `attack-race-condition`, `attack-rate-limit-bypass`
+- **Configuration & information disclosure** (headers, backup files, error leakage, subdomain takeover, CORS, cache poisoning) → `wstg-recon-config`, `attack-host-header`, `attack-subdomain-takeover`, `attack-cors`, `attack-cache-poison`
+- **API-specific** (BOLA/IDOR, GraphQL, mass assignment, prototype pollution, request smuggling, open redirect, websocket) → `attack-graphql`, `attack-idor-automation`, `attack-prototype-pollution`, `attack-request-smuggling`, `attack-open-redirect`, `attack-websocket`
 
 ## Decision loop
 
@@ -95,25 +59,13 @@ Continue testing until coverage of the areas above is adequate — do not stop a
 
 ## Operation journal
 
-Log discoveries to `.acordia/ops/intel.md` as you find them — endpoints, subdomains, technologies, credentials, injectable parameters, vulnerability hints, configuration, and authentication flows — each with a severity (critical/high/medium/low/informational) and confidence (confirmed/high/medium/low).
-
-Before and after testing an area, read and append to `.acordia/ops/coverage.md`: the request sent, a summary of the response, and the reasoning that proves or disproves the issue for that check.
-
-For every confirmed finding, write `.acordia/ops/findings/<slug>.md` with:
-- **WSTG-ID**: e.g., WSTG-AUTHZ-04
-- **Attack Vector**: technique used (e.g., IDOR via user_id parameter)
-- **Severity**: Critical / High / Medium / Low
-- **CWE**: e.g., CWE-639
-- **MITRE ATT&CK**: e.g., T1078
-- **Evidence**: request/response, screenshot, payload used
-- **Impact**: what an attacker achieves
-- **Remediation**: specific fix
+Record intel, coverage and findings under `.acordia/ops/`; `operation-journal` carries the contract — the file layout, the severity and confidence scales, the coverage evidence rule and the finding shape. Beyond that shared shape, every finding you write carries a **WSTG-ID** (e.g. WSTG-AUTHZ-04), a **CWE** (e.g. CWE-639) and a **MITRE ATT&CK** technique (e.g. T1078).
 
 ## Your specialist depth (deep)
 wstg-recon-config · wstg-auth-session · wstg-injection · wstg-logic-client-api · attack-jwt · attack-idor-automation · attack-ssrf · attack-ssti · attack-xxe · attack-graphql · attack-cors · attack-host-header · attack-open-redirect · attack-prototype-pollution · attack-race-condition · attack-rate-limit-bypass · attack-request-smuggling · attack-subdomain-takeover · attack-websocket · attack-cache-poison
 
 ## Working knowledge (draw on as needed)
-recon-methodology · cicd-attacks
+recon-methodology · cicd-attacks · operation-journal
 
 ## Guardrails
 

@@ -38,6 +38,16 @@ Thirty skills under `acordia-operators/skills/`, each cloned from `.cyberstrike/
 
 16 + 10 + 4 = 30. Each skill's `metadata.cyberstrike.source` records the `.cyberstrike/skill/...` path it was cloned from, so a re-port against a newer CyberStrike commit is a diff, not an archaeology exercise. Frontmatter is reduced to the skill contract (`name`, `description`, optional `metadata`); bodies keep upstream payloads, commands, tables, and phase order — cloning is not an occasion to rewrite methodology.
 
+## Authored here, not ported — 7 (as of 3.1.0)
+
+Seven operator skills were written in this repository rather than cloned from CyberStrike, so they carry **no `metadata.cyberstrike`** block — claiming upstream attribution for local text would corrupt the port record above. They are recorded here so this document stays a complete account of the pillar, not only of its ported half.
+
+- `operation-journal` — the `.acordia/ops/` recording contract (file layout, severity/confidence scales, evidence and chaining rules) that the five operator prompts previously each restated. Written from `operator`'s own journal section, the fullest of the five.
+- `gcp-postexploit` — Google Cloud post-exploitation, on the pattern of the ported `aws-`/`azure-`/`k8s-postexploit`. Added because `cloud-security` claimed GCP with no skill behind it.
+- `mobile-data-storage`, `mobile-crypto-keys`, `mobile-platform-ipc`, `mobile-resilience-bypass`, `mobile-instrumentation` — the mobile technique library `mobile-application` previously admitted it lacked, lifted from that prompt's own `## Key techniques by area`.
+
+The operator library is therefore **30 ported + 7 authored = 37** as of 3.1.0.
+
 ## What was not ported, and why
 
 - **The web-proxy pipeline** — `proxy-agent`, `proxy-analyzer`, and the eight `proxy-tester-*` agents. They read from CyberStrike's own proxy database through `web_get_*`/`web_write_*` tools, which have no substitution outside CyberStrike; without that database the agents have nothing to read.
