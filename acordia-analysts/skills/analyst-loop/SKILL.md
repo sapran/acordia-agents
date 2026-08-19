@@ -44,7 +44,7 @@ Five steps, each dispatching to the analyst who owns it:
 
 ## Where this runs
 
-This is the **orchestrator's** loop — `operational-analyst` runs it, dispatching the three legs and fusing their reads into one judgement. A leg subagent is a leaf specialist that answers its own scoped question; if a leg session matches this skill, it should **surface the need for a full pass back to the orchestrator** rather than attempt the loop itself (a leg cannot dispatch other legs). Future pillars (Collection, Operations, Reflection, Direction, Independent action) can model their own end-neutral loop on this one, or define a `<pillar>-loop` sibling and cite this skill as prior art.
+This is the **orchestrator's** loop — `cyber-analyst` runs it, dispatching the three legs and fusing their reads into one judgement. A leg subagent is a leaf specialist that answers its own scoped question; if a leg session matches this skill, it should **surface the need for a full pass back to the orchestrator** rather than attempt the loop itself (a leg cannot dispatch other legs). Future pillars (Collection, Operations, Reflection, Direction, Independent action) can model their own end-neutral loop on this one, or define a `<pillar>-loop` sibling and cite this skill as prior art.
 
 ## Signals / outputs
 

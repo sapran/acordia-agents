@@ -1,7 +1,6 @@
 ---
 description: Hand an operation to the senior cyber analyst — target picture, method/timing/risk, and the end-neutral loop.
 argument-hint: '[what the operation needs decided]'
-# Short alias for `cyber-analyst`; that wrapper is the canonical one.
 ---
 
 Hand the work below to the `cyber-analyst` agent (ACORDIA Analysis), which orchestrates this pillar.

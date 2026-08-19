@@ -32,7 +32,7 @@ Each skill row of the grid SHALL compile to exactly one library skill, and each 
 ### Requirement: Column-to-agent mapping (prompt skill set)
 
 Each of the four grid columns (Core, T&N, Def, Fus) SHALL define one agent's skill set: Core →
-`operational-analyst`, T&N → `target-network-analyst`, Def → `defender-detection-analyst`, Fus →
+`cyber-analyst`, T&N → `target-network-analyst`, Def → `defender-detection-analyst`, Fus →
 `fusion-analyst`. A cell mark places its row's skill into that agent's **prompt skill set**, named on
 the agent's `·`-separated skill lines, because neither target harness binds skills to an agent through
 frontmatter.

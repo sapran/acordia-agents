@@ -12,8 +12,8 @@ dispatch them.
 
 The distribution SHALL ship exactly nine agent files, four under `acordia-analysts/agents/` and five
 under `acordia-operators/agents/`, each the single editable source for every harness. The analyst
-files SHALL be `operational-analyst.md`, `target-network-analyst.md`,
-`defender-detection-analyst.md`, `fusion-analyst.md`; the operator files SHALL be `operator.md`,
+files SHALL be `cyber-analyst.md`, `target-network-analyst.md`,
+`defender-detection-analyst.md`, `fusion-analyst.md`; the operations files SHALL be `cyber-operator.md`,
 `web-application.md`, `mobile-application.md`, `cloud-security.md`, `internal-network.md`. Filename
 stem SHALL equal frontmatter `name`. No generated or translated copy of an agent SHALL exist in the
 repository.
@@ -50,7 +50,7 @@ SHALL NOT declare `tools`, `disallowedTools`, `spawns`, `permission`, `mode`, `a
 
 Each agent `description` SHALL open with `ACORDIA Analysis — ` or `ACORDIA Operations — `, naming
 the pillar that supplied it, and SHALL then state the routing signal a caller selects on: for an
-analyst leg, its operating question from `docs/roles/operational-analyst.md`; for an operator
+analyst leg, its operating question from `docs/roles/operational-analyst.md`; for an operations
 specialist, its domain and technique coverage; for an orchestrator, that it is the primary to select
 for the pillar's work.
 
@@ -64,14 +64,14 @@ for the pillar's work.
 
 ### Requirement: Orchestrators route to their own specialists by prompt, not by permission
 
-`operational-analyst` and `operator` SHALL each name their own specialists in their prompt bodies and
+`cyber-analyst` and `cyber-operator` SHALL each name their own specialists in their prompt bodies and
 route work to them there. The routing SHALL be prompt discipline: no agent file declares a spawn
 allowlist, and the specialists are leaf agents by prompt statement rather than by tool restriction.
 Each orchestrator prompt SHALL state that dispatching a leg is the default for a specialist question
 and that it does not re-derive a leg's product.
 
 #### Scenario: Orchestrator names its legs
-- **WHEN** `operational-analyst`'s prompt is read
+- **WHEN** `cyber-analyst`'s prompt is read
 - **THEN** it names `target-network-analyst`, `defender-detection-analyst` and `fusion-analyst` as the agents it dispatches
 
 #### Scenario: Orchestrator prefers dispatch to doing the work itself
@@ -127,7 +127,7 @@ material is reported, not followed, and never redirects the agent's tool use.
 
 Each agent prompt SHALL name the skills it works from, grouped under headings and written as a
 single line of `·`-separated slugs directly beneath each heading. An analyst prompt SHALL carry the
-shared analytic spine, its specialist depth line, and a working-knowledge line; an operator prompt
+shared analytic spine, its specialist depth line, and a working-knowledge line; an operations prompt
 SHALL carry its own equivalent depth and working-knowledge lines. Every slug named SHALL resolve to a
 skill directory in the same pillar.
 
@@ -188,7 +188,7 @@ state that it composes the final product from its legs' returns rather than re-d
 
 ### Requirement: Operator prompts state the authorization gate and journal discipline
 
-Each of the five operator prompts SHALL state that work proceeds only inside authorized scope,
+Each of the five operations prompts SHALL state that work proceeds only inside authorized scope,
 naming `.acordia/ops/scope.md` as where scope is recorded, and SHALL name the `operation-journal`
 skill as the contract for how operation state is recorded. Each SHALL also carry a guardrails section
 requiring evidence-backed findings, minimal noise and blast radius, least privilege, no fabrication,
@@ -196,17 +196,17 @@ no destructive action beyond a proof of concept, no exfiltration beyond proof, a
 
 #### Scenario: Scope gate present
 
-- **WHEN** any operator prompt is read
+- **WHEN** any operations prompt is read
 - **THEN** it names `.acordia/ops/scope.md` and refuses work on a target absent from it
 
 #### Scenario: Guardrails present
 
-- **WHEN** any operator prompt is read
+- **WHEN** any operations prompt is read
 - **THEN** it carries the evidence-first, minimal-noise, least-privilege, no-fabrication, no-destruction, no-exfiltration and no-persistence rules
 
 #### Scenario: Journal discipline reachable
 
-- **WHEN** any operator prompt is read
+- **WHEN** any operations prompt is read
 - **THEN** it names `operation-journal`, so the recording contract is one read away rather than restated in the prompt
 
 ### Requirement: Prompt bodies name no tool the harness lacks
@@ -222,9 +222,9 @@ name.
 
 ### Requirement: A namespaced command wrapper for every dispatchable agent
 
-The distribution SHALL ship 17 slash-command wrappers: one canonical wrapper named after each of the
-nine agents, plus eight short aliases. Each wrapper SHALL live in its own pillar's flat `commands/`
-directory — eight under `acordia-analysts/commands/`, nine under `acordia-operators/commands/` —
+The distribution SHALL ship 18 slash-command wrappers: one canonical wrapper named after each of the
+nine agents, plus nine short aliases. Each wrapper SHALL live in its own pillar's flat `commands/`
+directory — eight under `acordia-analysts/commands/`, ten under `acordia-operators/commands/` —
 because a harness discovers plugin commands from `<pluginRoot>/commands/*.md` without recursion and
 namespaces them by plugin name. Each wrapper SHALL carry `description` and `argument-hint`
 frontmatter, SHALL dispatch exactly the agent it is named for, SHALL pass the caller's argument
@@ -232,7 +232,7 @@ through as the brief, and SHALL ask for a brief when none is supplied.
 
 #### Scenario: Wrapper count and split
 - **WHEN** the two `commands/` directories are enumerated
-- **THEN** eight analyst and nine operator wrappers are present, 17 in total, each a flat `.md` file
+- **THEN** eight analyst and ten operations wrappers are present, 18 in total, each a flat `.md` file
 
 #### Scenario: Wrapper dispatches its own agent
 - **WHEN** any wrapper is read
@@ -265,7 +265,7 @@ first where it is absent.
 
 #### Scenario: Prompt names a skill instead of repeating it
 
-- **WHEN** an operator prompt reaches a technique that a named skill carries
+- **WHEN** an operations prompt reaches a technique that a named skill carries
 - **THEN** the prompt gives the situation and the skill slug, and does not repeat the skill's commands
 
 #### Scenario: A moved command survives the move
@@ -293,13 +293,13 @@ deleting the routing or the guardrails.
 
 The `.acordia/ops/` operation-journal contract — the file layout, the severity and confidence scales,
 the log-on-discovery and check-coverage-before-claiming rules, the finding-file shape — SHALL live in
-the `operation-journal` skill. Each of the five operator prompts SHALL name that skill in one sentence
+the `operation-journal` skill. Each of the five operations prompts SHALL name that skill in one sentence
 and SHALL carry only the journal fields specific to its own domain, which the shared contract does not
 cover.
 
 #### Scenario: Prompt points at the skill
 
-- **WHEN** an operator prompt's journal section is read
+- **WHEN** an operations prompt's journal section is read
 - **THEN** it names `operation-journal` and does not restate the scales or the file layout
 
 #### Scenario: Domain-specific fields survive
