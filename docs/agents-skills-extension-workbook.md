@@ -10,6 +10,14 @@ directory and CyberStrike loads it on next start.
 > [Markdown-only limits](#markdown-only-limits) for what those are and the
 > markdown equivalent.
 
+> **Reading this inside acordia-agents:** this workbook describes CyberStrike's own
+> extension surface, which is why it talks about `mode`, `permission` maps and a
+> `skills:` list. As of distribution 3.0.0 this repository ships none of that — an
+> agent file here carries exactly `name`, `description` and `color`, each pillar is
+> one authored tree with no generator, and opencode is no longer a target harness.
+> What stays load-bearing for this repository is §8: the CyberStrike platform-tool
+> substitutions and the `.acordia/ops/` operation-journal layout.
+
 Agents and skills are **two independent systems** loaded by **two different code
 paths**. An agent works with zero skills; a skill ships without any agent. They
 meet at exactly one point: an agent's `skills:` list *references* skills by name.

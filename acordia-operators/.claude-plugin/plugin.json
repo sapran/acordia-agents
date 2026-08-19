@@ -1,0 +1,15 @@
+{
+  "name": "acordia-operators",
+  "version": "3.2.0",
+  "description": "ACORDIA Operations — five offensive-security agents and a 39-skill technique library.",
+  "author": {
+    "name": "ACORDIA"
+  },
+  "repository": "https://github.com/sapran/acordia-agents",
+  "keywords": [
+    "security",
+    "offensive-security",
+    "pentest",
+    "acordia"
+  ]
+}
