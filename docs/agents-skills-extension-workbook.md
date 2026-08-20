@@ -449,7 +449,7 @@ reads → `deny`). Verify a resolved agent with `opencode debug agent <name>`.
 writable sink without opening up the rest of the tree:
 `edit: { "*": deny, ".acordia/reports/**": allow }`. In this repo that block is
 reserved for the two agents holding the *Briefing & written reporting* grid
-competency (`operational-analyst`, `fusion-analyst`), which write their reports to
+competency (`cyber-analyst`, `fusion-analyst`), which write their reports to
 `.acordia/reports/`; every other analyst uses a blanket `edit: deny`. Note this is
 a **posture** control, not a sandbox — `bash: "*": allow` already permits scripted
 writes — so the scoped block declares the sanctioned output path rather than
@@ -587,14 +587,14 @@ broken one still fails it.
 
 To verify, start omp and check that the four analysts appear in the agent
 roster the `task` tool advertises, that `/acordia-analysts:fusion` is
-registered, and that `operational-analyst` can spawn its three legs while the
+registered, and that `cyber-analyst` can spawn its three legs while the
 legs cannot spawn anything.
 
 ---
 
 ## 8. CyberStrike substitution contract — for future ports
 
-`operators/` is the first pillar ported from a CyberStrike-derived fork rather than
+`acordia-operators/` is the first pillar ported from a CyberStrike-derived fork rather than
 derived from an ACORDIA competency map. Its prompts and skill bodies called twelve
 platform tools that exist only inside CyberStrike (methodology engine, vulnerability
 reporting, attack-script runner, hackbrowser crawler, `skill` CLI). This section is
@@ -650,7 +650,7 @@ way:
 
 The path mirrors the analyst pillar's existing `.acordia/reports/` sink, so the
 two pillars share one operator-visible convention. The journal is **discipline,
-not a permission scope**: it is described in every operator prompt's body, but
+not a permission scope**: it is described in every operations prompt's body, but
 no `edit` rule attempts to confine writes to it — a path scope on a write tool
 is unenforceable in every harness, because `bash: allow` is an open write
 channel at any path. That omp scopes a tool by name only, never by path, is an

@@ -127,3 +127,23 @@ The conceptual spine is the **Analysis** pillar of ACORDIA (Styran), which names
 - Minárik et al., *CyCon 2019: Silent Battle*, pp. 114, 117; Orye & Maennel, *Recommendations for Enhancing the Results of Cyber Effects*, pp. 2, 5; JP 3-12, p. 81 — assessment doctrine (basis for the removed fourth leg).
 - Hutchins, Cloppert & Amin, *Intelligence-Driven Computer Network Defense… Kill Chains*, pp. 2, 5; Lindsay, J. R., *Information Technology and Military Power*, pp. 166, 179.
 - Heuer, R., *Psychology of Intelligence Analysis*, pp. 150–151; Pherson & Heuer, *Structured Analytic Techniques for Intelligence Analysis*, pp. 47, 69, 77, 87.
+
+## Agent renamed in 4.0.0
+
+This document keeps its name and, deliberately, its line numbering: 38 skills anchor to a grid row
+in it by line (`source: docs/roles/operational-analyst.md#L95`, spanning L67–L108), so nothing may
+be inserted above the grid. *The Operational Analyst* remains the role name in the ACORDIA
+framework this map compiles from.
+
+The shipped agent is now `cyber-analyst` (wrapper `/cyber-analyst`, short handle `/analyst`),
+renamed with `operator` → `cyber-operator` so that neither lead agent shares a word with the pillar
+it leads. The role in this document and the file on disk are no longer spelled the same way; the
+grid rows below are unaffected, because a row describes a competency, not an agent.
+
+The three legs were renamed in the same release. **T&N** ships as `target-analyst` (wrapper
+`/target-analyst`, short handle `/target`) and **Def** as `overwatch-analyst` (wrapper
+`/overwatch-analyst`, short handle `/overwatch`); **Fus** is unchanged as `fusion-analyst`. The grid
+column letters below still read **T&N**, **Def** and **Fus**, because they label the legs of the
+role described in this document, not the agent files that implement them. `overwatch-analyst` takes
+its name from the live register that defines it — overwatch, reading the defender's own security
+operations to judge whether they are onto the operation.

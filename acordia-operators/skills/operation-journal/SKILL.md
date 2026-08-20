@@ -1,6 +1,6 @@
 ---
 name: operation-journal
-description: Record intel, coverage and findings the way the whole operator pillar reads them back — the five files under .acordia/ops/, the severity and confidence scales, the evidence-quality bar, the finding-file shape, and how low-severity entries chain into one high or critical finding. Reach for it whenever an operator or specialist logs a discovery, records what was tested, or checks the journal before claiming ground is untested.
+description: Record intel, coverage and findings the way the whole operations pillar reads them back — the five files under .acordia/ops/, the severity and confidence scales, the evidence-quality bar, the finding-file shape, and how low-severity entries chain into one high or critical finding. Reach for it whenever an operator or specialist logs a discovery, records what was tested, or checks the journal before claiming ground is untested.
 metadata:
   acordia:
     family: operations-discipline

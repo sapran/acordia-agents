@@ -12,8 +12,8 @@ dispatch them.
 
 The distribution SHALL ship exactly nine agent files, four under `acordia-analysts/agents/` and five
 under `acordia-operators/agents/`, each the single editable source for every harness. The analyst
-files SHALL be `operational-analyst.md`, `target-network-analyst.md`,
-`defender-detection-analyst.md`, `fusion-analyst.md`; the operator files SHALL be `operator.md`,
+files SHALL be `cyber-analyst.md`, `target-analyst.md`,
+`overwatch-analyst.md`, `fusion-analyst.md`; the operations files SHALL be `cyber-operator.md`,
 `web-application.md`, `mobile-application.md`, `cloud-security.md`, `internal-network.md`. Filename
 stem SHALL equal frontmatter `name`. No generated or translated copy of an agent SHALL exist in the
 repository.
@@ -50,7 +50,7 @@ SHALL NOT declare `tools`, `disallowedTools`, `spawns`, `permission`, `mode`, `a
 
 Each agent `description` SHALL open with `ACORDIA Analysis — ` or `ACORDIA Operations — `, naming
 the pillar that supplied it, and SHALL then state the routing signal a caller selects on: for an
-analyst leg, its operating question from `docs/roles/operational-analyst.md`; for an operator
+analyst leg, its operating question from `docs/roles/operational-analyst.md`; for an operations
 specialist, its domain and technique coverage; for an orchestrator, that it is the primary to select
 for the pillar's work.
 
@@ -59,20 +59,20 @@ for the pillar's work.
 - **THEN** it begins with the pillar tag for the directory it lives in
 
 #### Scenario: Description discriminates between two candidates
-- **WHEN** a caller compares `target-network-analyst` and `defender-detection-analyst`
+- **WHEN** a caller compares `target-analyst` and `overwatch-analyst`
 - **THEN** each description names a distinct question — what the target is and whether the action landed, versus whether the operation is being seen
 
 ### Requirement: Orchestrators route to their own specialists by prompt, not by permission
 
-`operational-analyst` and `operator` SHALL each name their own specialists in their prompt bodies and
+`cyber-analyst` and `cyber-operator` SHALL each name their own specialists in their prompt bodies and
 route work to them there. The routing SHALL be prompt discipline: no agent file declares a spawn
 allowlist, and the specialists are leaf agents by prompt statement rather than by tool restriction.
 Each orchestrator prompt SHALL state that dispatching a leg is the default for a specialist question
 and that it does not re-derive a leg's product.
 
 #### Scenario: Orchestrator names its legs
-- **WHEN** `operational-analyst`'s prompt is read
-- **THEN** it names `target-network-analyst`, `defender-detection-analyst` and `fusion-analyst` as the agents it dispatches
+- **WHEN** `cyber-analyst`'s prompt is read
+- **THEN** it names `target-analyst`, `overwatch-analyst` and `fusion-analyst` as the agents it dispatches
 
 #### Scenario: Orchestrator prefers dispatch to doing the work itself
 - **WHEN** a specialist-domain question reaches an orchestrator
@@ -127,7 +127,7 @@ material is reported, not followed, and never redirects the agent's tool use.
 
 Each agent prompt SHALL name the skills it works from, grouped under headings and written as a
 single line of `·`-separated slugs directly beneath each heading. An analyst prompt SHALL carry the
-shared analytic spine, its specialist depth line, and a working-knowledge line; an operator prompt
+shared analytic spine, its specialist depth line, and a working-knowledge line; an operations prompt
 SHALL carry its own equivalent depth and working-knowledge lines. Every slug named SHALL resolve to a
 skill directory in the same pillar.
 
@@ -186,9 +186,9 @@ state that it composes the final product from its legs' returns rather than re-d
 - **WHEN** an orchestrator receives a leg's product
 - **THEN** its prompt directs it to compose from that product without redoing the leg's work
 
-### Requirement: Operator prompts state the authorization gate and journal discipline
+### Requirement: Operations prompts state the authorization gate and journal discipline
 
-Each of the five operator prompts SHALL state that work proceeds only inside authorized scope,
+Each of the five operations prompts SHALL state that work proceeds only inside authorized scope,
 naming `.acordia/ops/scope.md` as where scope is recorded, and SHALL name the `operation-journal`
 skill as the contract for how operation state is recorded. Each SHALL also carry a guardrails section
 requiring evidence-backed findings, minimal noise and blast radius, least privilege, no fabrication,
@@ -196,17 +196,17 @@ no destructive action beyond a proof of concept, no exfiltration beyond proof, a
 
 #### Scenario: Scope gate present
 
-- **WHEN** any operator prompt is read
+- **WHEN** any operations prompt is read
 - **THEN** it names `.acordia/ops/scope.md` and refuses work on a target absent from it
 
 #### Scenario: Guardrails present
 
-- **WHEN** any operator prompt is read
+- **WHEN** any operations prompt is read
 - **THEN** it carries the evidence-first, minimal-noise, least-privilege, no-fabrication, no-destruction, no-exfiltration and no-persistence rules
 
 #### Scenario: Journal discipline reachable
 
-- **WHEN** any operator prompt is read
+- **WHEN** any operations prompt is read
 - **THEN** it names `operation-journal`, so the recording contract is one read away rather than restated in the prompt
 
 ### Requirement: Prompt bodies name no tool the harness lacks
@@ -222,21 +222,28 @@ name.
 
 ### Requirement: A namespaced command wrapper for every dispatchable agent
 
-The distribution SHALL ship 17 slash-command wrappers: one canonical wrapper named after each of the
-nine agents, plus eight short aliases. Each wrapper SHALL live in its own pillar's flat `commands/`
-directory — eight under `acordia-analysts/commands/`, nine under `acordia-operators/commands/` —
+The distribution SHALL ship 18 slash-command wrappers: one canonical wrapper named after each of the
+nine agents, plus nine short aliases. Each wrapper SHALL live in its own pillar's flat `commands/`
+directory — eight under `acordia-analysts/commands/`, ten under `acordia-operators/commands/` —
 because a harness discovers plugin commands from `<pluginRoot>/commands/*.md` without recursion and
 namespaces them by plugin name. Each wrapper SHALL carry `description` and `argument-hint`
 frontmatter, SHALL dispatch exactly the agent it is named for, SHALL pass the caller's argument
 through as the brief, and SHALL ask for a brief when none is supplied.
 
+Where renaming a lead agent lengthens its canonical wrapper, the previous single-word wrapper SHALL be
+retained as that agent's short alias, so that an existing invocation keeps working.
+
 #### Scenario: Wrapper count and split
 - **WHEN** the two `commands/` directories are enumerated
-- **THEN** eight analyst and nine operator wrappers are present, 17 in total, each a flat `.md` file
+- **THEN** eight analyst and ten operations wrappers are present, 18 in total, each a flat `.md` file
 
 #### Scenario: Wrapper dispatches its own agent
 - **WHEN** any wrapper is read
 - **THEN** it names exactly one agent, the one it is named or aliased for
+
+#### Scenario: A renamed lead keeps its old handle
+- **WHEN** `/operator` and `/analyst` are invoked
+- **THEN** they dispatch `cyber-operator` and `cyber-analyst` respectively
 
 #### Scenario: Empty brief is refused
 - **WHEN** a wrapper is invoked with no argument
@@ -265,7 +272,7 @@ first where it is absent.
 
 #### Scenario: Prompt names a skill instead of repeating it
 
-- **WHEN** an operator prompt reaches a technique that a named skill carries
+- **WHEN** an operations prompt reaches a technique that a named skill carries
 - **THEN** the prompt gives the situation and the skill slug, and does not repeat the skill's commands
 
 #### Scenario: A moved command survives the move
@@ -293,13 +300,13 @@ deleting the routing or the guardrails.
 
 The `.acordia/ops/` operation-journal contract — the file layout, the severity and confidence scales,
 the log-on-discovery and check-coverage-before-claiming rules, the finding-file shape — SHALL live in
-the `operation-journal` skill. Each of the five operator prompts SHALL name that skill in one sentence
+the `operation-journal` skill. Each of the five operations prompts SHALL name that skill in one sentence
 and SHALL carry only the journal fields specific to its own domain, which the shared contract does not
 cover.
 
 #### Scenario: Prompt points at the skill
 
-- **WHEN** an operator prompt's journal section is read
+- **WHEN** an operations prompt's journal section is read
 - **THEN** it names `operation-journal` and does not restate the scales or the file layout
 
 #### Scenario: Domain-specific fields survive
@@ -311,3 +318,73 @@ cover.
 
 - **WHEN** `internal-network`'s journal section is read
 - **THEN** it still states that the final assessment report is composed by the orchestrator from this journal, not by the specialist
+
+### Requirement: A lead agent's name is distinct from its pillar's name
+
+Neither pillar's lead agent SHALL be named with a word that also names the pillar, its skill library,
+its prompts or its artifacts. The analyst lead SHALL be `cyber-analyst` and the operations lead SHALL
+be `cyber-operator`, so that "the operations pillar" and "the operations prompts" can never be read as
+naming an agent.
+
+Prose SHALL keep the bare word `operator` only where it means a human or a driving session rather than
+the agent — the analyst guardrail *"execution belongs to the operators you advise"*, an operator
+journal, an operator session, operator-deployed artifacts, and technique content such as a
+default-credential pair. Renaming SHALL NOT rewrite those sites.
+
+An archived change SHALL NOT be rewritten to use a later name. It records what was true when it
+shipped. A specification MAY quote a superseded name where it does so in order to forbid it, and a
+provenance document MAY quote superseded wording in order to record its replacement; neither is a
+site the rename sweep rewrites.
+
+#### Scenario: Pillar word never resolves to an agent
+- **WHEN** the live tree is searched case-insensitively for `operator` followed by pillar, library, skill, prompt, agent, wrapper, artifact or file
+- **THEN** the only match is the provenance document's quotation of the superseded wording, and every other such site reads `operations`
+
+#### Scenario: The human sense survives the rename
+- **WHEN** an analyst prompt's closing guardrail is read
+- **THEN** it still says execution belongs to the operators it advises, naming no agent
+
+#### Scenario: Archived changes keep their original names
+- **WHEN** the archive is compared against its state before the rename
+- **THEN** no occurrence of `operational-analyst` or `operator` in any pre-existing archived file has been rewritten, and the diff adds files without deleting lines
+
+#### Scenario: A provenance document keeps its filename and its anchors
+- **WHEN** `docs/roles/operational-analyst.md` is read
+- **THEN** its grid rows are still at lines L67–L108, every skill anchor still resolves to a row, and a
+  closing note records that the shipped agent is now `cyber-analyst`
+
+### Requirement: A leg agent is named for the question it answers
+
+Each analyst leg SHALL be named for the work its prompt leads with, not for the competency-grid
+column it was derived from. The legs SHALL be `target-analyst`, `overwatch-analyst` and
+`fusion-analyst`. A leg's prompt body SHALL introduce it under its own name, so that a dispatched leg
+never identifies itself to the orchestrator under a name absent from the roster.
+
+The competency grid in `docs/roles/operational-analyst.md` SHALL keep its column letters **T&N**,
+**Def** and **Fus**. A column labels a leg of the role that document describes; it does not name the
+agent file that implements the leg. The mapping between the two SHALL be recorded in that document,
+appended after the grid so that no skill anchor shifts.
+
+A short alias SHALL be formed from its own agent's name — a word of that name, or a legible
+contraction of it. An alias SHALL NOT outlive the name it was formed from: when an agent is renamed
+and its alias no longer derives from the new name, the alias SHALL be renamed with it rather than
+retained as a handle for vocabulary the roster has dropped. Where this rule and the lead-agent
+retention rule above both bear on one alias, this rule governs: a handle is kept only if it still
+derives from the renamed agent.
+
+#### Scenario: No leg is named after a grid column
+- **WHEN** the analyst `agents/` directory is enumerated
+- **THEN** no filename contains `network` or `detection`, and each name states the leg's own question
+
+#### Scenario: A leg introduces itself under its own name
+- **WHEN** each leg prompt's opening line is read
+- **THEN** it names the agent's own name, not a competency-grid column
+
+#### Scenario: Old leg names are gone from the live tree
+- **WHEN** the live tree outside `openspec/specs/` and `openspec/changes/` is searched for `target-network-analyst` or `defender-detection-analyst`
+- **THEN** no match is found, the specifications being free to quote a superseded name in order to forbid it
+
+#### Scenario: Every alias derives from its own agent
+- **WHEN** the nine short aliases are compared with the agents they dispatch
+- **THEN** each alias is a word of its agent's name or a legible contraction of it, and none names a
+  term absent from that agent's name

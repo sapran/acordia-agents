@@ -23,7 +23,7 @@ installable: installing the analytic library SHALL NOT install the offensive one
 
 - **WHEN** `acordia-analysts@acordia` is installed and `acordia-operators@acordia` is not
 - **THEN** the four analyst agents, the analyst skill library and the eight analyst command wrappers are available
-- **AND** no operator agent, skill or command wrapper is installed
+- **AND** no operations agent, skill or command wrapper is installed
 
 ### Requirement: One authored tree per pillar serves every harness
 

@@ -3,7 +3,7 @@ description: What is the target for, what does it depend on, where can we move, 
 argument-hint: '[target, terrain, or effect to read]'
 ---
 
-Dispatch the `target-network-analyst` agent (ACORDIA Analysis) with the brief below.
+Dispatch the `target-analyst` agent (ACORDIA Analysis) with the brief below.
 
 Use it for target modelling, terrain and architecture analysis, and effect-on-target verification.
 

@@ -3,7 +3,7 @@
 ## Purpose
 Defines the skill libraries the two pillars ship — where a skill lives, the frontmatter contract both
 harnesses parse, the description that selects it, the analyst library's one-to-one derivation from the
-competency grid, the operator library's upstream provenance, and the reading and reference-file
+competency grid, the operations library's upstream provenance, and the reading and reference-file
 disciplines their bodies follow.
 
 ## Requirements
@@ -30,7 +30,7 @@ generated or translated copy of a skill SHALL exist in the repository.
 #### Scenario: Library counts are what each pillar ships
 
 - **WHEN** the two libraries are counted
-- **THEN** the analyst pillar holds 42 skills and the operator pillar holds 39, 81 in total
+- **THEN** the analyst pillar holds 42 skills and the operations pillar holds 39, 81 in total
 
 ### Requirement: Skill frontmatter contract
 
@@ -219,10 +219,10 @@ The library SHALL contain a skill `acordia-analysts/skills/credential-harvest-tr
 
 The **bucket partition** step SHALL enumerate five buckets and their target legs:
 
-- Bucket A — identity / directory / cloud-controlplane material → `target-network-analyst`
+- Bucket A — identity / directory / cloud-controlplane material → `target-analyst`
 - Bucket B — host-forensic material (memory, SAM, DPAPI, keychain, shadow) → whichever leg holds the host under analysis
-- Bucket C — web / API auth material → `target-network-analyst`
-- Bucket D — log-artefact material → `defender-detection-analyst`
+- Bucket C — web / API auth material → `target-analyst`
+- Bucket D — log-artefact material → `overwatch-analyst`
 - Bucket E — implant / payload RE material → cross-cutting via `implant-payload-re`, reported to `fusion-analyst`
 
 Each bucket's slice SHALL be dispatched with only that slice. The procedure SHALL state that per-leg classifications feed back into `multi-source-fusion` for cross-leg correlation.
@@ -240,7 +240,7 @@ Each bucket's slice SHALL be dispatched with only that slice. The procedure SHAL
 #### Scenario: Bucket partition maps to existing legs
 
 - **WHEN** the bucket-partition step is read
-- **THEN** every bucket routes to one of `target-network-analyst`, `defender-detection-analyst`, `fusion-analyst`, or the cross-cutting `implant-payload-re` skill, and no bucket routes to a leg not on the current whitelist
+- **THEN** every bucket routes to one of `target-analyst`, `overwatch-analyst`, `fusion-analyst`, or the cross-cutting `implant-payload-re` skill, and no bucket routes to a leg not on the current whitelist
 
 #### Scenario: Not a grid row
 
@@ -279,12 +279,12 @@ The skill SHALL declare its cross-cutting/procedural nature and SHALL NOT be add
 
 #### Scenario: Orchestrator references the skill; legs do not
 
-- **WHEN** `acordia-analysts/agents/operational-analyst.md` is inspected
+- **WHEN** `acordia-analysts/agents/cyber-analyst.md` is inspected
 - **THEN** it names `analyst-loop` in one sentence within its existing loop-describing paragraph
 
 #### Scenario: Legs do not reference the loop skill
 
-- **WHEN** any leg agent (`target-network-analyst`, `defender-detection-analyst`, `fusion-analyst`) is inspected
+- **WHEN** any leg agent (`target-analyst`, `overwatch-analyst`, `fusion-analyst`) is inspected
 - **THEN** it does not name `analyst-loop`
 
 ### Requirement: `exhaustive-data-processing` skill exists
@@ -405,7 +405,7 @@ The `## Method` contract for evidence-reading skills SHALL NOT apply to this ski
 - **WHEN** the guardrails section is read
 - **THEN** ingestion, entity writes, tagging, cross-reference triggering and deletion are named as out of scope, and the READ-scoped API key is named as the enforcement point
 
-### Requirement: Thirty operator skills cloned from CyberStrike
+### Requirement: Thirty operations skills cloned from CyberStrike
 
 `acordia-operators/skills/` SHALL contain the thirty skill directories cloned from CyberStrike, each
 holding a `SKILL.md`:
@@ -451,7 +451,7 @@ Each cloned skill SHALL record its origin under `metadata.cyberstrike` as the re
 
 #### Scenario: Source path recorded
 
-- **WHEN** any operator skill's `metadata.cyberstrike` block is read
+- **WHEN** any operations skill's `metadata.cyberstrike` block is read
 - **THEN** it names the `.cyberstrike/skill/...` path the body was cloned from
 
 ### Requirement: Bodies carry no tool the harness lacks
@@ -500,14 +500,14 @@ The generated compliance and technique corpora under `.cyberstrike/skill/` — C
 
 ### Requirement: A technique has exactly one owning skill
 
-Every technique the operator pillar ships SHALL have exactly one owning skill. Two skills SHALL NOT
+Every technique the operations pillar ships SHALL have exactly one owning skill. Two skills SHALL NOT
 carry the same technique, and a prompt SHALL NOT carry a technique a skill owns. Where a technique
 plausibly belongs to two skills, the owner SHALL be stated in both bodies as an explicit boundary
 sentence rather than left to the reader.
 
 #### Scenario: No technique has two owners
 
-- **WHEN** a command or payload appears in one operator skill
+- **WHEN** a command or payload appears in one operations skill
 - **THEN** it does not appear in another, unless one of the two names the other as the owner
 
 #### Scenario: Boundary is written down
@@ -518,7 +518,7 @@ sentence rather than left to the reader.
 ### Requirement: `operation-journal` skill exists
 
 `acordia-operators/skills/operation-journal/SKILL.md` SHALL carry the `.acordia/ops/` contract that
-the five operator prompts previously restated: the file layout (`scope.md`, `intel.md`, `coverage.md`,
+the five operations prompts previously restated: the file layout (`scope.md`, `intel.md`, `coverage.md`,
 `findings/<slug>.md`, `reports/<name>.md`), the severity scale
 (`critical`/`high`/`medium`/`low`/`informational`), the confidence scale
 (`confirmed`/`high`/`medium`/`low`), the logging discipline (log intel on discovery rather than in a
@@ -534,7 +534,7 @@ severity is the chain's own, not the maximum of its parts.
 
 #### Scenario: Prompts stop restating it
 
-- **WHEN** the five operator prompts are searched for the severity or confidence scale
+- **WHEN** the five operations prompts are searched for the severity or confidence scale
 - **THEN** only domain-specific additions remain, and the scales themselves appear once, in the skill
 
 ### Requirement: `gcp-postexploit` skill exists
@@ -557,7 +557,7 @@ description and carries GCP technique text; a claim with no skill behind it is t
 
 ### Requirement: Five mobile skills exist
 
-The operator library SHALL contain `mobile-data-storage`, `mobile-crypto-keys`,
+The operations library SHALL contain `mobile-data-storage`, `mobile-crypto-keys`,
 `mobile-platform-ipc`, `mobile-resilience-bypass` and `mobile-instrumentation`, carrying the technique
 detail previously held in `mobile-application`'s `## Key techniques by area`. Each SHALL state what it
 owns and SHALL NOT compete with its siblings on description. Network, authentication and
@@ -633,7 +633,7 @@ enforces it and no harness reads it. It exists so a reader can see which skills 
 and so the description contract below has a defined set of siblings to discriminate against.
 
 The field SHALL sit inside the existing `metadata.acordia` block on an analyst skill, and SHALL be
-added as an `acordia` key beside the untouched `metadata.cyberstrike` block on a ported operator skill.
+added as an `acordia` key beside the untouched `metadata.cyberstrike` block on a ported operations skill.
 
 #### Scenario: Every skill lands in exactly one family
 
@@ -642,7 +642,7 @@ added as an `acordia` key beside the untouched `metadata.cyberstrike` block on a
 
 #### Scenario: Provenance is untouched
 
-- **WHEN** a ported operator skill's frontmatter is read after the family tag is added
+- **WHEN** a ported operations skill's frontmatter is read after the family tag is added
 - **THEN** its `metadata.cyberstrike` block is unchanged
 
 ### Requirement: A bundle points at a dedicated skill rather than restating it

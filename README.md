@@ -6,7 +6,7 @@ Runnable agents and skills derived from the ACORDIA framework's operational role
 
 Markdown-only artifacts — agent files, skill files, and command wrappers. No application code, no runtime, and since 3.0.0 no build step: each pillar is one authored tree that both harnesses read as it stands in the checkout, and a marketplace install clones this repository and points at that tree directly.
 
-One tree serves both because both accept the same agent file: omp's `parseAgentFields()` requires `name`, `description` and a body and treats `tools` as optional, and Claude Code requires the same three keys. Every artifact traces to a source — each analyst skill to a row of a competency map, each operator artifact to the CyberStrike file it was ported from.
+One tree serves both because both accept the same agent file: omp's `parseAgentFields()` requires `name`, `description` and a body and treats `tools` as optional, and Claude Code requires the same three keys. Every artifact traces to a source — each analyst skill to a row of a competency map, each operations artifact to the CyberStrike file it was ported from.
 
 ## Scope
 
@@ -21,15 +21,15 @@ Future pillars (Collection, Reflection, Direction, Independent action) may follo
 acordia-agents/
 ├── acordia-analysts/                 # plugin root — installed as-is
 │   ├── .claude-plugin/plugin.json
-│   ├── agents/     operational-analyst · target-network-analyst
-│   │               defender-detection-analyst · fusion-analyst
+│   ├── agents/     cyber-analyst · target-analyst
+│   │               overwatch-analyst · fusion-analyst
 │   ├── commands/   8 command wrappers
 │   └── skills/     42 skills, one SKILL.md each
 ├── acordia-operators/                # plugin root — installed as-is
 │   ├── .claude-plugin/plugin.json
-│   ├── agents/     operator · web-application · mobile-application
+│   ├── agents/     cyber-operator · web-application · mobile-application
 │   │               cloud-security · internal-network
-│   ├── commands/   9 command wrappers
+│   ├── commands/   10 command wrappers
 │   └── skills/     39 skills, one SKILL.md each
 ├── .claude-plugin/marketplace.json   # Claude Code reads this catalog
 ├── .omp-plugin/marketplace.json      # omp prefers this one; byte-identical
@@ -55,6 +55,27 @@ In omp, marketplace content is delivered by the `claude-plugins` capability prov
 
 **opencode was dropped in 3.0.0**, with the shell installer that was its only route in and the generator that existed to express its permission maps; opencode users have no upgrade path and must switch harness.
 
+#### Upgrading from 3.2.0
+
+**4.0.0 renames agents, so four invocations disappear.** Every agent is now named for the question it
+answers rather than for the pillar it leads or the competency-grid column it came from:
+
+| 3.2.0 | 4.0.0 |
+|---|---|
+| `operational-analyst` | `cyber-analyst` |
+| `operator` | `cyber-operator` |
+| `target-network-analyst` | `target-analyst` |
+| `defender-detection-analyst` | `overwatch-analyst` |
+
+The canonical wrappers move with them, and the short handle `/defender` becomes `/overwatch` — an
+alias is formed from its own agent's name, so it is renamed when that name changes. `/analyst` and
+`/operator` are unchanged: both are still words of their agents' names, so an existing invocation
+through either keeps working.
+
+Anything that dispatches `operational-analyst`, `defender-detection-analyst`,
+`target-network-analyst`, or the `/defender` handle must be updated. There are no compatibility
+aliases under the old agent names.
+
 #### Upgrading from 2.5.0
 
 The catalog `source` paths moved to the top of the repository, so an existing install must re-resolve the marketplace before it can find the plugin at all:
@@ -70,14 +91,14 @@ Claude Code picks up a new version only on uninstall-then-reinstall. In omp, che
 Agents are dispatched by name, from a picker shared with the harness's own, so the distribution carries one slash-command wrapper per agent to give a namespaced entry point. **The namespace is the plugin name**, applied by the harness itself:
 
 ```
-/acordia-analysts:fusion       what all of it together means, and how good the take is
-/acordia-operators:webapp      OWASP WSTG testing of a web target
-/acordia-operators:operator    hand an authorised engagement to the orchestrator
+/acordia-analysts:fusion          what all of it together means, and how good the take is
+/acordia-operators:webapp         OWASP WSTG testing of a web target
+/acordia-operators:cyber-operator hand an authorised engagement to the orchestrator
 ```
 
-Both harnesses scan `<pluginRoot>/commands/*.md` non-recursively and prefix each command with the plugin name, which is why the wrappers live inside a pillar rather than at the repository root. Seventeen of them: one canonical wrapper per agent (`/acordia-analysts:fusion-analyst`) plus eight short handles — `analyst`, `target`, `defender`, `fusion`, `webapp`, `mobile`, `cloud`, `internal`.
+Both harnesses scan `<pluginRoot>/commands/*.md` non-recursively and prefix each command with the plugin name, which is why the wrappers live inside a pillar rather than at the repository root. Eighteen of them: one canonical wrapper per agent (`/acordia-analysts:fusion-analyst`) plus nine short handles — `analyst`, `target`, `overwatch`, `fusion`, `operator`, `webapp`, `mobile`, `cloud`, `internal`.
 
-The agent name itself is not wrapped. omp registers plugin agents flat, so `fusion-analyst` dispatches; Claude Code namespaces them, so its Task tool needs `acordia-analysts:target-network-analyst` (verified at 2.1.220). A wrapper names its agent in prose and leaves each harness to resolve it.
+The agent name itself is not wrapped. omp registers plugin agents flat, so `fusion-analyst` dispatches; Claude Code namespaces them, so its Task tool needs `acordia-analysts:target-analyst` (verified at 2.1.220). A wrapper names its agent in prose and leaves each harness to resolve it.
 
 #### Bump the version on every change
 
@@ -112,7 +133,7 @@ Rename your own artifact, or switch off the pillar you are not using: `omp plugi
 
 The competency map behind the analyst artifacts is [`docs/roles/operational-analyst.md`](docs/roles/operational-analyst.md) — rows of skills scored `●` deep / `○` working against columns of specialisations. The contract binding map to artifacts (grid row → skill, grid column → an agent's skill set, ●/○ → deep/working) is in [`openspec/specs/competency-map-derivation/`](openspec/specs/competency-map-derivation/spec.md). Editing an artifact under `acordia-analysts/` without touching the map is a drift bug; when the map changes, the artifacts follow it.
 
-The operator pillar derives from no such map. It is a provenance-tracked port whose source of truth is [`docs/roles/operator.md`](docs/roles/operator.md): the agent-to-agent table, the skill-clone provenance, what was deliberately left out, and the divergences since. Editing `acordia-operators/` without checking that record is the same class of bug. The history behind the current shape is under [`openspec/changes/`](openspec/changes/).
+The operations pillar derives from no such map. It is a provenance-tracked port whose source of truth is [`docs/roles/operator.md`](docs/roles/operator.md): the agent-to-agent table, the skill-clone provenance, what was deliberately left out, and the divergences since. Editing `acordia-operators/` without checking that record is the same class of bug. The history behind the current shape is under [`openspec/changes/`](openspec/changes/).
 
 ## How to extend
 
@@ -120,7 +141,7 @@ The operator pillar derives from no such map. It is a provenance-tracked port wh
 
 ```yaml
 ---
-name: target-network-analyst
+name: target-analyst
 description: ACORDIA Analysis — What is the target for, what does it depend on, where can we move …
 color: blue
 ---
@@ -143,7 +164,7 @@ metadata:
     source: docs/roles/operational-analyst.md#L101
 ```
 
-38 of the 42 anchor to a row that way. The other four are procedural rather than derived: each carries `grid_row: null`, `procedural: true` and the change that authorised it as its `source`, and `aleph-entity-graph` additionally declares `cross_cutting` over the skills it composes. A skill with neither a row nor such a record is inventing capability the map does not claim. An operator skill instead keeps its `metadata.cyberstrike` block naming the `.cyberstrike/skill/…` path and commit it was cloned from — attribution rather than machinery, and what makes a re-port against a newer CyberStrike commit a diff instead of an archaeology exercise.
+38 of the 42 anchor to a row that way. The other four are procedural rather than derived: each carries `grid_row: null`, `procedural: true` and the change that authorised it as its `source`, and `aleph-entity-graph` additionally declares `cross_cutting` over the skills it composes. A skill with neither a row nor such a record is inventing capability the map does not claim. An operations skill instead keeps its `metadata.cyberstrike` block naming the `.cyberstrike/skill/…` path and commit it was cloned from — attribution rather than machinery, and what makes a re-port against a newer CyberStrike commit a diff instead of an archaeology exercise.
 
 ## Verifying an install
 

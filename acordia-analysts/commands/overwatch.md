@@ -1,9 +1,10 @@
 ---
 description: Will this be seen, is it being seen right now, and is our operation still clean?
 argument-hint: '[action, footprint, or overwatch question]'
+# Short alias for `overwatch-analyst`; that wrapper is the canonical one.
 ---
 
-Dispatch the `defender-detection-analyst` agent (ACORDIA Analysis) with the brief below.
+Dispatch the `overwatch-analyst` agent (ACORDIA Analysis) with the brief below.
 
 Use it for detection-capability analysis, evasion reasoning, own-footprint review, and live overwatch of the defender.
 
