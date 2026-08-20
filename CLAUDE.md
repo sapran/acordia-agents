@@ -33,7 +33,7 @@ The version is the **only** update signal either harness has. omp compares it ag
 
 Real semver, and monotonic — never hang a hash or build metadata off it. `1.0.0+aaa` and `1.0.0+bbb` compare **equal** and would never upgrade (verified, omp 17.1.8).
 
-**Nothing enforces this any more.** The build gate that used to catch it is gone with the generator. Editing any artifact under `acordia-analysts/` or `acordia-operators/` without bumping all four files is a release bug of the same class as editing an artifact without touching the competency grid, and it is now caught only by a reviewer noticing.
+**The in-repo build gate that used to catch this is gone with the generator.** Editing any artifact under `acordia-analysts/` or `acordia-operators/` without bumping all four files is a release bug of the same class as editing an artifact without touching the competency grid. An external gate now checks it — `~/ai/checks/check-acordia.sh [path]` verifies version lockstep (one semver, exactly six occurrences), catalog byte-identity, prompt-slug resolution, and, inside a linked worktree, that artifacts did not change without a bump. Run it in the worktree before opening the PR. Outside that script it is caught only by a reviewer noticing.
 
 ## Commands
 
