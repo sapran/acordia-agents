@@ -8,3 +8,4 @@
 .worktrees/
 __pycache__/
 *.pyc
+.local/
