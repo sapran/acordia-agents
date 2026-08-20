@@ -363,8 +363,10 @@ The competency grid in `docs/roles/operational-analyst.md` SHALL keep its column
 agent file that implements the leg. The mapping between the two SHALL be recorded in that document,
 appended after the grid so that no skill anchor shifts.
 
-Short command aliases SHALL survive a leg rename under their existing filenames, so that an
-invocation that worked before the rename still resolves.
+A short alias SHALL be formed from its own agent's name — a word of that name, or a legible
+contraction of it. An alias SHALL NOT outlive the name it was formed from: when an agent is renamed
+and its alias no longer derives from the new name, the alias SHALL be renamed with it rather than
+retained as a handle for vocabulary the roster has dropped.
 
 #### Scenario: No leg is named after a grid column
 - **WHEN** the analyst `agents/` directory is enumerated
@@ -374,6 +376,7 @@ invocation that worked before the rename still resolves.
 - **WHEN** the live tree is searched for `target-network-analyst` or `defender-detection-analyst`
 - **THEN** no match is found outside `openspec/changes/archive/`
 
-#### Scenario: Short alias still resolves after a rename
-- **WHEN** `/target` or `/defender` is invoked
-- **THEN** the wrapper names the renamed agent, and the alias filename is unchanged
+#### Scenario: Every alias derives from its own agent
+- **WHEN** the nine short aliases are compared with the agents they dispatch
+- **THEN** each alias is a word of its agent's name or a legible contraction of it, and none names a
+  term absent from that agent's name

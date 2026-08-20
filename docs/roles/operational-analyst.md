@@ -142,7 +142,7 @@ grid rows below are unaffected, because a row describes a competency, not an age
 
 The three legs were renamed in the same release. **T&N** ships as `target-analyst` (wrapper
 `/target-analyst`, short handle `/target`) and **Def** as `overwatch-analyst` (wrapper
-`/overwatch-analyst`, short handle `/defender`); **Fus** is unchanged as `fusion-analyst`. The grid
+`/overwatch-analyst`, short handle `/overwatch`); **Fus** is unchanged as `fusion-analyst`. The grid
 column letters below still read **T&N**, **Def** and **Fus**, because they label the legs of the
 role described in this document, not the agent files that implement them. `overwatch-analyst` takes
 its name from the live register that defines it — overwatch, reading the defender's own security

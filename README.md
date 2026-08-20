@@ -75,7 +75,7 @@ Agents are dispatched by name, from a picker shared with the harness's own, so t
 /acordia-operators:cyber-operator hand an authorised engagement to the orchestrator
 ```
 
-Both harnesses scan `<pluginRoot>/commands/*.md` non-recursively and prefix each command with the plugin name, which is why the wrappers live inside a pillar rather than at the repository root. Eighteen of them: one canonical wrapper per agent (`/acordia-analysts:fusion-analyst`) plus nine short handles — `analyst`, `target`, `defender`, `fusion`, `operator`, `webapp`, `mobile`, `cloud`, `internal`.
+Both harnesses scan `<pluginRoot>/commands/*.md` non-recursively and prefix each command with the plugin name, which is why the wrappers live inside a pillar rather than at the repository root. Eighteen of them: one canonical wrapper per agent (`/acordia-analysts:fusion-analyst`) plus nine short handles — `analyst`, `target`, `overwatch`, `fusion`, `operator`, `webapp`, `mobile`, `cloud`, `internal`.
 
 The agent name itself is not wrapped. omp registers plugin agents flat, so `fusion-analyst` dispatches; Claude Code namespaces them, so its Task tool needs `acordia-analysts:target-analyst` (verified at 2.1.220). A wrapper names its agent in prose and leaves each harness to resolve it.
 
