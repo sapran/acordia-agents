@@ -1,6 +1,7 @@
 ---
 description: Hand an authorized engagement to the orchestrating offensive-security brain.
 argument-hint: '[scope and objective of the engagement]'
+# Short alias for `cyber-operator`; that wrapper is the canonical one.
 ---
 
 Hand the work below to the `cyber-operator` agent (ACORDIA Operations), which orchestrates this pillar.

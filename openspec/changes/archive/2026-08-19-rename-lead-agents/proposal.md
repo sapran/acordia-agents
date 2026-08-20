@@ -37,7 +37,7 @@ Renaming both leads fixes the ambiguity at its root: no lead agent shares a word
   records what was true when it shipped; rewriting it would be falsifying history.
 - **`docs/roles/operator.md` and `docs/roles/operational-analyst.md` keep their filenames.** They are
   provenance records of upstream artifacts that really were called that, and the analyst file is
-  line-anchored: 39 skills carry `source: docs/roles/operational-analyst.md#L<n>` into rows L67–L108.
+  line-anchored: 38 skills carry `source: docs/roles/operational-analyst.md#L<n>` into rows L67–L108.
   Nothing may be inserted above that grid, so the rename note is appended at the end of the file.
   Each document instead records the upstream-name → agent-name mapping.
 - The role name *The Operational Analyst* stays in the competency map. A grid row describes a

@@ -186,7 +186,7 @@ state that it composes the final product from its legs' returns rather than re-d
 - **WHEN** an orchestrator receives a leg's product
 - **THEN** its prompt directs it to compose from that product without redoing the leg's work
 
-### Requirement: Operator prompts state the authorization gate and journal discipline
+### Requirement: Operations prompts state the authorization gate and journal discipline
 
 Each of the five operations prompts SHALL state that work proceeds only inside authorized scope,
 naming `.acordia/ops/scope.md` as where scope is recorded, and SHALL name the `operation-journal`
@@ -332,19 +332,21 @@ journal, an operator session, operator-deployed artifacts, and technique content
 default-credential pair. Renaming SHALL NOT rewrite those sites.
 
 An archived change SHALL NOT be rewritten to use a later name. It records what was true when it
-shipped.
+shipped. A specification MAY quote a superseded name where it does so in order to forbid it, and a
+provenance document MAY quote superseded wording in order to record its replacement; neither is a
+site the rename sweep rewrites.
 
 #### Scenario: Pillar word never resolves to an agent
-- **WHEN** the live tree is searched for `operator` followed by pillar, library, skill, prompt, agent, wrapper, artifact or file
-- **THEN** no match is found, because every such site reads `operations`
+- **WHEN** the live tree is searched case-insensitively for `operator` followed by pillar, library, skill, prompt, agent, wrapper, artifact or file
+- **THEN** the only match is the provenance document's quotation of the superseded wording, and every other such site reads `operations`
 
 #### Scenario: The human sense survives the rename
 - **WHEN** an analyst prompt's closing guardrail is read
 - **THEN** it still says execution belongs to the operators it advises, naming no agent
 
 #### Scenario: Archived changes keep their original names
-- **WHEN** any file under `openspec/changes/archive/` is read
-- **THEN** it still names `operational-analyst` and `operator` as they were at the time it shipped
+- **WHEN** the archive is compared against its state before the rename
+- **THEN** no occurrence of `operational-analyst` or `operator` in any pre-existing archived file has been rewritten, and the diff adds files without deleting lines
 
 #### Scenario: A provenance document keeps its filename and its anchors
 - **WHEN** `docs/roles/operational-analyst.md` is read
@@ -355,8 +357,8 @@ shipped.
 
 Each analyst leg SHALL be named for the work its prompt leads with, not for the competency-grid
 column it was derived from. The legs SHALL be `target-analyst`, `overwatch-analyst` and
-`fusion-analyst`. A leg name SHALL NOT carry a term that describes only the secondary half of its
-prompt, and SHALL NOT stack two near-synonyms.
+`fusion-analyst`. A leg's prompt body SHALL introduce it under its own name, so that a dispatched leg
+never identifies itself to the orchestrator under a name absent from the roster.
 
 The competency grid in `docs/roles/operational-analyst.md` SHALL keep its column letters **T&N**,
 **Def** and **Fus**. A column labels a leg of the role that document describes; it does not name the
@@ -366,15 +368,21 @@ appended after the grid so that no skill anchor shifts.
 A short alias SHALL be formed from its own agent's name — a word of that name, or a legible
 contraction of it. An alias SHALL NOT outlive the name it was formed from: when an agent is renamed
 and its alias no longer derives from the new name, the alias SHALL be renamed with it rather than
-retained as a handle for vocabulary the roster has dropped.
+retained as a handle for vocabulary the roster has dropped. Where this rule and the lead-agent
+retention rule above both bear on one alias, this rule governs: a handle is kept only if it still
+derives from the renamed agent.
 
 #### Scenario: No leg is named after a grid column
 - **WHEN** the analyst `agents/` directory is enumerated
 - **THEN** no filename contains `network` or `detection`, and each name states the leg's own question
 
+#### Scenario: A leg introduces itself under its own name
+- **WHEN** each leg prompt's opening line is read
+- **THEN** it names the agent's own name, not a competency-grid column
+
 #### Scenario: Old leg names are gone from the live tree
-- **WHEN** the live tree is searched for `target-network-analyst` or `defender-detection-analyst`
-- **THEN** no match is found outside `openspec/changes/archive/`
+- **WHEN** the live tree outside `openspec/specs/` and `openspec/changes/` is searched for `target-network-analyst` or `defender-detection-analyst`
+- **THEN** no match is found, the specifications being free to quote a superseded name in order to forbid it
 
 #### Scenario: Every alias derives from its own agent
 - **WHEN** the nine short aliases are compared with the agents they dispatch

@@ -13,7 +13,7 @@
 
 ## 3. Record provenance
 - [x] 3.1 Append the leg-rename note to `docs/roles/operational-analyst.md`, after the grid
-- [x] 3.2 Confirm the 39 skill anchors still land on grid rows L67-L108
+- [x] 3.2 Confirm the 38 skill anchors still land on grid rows L67-L108
 
 ## 4. Update the specs
 - [x] 4.1 Modify the roster requirement to enumerate the new analyst filenames

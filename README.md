@@ -29,7 +29,7 @@ acordia-agents/
 │   ├── .claude-plugin/plugin.json
 │   ├── agents/     cyber-operator · web-application · mobile-application
 │   │               cloud-security · internal-network
-│   ├── commands/   9 command wrappers
+│   ├── commands/   10 command wrappers
 │   └── skills/     39 skills, one SKILL.md each
 ├── .claude-plugin/marketplace.json   # Claude Code reads this catalog
 ├── .omp-plugin/marketplace.json      # omp prefers this one; byte-identical
@@ -54,6 +54,27 @@ claude plugin install acordia-analysts@acordia
 In omp, marketplace content is delivered by the `claude-plugins` capability provider, which reads Claude Code's plugin registry alongside omp's own — so one Claude Code install can be inherited rather than registered twice, and so disabling that provider leaves the plugin installed and contributing nothing. `/reload-plugins` refreshes skills and commands after an install; new tools or hooks need a restart.
 
 **opencode was dropped in 3.0.0**, with the shell installer that was its only route in and the generator that existed to express its permission maps; opencode users have no upgrade path and must switch harness.
+
+#### Upgrading from 3.2.0
+
+**4.0.0 renames agents, so four invocations disappear.** Every agent is now named for the question it
+answers rather than for the pillar it leads or the competency-grid column it came from:
+
+| 3.2.0 | 4.0.0 |
+|---|---|
+| `operational-analyst` | `cyber-analyst` |
+| `operator` | `cyber-operator` |
+| `target-network-analyst` | `target-analyst` |
+| `defender-detection-analyst` | `overwatch-analyst` |
+
+The canonical wrappers move with them, and the short handle `/defender` becomes `/overwatch` — an
+alias is formed from its own agent's name, so it is renamed when that name changes. `/analyst` and
+`/operator` are unchanged: both are still words of their agents' names, so an existing invocation
+through either keeps working.
+
+Anything that dispatches `operational-analyst`, `defender-detection-analyst`,
+`target-network-analyst`, or the `/defender` handle must be updated. There are no compatibility
+aliases under the old agent names.
 
 #### Upgrading from 2.5.0
 

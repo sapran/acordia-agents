@@ -80,3 +80,26 @@ retained as that agent's short alias, so that an existing invocation keeps worki
 #### Scenario: Empty brief is refused
 - **WHEN** a wrapper is invoked with no argument
 - **THEN** it asks what to look at before dispatching
+
+### Requirement: Operations prompts state the authorization gate and journal discipline
+
+Each of the five operations prompts SHALL state that work proceeds only inside authorized scope,
+naming `.acordia/ops/scope.md` as where scope is recorded, and SHALL name the `operation-journal`
+skill as the contract for how operation state is recorded. Each SHALL also carry a guardrails section
+requiring evidence-backed findings, minimal noise and blast radius, least privilege, no fabrication,
+no destructive action beyond a proof of concept, no exfiltration beyond proof, and no persistence.
+
+#### Scenario: Scope gate present
+
+- **WHEN** any operations prompt is read
+- **THEN** it names `.acordia/ops/scope.md` and refuses work on a target absent from it
+
+#### Scenario: Guardrails present
+
+- **WHEN** any operations prompt is read
+- **THEN** it carries the evidence-first, minimal-noise, least-privilege, no-fabrication, no-destruction, no-exfiltration and no-persistence rules
+
+#### Scenario: Journal discipline reachable
+
+- **WHEN** any operations prompt is read
+- **THEN** it names `operation-journal`, so the recording contract is one read away rather than restated in the prompt

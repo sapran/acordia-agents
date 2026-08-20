@@ -130,7 +130,7 @@ The conceptual spine is the **Analysis** pillar of ACORDIA (Styran), which names
 
 ## Agent renamed in 4.0.0
 
-This document keeps its name and, deliberately, its line numbering: 39 skills anchor to a grid row
+This document keeps its name and, deliberately, its line numbering: 38 skills anchor to a grid row
 in it by line (`source: docs/roles/operational-analyst.md#L95`, spanning L67–L108), so nothing may
 be inserted above the grid. *The Operational Analyst* remains the role name in the ACORDIA
 framework this map compiles from.
