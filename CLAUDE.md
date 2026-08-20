@@ -11,7 +11,7 @@ Two harnesses, one authored tree per pillar. omp and Claude Code both install it
 Two pillars, shipped as two independently installable plugins:
 
 - **`acordia-analysts/`** — the ACORDIA Analysis pillar. One primary orchestrator (`cyber-analyst`) plus three subagent legs (`target-analyst`, `overwatch-analyst`, `fusion-analyst`), a 42-skill analytic library, and 8 command wrappers.
-- **`acordia-operators/`** — the ACORDIA Operations pillar. One primary orchestrator (`cyber-operator`) plus four subagent specialists (`web-application`, `mobile-application`, `cloud-security`, `internal-network`), a 39-skill technique library (31 ported from the CyberStrike fork at commit `359655518`, 8 authored here), and 10 command wrappers.
+- **`acordia-operators/`** — the ACORDIA Operations pillar. One primary orchestrator (`cyber-operator`) plus four subagent specialists (`web-application`, `mobile-application`, `cloud-security`, `internal-network`), a 40-skill technique library (31 ported from the CyberStrike fork at commit `359655518`, 9 authored here), and 10 command wrappers.
 
 Each pillar directory holds `.claude-plugin/plugin.json`, `agents/`, `commands/` and `skills/` — the layout both harnesses discover from a plugin root. **All nine agents are write-capable.** Capability is granted by omission: an agent file names no `tools`, so omp hands it the full set, and no `spawns`, so its spawn policy is unrestricted. There is no permission frontmatter anywhere in this repository, and a capability problem is never fixed by adding a denylist.
 
@@ -33,7 +33,7 @@ The version is the **only** update signal either harness has. omp compares it ag
 
 Real semver, and monotonic — never hang a hash or build metadata off it. `1.0.0+aaa` and `1.0.0+bbb` compare **equal** and would never upgrade (verified, omp 17.1.8).
 
-**Nothing enforces this any more.** The build gate that used to catch it is gone with the generator. Editing any artifact under `acordia-analysts/` or `acordia-operators/` without bumping all four files is a release bug of the same class as editing an artifact without touching the competency grid, and it is now caught only by a reviewer noticing.
+**The in-repo build gate that used to catch this is gone with the generator.** Editing any artifact under `acordia-analysts/` or `acordia-operators/` without bumping all four files is a release bug of the same class as editing an artifact without touching the competency grid. An external gate now checks it — `~/ai/checks/check-acordia.sh [path]` verifies version lockstep (one semver, exactly six occurrences), catalog byte-identity, prompt-slug resolution, and, inside a linked worktree, that artifacts did not change without a bump. Run it in the worktree before opening the PR. Outside that script it is caught only by a reviewer noticing.
 
 ## Commands
 

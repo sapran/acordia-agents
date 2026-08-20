@@ -30,7 +30,7 @@ generated or translated copy of a skill SHALL exist in the repository.
 #### Scenario: Library counts are what each pillar ships
 
 - **WHEN** the two libraries are counted
-- **THEN** the analyst pillar holds 42 skills and the operations pillar holds 39, 81 in total
+- **THEN** the analyst pillar holds 42 skills and the operations pillar holds 40, 82 in total
 
 ### Requirement: Skill frontmatter contract
 
@@ -82,7 +82,7 @@ Where two are inseparable, the two skills SHALL be merged rather than shipped as
 
 #### Scenario: Boilerplate openings are absent
 
-- **WHEN** all 81 descriptions are read
+- **WHEN** all 82 descriptions are read
 - **THEN** none begins with `Use when`, `Apply when`, `Use to`, `Use this skill` or an equivalent selection-boilerplate clause
 
 #### Scenario: The worked collision is separated
@@ -426,9 +426,10 @@ file APIs for CyberStrike's own development and carries no security capability.
 
 The library MAY additionally contain skills **authored in this repository** rather than cloned. Such a
 skill SHALL NOT carry `metadata.cyberstrike`, because that block is upstream attribution and claiming
-it for local text would corrupt the port record. Seven exist as of 3.1.0: `operation-journal`,
-`gcp-postexploit`, and the five `mobile-*` skills. `docs/roles/operator.md` SHALL record them as
-authored here, so the provenance record stays a complete account of what the pillar contains.
+it for local text would corrupt the port record. Nine exist as of 4.1.0: `operation-journal`,
+`gcp-postexploit`, `linux-postexploit`, the five `mobile-*` skills, and `bolts`.
+`docs/roles/operator.md` SHALL record them as authored here, so the provenance record stays a
+complete account of what the pillar contains.
 
 #### Scenario: Library membership is exact
 
@@ -637,7 +638,7 @@ added as an `acordia` key beside the untouched `metadata.cyberstrike` block on a
 
 #### Scenario: Every skill lands in exactly one family
 
-- **WHEN** all 81 skills' `metadata.acordia.family` values are collected
+- **WHEN** all 82 skills' `metadata.acordia.family` values are collected
 - **THEN** each skill declares exactly one, every value is one of the twelve, and every family has at least one member
 
 #### Scenario: Provenance is untouched
@@ -669,3 +670,42 @@ no dedicated skill exists.
 
 - **WHEN** a section is reduced to a pointer
 - **THEN** every payload and flag it held is present in the destination skill
+
+### Requirement: `bolts` skill exists
+
+`acordia-operators/skills/bolts/SKILL.md` SHALL exist, defining remote tool execution as an operating
+posture: a bolt is a named remote server holding the offensive toolkit and the network position, driven
+over SSH, while the local machine holds the conversation, the notes and the report.
+
+The skill SHALL state which work runs on the bolt — scanners and probes, web and API tooling,
+credential and directory tooling, any fetch aimed at an engagement target, and a headless browser when
+the page must load from the bolt's position — and which stays local. It SHALL define the registry that
+records each bolt, how a bolt is verified before first use, how a long-running scan survives a dropped
+connection, and how artifacts return.
+
+The skill SHALL be authored rather than cloned and SHALL carry no `metadata.cyberstrike`. The concept
+descends from CyberStrike's Bolt remote tool servers; none of its code does, and SSH replaces the
+pairing protocol because this repository ships no runtime that could pair.
+
+Nothing SHALL claim to enforce the posture. It is a discipline stated in a prompt, not a sandbox:
+no harness can bind a tool call to a remote host.
+
+#### Scenario: The skill is present and authored
+- **WHEN** `acordia-operators/skills/bolts/SKILL.md` is read
+- **THEN** it declares `family: operations-discipline`, carries no `metadata.cyberstrike`, and names its CyberStrike ancestor in prose
+
+#### Scenario: The posture separates remote from local
+- **WHEN** the skill body is read
+- **THEN** it names the tooling that runs on the bolt and the work that stays on the local machine, as two explicit lists
+
+#### Scenario: No enforcement is claimed
+- **WHEN** the skill's `## The operating rule` section is read
+- **THEN** it states that nothing enforces the posture and that a local invocation would succeed, claiming no guarantee that tooling cannot run locally
+
+#### Scenario: The four operating mechanics are present
+- **WHEN** the skill body is read
+- **THEN** it defines the registry that records each bolt, how a bolt is verified before first use, how a long-running scan survives a dropped connection, and where retrieved artifacts land
+
+#### Scenario: The bolt is distinguished from a target
+- **WHEN** the skill is read alongside the prompts' scope guardrail
+- **THEN** it states that the bolt is operator infrastructure exempt from the scope file, and that everything it is aimed at must appear in `.acordia/ops/scope.md`

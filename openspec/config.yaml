@@ -26,7 +26,7 @@ context: |
   the mechanics of the extension surface documented in
   `docs/agents-skills-extension-workbook.md`. The Operations pillar
   (`acordia-operators/`) — one orchestrator (`cyber-operator`) plus four domain
-  specialists and a 39-skill technique library — has no competency grid; it is
+  specialists and a 40-skill technique library — has no competency grid; it is
   a provenance-tracked port whose source of truth is `docs/roles/operator.md`.
 
   Future pillars (Collection, Reflection, Direction, Independent action) may
