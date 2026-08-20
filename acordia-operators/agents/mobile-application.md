@@ -64,7 +64,7 @@ Record intel, coverage and findings under `.acordia/ops/`; `operation-journal` c
 mobile-data-storage · mobile-crypto-keys · mobile-platform-ipc · mobile-resilience-bypass · mobile-instrumentation · wstg-auth-session · attack-jwt · attack-idor-automation
 
 ## Working knowledge (draw on as needed)
-recon-methodology · attack-graphql · attack-ssrf · attack-race-condition · wstg-injection · wstg-logic-client-api · operation-journal
+recon-methodology · attack-graphql · attack-ssrf · attack-race-condition · wstg-injection · wstg-logic-client-api · operation-journal · bolts
 
 ## Guardrails
 

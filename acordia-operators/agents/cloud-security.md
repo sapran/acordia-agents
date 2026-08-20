@@ -85,7 +85,7 @@ Record intel, coverage and findings under `.acordia/ops/`; `operation-journal` c
 aws-postexploit · azure-postexploit · gcp-postexploit · k8s-postexploit · cicd-attacks · attack-ssrf · attack-subdomain-takeover
 
 ## Working knowledge (draw on as needed)
-recon-methodology · wstg-recon-config · ad-security · operation-journal
+recon-methodology · wstg-recon-config · ad-security · operation-journal · bolts
 
 ## Guardrails
 

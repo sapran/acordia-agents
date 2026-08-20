@@ -65,7 +65,7 @@ Record intel, coverage and findings under `.acordia/ops/`; `operation-journal` c
 wstg-recon-config · wstg-auth-session · wstg-injection · wstg-logic-client-api · attack-sqli · attack-jwt · attack-idor-automation · attack-ssrf · attack-ssti · attack-xxe · attack-graphql · attack-cors · attack-host-header · attack-open-redirect · attack-prototype-pollution · attack-race-condition · attack-rate-limit-bypass · attack-request-smuggling · attack-subdomain-takeover · attack-websocket · attack-cache-poison
 
 ## Working knowledge (draw on as needed)
-recon-methodology · cicd-attacks · operation-journal
+recon-methodology · cicd-attacks · operation-journal · bolts
 
 ## Guardrails
 

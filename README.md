@@ -13,7 +13,7 @@ One tree serves both because both accept the same agent file: omp's `parseAgentF
 Two pillars, shipped as two independently installable plugins so either can be taken without the other:
 
 - **`acordia-analysts/`** — the Analysis pillar: one orchestrator plus three specialist legs, and the 42-skill library realising their shared analytic spine. Decision support and target understanding; no target interaction, no active testing.
-- **`acordia-operators/`** — the Operations pillar, ported from the CyberStrike fork (`~/git/CyberStrike`, commit `359655518`): one orchestrator plus four domain specialists and a 39-skill technique library (31 ported, 8 authored here). Offensive, and gated on written authorisation by the prompts rather than by the harness. Provenance and divergence are recorded in [`docs/roles/operator.md`](docs/roles/operator.md).
+- **`acordia-operators/`** — the Operations pillar, ported from the CyberStrike fork (`~/git/CyberStrike`, commit `359655518`): one orchestrator plus four domain specialists and a 40-skill technique library (31 ported, 9 authored here). Offensive, and gated on written authorisation by the prompts rather than by the harness. Provenance and divergence are recorded in [`docs/roles/operator.md`](docs/roles/operator.md).
 
 Future pillars (Collection, Reflection, Direction, Independent action) may follow the same shape as they get compiled.
 
@@ -30,7 +30,7 @@ acordia-agents/
 │   ├── agents/     cyber-operator · web-application · mobile-application
 │   │               cloud-security · internal-network
 │   ├── commands/   10 command wrappers
-│   └── skills/     39 skills, one SKILL.md each
+│   └── skills/     40 skills, one SKILL.md each
 ├── .claude-plugin/marketplace.json   # Claude Code reads this catalog
 ├── .omp-plugin/marketplace.json      # omp prefers this one; byte-identical
 ├── docs/roles/                       # the two sources of truth

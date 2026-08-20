@@ -136,7 +136,7 @@ Record intel, coverage and findings under `.acordia/ops/` as you work; `operatio
 ad-security · kerberos-attacks · windows-postexploit · macos-postexploit · linux-postexploit · ebpf-attacks · aws-postexploit · azure-postexploit · k8s-postexploit · cicd-attacks
 
 ## Working knowledge (draw on as needed)
-recon-methodology · operation-journal
+recon-methodology · operation-journal · bolts
 
 ## Guardrails
 

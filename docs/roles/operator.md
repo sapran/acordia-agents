@@ -45,16 +45,17 @@ Thirty-one skills under `acordia-operators/skills/` carry CyberStrike provenance
 
 17 + 10 + 4 = 31. Each carries `metadata.cyberstrike.source`, so a re-port against a newer CyberStrike commit is a diff, not an archaeology exercise. Frontmatter is reduced to the skill contract (`name`, `description`, optional `metadata`); bodies keep upstream payloads, commands, tables, and phase order — cloning is not an occasion to rewrite methodology.
 
-## Authored here, not ported — 8 (as of 3.2.0)
+## Authored here, not ported — 9 (as of 4.1.0)
 
-Eight operations skills were written in this repository rather than cloned from CyberStrike, so they carry **no `metadata.cyberstrike`** block — claiming upstream attribution for local text would corrupt the port record above. They are recorded here so this document stays a complete account of the pillar, not only of its ported half.
+Nine operations skills were written in this repository rather than cloned from CyberStrike, so they carry **no `metadata.cyberstrike`** block — claiming upstream attribution for local text would corrupt the port record above. They are recorded here so this document stays a complete account of the pillar, not only of its ported half.
 
 - `operation-journal` — the `.acordia/ops/` recording contract (file layout, severity/confidence scales, evidence and chaining rules) that the five operations prompts previously each restated. Written from `cyber-operator`'s own journal section, the fullest of the five.
 - `gcp-postexploit` — Google Cloud post-exploitation, on the pattern of the ported `aws-`/`azure-`/`k8s-postexploit`. Added because `cloud-security` claimed GCP with no skill behind it.
 - `mobile-data-storage`, `mobile-crypto-keys`, `mobile-platform-ipc`, `mobile-resilience-bypass`, `mobile-instrumentation` — the mobile technique library `mobile-application` previously admitted it lacked, lifted from that prompt's own `## Key techniques by area`.
 - `linux-postexploit` — ordinary-userland Linux post-exploitation (SUID/sudo/capabilities, cron and systemd persistence, credential and key theft, container-escape triage), added in 3.2.0. Its boundary with the ported `ebpf-attacks` is stated in both bodies: `ebpf-attacks` owns the `CAP_BPF` loaded-program path, `linux-postexploit` owns what an ordinary shell reaches.
+- `bolts` — remote tool execution as an operating posture: a named remote server holds the offensive toolkit and the network position, so engagement traffic leaves from a chosen address rather than from the machine holding the conversation. Added in 4.1.0. Its ancestor is CyberStrike's Bolt remote tool servers; the concept was carried over and none of its code was, SSH replacing the pairing protocol because this repository ships no runtime that could pair.
 
-The operations library is therefore **31 ported + 8 authored = 39** as of 3.2.0.
+The operations library is therefore **31 ported + 9 authored = 40** as of 4.1.0.
 
 ## What was not ported, and why
 
