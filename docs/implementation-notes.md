@@ -41,3 +41,23 @@ rather than instructions (now stated in all nine prompts)._
   keeps unreachable objects, so `git fetch <remote> 33e2b88` still returns it. The repository is
   private, so exposure is limited to accounts with access. **Before making this repository public,
   ask GitHub Support to garbage-collect unreachable objects**, or treat the address as disclosed.
+
+- **`cyber-analyst` describes the overwatch leg differently from how that leg describes itself.**
+  4.2.0 rephrased the bullet in `cyber-analyst`'s prompt to _"is there a threat of detection, and is
+  our operation still undetected"_. The canonical question stands verbatim in four authored places —
+  `docs/roles/operational-analyst.md:39`, `overwatch-analyst`'s own `description`, and both of its
+  command wrappers — with two near variants at `analyst-loop/SKILL.md:32` (_"is the operation still
+  clean"_) and `overwatch-analyst.md:46` (_"is the footprint still clean"_). That is six other sites;
+  seven counting `cyber-analyst` itself, and a settling change must touch all seven. Parked rather than
+  propagated because choosing the wording is an authoring decision, not a formatting one: either the
+  new phrasing is right and the other six follow it, or the canonical one is and the prompt reverts.
+
+- **`cyber-analyst` no longer says what the target is _for_.** The same edit replaced _"what the
+  target is **for**, what it depends on"_ with _"what the target **is**, what it **does**"_. Three
+  further authored sites still carry the superseded phrasing, one of them in the same file:
+  `cyber-analyst.md:26` (the `target-analyst` bullet, sixteen lines below the rewritten line, so the
+  prompt now describes the target picture two ways within itself), `analyst-loop/SKILL.md:31`, and
+  `target-analyst`'s own `description`, which opens _"What is the target for, what does it depend
+  on"_. `docs/roles/operational-analyst.md` italicises _for_ twice deliberately — objectives, and the
+  processes that carry them — which is the content of `target-mission-analysis`. Four sites, same
+  decision, same change.
