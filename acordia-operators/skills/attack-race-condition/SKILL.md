@@ -20,6 +20,7 @@ Exploit time-of-check-to-time-of-use (TOCTOU) vulnerabilities by sending concurr
 ### Phase 1: Identify Targets
 
 State-changing operations vulnerable to race conditions:
+
 - Coupon/promo code redemption
 - Fund transfers / payments
 - Vote/like systems
@@ -80,6 +81,7 @@ wait
 ### Phase 4: Analysis
 
 Look for:
+
 - Multiple successful responses (coupon applied 2+ times)
 - Balance inconsistencies
 - Duplicate records created

@@ -20,6 +20,7 @@ Force the server to make requests to internal resources, cloud metadata endpoint
 ### Phase 1: Identify URL Input Points
 
 Look for parameters that accept URLs:
+
 - Webhook URLs, callback URLs
 - File import/export (URL-based)
 - PDF/image generation from URL

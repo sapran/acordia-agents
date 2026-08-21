@@ -15,7 +15,7 @@ metadata:
 
 Replace `TARGET` with the actual domain:
 
-```
+```text
 site:TARGET filetype:pdf | filetype:doc | filetype:xls
 site:TARGET inurl:admin | inurl:login | inurl:dashboard
 site:TARGET ext:php inurl:?
@@ -52,7 +52,7 @@ ffuf -u "https://TARGET/page?FUZZ=test" -w /usr/share/seclists/Discovery/Web-Con
 
 Test for these at discovered paths:
 
-```
+```text
 .bak, .old, .orig, .save, .swp, .swo, ~
 .git/, .svn/, .hg/, .env, .DS_Store
 config.php.bak, web.config.old, .htaccess.bak

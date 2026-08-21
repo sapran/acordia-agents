@@ -1,5 +1,6 @@
 # The Operational Analyst
-### A competency map for the Analysis pillar of ACORDIA
+
+## A competency map for the Analysis pillar of ACORDIA
 
 **Version 1.1 · 21 July 2026**
 
@@ -114,6 +115,7 @@ Reference grid for the map above. **●** deep / defining · **○** working kno
 The conceptual spine is the **Analysis** pillar of ACORDIA (Styran), which names real-time decision support and target understanding as a core operational activity in its own right; the practitioner definition of the work is Monte's *operational analysis*. The **dual end** — effects or collection, sharing the same access and differing mainly in intent — is drawn from Smeets, grugq (twice), and Maurer. The **business/mission analysis** craft is grounded in crown-jewels and Cyber Mission Stack modelling (*Cyber Commanders' Handbook 2*) and Mission Thread Analysis (Karagosian; Corbari et al.). **Overwatch** takes its name and shape from the author's own ODC and the mirror-image blue-side monitoring in the OPM breach report. The dissolved fourth leg was grounded entirely in assessment doctrine (Minárik et al.; Orye & Maennel; *Cyber Commanders' Handbook 2* §5.4; JP 3-12) — retained here only to explain why it was removed. The reasoning discipline of the spine rests on the analytic-tradecraft canon (Heuer; Pherson & Heuer); the technical substrate inventory that seeds the legs comes from the offensive and defensive skill lists in the *Cyber Commanders' Handbook 2*; and the find-and-understand loop and campaign-analysis framing come from Lindsay and from Hutchins, Cloppert & Amin.
 
 ### Sources (library)
+
 - Styran, V., *Rethinking Exploitation in Cyber War* (ACORDIA framework; Analysis pillar), pp. 20–24.
 - Monte, M., *Network Attacks & Exploitation: A Framework* (operational analysis), p. 60.
 - Smeets, M., *No Shortcuts: Why States Struggle to Develop a Military Cyber-Force* (PETIO; effects vs espionage), pp. 17, 32, 97, 105, 121.

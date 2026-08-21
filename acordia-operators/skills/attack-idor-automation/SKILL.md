@@ -54,6 +54,7 @@ done < endpoints.txt
 ### Phase 3: Manual Testing Patterns
 
 **Horizontal IDOR (same role, different user):**
+
 ```bash
 # Sequential IDs
 curl -H "Authorization: Bearer ATTACKER_TOKEN" https://TARGET/api/users/1
@@ -75,6 +76,7 @@ done
 ```
 
 **Vertical IDOR (low-priv accessing high-priv):**
+
 ```bash
 # User accessing admin endpoints
 curl -H "Authorization: Bearer USER_TOKEN" https://TARGET/api/admin/users

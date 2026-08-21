@@ -13,13 +13,16 @@ metadata:
 # Evasion & Anti-Analysis Reasoning
 
 ## Objective
+
 Given a model of the defender's visibility, reason about how to shape actions so they evade real-time detection and impede after-the-fact analysis — without the evasion itself becoming the loudest signal.
 
 ## When to use
+
 - After detection-capability, EDR, or cloud-log analysis has told you what would be seen and you need a concrete evasion plan.
 - When an action cannot be made invisible and you must trade fidelity of evidence against operational cost.
 
 ## Method
+
 - Inventory the defender-visibility inputs feeding this decision with `glob` / `find` / `list`: the detection-capability write-up, EDR telemetry samples, cloud log excerpts, and any own-footprint ledger already produced.
 - Read in bounded, context-scoped slices — the specific rule, the specific event window, the specific artefact — rather than loading whole detection catalogues into context; drive coverage with an exhaustive `grep`/parser pass over the whole catalogue to locate every relevant signal, then read the scoped line range around each — every hit, not just the first.
 - Take the forecasted signals as input and choose the cheapest reduction per signal: blend-in (LOLBins, legit tooling, normal hours), suppression (unhook, log-tamper), or avoidance (different primitive).
@@ -30,6 +33,7 @@ Given a model of the defender's visibility, reason about how to shape actions so
 - If a detection-rule parser or EDR-log decoder is unavailable, fall back to raw-string `grep` over the exports; if the visibility model itself is absent, flag the gap and stop rather than plan evasion against assumed sensors.
 
 ## Signals / outputs
+
 - A per-action evasion plan mapping each expected signal to a mitigation and its residual risk.
 - Explicit call-outs where evasion is louder than the action and should be dropped.
 - Forensic-footprint notes for own-footprint and disk/memory self-checks.

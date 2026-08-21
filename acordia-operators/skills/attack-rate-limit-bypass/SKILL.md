@@ -66,6 +66,7 @@ done
 ```
 
 Tests automatically:
+
 1. X-Forwarded-For IP rotation
 2. URL case variation
 3. HTTP method switching

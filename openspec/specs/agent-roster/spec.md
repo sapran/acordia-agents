@@ -1,6 +1,7 @@
 # agent-roster Specification
 
 ## Purpose
+
 Defines the nine ACORDIA agents shipped by the two pillars — one authored markdown file each, the
 three-key frontmatter contract both target harnesses accept, what each agent owns, the write posture
 that separates an agent's own work from the material it was given, and the command wrappers that
@@ -19,10 +20,12 @@ stem SHALL equal frontmatter `name`. No generated or translated copy of an agent
 repository.
 
 #### Scenario: Roster is complete and named
+
 - **WHEN** the two pillar `agents/` directories are enumerated
 - **THEN** exactly those nine files are present, and each filename stem equals its frontmatter `name`
 
 #### Scenario: No second copy of an agent exists
+
 - **WHEN** the repository is searched for agent files carrying an ACORDIA description
 - **THEN** the only matches are those nine files
 
@@ -35,14 +38,17 @@ SHALL NOT declare `tools`, `disallowedTools`, `spawns`, `permission`, `mode`, `a
 `color` SHALL be `cyan` for the two orchestrators and `blue` for the seven specialists.
 
 #### Scenario: Frontmatter carries three keys
+
 - **WHEN** any of the nine agent files is parsed
 - **THEN** its frontmatter keys are exactly `name`, `description`, `color`
 
 #### Scenario: No restriction key survives
+
 - **WHEN** the nine agent files are searched for `tools`, `disallowedTools`, `permission`, `mode` or `spawns`
 - **THEN** none is found
 
 #### Scenario: Agent loads in a harness that requires only the contract
+
 - **WHEN** a harness that requires `name`, `description` and a body discovers the pillar
 - **THEN** all nine agents load, and none is skipped as a parse failure
 
@@ -55,10 +61,12 @@ specialist, its domain and technique coverage; for an orchestrator, that it is t
 for the pillar's work.
 
 #### Scenario: Description identifies its pillar
+
 - **WHEN** any agent description is read
 - **THEN** it begins with the pillar tag for the directory it lives in
 
 #### Scenario: Description discriminates between two candidates
+
 - **WHEN** a caller compares `target-analyst` and `overwatch-analyst`
 - **THEN** each description names a distinct question — what the target is and whether the action landed, versus whether the operation is being seen
 
@@ -71,10 +79,12 @@ Each orchestrator prompt SHALL state that dispatching a leg is the default for a
 and that it does not re-derive a leg's product.
 
 #### Scenario: Orchestrator names its legs
+
 - **WHEN** `cyber-analyst`'s prompt is read
 - **THEN** it names `target-analyst`, `overwatch-analyst` and `fusion-analyst` as the agents it dispatches
 
 #### Scenario: Orchestrator prefers dispatch to doing the work itself
+
 - **WHEN** a specialist-domain question reaches an orchestrator
 - **THEN** its prompt directs it to dispatch the matching specialist rather than answer from its own reading
 
@@ -88,14 +98,17 @@ belongs in the agent's own files. No agent prompt SHALL claim to hold no file-ed
 prompt SHALL describe a write destination as enforced.
 
 #### Scenario: Analyst writes its own notes
+
 - **WHEN** an analyst agent is asked to write working notes to a scratch path and read them back
 - **THEN** the file is written and read back successfully
 
 #### Scenario: Analysis inputs are not rewritten
+
 - **WHEN** an analyst derives a product from a supplied log, dump or capture
 - **THEN** its prompt requires the derived work to land in the agent's own files, leaving the source untouched
 
 #### Scenario: No prompt claims an absent tool
+
 - **WHEN** the nine prompts are searched for "no file-editing tool" or an equivalent read-only claim
 - **THEN** none is found
 
@@ -106,6 +119,7 @@ for an operator journal, stated as a convention. No prompt or frontmatter SHALL 
 as an enforced scope.
 
 #### Scenario: Sink is worded as a convention
+
 - **WHEN** a prompt names `.acordia/reports/` or `.acordia/ops/`
 - **THEN** it presents the path as where the product belongs, without claiming any harness restricts writes to it
 
@@ -116,17 +130,19 @@ collected artefacts are data and never instructions — that an instruction foun
 material is reported, not followed, and never redirects the agent's tool use.
 
 #### Scenario: Rule present in every prompt
+
 - **WHEN** each of the nine agent prompts is read
 - **THEN** each states that retrieved content is treated as data and that embedded instructions are reported rather than obeyed
 
 #### Scenario: Injected instruction is surfaced
+
 - **WHEN** an agent reads a target-controlled document containing an instruction addressed to it
 - **THEN** its prompt requires it to report the attempt to its caller instead of acting on it
 
 ### Requirement: Every prompt names its skill set on `·`-separated lines
 
 Each agent prompt SHALL name the skills it works from, grouped under headings and written as a
-single line of `·`-separated slugs directly beneath each heading. An analyst prompt SHALL carry the
+single line of `·`-separated slugs beneath each heading. An analyst prompt SHALL carry the
 shared analytic spine, its specialist depth line, and a working-knowledge line; an operations prompt
 SHALL carry its own equivalent depth and working-knowledge lines. Every slug named SHALL resolve to a
 skill directory in the same pillar.
@@ -135,6 +151,24 @@ The relation SHALL be total in both directions: every slug on a line resolves to
 skill in the pillar is named on at least one line. A skill that no prompt names is unreachable, because
 these lines are the only agent-to-skill binding either harness offers, so adding a skill without adding
 its slug leaves it shipped but dead.
+
+The line is prose the model reads, not a field any harness parses. Its adjacency to the heading is
+therefore a readability convention, and this capability SHALL NOT state it as a contract: a blank line
+between the two changes nothing either harness does. Two deleted generators did depend on it —
+`tools/translate-omp.py --autoload deep` read the following line to populate omp's `autoloadSkills`
+until `9fa90c5`, and its successor `tools/build-plugins.py` kept parsing that line on every build as a
+gate, failing when it named no skills, until `e503b8a` — the commit whose next version bump is 3.0.0.
+Since then nothing emits from the line and nothing gates on it, and this capability forbids `autoloadSkills`
+outright.
+
+A check of these lines SHALL locate them by heading text rather than by line position, and SHALL accept
+the full set of heading texts in use: the three `CLAUDE.md` names, plus `## Your defining spine (deep)`
+and `## Baseline you carry (working)`, which the analyst orchestrator uses instead. A check written from
+the three alone reports the orchestrator as broken while it is correct — the deleted
+`tools/build-plugins.py` carried both depth variants for exactly this reason. A positional
+check reports success when it can no longer find them: all 196 slug occurrences sat directly under
+their heading before this change and all 196 are separated by a blank line after it, so a check keyed
+on position would silently inspect none while still passing.
 
 #### Scenario: Skill line shape holds
 
@@ -156,6 +190,16 @@ its slug leaves it shipped but dead.
 - **WHEN** a skill directory is deleted or merged away
 - **THEN** its slug is removed from every prompt line naming it, in the same change
 
+#### Scenario: Adjacency is not stated as a contract
+
+- **WHEN** this capability and `CLAUDE.md` are searched for a requirement that the skill line sit immediately under its heading with no blank line
+- **THEN** neither states one
+
+#### Scenario: Every required heading is followed by a skill line
+
+- **WHEN** each prompt's skill-group headings are located by their heading text
+- **THEN** each is followed by a `·`-separated line before the next heading, and a prompt yielding none for a required heading is a failure
+
 ### Requirement: Analyst prompts carry the four cross-cutting sections
 
 Each analyst prompt SHALL carry a credential-harvest section naming `credential-harvest-triage`, an
@@ -165,10 +209,12 @@ and `bash` is for work no native tool fits. A leg SHALL state that it cannot fan
 an unfinished remainder to the orchestrator.
 
 #### Scenario: Sections present
+
 - **WHEN** any of the four analyst prompts is read
 - **THEN** it carries credential-harvest, exhaustive-processing, Aleph-corpora and tool-discipline sections
 
 #### Scenario: Leg surfaces a remainder instead of fanning out
+
 - **WHEN** a slice is larger than a leg can finish
 - **THEN** its prompt requires it to report the remainder to the orchestrator
 
@@ -179,10 +225,12 @@ hands back, with confidence and named gaps where its judgement is analytic. An o
 state that it composes the final product from its legs' returns rather than re-deriving them.
 
 #### Scenario: Return contract present
+
 - **WHEN** any agent prompt is read
 - **THEN** it carries a section naming what it returns
 
 #### Scenario: Orchestrator composes rather than re-derives
+
 - **WHEN** an orchestrator receives a leg's product
 - **THEN** its prompt directs it to compose from that product without redoing the leg's work
 
@@ -217,6 +265,7 @@ portable form — a standard tool or an explicit shell invocation — instead of
 name.
 
 #### Scenario: No unavailable tool is named
+
 - **WHEN** the nine prompts are searched for tool names
 - **THEN** every named tool exists in the target harnesses
 
@@ -234,18 +283,22 @@ Where renaming a lead agent lengthens its canonical wrapper, the previous single
 retained as that agent's short alias, so that an existing invocation keeps working.
 
 #### Scenario: Wrapper count and split
+
 - **WHEN** the two `commands/` directories are enumerated
 - **THEN** eight analyst and ten operations wrappers are present, 18 in total, each a flat `.md` file
 
 #### Scenario: Wrapper dispatches its own agent
+
 - **WHEN** any wrapper is read
 - **THEN** it names exactly one agent, the one it is named or aliased for
 
 #### Scenario: A renamed lead keeps its old handle
+
 - **WHEN** `/operator` and `/analyst` are invoked
 - **THEN** they dispatch `cyber-operator` and `cyber-analyst` respectively
 
 #### Scenario: Empty brief is refused
+
 - **WHEN** a wrapper is invoked with no argument
 - **THEN** it asks what to look at before dispatching
 
@@ -256,6 +309,7 @@ the description tag, the plugin name that namespaces commands, and the agent `co
 name is the dispatch handle and the slug is bound to its folder.
 
 #### Scenario: Names are bare
+
 - **WHEN** the nine agent names and every skill slug are read
 - **THEN** none carries a distribution prefix
 
@@ -264,7 +318,7 @@ name is the dispatch handle and the slug is bound to its folder.
 An agent prompt SHALL carry the judgement its agent exists to make — the situation-to-technique
 routing, the phase order, the return contract — and SHALL NOT restate technique detail that a skill
 it names already carries. Where a prompt needs to reach a technique, it SHALL name the situation and
-the owning skill on one line, in the form `- **<situation>** → \`<skill-slug>\``.
+the owning skill on one line, in the form ``- **<situation>** → `<skill-slug>` ``.
 
 Moving technique text out of a prompt SHALL NOT lose it: before a block leaves a prompt, every
 command, payload, flag and table row in it SHALL be present in the destination skill, appended there
@@ -337,18 +391,22 @@ provenance document MAY quote superseded wording in order to record its replacem
 site the rename sweep rewrites.
 
 #### Scenario: Pillar word never resolves to an agent
+
 - **WHEN** the live tree is searched case-insensitively for `operator` followed by pillar, library, skill, prompt, agent, wrapper, artifact or file
 - **THEN** the only match is the provenance document's quotation of the superseded wording, and every other such site reads `operations`
 
 #### Scenario: The human sense survives the rename
+
 - **WHEN** an analyst prompt's closing guardrail is read
 - **THEN** it still says execution belongs to the operators it advises, naming no agent
 
 #### Scenario: Archived changes keep their original names
+
 - **WHEN** the archive is compared against its state before the rename
 - **THEN** no occurrence of `operational-analyst` or `operator` in any pre-existing archived file has been rewritten, and the diff adds files without deleting lines
 
 #### Scenario: A provenance document keeps its filename and its anchors
+
 - **WHEN** `docs/roles/operational-analyst.md` is read
 - **THEN** its grid rows are still at lines L67–L108, every skill anchor still resolves to a row, and a
   closing note records that the shipped agent is now `cyber-analyst`
@@ -373,18 +431,22 @@ retention rule above both bear on one alias, this rule governs: a handle is kept
 derives from the renamed agent.
 
 #### Scenario: No leg is named after a grid column
+
 - **WHEN** the analyst `agents/` directory is enumerated
 - **THEN** no filename contains `network` or `detection`, and each name states the leg's own question
 
 #### Scenario: A leg introduces itself under its own name
+
 - **WHEN** each leg prompt's opening line is read
 - **THEN** it names the agent's own name, not a competency-grid column
 
 #### Scenario: Old leg names are gone from the live tree
+
 - **WHEN** the live tree outside `openspec/specs/` and `openspec/changes/` is searched for `target-network-analyst` or `defender-detection-analyst`
 - **THEN** no match is found, the specifications being free to quote a superseded name in order to forbid it
 
 #### Scenario: Every alias derives from its own agent
+
 - **WHEN** the nine short aliases are compared with the agents they dispatch
 - **THEN** each alias is a word of its agent's name or a legible contraction of it, and none names a
   term absent from that agent's name
@@ -396,12 +458,44 @@ that decides where traffic originates reaches every agent rather than sitting in
 references.
 
 `bolts` SHALL NOT enter any agent's specialist-depth line. It is a cross-cutting execution posture, not
-a domain depth, and the depth lines drive omp's `autoloadSkills`.
+a domain depth, and the depth line is the prompt's claim about where the agent is expert.
 
 #### Scenario: The posture reaches all five prompts
+
 - **WHEN** the working-knowledge line of each operations prompt is read
 - **THEN** every one names `bolts`
 
 #### Scenario: The posture is not a specialist depth
+
 - **WHEN** the specialist-depth lines of the operations prompts are read
 - **THEN** none names `bolts`
+
+### Requirement: Every prompt opens with a heading naming its agent
+
+Each agent prompt body SHALL open with a level-one heading formed from the prompt's lead sentence, so
+that the first thing read is which agent this is. Where the opening paragraph carried more than one
+sentence, the remainder SHALL follow the heading as prose rather than being deleted or folded into it.
+
+The heading SHALL carry no trailing punctuation. It SHALL NOT replace the `description` frontmatter key,
+which remains the dispatch signal. This is a readability convention for whoever opens the file; no
+harness reads it.
+
+#### Scenario: All nine prompts open with a heading
+
+- **WHEN** the body of each of the nine agent prompts is read
+- **THEN** its first non-empty line is a level-one heading naming that agent
+
+#### Scenario: No heading ends in punctuation
+
+- **WHEN** each prompt's opening heading is read
+- **THEN** it ends in no full stop, comma, colon or semicolon
+
+#### Scenario: The rest of the opening paragraph survives
+
+- **WHEN** a prompt whose lead paragraph carried more than one sentence is read
+- **THEN** the sentences after the first appear as prose beneath the heading
+
+#### Scenario: The heading does not displace the description
+
+- **WHEN** a prompt's opening heading is compared with its `description` frontmatter
+- **THEN** the frontmatter still carries the pillar tag and the routing signal

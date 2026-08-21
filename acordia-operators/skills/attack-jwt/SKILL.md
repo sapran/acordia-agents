@@ -29,6 +29,7 @@ echo "HEADER.PAYLOAD.SIG" | cut -d. -f2 | base64 -d 2>/dev/null | jq .
 ```
 
 Check for:
+
 - Algorithm (`alg` field): RS256, HS256, none
 - Claims: `role`, `is_admin`, `sub`, `exp`, `aud`, `iss`
 - Key ID (`kid`): SQL injection, path traversal potential

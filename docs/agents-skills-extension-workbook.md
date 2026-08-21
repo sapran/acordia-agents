@@ -9,7 +9,7 @@ directory and CyberStrike loads it on next start.
 > `packages/cyberstrike/src/agent/agent.ts` and are **out of scope** here. See
 > [Markdown-only limits](#markdown-only-limits) for what those are and the
 > markdown equivalent.
-
+>
 > **Reading this inside acordia-agents:** this workbook describes CyberStrike's own
 > extension surface, which is why it talks about `mode`, `permission` maps and a
 > `skills:` list. As of distribution 3.0.0 this repository ships none of that — an
@@ -22,7 +22,7 @@ Agents and skills are **two independent systems** loaded by **two different code
 paths**. An agent works with zero skills; a skill ships without any agent. They
 meet at exactly one point: an agent's `skills:` list *references* skills by name.
 
-```
+```text
 AGENT track (always):   pick mode ─▶ set permissions ─▶ write prompt ─▶ (reference skills, optional)
 SKILL track (optional): only if the methodology doesn't exist yet ─▶ author SKILL.md ─▶ agent references it
 ```
@@ -66,7 +66,7 @@ Skill markdown is discovered by `Skill.state()`
 live in a folder named after the skill. Load order (later entries win on a name
 collision):
 
-```
+```text
 1. External (Claude Code compatible)   glob: skills/**/SKILL.md
      global:  ~/.claude/skills/**        ~/.agents/skills/**
      project: <up-tree>/.claude/skills/** <up-tree>/.agents/skills/**
@@ -190,7 +190,7 @@ to the skill folder.
 
 Verification (`SkillSigning.verify`) resolves a status per skill:
 
-```
+```text
 no sha256                                   → "unverified"   (loads normally)
 sha256 present, mismatches body             → "tampered"     ⚠ SKIPPED — not loaded
 sha256 matches, signed_by ≠ official        → "community"
@@ -382,6 +382,7 @@ Bypass rate limiting and exhaust backend resources via expensive GraphQL queries
 - No type check needed for the markdown path (no TypeScript changes).
 
 <a name="markdown-only-limits"></a>
+
 ### Markdown-only limits
 
 These require editing `agent.ts` (native path) and are **not achievable** in
@@ -657,4 +658,3 @@ channel at any path. That omp scopes a tool by name only, never by path, is an
 additional limitation rather than the reason. `scope_check`'s substitution
 follows the same logic as the analyst pillar's read-only posture: an absent or
 silent scope file means a target is **untested**, never implicitly in scope.
-

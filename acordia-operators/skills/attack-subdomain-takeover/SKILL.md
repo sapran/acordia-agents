@@ -67,6 +67,7 @@ subjack -w subs.txt -t 100 -o takeover.txt
 ```
 
 Checks 20 cloud services:
+
 - GitHub Pages, Heroku, Shopify, Tumblr, WordPress
 - AWS S3, AWS Elastic Beanstalk, Azure Web Apps
 - Netlify, Vercel, Fastly, Fly.io
@@ -101,6 +102,7 @@ done
 ### Phase 5: Claim & Verify
 
 After confirming a dangling CNAME:
+
 1. Create the resource on the target service (e.g., GitHub Pages repo, S3 bucket)
 2. Serve a harmless proof page (e.g., `cyberstrike-takeover-proof.html`)
 3. Verify it's accessible at `subdomain.TARGET.com`

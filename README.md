@@ -17,7 +17,7 @@ Two pillars, shipped as two independently installable plugins so either can be t
 
 Future pillars (Collection, Reflection, Direction, Independent action) may follow the same shape as they get compiled.
 
-```
+```text
 acordia-agents/
 ├── acordia-analysts/                 # plugin root — installed as-is
 │   ├── .claude-plugin/plugin.json
@@ -55,7 +55,7 @@ In omp, marketplace content is delivered by the `claude-plugins` capability prov
 
 **opencode was dropped in 3.0.0**, with the shell installer that was its only route in and the generator that existed to express its permission maps; opencode users have no upgrade path and must switch harness.
 
-#### Upgrading from 3.2.0
+### Upgrading from 3.2.0
 
 **4.0.0 renames agents, so four invocations disappear.** Every agent is now named for the question it
 answers rather than for the pillar it leads or the competency-grid column it came from:
@@ -90,7 +90,7 @@ Claude Code picks up a new version only on uninstall-then-reinstall. In omp, che
 
 Agents are dispatched by name, from a picker shared with the harness's own, so the distribution carries one slash-command wrapper per agent to give a namespaced entry point. **The namespace is the plugin name**, applied by the harness itself:
 
-```
+```text
 /acordia-analysts:fusion          what all of it together means, and how good the take is
 /acordia-operators:webapp         OWASP WSTG testing of a web target
 /acordia-operators:cyber-operator hand an authorised engagement to the orchestrator
