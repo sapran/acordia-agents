@@ -5,9 +5,10 @@ metadata:
   acordia:
     family: target-modelling
     grid_row: target-mission-analysis
-    grid_deep_in: ['T&N']
+    grid_deep_in: [Mission]
     grid_working_in: [Core]
-    source: docs/roles/operational-analyst.md#L79
+    row: target-mission-analysis
+    source: docs/roles/operational-analyst.md
 ---
 
 # Target Business/Mission Analysis

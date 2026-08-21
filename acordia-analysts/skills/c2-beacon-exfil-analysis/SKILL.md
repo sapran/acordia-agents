@@ -6,8 +6,9 @@ metadata:
     family: defender-reading
     grid_row: c2-beacon-exfil-analysis
     grid_deep_in: [Def]
-    grid_working_in: [Fus]
-    source: docs/roles/operational-analyst.md#L96
+    grid_working_in: [Coll]
+    row: c2-beacon-exfil-analysis
+    source: docs/roles/operational-analyst.md
 ---
 
 # C2 / Beacon / Exfil-Signal Analysis

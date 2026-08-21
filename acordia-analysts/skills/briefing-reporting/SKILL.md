@@ -6,8 +6,9 @@ metadata:
     family: analytic-spine
     grid_row: briefing-reporting
     grid_deep_in: [Core]
-    grid_working_in: [Fus]
-    source: docs/roles/operational-analyst.md#L76
+    grid_working_in: [Coll]
+    row: briefing-reporting
+    source: docs/roles/operational-analyst.md
 ---
 
 # Briefing & Written Reporting

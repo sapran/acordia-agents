@@ -5,9 +5,10 @@ metadata:
   acordia:
     family: analytic-spine
     grid_row: outcome-judgement
-    grid_deep_in: [Core, 'T&N']
-    grid_working_in: [Fus]
-    source: docs/roles/operational-analyst.md#L74
+    grid_deep_in: [Core, Mission, Terrain]
+    grid_working_in: [Coll]
+    row: outcome-judgement
+    source: docs/roles/operational-analyst.md
 ---
 
 # Outcome Judgement (End Achieved)

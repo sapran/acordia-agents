@@ -1,11 +1,11 @@
 ---
-description: Hand an operation to the senior cyber analyst — target picture, method/timing/risk, and the end-neutral loop.
+description: Hand an operation to the senior cyber analyst — operating picture, method/timing/risk, and the end-neutral loop.
 argument-hint: '[what the operation needs decided]'
 ---
 
 Hand the work below to the `cyber-analyst` agent (ACORDIA Analysis), which orchestrates this pillar.
 
-It holds the target picture, decides method, timing and risk, and runs the end-neutral loop: did we achieve the effect or collect the intel, and what now. It directs the three analysis legs itself.
+It holds the operating picture, decides method, timing and risk, and runs the end-neutral loop: did we achieve the effect, collect the intel, or hold the access, and what now. It directs the four analysis legs and fuses their reads itself, and its product goes to a human operator who acts on it.
 
 **Brief:** $ARGUMENTS
 

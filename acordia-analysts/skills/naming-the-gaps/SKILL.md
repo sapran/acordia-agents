@@ -6,8 +6,9 @@ metadata:
     family: analytic-spine
     grid_row: naming-the-gaps
     grid_deep_in: [Core]
-    grid_working_in: [Fus]
-    source: docs/roles/operational-analyst.md#L68
+    grid_working_in: [Coll]
+    row: naming-the-gaps
+    source: docs/roles/operational-analyst.md
 ---
 
 # Naming the Gaps

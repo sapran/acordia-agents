@@ -5,9 +5,10 @@ metadata:
   acordia:
     family: take-handling
     grid_row: nontechnical-context-integration
-    grid_deep_in: [Fus]
+    grid_deep_in: [Mission]
     grid_working_in: []
-    source: docs/roles/operational-analyst.md#L101
+    row: nontechnical-context-integration
+    source: docs/roles/operational-analyst.md
 ---
 
 # Non-Technical Context Integration

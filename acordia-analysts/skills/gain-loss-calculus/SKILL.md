@@ -7,7 +7,8 @@ metadata:
     grid_row: gain-loss-calculus
     grid_deep_in: [Core]
     grid_working_in: []
-    source: docs/roles/operational-analyst.md#L75
+    row: gain-loss-calculus
+    source: docs/roles/operational-analyst.md
 ---
 
 # Gain/Loss Calculus & Re-Planning

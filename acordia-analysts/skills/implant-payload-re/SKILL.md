@@ -6,8 +6,9 @@ metadata:
     family: evidence-forensics
     grid_row: implant-payload-re
     grid_deep_in: [Def]
-    grid_working_in: ['T&N']
-    source: docs/roles/operational-analyst.md#L97
+    grid_working_in: [Terrain]
+    row: implant-payload-re
+    source: docs/roles/operational-analyst.md
 ---
 
 # Implant/Payload Behaviour & Reverse-Engineering
@@ -60,4 +61,4 @@ Credential material embedded in payloads — hardcoded strings, encrypted config
 
 **Cross-cutting**
 
-- Payload-embedded credentials frequently have *very* broad `reuse-potential` inside their intended deployment scope (all bots authenticating to the same C2, all sample instances sharing an XOR key) but classifying reuse against the target requires input from `target-analyst`. Classification and reporting via [`credential-harvest-triage`](../credential-harvest-triage/SKILL.md); the report cites offset within the binary and a decryption-method identifier, never the raw credential.
+- Payload-embedded credentials frequently have *very* broad `reuse-potential` inside their intended deployment scope (all bots authenticating to the same C2, all sample instances sharing an XOR key) but classifying reuse against the target requires input from `terrain-analyst`. Classification and reporting via [`credential-harvest-triage`](../credential-harvest-triage/SKILL.md); the report cites offset within the binary and a decryption-method identifier, never the raw credential.

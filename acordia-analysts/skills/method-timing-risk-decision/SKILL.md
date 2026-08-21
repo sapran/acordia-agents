@@ -6,8 +6,9 @@ metadata:
     family: analytic-spine
     grid_row: method-timing-risk-decision
     grid_deep_in: [Core]
-    grid_working_in: ['T&N', Def, Fus]
-    source: docs/roles/operational-analyst.md#L73
+    grid_working_in: [Mission, Terrain, Def, Coll]
+    row: method-timing-risk-decision
+    source: docs/roles/operational-analyst.md
 ---
 
 # Method / Timing / Risk Decision

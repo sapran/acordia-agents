@@ -6,8 +6,9 @@ metadata:
     family: analytic-spine
     grid_row: analytic-tooling-scripting
     grid_deep_in: [Core]
-    grid_working_in: ['T&N', Def, Fus]
-    source: docs/roles/operational-analyst.md#L107
+    grid_working_in: [Mission, Terrain, Def, Coll]
+    row: analytic-tooling-scripting
+    source: docs/roles/operational-analyst.md
 ---
 
 # Analytic Tooling & Scripting

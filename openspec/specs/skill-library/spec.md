@@ -2,21 +2,25 @@
 
 ## Purpose
 
-Defines the skill libraries the two pillars ship — where a skill lives, the frontmatter contract both
-harnesses parse, the description that selects it, the analyst library's one-to-one derivation from the
-competency grid, the operations library's upstream provenance, and the reading and reference-file
-disciplines their bodies follow.
+Defines the analyst skill library — where a skill lives, the frontmatter contract both
+harnesses parse, the description that selects it, its one-to-one derivation from the competency grid,
+and the reading and reference-file disciplines its bodies follow.
 
 ## Requirements
 
 ### Requirement: Skills live in their own pillar under a plain slug
 
-Each skill SHALL live at `acordia-analysts/skills/<slug>/SKILL.md` or
-`acordia-operators/skills/<slug>/SKILL.md`, one directory per skill. The slug SHALL be kebab-case
-matching `^[a-z0-9]+(-[a-z0-9.]*)*$`, SHALL carry no pillar or distribution prefix, and SHALL equal
-the frontmatter `name`, because both harnesses default a skill's name to its directory name. A skill
-SHALL exist in exactly one pillar; no skill directory SHALL be duplicated across the two, and no
-generated or translated copy of a skill SHALL exist in the repository.
+Each skill SHALL live at `acordia-analysts/skills/<slug>/SKILL.md`, one directory per skill. The slug
+SHALL be kebab-case matching `^[a-z0-9]+(-[a-z0-9.]*)*$`, SHALL carry no pillar or distribution prefix,
+and SHALL equal the frontmatter `name`, because both harnesses default a skill's name to its directory
+name. `acordia-analysts/skills/` is the only path root a skill may occupy: no `SKILL.md` SHALL exist
+outside it, and no generated or translated copy of a skill SHALL exist in the repository.
+
+How many skills that root holds is stated by *The library is the analyst library, sized by the grid
+rather than by this spec*, not here, because the count moves with the grid. The scenario below keeps
+its published title, *Library counts are what each pillar ships*, though there is now one pillar:
+OpenSpec matches a MODIFIED block's scenarios against the published spec by title, so retitling one
+reads as dropping it and fails the archive step. The title is legacy; its body carries the truth.
 
 #### Scenario: Slug, name and directory agree
 
@@ -26,22 +30,39 @@ generated or translated copy of a skill SHALL exist in the repository.
 #### Scenario: One copy per skill
 
 - **WHEN** the repository is enumerated for `SKILL.md` files
-- **THEN** every one lives under exactly one of the two pillars' `skills/` directories
+- **THEN** every one lives under `acordia-analysts/skills/`, exactly once
+
+#### Scenario: No second library root exists
+
+- **WHEN** the repository is searched for a `skills/` directory outside `acordia-analysts/`
+- **THEN** none is found
 
 #### Scenario: Library counts are what each pillar ships
 
-- **WHEN** the two libraries are counted
-- **THEN** the analyst pillar holds 42 skills and the operations pillar holds 40, 82 in total
+- **WHEN** the library is counted
+- **THEN** the analyst pillar is the only pillar, and its total is the grid's arithmetic rather than a figure fixed here or a two-pillar sum
 
 ### Requirement: Skill frontmatter contract
 
 Each `SKILL.md` SHALL declare `name` (lowercase-hyphen, 1-64 characters) and `description` (1-1024
-characters), and MAY declare `metadata`. It SHALL declare no other key. Every CyberStrike-only field
-SHALL stay dropped: `category`, `version`, `author`, `tags`, `owasp_id`, `cis_id`, `cis_benchmark`,
-`tech_stack`, `cwe_ids`, `chains_with`, `prerequisites`, `severity_boost`. The signing triple
-`sha256` / `signature` / `signed_by` SHALL stay dropped, because a hash that no longer matches an
-edited body is worse than no hash. No skill SHALL declare a tool list, a permission map, or any
-harness-restriction field.
+characters), and MAY declare `metadata`. It SHALL declare no other key. A `metadata` block SHALL carry
+the `acordia` key alone: with the ported library gone, no `metadata.cyberstrike` block remains anywhere
+in the tree, and one SHALL NOT be reintroduced except by a change that ports material and needs a
+provenance record for it.
+
+Every CyberStrike-only field SHALL stay dropped: `category`, `version`, `author`, `tags`, `owasp_id`,
+`cis_id`, `cis_benchmark`, `tech_stack`, `cwe_ids`, `chains_with`, `prerequisites`, `severity_boost`.
+The prohibition outlives the port that brought these keys in. The contract has room for exactly three
+keys and no harness reads any of the twelve, so the list is what distinguishes a field that is merely
+unused from one that is excluded: deleting it along with the library that introduced it would leave
+nothing standing between a future import and twelve keys nothing consumes.
+
+The signing triple `sha256` / `signature` / `signed_by` SHALL stay dropped. Every body here is
+hand-edited and no step recomputes a digest, so a retained hash is stale on its first edit; a stale
+digest is worse than none, because any verifier that honours it reads a legitimately edited skill as
+tampered and drops it without saying so, while the body sits intact on disk.
+
+No skill SHALL declare a tool list, a permission map, or any harness-restriction field.
 
 #### Scenario: Only contract fields present
 
@@ -57,6 +78,11 @@ harness-restriction field.
 
 - **WHEN** any skill's frontmatter is inspected
 - **THEN** it carries no `sha256`, `signature`, `signed_by`, `tools`, or `permission` key
+
+#### Scenario: No provenance block survives the strip
+
+- **WHEN** any skill's `metadata` block is read
+- **THEN** it carries `acordia` and no `cyberstrike` key, because the library that recorded upstream attribution is gone
 
 ### Requirement: The description is the selection surface
 
@@ -83,13 +109,13 @@ Where two are inseparable, the two skills SHALL be merged rather than shipped as
 
 #### Scenario: Boilerplate openings are absent
 
-- **WHEN** all 82 descriptions are read
+- **WHEN** every description under `acordia-analysts/skills/` is read
 - **THEN** none begins with `Use when`, `Apply when`, `Use to`, `Use this skill` or an equivalent selection-boilerplate clause
 
 #### Scenario: The worked collision is separated
 
-- **WHEN** `macos-postexploit` and `windows-postexploit` descriptions are compared
-- **THEN** each names its platform's own mechanisms — TCC and keychain against LSASS and DPAPI — rather than a shared "host post-exploitation" phrasing
+- **WHEN** `multi-source-fusion` and `maintaining-operating-picture` descriptions are compared
+- **THEN** one names consolidating disconnected strands into one coherent picture and the other names stopping an already-fused picture from rotting — timestamping, decay on perishable facts, re-verification before reliance — rather than a shared "target picture" phrasing
 
 ### Requirement: One skill per competency-grid row
 
@@ -126,7 +152,7 @@ the only agent-to-skill binding either harness offers.
 
 #### Scenario: No skill is orphaned
 
-- **WHEN** every analyst skill slug is searched for in the four analyst prompts
+- **WHEN** every analyst skill slug is searched for in the five analyst prompts
 - **THEN** each appears on at least one prompt's skill line
 
 ### Requirement: Method contract for evidence-reading skills
@@ -226,11 +252,11 @@ The library SHALL contain a skill `acordia-analysts/skills/credential-harvest-tr
 
 The **bucket partition** step SHALL enumerate five buckets and their target legs:
 
-- Bucket A — identity / directory / cloud-controlplane material → `target-analyst`
+- Bucket A — identity / directory / cloud-controlplane material → `terrain-analyst`
 - Bucket B — host-forensic material (memory, SAM, DPAPI, keychain, shadow) → whichever leg holds the host under analysis
-- Bucket C — web / API auth material → `target-analyst`
+- Bucket C — web / API auth material → `terrain-analyst`
 - Bucket D — log-artefact material → `overwatch-analyst`
-- Bucket E — implant / payload RE material → cross-cutting via `implant-payload-re`, reported to `fusion-analyst`
+- Bucket E — implant / payload RE material → cross-cutting via `implant-payload-re`, reported to `cyber-analyst`, which holds the fused picture itself
 
 Each bucket's slice SHALL be dispatched with only that slice. The procedure SHALL state that per-leg classifications feed back into `multi-source-fusion` for cross-leg correlation.
 
@@ -247,7 +273,12 @@ Each bucket's slice SHALL be dispatched with only that slice. The procedure SHAL
 #### Scenario: Bucket partition maps to existing legs
 
 - **WHEN** the bucket-partition step is read
-- **THEN** every bucket routes to one of `target-analyst`, `overwatch-analyst`, `fusion-analyst`, or the cross-cutting `implant-payload-re` skill, and no bucket routes to a leg not on the current whitelist
+- **THEN** every bucket routes to one of `terrain-analyst`, `overwatch-analyst`, `cyber-analyst`, or the cross-cutting `implant-payload-re` skill, and no bucket routes to a leg not on the current whitelist
+
+#### Scenario: No bucket names a retired leg
+
+- **WHEN** the bucket-partition step is searched for `target-analyst` or `fusion-analyst`
+- **THEN** neither is found, because neither agent exists
 
 #### Scenario: Not a grid row
 
@@ -256,9 +287,27 @@ Each bucket's slice SHALL be dispatched with only that slice. The procedure SHAL
 
 ### Requirement: `analyst-loop` skill exists
 
-The library SHALL contain a skill `acordia-analysts/skills/analyst-loop/SKILL.md` naming the end-neutral analytic loop — target-read (through the T&N leg), defender-read (through the Def leg), fusion (through the Fus leg), judgement (calibrated, via spine skills), next-move — as a first-class procedural cross-cutting skill.
+The library SHALL contain a skill `acordia-analysts/skills/analyst-loop/SKILL.md` naming the
+end-neutral analytic loop — mission-read (through `mission-analyst`), terrain-read (through
+`terrain-analyst`), defender-read (through `overwatch-analyst`), take-read (through
+`collection-analyst`), judgement (calibrated, via spine skills), next-move — as a first-class
+procedural cross-cutting skill.
 
-The skill body SHALL contain: (a) a **cross-cutting notice** declaring the skill procedural and non-grid; (b) a **loop-shape** section naming the five steps in one sentence each; (c) a **loop-invariants** section stating end-neutrality (every pass reaches a judgement plus a next move), gap-naming on every judgement, calibrated confidence on every judgement, and passive posture; (d) a **where-this-runs** paragraph stating the loop is the orchestrator's workflow, and that a leg session matching this skill surfaces the need for a full pass back to the orchestrator rather than attempting the loop itself.
+The loop SHALL carry no delegated fusion step. The fused picture is held by `cyber-analyst` itself, so
+the four leg reads converge in the orchestrator's own hands rather than in a leg's, and no step of the
+loop SHALL name a leg that fuses on the orchestrator's behalf.
+
+Because the distribution ships no executing agent, the loop's judgement step SHALL rest on evidence
+reported by the four legs and by the human operator the product is handed to, and its next-move step
+SHALL name a move for that person rather than a dispatch the pillar performs itself.
+
+The skill body SHALL contain: (a) a **cross-cutting notice** declaring the skill procedural and
+non-grid; (b) a **loop-shape** section naming the six steps in one sentence each; (c) a
+**loop-invariants** section stating end-neutrality (every pass reaches a judgement plus a next move),
+gap-naming on every judgement, calibrated confidence on every judgement, and passive posture; (d) a
+**where-this-runs** paragraph stating the loop is the orchestrator's workflow, and that a leg session
+matching this skill surfaces the need for a full pass back to the orchestrator rather than attempting
+the loop itself.
 
 The skill's `description` SHALL be authored for trigger quality — stating WHEN to run the loop, not WHAT it is — so description-match selection fires cleanly on operator sessions asking for a fresh analytic round.
 
@@ -272,7 +321,17 @@ The skill SHALL declare its cross-cutting/procedural nature and SHALL NOT be add
 #### Scenario: Body carries the four required sections
 
 - **WHEN** the loop skill is inspected
-- **THEN** it contains a cross-cutting notice, a loop-shape section naming five steps, a loop-invariants section, and a where-this-runs paragraph
+- **THEN** it contains a cross-cutting notice, a loop-shape section naming six steps, a loop-invariants section, and a where-this-runs paragraph
+
+#### Scenario: The loop routes through the four legs and fuses nowhere
+
+- **WHEN** the loop-shape section is read
+- **THEN** it names mission-read, terrain-read, defender-read, take-read, judgement and next-move, routes the first four through `mission-analyst`, `terrain-analyst`, `overwatch-analyst` and `collection-analyst`, and names no leg holding the fused picture
+
+#### Scenario: Judgement rests on reported evidence
+
+- **WHEN** the judgement and next-move steps are read
+- **THEN** the judgement is drawn from evidence the legs and the human operator report, and the next move is one that operator makes, because no agent in the distribution acts on a target
 
 #### Scenario: Trigger-quality description
 
@@ -291,7 +350,7 @@ The skill SHALL declare its cross-cutting/procedural nature and SHALL NOT be add
 
 #### Scenario: Legs do not reference the loop skill
 
-- **WHEN** any leg agent (`target-analyst`, `overwatch-analyst`, `fusion-analyst`) is inspected
+- **WHEN** any leg agent (`mission-analyst`, `terrain-analyst`, `overwatch-analyst`, `collection-analyst`) is inspected
 - **THEN** it does not name `analyst-loop`
 
 ### Requirement: `exhaustive-data-processing` skill exists
@@ -412,312 +471,83 @@ The `## Method` contract for evidence-reading skills SHALL NOT apply to this ski
 - **WHEN** the guardrails section is read
 - **THEN** ingestion, entity writes, tagging, cross-reference triggering and deletion are named as out of scope, and the READ-scoped API key is named as the enforcement point
 
-### Requirement: Thirty operations skills cloned from CyberStrike
-
-`acordia-operators/skills/` SHALL contain the thirty skill directories cloned from CyberStrike, each
-holding a `SKILL.md`:
-
-- **26 standalone technique skills** cloned from `.cyberstrike/skill/<name>/SKILL.md`: `ad-security`,
-  `attack-cache-poison`, `attack-cors`, `attack-graphql`, `attack-host-header`,
-  `attack-idor-automation`, `attack-jwt`, `attack-open-redirect`, `attack-prototype-pollution`,
-  `attack-race-condition`, `attack-rate-limit-bypass`, `attack-request-smuggling`, `attack-ssrf`,
-  `attack-ssti`, `attack-subdomain-takeover`, `attack-websocket`, `attack-xxe`, `aws-postexploit`,
-  `azure-postexploit`, `cicd-attacks`, `ebpf-attacks`, `k8s-postexploit`, `kerberos-attacks`,
-  `macos-postexploit`, `recon-methodology`, `windows-postexploit`.
-- **4 OWASP WSTG bundle skills** cloned from
-  `.cyberstrike/skill/WEB/OWASP_WSTG_4.2/<name>/SKILL.md`: `wstg-recon-config`, `wstg-auth-session`,
-  `wstg-injection`, `wstg-logic-client-api`.
-
-`bun-file-io`, the twenty-seventh standalone CyberStrike skill, SHALL NOT be cloned: it documents Bun
-file APIs for CyberStrike's own development and carries no security capability.
-
-The library MAY additionally contain skills **authored in this repository** rather than cloned. Such a
-skill SHALL NOT carry `metadata.cyberstrike`, because that block is upstream attribution and claiming
-it for local text would corrupt the port record. Nine exist as of 4.1.0: `operation-journal`,
-`gcp-postexploit`, `linux-postexploit`, the five `mobile-*` skills, and `bolts`.
-`docs/roles/operator.md` SHALL record them as authored here, so the provenance record stays a
-complete account of what the pillar contains.
-
-#### Scenario: Library membership is exact
-
-- **WHEN** `acordia-operators/skills/` is listed
-- **THEN** the thirty cloned directories are present, each containing a `SKILL.md`, alongside the skills authored here
-
-#### Scenario: Development skill excluded
-
-- **WHEN** the library is inspected for `bun-file-io`
-- **THEN** it is absent
-
-#### Scenario: Authored skills are not dressed as ported
-
-- **WHEN** a skill authored in this repository is inspected
-- **THEN** it carries no `metadata.cyberstrike`, and `docs/roles/operator.md` lists it as authored here
-
-### Requirement: Provenance recorded in metadata
-
-Each cloned skill SHALL record its origin under `metadata.cyberstrike` as the repository-relative source path it was cloned from, so a diff against upstream is mechanical.
-
-#### Scenario: Source path recorded
-
-- **WHEN** any operations skill's `metadata.cyberstrike` block is read
-- **THEN** it names the `.cyberstrike/skill/...` path the body was cloned from
-
-### Requirement: Bodies carry no tool the harness lacks
-
-A cloned skill body SHALL name no CyberStrike platform tool. Every `attack_script <name>` invocation SHALL be replaced by a standard tool invocation or an explicit inline command carrying the same testing intent, and no body SHALL reference `add_intel`, `report_vulnerability`, `update_vrt_check`, `methodology_status`, `scope_check`, `ensure_tools`, `hackbrowser`, or the `skill` CLI.
-
-The eleven skills that invoke `attack_script` upstream — `attack-jwt`, `attack-idor-automation`, `attack-race-condition`, `attack-subdomain-takeover`, `attack-ssti`, `attack-rate-limit-bypass`, `attack-xxe`, `attack-graphql`, `attack-ssrf`, `attack-open-redirect`, `attack-cors` — SHALL retain the same testing intent, expressed as a standard tool invocation or an explicit inline command.
-
-#### Scenario: No platform tool named
-
-- **WHEN** the thirty skill bodies are searched for CyberStrike platform tool names
-- **THEN** none is found
-
-#### Scenario: Replaced invocation keeps the intent
-
-- **WHEN** a former `attack_script` step is compared to its replacement
-- **THEN** the replacement performs the same test using a standard tool or an explicit command, rather than dropping the step
-
-#### Scenario: Attack scripts are not vendored
-
-- **WHEN** the repository is inspected after the change
-- **THEN** no Python or other executable attack script has been added — the repository remains markdown-only
-
-### Requirement: Bodies otherwise preserve upstream methodology
-
-Apart from the frontmatter reduction and the tool substitutions, a cloned body SHALL preserve its upstream payloads, commands, tables, and phase structure. Cloning SHALL NOT be an occasion to rewrite technique content, because the upstream body is the reviewed artifact.
-
-#### Scenario: Technique content unchanged
-
-- **WHEN** a cloned body is diffed against its CyberStrike source
-- **THEN** the differences are confined to frontmatter reduction, tool substitutions, and the section removals required by them
-
-### Requirement: Corpus skills are not published
-
-The generated compliance and technique corpora under `.cyberstrike/skill/` — CIS benchmarks (5,000 skills), NIST control families (1,606), MITRE ATT&CK enterprise, mobile, and ICS (898 combined), and the 121 individual WSTG leaf skills — SHALL NOT be cloned into this pillar. Both harnesses list every discovered skill's name and description in the system prompt, so publishing them would add roughly 190,000 tokens to every session.
-
-#### Scenario: Corpus absent from the library
-
-- **WHEN** `acordia-operators/skills/` is listed
-- **THEN** no `cis-*`, NIST-control, or MITRE-technique skill directory is present, and the only `wstg-*` entries are the four bundles
-
-#### Scenario: Exclusion is recorded
-
-- **WHEN** `docs/roles/operator.md` is read
-- **THEN** it records the corpora that were not published and the prompt-cost reason
-
-### Requirement: A technique has exactly one owning skill
-
-Every technique the operations pillar ships SHALL have exactly one owning skill. Two skills SHALL NOT
-carry the same technique, and a prompt SHALL NOT carry a technique a skill owns. Where a technique
-plausibly belongs to two skills, the owner SHALL be stated in both bodies as an explicit boundary
-sentence rather than left to the reader.
-
-#### Scenario: No technique has two owners
-
-- **WHEN** a command or payload appears in one operations skill
-- **THEN** it does not appear in another, unless one of the two names the other as the owner
-
-#### Scenario: Boundary is written down
-
-- **WHEN** two skills border on the same ground
-- **THEN** each body states which of them owns what
-
-### Requirement: `operation-journal` skill exists
-
-`acordia-operators/skills/operation-journal/SKILL.md` SHALL carry the `.acordia/ops/` contract that
-the five operations prompts previously restated: the file layout (`scope.md`, `intel.md`, `coverage.md`,
-`findings/<slug>.md`, `reports/<name>.md`), the severity scale
-(`critical`/`high`/`medium`/`low`/`informational`), the confidence scale
-(`confirmed`/`high`/`medium`/`low`), the logging discipline (log intel on discovery rather than in a
-batch; read `coverage.md` before claiming a category complete; read `scope.md` before touching a new
-target), the evidence-quality rule (the request sent, a concrete response summary, and the reasoning
-that proves or disproves the finding), the finding-file shape, and the chaining rule that a chain's
-severity is the chain's own, not the maximum of its parts.
-
-#### Scenario: Skill carries the whole contract
-
-- **WHEN** `operation-journal` is read
-- **THEN** it states the five file paths, both scales, the logging discipline, the evidence-quality rule, the finding-file shape and the chaining rule
-
-#### Scenario: Prompts stop restating it
-
-- **WHEN** the five operations prompts are searched for the severity or confidence scale
-- **THEN** only domain-specific additions remain, and the scales themselves appear once, in the skill
-
-### Requirement: `gcp-postexploit` skill exists
-
-`acordia-operators/skills/gcp-postexploit/SKILL.md` SHALL cover Google Cloud post-exploitation on the
-pattern the pillar already uses for `aws-`, `azure-` and `k8s-postexploit`: enumeration of the
-identity and project surface, privilege-escalation paths, data and secret access, persistence, and
-the logging surface the actions touch. It exists because `cloud-security` claims GCP in its
-description and carries GCP technique text; a claim with no skill behind it is the defect this closes.
-
-#### Scenario: GCP claim has a skill behind it
-
-- **WHEN** `cloud-security`'s description and technique lines name GCP
-- **THEN** `gcp-postexploit` resolves in the same pillar and carries the GCP technique detail
-
-#### Scenario: Shape matches its siblings
-
-- **WHEN** `gcp-postexploit` is compared with `azure-postexploit`
-- **THEN** it follows the same section order and depth
-
-### Requirement: Five mobile skills exist
-
-The operations library SHALL contain `mobile-data-storage`, `mobile-crypto-keys`,
-`mobile-platform-ipc`, `mobile-resilience-bypass` and `mobile-instrumentation`, carrying the technique
-detail previously held in `mobile-application`'s `## Key techniques by area`. Each SHALL state what it
-owns and SHALL NOT compete with its siblings on description. Network, authentication and
-business-logic testing for mobile targets SHALL be pointed at the skills that already own them
-(`attack-jwt`, `attack-idor-automation`, the `wstg-*` bundles) rather than duplicated.
-
-#### Scenario: Five directories present
-
-- **WHEN** `acordia-operators/skills/` is listed
-- **THEN** the five `mobile-*` skills are present, each with a `SKILL.md`
-
-#### Scenario: The admission is gone
-
-- **WHEN** `mobile-application`'s prompt is searched for a claim that the pillar ships no mobile skill library
-- **THEN** none is found, and the five slugs appear on its skill lines
-
-#### Scenario: Siblings do not compete
-
-- **WHEN** the five descriptions are compared pairwise
-- **THEN** each names work the other four do not cover
-
-### Requirement: `attack-sqli` skill exists
-
-`acordia-operators/skills/attack-sqli/SKILL.md` SHALL carry SQL injection as a first-class skill,
-holding the detection payloads, database fingerprinting, union-based extraction, blind-SQLi and
-`sqlmap` reference content that `wstg-injection` carried at lines 12–104. It SHALL follow the shape of
-`attack-ssrf` and `attack-xxe`, and SHALL carry the `metadata.cyberstrike` `source` and `commit` of the
-bundle the text came from, because the text is moved rather than authored.
-
-#### Scenario: SQLi has its own skill
-
-- **WHEN** the `attack-*` family is enumerated
-- **THEN** `attack-sqli` is present alongside the other seventeen
-
-#### Scenario: Provenance follows the text
-
-- **WHEN** `attack-sqli`'s frontmatter is read
-- **THEN** its `metadata.cyberstrike` names the same `source` path and `commit` as `wstg-injection`
-
-#### Scenario: The bundle no longer carries the method
-
-- **WHEN** `wstg-injection` is read
-- **THEN** its SQL-injection entry is a one-line pointer to `attack-sqli`, carrying no payload table
-
-### Requirement: `linux-postexploit` skill exists
-
-`acordia-operators/skills/linux-postexploit/SKILL.md` SHALL cover Linux post-exploitation reachable
-with ordinary userland access: SUID/SGID and capability abuse, sudo-rule abuse, cron and
-systemd-timer persistence, SSH key and agent-socket theft, shadow handling, container-escape checks
-from the host, and kernel-exploit triage. It SHALL follow the shape of `windows-postexploit`.
-
-The boundary with `ebpf-attacks` SHALL be stated in both bodies: `ebpf-attacks` owns anything needing
-`CAP_BPF`/`CAP_SYS_ADMIN` and a loaded BPF program; `linux-postexploit` owns what ordinary userland
-access reaches.
-
-#### Scenario: Linux userland has a home
-
-- **WHEN** an operator holds a shell on a Linux host without loading a BPF program
-- **THEN** `linux-postexploit` resolves and carries the escalation and persistence paths
-
-#### Scenario: Boundary is written in both bodies
-
-- **WHEN** `linux-postexploit` and `ebpf-attacks` are read
-- **THEN** each states which of the two owns kernel-instrumentation work and which owns ordinary userland work
-
 ### Requirement: Every skill declares its family
 
-Every `SKILL.md` in both pillars SHALL declare `metadata.acordia.family`, naming exactly one of twelve
-families: `analytic-spine`, `target-modelling`, `defender-reading`, `evidence-forensics`,
-`take-handling`, `web-attack`, `web-methodology`, `host-postexploit`, `cloud-postexploit`,
-`directory-attack`, `mobile`, `operations-discipline`. The tag is documentation, not a gate: nothing
-enforces it and no harness reads it. It exists so a reader can see which skills compete for selection,
-and so the description contract below has a defined set of siblings to discriminate against.
+Every `SKILL.md` SHALL declare `metadata.acordia.family`, naming exactly one of five families:
+`analytic-spine`, `target-modelling`, `defender-reading`, `evidence-forensics`, `take-handling`. The
+seven families the ported library used — `web-attack`, `web-methodology`, `host-postexploit`,
+`cloud-postexploit`, `directory-attack`, `mobile`, `operations-discipline` — retire with it, and no
+skill SHALL declare one. The tag is documentation, not a gate: nothing enforces it and no harness
+reads it. It exists so a reader can see which skills compete for selection, and so the description
+contract in *The description is the selection surface* has a defined set of siblings to discriminate
+against.
 
-The field SHALL sit inside the existing `metadata.acordia` block on an analyst skill, and SHALL be
-added as an `acordia` key beside the untouched `metadata.cyberstrike` block on a ported operations skill.
+The field SHALL sit inside the existing `metadata.acordia` block. `target-modelling` spans both the
+Mission and Terrain columns of the grid and SHALL NOT be renamed or split to match them: the value
+names a body of subject matter rather than an agent, nothing reads it, and splitting it would edit ten
+skill files to no observable effect.
+
+The scenario *Provenance is untouched* keeps its published title although no provenance block remains,
+because OpenSpec matches a MODIFIED block's scenarios by title and a retitled one reads as dropped.
 
 #### Scenario: Every skill lands in exactly one family
 
-- **WHEN** all 82 skills' `metadata.acordia.family` values are collected
-- **THEN** each skill declares exactly one, every value is one of the twelve, and every family has at least one member
+- **WHEN** every skill's `metadata.acordia.family` value is collected
+- **THEN** each skill declares exactly one, every value is one of the five, and every family has at least one member
+
+#### Scenario: A retired family value is absent
+
+- **WHEN** the library's family values are collected
+- **THEN** none is `web-attack`, `web-methodology`, `host-postexploit`, `cloud-postexploit`, `directory-attack`, `mobile` or `operations-discipline`
 
 #### Scenario: Provenance is untouched
 
-- **WHEN** a ported operations skill's frontmatter is read after the family tag is added
-- **THEN** its `metadata.cyberstrike` block is unchanged
+- **WHEN** a skill's frontmatter is read after the family tag is added
+- **THEN** there is no `metadata.cyberstrike` block left to disturb, because the ported library that carried upstream attribution is gone
 
-### Requirement: A bundle points at a dedicated skill rather than restating it
+### Requirement: The library is the analyst library, sized by the grid rather than by this spec
 
-Where a WSTG bundle covers ground a dedicated skill owns, the bundle SHALL carry a one-line pointer to
-that skill instead of the Method. Before a section becomes a pointer, the destination skill SHALL be
-confirmed to carry the Method, and any payload, flag or table row the bundle holds and the skill lacks
-SHALL be appended to the skill first.
+With `acordia-operators/` deleted, the distribution SHALL hold exactly one skill library: every
+`SKILL.md` in the repository SHALL live under `acordia-analysts/skills/`. The ported technique library
+SHALL be gone from the tree rather than folded into the analyst library — no cloned body, no
+`wstg-*` bundle, no `attack-*`, `*-postexploit`, `mobile-*`, `operation-journal` or `bolts` directory
+SHALL be carried across.
 
-A bundle SHALL keep its WSTG identity, its provenance block, its routing, and every section for which
-no dedicated skill exists.
+The library's size SHALL be stated as an arithmetic, never as a fixed total: **one skill per skill row
+of the appendix grid in `docs/roles/operational-analyst.md`, plus the named procedural cross-cutting
+skills** — `analyst-loop`, `credential-harvest-triage`, `exhaustive-data-processing` and
+`aleph-entity-graph`. The row count is fixed by the grid, not by this specification. The grid's own
+content edits land in a later phase of this change, so any total written here would be a claim about a
+file this delta does not touch: at the time the delta is written the grid carries 38 skill rows and
+those four procedural skills exist, so the library holds 42, and that is a reading of the grid rather
+than a requirement on it. A later grid edit SHALL change the expected total without changing this
+requirement.
 
-#### Scenario: Duplicated section becomes a pointer
+No requirement, prompt, catalog entry, manifest or document SHALL assert a two-pillar or combined
+skill total, because there is one library. Where a number is needed it SHALL be obtained by counting
+`acordia-analysts/skills/*/SKILL.md` at the time of reading.
 
-- **WHEN** a bundle section's Method is carried by a dedicated skill
-- **THEN** the bundle holds a pointer line naming that skill, and no payload table for it
+#### Scenario: One library, one path root
 
-#### Scenario: Unowned section stays whole
+- **WHEN** the repository is enumerated for `SKILL.md` files
+- **THEN** every match lives under `acordia-analysts/skills/`, and no `acordia-operators/` path exists
 
-- **WHEN** a bundle section has no dedicated skill — XSS, command injection, LFI/path traversal, HTTP parameter pollution, mass assignment, privilege-escalation patterns
-- **THEN** it stays in the bundle in full
+#### Scenario: The total is the grid's arithmetic
 
-#### Scenario: Nothing is lost to a pointer
+- **WHEN** the library is counted against the grid
+- **THEN** the file count equals the grid's skill-row count plus the four named procedural skills, and no requirement fixes a different total
 
-- **WHEN** a section is reduced to a pointer
-- **THEN** every payload and flag it held is present in the destination skill
+#### Scenario: A grid edit moves the count without touching this requirement
 
-### Requirement: `bolts` skill exists
+- **WHEN** a skill row is added to or removed from the grid
+- **THEN** the expected library total changes with it, and this requirement is unchanged, because it fixes the arithmetic and not the number
 
-`acordia-operators/skills/bolts/SKILL.md` SHALL exist, defining remote tool execution as an operating
-posture: a bolt is a named remote server holding the offensive toolkit and the network position, driven
-over SSH, while the local machine holds the conversation, the notes and the report.
+#### Scenario: No combined total survives
 
-The skill SHALL state which work runs on the bolt — scanners and probes, web and API tooling,
-credential and directory tooling, any fetch aimed at an engagement target, and a headless browser when
-the page must load from the bolt's position — and which stays local. It SHALL define the registry that
-records each bolt, how a bolt is verified before first use, how a long-running scan survives a dropped
-connection, and how artifacts return.
+- **WHEN** the live specs and the shipped tree are searched for a combined two-pillar skill total — a single figure claiming to count both libraries, or an "analyst pillar holds N and the operations pillar holds M" phrasing — excluding `openspec/changes/archive/**`, which records what was true when each change shipped
+- **THEN** no match remains
 
-The skill SHALL be authored rather than cloned and SHALL carry no `metadata.cyberstrike`. The concept
-descends from CyberStrike's Bolt remote tool servers; none of its code does, and SSH replaces the
-pairing protocol because this repository ships no runtime that could pair.
+#### Scenario: The library stays markdown-only
 
-Nothing SHALL claim to enforce the posture. It is a discipline stated in a prompt, not a sandbox:
-no harness can bind a tool call to a remote host.
-
-#### Scenario: The skill is present and authored
-
-- **WHEN** `acordia-operators/skills/bolts/SKILL.md` is read
-- **THEN** it declares `family: operations-discipline`, carries no `metadata.cyberstrike`, and names its CyberStrike ancestor in prose
-
-#### Scenario: The posture separates remote from local
-
-- **WHEN** the skill body is read
-- **THEN** it names the tooling that runs on the bolt and the work that stays on the local machine, as two explicit lists
-
-#### Scenario: No enforcement is claimed
-
-- **WHEN** the skill's `## The operating rule` section is read
-- **THEN** it states that nothing enforces the posture and that a local invocation would succeed, claiming no guarantee that tooling cannot run locally
-
-#### Scenario: The four operating mechanics are present
-
-- **WHEN** the skill body is read
-- **THEN** it defines the registry that records each bolt, how a bolt is verified before first use, how a long-running scan survives a dropped connection, and where retrieved artifacts land
-
-#### Scenario: The bolt is distinguished from a target
-
-- **WHEN** the skill is read alongside the prompts' scope guardrail
-- **THEN** it states that the bolt is operator infrastructure exempt from the scope file, and that everything it is aimed at must appear in `.acordia/ops/scope.md`
+- **WHEN** every file under `acordia-analysts/skills/` is inspected
+- **THEN** each is a `.md` file, and no Python or other executable script has been added

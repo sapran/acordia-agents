@@ -5,9 +5,10 @@ metadata:
   acordia:
     family: take-handling
     grid_row: multi-source-fusion
-    grid_deep_in: [Fus]
-    grid_working_in: [Core]
-    source: docs/roles/operational-analyst.md#L100
+    grid_deep_in: [Core]
+    grid_working_in: [Coll]
+    row: multi-source-fusion
+    source: docs/roles/operational-analyst.md
 ---
 
 # Multi-Source Fusion & Correlation

@@ -5,9 +5,10 @@ metadata:
   acordia:
     family: take-handling
     grid_row: data-integration-tooling
-    grid_deep_in: [Fus]
+    grid_deep_in: [Coll]
     grid_working_in: [Core]
-    source: docs/roles/operational-analyst.md#L104
+    row: data-integration-tooling
+    source: docs/roles/operational-analyst.md
 ---
 
 # Data Integration & Correlation Tooling

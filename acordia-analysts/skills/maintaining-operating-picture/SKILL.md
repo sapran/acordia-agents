@@ -5,9 +5,10 @@ metadata:
   acordia:
     family: take-handling
     grid_row: maintaining-operating-picture
-    grid_deep_in: [Fus]
-    grid_working_in: [Core]
-    source: docs/roles/operational-analyst.md#L102
+    grid_deep_in: [Core]
+    grid_working_in: [Coll]
+    row: maintaining-operating-picture
+    source: docs/roles/operational-analyst.md
 ---
 
 # Maintaining the Operating Picture

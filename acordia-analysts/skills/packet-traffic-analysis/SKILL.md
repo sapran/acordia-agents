@@ -5,9 +5,10 @@ metadata:
   acordia:
     family: evidence-forensics
     grid_row: packet-traffic-analysis
-    grid_deep_in: ['T&N', Def]
+    grid_deep_in: [Terrain, Def]
     grid_working_in: [Core]
-    source: docs/roles/operational-analyst.md#L82
+    row: packet-traffic-analysis
+    source: docs/roles/operational-analyst.md
 ---
 
 # Packet & Traffic Analysis

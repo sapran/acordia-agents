@@ -7,7 +7,8 @@ metadata:
     grid_row: reasoning-under-uncertainty
     grid_deep_in: [Core]
     grid_working_in: []
-    source: docs/roles/operational-analyst.md#L67
+    row: reasoning-under-uncertainty
+    source: docs/roles/operational-analyst.md
 ---
 
 # Reasoning Under Uncertainty & Overload

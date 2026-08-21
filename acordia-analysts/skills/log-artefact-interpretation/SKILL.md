@@ -5,9 +5,10 @@ metadata:
   acordia:
     family: evidence-forensics
     grid_row: log-artefact-interpretation
-    grid_deep_in: ['T&N', Def, Fus]
-    grid_working_in: [Core]
-    source: docs/roles/operational-analyst.md#L106
+    grid_deep_in: [Terrain, Def, Coll]
+    grid_working_in: [Core, Mission]
+    row: log-artefact-interpretation
+    source: docs/roles/operational-analyst.md
 ---
 
 # Log / Artefact Interpretation

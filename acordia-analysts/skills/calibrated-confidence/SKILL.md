@@ -6,8 +6,9 @@ metadata:
     family: analytic-spine
     grid_row: calibrated-confidence
     grid_deep_in: [Core]
-    grid_working_in: [Fus]
-    source: docs/roles/operational-analyst.md#L72
+    grid_working_in: [Coll]
+    row: calibrated-confidence
+    source: docs/roles/operational-analyst.md
 ---
 
 # Calibrated Confidence
