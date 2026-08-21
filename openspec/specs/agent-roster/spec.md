@@ -396,7 +396,7 @@ that decides where traffic originates reaches every agent rather than sitting in
 references.
 
 `bolts` SHALL NOT enter any agent's specialist-depth line. It is a cross-cutting execution posture, not
-a domain depth, and the depth lines drive omp's `autoloadSkills`.
+a domain depth, and the depth line is the prompt's claim about where the agent is expert.
 
 #### Scenario: The posture reaches all five prompts
 - **WHEN** the working-knowledge line of each operations prompt is read
