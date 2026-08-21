@@ -1,199 +1,206 @@
 # ACORDIA Agents
 
-Runnable [opencode](https://opencode.ai) agents and skills derived from the ACORDIA framework's operational role models, distributed as a plugin marketplace for [omp](https://github.com/can1357/oh-my-pi) and Claude Code, and as a filesystem install for opencode.
+Runnable agents and skills derived from the ACORDIA framework's operational role models, distributed as a plugin marketplace for [omp](https://github.com/can1357/oh-my-pi) and Claude Code.
 
 ## What this is
 
-Markdown-only artifacts — agent files and skill files — authored to opencode's schema. No application code. Each artifact traces back to a specific row or paragraph in a source competency map maintained separately (see [Source of truth](#source-of-truth)).
+Markdown-only artifacts — agent files, skill files, and command wrappers. No application code, no runtime, and since 3.0.0 no build step: the pillar is one authored tree that both harnesses read as it stands in the checkout, and a marketplace install clones this repository and points at that tree directly.
 
-Three harnesses can load them. omp and Claude Code install them as **plugins**, from the marketplace catalogs this repository ships at its root; the plugin trees under `plugins/` are generated from the opencode sources by `tools/build-plugins.py` and committed, because a marketplace install clones the repository. The two plugin harnesses share one runtime: omp reads Claude Code's plugin registry alongside its own, so a single Claude Code install serves both (see [Install](#install)). opencode has no plugin system of any kind — its "plugins" are JS/TS hook modules that cannot ship markdown — so it keeps `install.sh`, which symlinks the sources into `~/.config/opencode/`.
+One tree serves both because both accept the same agent file: omp's `parseAgentFields()` requires `name`, `description` and a body and treats `tools` as optional, and Claude Code requires the same three keys. Every artifact traces to a source — each skill to a row of the competency map, each doctrinal claim to an entry in the literature register.
 
 ## Scope
 
-Two pillars wired up, shipped as two independently installable plugins so the read-only pillar can be taken without the write-capable one:
+One pillar, one installable plugin:
 
-- **`analysts/`** → plugin `acordia-analysts`. The ACORDIA Analysis pillar, realised as four decision-support agents plus their skill library. Read-only by design (`edit: deny`); no target interaction, no active testing.
-- **`operators/`** → plugin `acordia-operators`. The ACORDIA Operations pillar, ported from the CyberStrike fork (`~/git/CyberStrike`, commit `359655518`): five offensive agents (one primary orchestrator plus four domain specialists) and a 30-skill technique library. **Not read-only** — `edit: allow`, unscoped, because an operator writes scripts, evidence, and its own operation journal. Provenance and what was deliberately left out of the port are recorded in [`docs/roles/operator.md`](docs/roles/operator.md).
+- **`acordia-analysts/`** — the Analysis pillar: one orchestrator and four specialist legs, and the 45-skill library realising their shared analytic spine. Decision support and target understanding; no target interaction, no active testing.
 
-Future pillars (Collection, Reflection, Direction, Independent action) may follow the same shape as they get compiled.
+The roster is derived one-for-one from the five columns of the competency map:
 
-```
+- **`cyber-analyst`** — the lead. Holds the operating picture, correlates across sources, and runs the end-neutral loop that decides what is worth doing next.
+- **`mission-analyst`** — the target as an organisation: what it is for, what it depends on, crown jewels and mission threads, and its procedures, redundancy and reporting culture.
+- **`terrain-analyst`** — the technical terrain: networks, protocols and routing, identity and directory, cloud control planes, web and application stacks, host internals, attack surface, and operational technology where the target demands it.
+- **`overwatch-analyst`** — the defender: detection capability, evasion reasoning, own-footprint, and live overwatch of whether the operation is seen.
+- **`collection-analyst`** — the take: what the collected material is actually worth, working bulk material at volume, and the data-integration and correlation tooling that makes it usable.
+
+**The product goes to a person.** Nothing here executes: an analysis is handed to a human operator who then acts, so a recommended course of action is a hand-off rather than a dispatch, and the loop judges the outcome from evidence that operator reports back. A finished product belongs in `.acordia/reports/`, by convention.
+
+Research is the ACORDIA-aligned pillar to compile next if one follows — it composes with Analysis and makes no target contact.
+
+```text
 acordia-agents/
-├── analysts/                     # SOURCE — opencode-native, the only editable form
-│   ├── agents/                   # 4 opencode agent files
-│   │   ├── operational-analyst.md            (mode: primary)
-│   │   ├── target-network-analyst.md         (mode: subagent)
-│   │   ├── defender-detection-analyst.md     (mode: subagent)
-│   │   └── fusion-analyst.md                 (mode: subagent)
-│   └── skills/                   # 43 opencode skills
-│       ├── reasoning-under-uncertainty/SKILL.md
-│       ├── identity-directory-trust/SKILL.md
-│       └── ... (41 more)
-├── operators/                    # SOURCE
-│   ├── agents/                   # 5 opencode agent files, write-capable
-│   │   ├── operator.md                        (mode: primary)
-│   │   ├── web-application.md                 (mode: subagent)
-│   │   ├── mobile-application.md              (mode: subagent)
-│   │   ├── cloud-security.md                  (mode: subagent)
-│   │   └── internal-network.md                (mode: subagent)
-│   └── skills/                   # 30 opencode skills
-│       ├── attack-jwt/SKILL.md
-│       ├── ad-security/SKILL.md
-│       ├── wstg-injection/SKILL.md
-│       └── ... (27 more)
-├── commands/acordia/             # SOURCE — 17 slash-command wrappers
-├── plugins/                      # GENERATED — committed build output, never edited
-│   ├── claude/{acordia-analysts,acordia-operators}/
-│   └── omp/{acordia-analysts,acordia-operators}/
-├── .claude-plugin/marketplace.json   # GENERATED — Claude Code reads this catalog
-├── .omp-plugin/marketplace.json      # GENERATED — omp prefers this one
-├── tools/
-│   └── build-plugins.py          # opencode sources → both plugin trees + catalogs
-└── install.sh                    # opencode only
+├── acordia-analysts/                 # plugin root — installed as-is
+│   ├── .claude-plugin/plugin.json
+│   ├── agents/     cyber-analyst · mission-analyst · terrain-analyst
+│   │               overwatch-analyst · collection-analyst
+│   ├── commands/   10 command wrappers
+│   └── skills/     45 skills, one SKILL.md each
+├── .claude-plugin/marketplace.json   # Claude Code reads this catalog
+├── .omp-plugin/marketplace.json      # omp prefers this one; byte-identical
+├── docs/roles/                       # the competency map and the source register
+└── openspec/                         # capability specs and change history
 ```
 
 ## Install
 
-Two paths for three harnesses. **omp inherits Claude Code's plugin installs — install once, in Claude Code, and omp has it too.**
-
 ```sh
-# omp + Claude Code — one install serves both
-claude plugin marketplace add sapran/acordia-agents
-claude plugin install acordia-analysts@acordia   # add acordia-operators@acordia to opt into the offensive pillar
-
-# opencode — it has no plugin system
-./install.sh
-```
-
-Use the SSH form (`git@github.com:sapran/acordia-agents.git`) when the clone needs a key — a private repository over `https://` fails with `Repository not found` unless git itself is credentialed, and an authenticated `gh` does not credential git.
-
-Why one install covers both: omp has no marketplace runtime of its own. `listClaudePluginRoots()` reads Claude Code's `~/.claude/plugins/installed_plugins.json` **and** omp's own registry, and every capability it yields — skills, agents, commands, hooks, tools, MCP servers — hangs off the single `claude-plugins` capability provider. omp's own documentation states the split: *"Marketplace roots are excluded here [the `omp-plugins` provider] to avoid duplicate discovery and are handled by `claude-plugins`."* So `omp plugin marketplace add` on top of a Claude Code install is double registration of the same trees — omp is authoritative for duplicate plugin ids, so it buys nothing but upkeep. Reach for it only where Claude Code is absent:
-
-```sh
+# omp
 omp plugin marketplace add sapran/acordia-agents
 omp plugin install acordia-analysts@acordia
+
+# Claude Code
+claude plugin marketplace add sapran/acordia-agents
+claude plugin install acordia-analysts@acordia
 ```
 
-**The gate is `disabledProviders`.** While `claude-plugins` is listed in the active profile's `config.yml` (`~/.omp/agent/config.yml`, or `~/.omp/profiles/<name>/agent/config.yml` under `--profile`), the plugin installs cleanly and contributes **exactly nothing**: `skill://<any>` answers `Available skills: none` and no ACORDIA agent joins the roster, whichever marketplace registered it (verified, omp 17.2.9). Remove that entry.
+`acordia` is the marketplace name, from the `name` field of both catalogs. omp resolves `.omp-plugin/marketplace.json` in preference and Claude Code reads `.claude-plugin/marketplace.json`; the two are byte-identical.
 
-Removing it is all-or-nothing. The same switch also loads every user-scoped Claude Code plugin on the machine into omp — their skills, agents, commands, *and hooks*. omp exposes no per-marketplace, per-root, or per-plugin filter; `skills.includeSkills` can allowlist skill names, but agents, commands, and hooks have no equivalent. If keeping your Claude Code plugins out of omp matters more than ACORDIA being live there, the provider stays disabled and neither loads.
+In omp, marketplace content is delivered by the `claude-plugins` capability provider, which reads Claude Code's plugin registry alongside omp's own — so one Claude Code install can be inherited rather than registered twice, and so disabling that provider leaves the plugin installed and contributing nothing. `/reload-plugins` refreshes skills and commands after an install; new tools or hooks need a restart.
 
-In omp, `/reload-plugins` refreshes skills and commands after an install; new tools or hooks need a restart.
+**opencode was dropped in 3.0.0**, with the shell installer that was its only route in and the generator that existed to express its permission maps; opencode users have no upgrade path and must switch harness.
 
-#### Upgrading from the old omp install
+### Upgrading to 5.0.0
 
-Before this became a marketplace, `./install.sh --harness omp` copied translated agents into `~/.omp/agent/agents/`. Those files are not merely stale — omp resolves `~/.omp/agent/agents` **before** plugin roots and dedups first-wins, so an old copy **silently shadows the plugin's agent of the same name** and you run last month's prompts with no indication. Remove the old deployment, then install the plugin: `rm -rf ~/.omp/agent/agents ~/.omp/agent/skills` if those directories hold nothing but this repository's artifacts.
-
-The opencode installer keeps its own flags:
+**5.0.0 ships the Analysis pillar alone, and an upgrade does not remove what it withdraws.** The `acordia-operators` plugin was published up to 4.2.0 and has no catalog entry any more, so no upgrade path can resolve it and none uninstalls it: an install made before 5.0.0 stays resident and dispatchable at that version until you remove it yourself.
 
 ```sh
-./install.sh --copy             # copy instead of symlink (frozen snapshot)
-./install.sh --dry-run          # print what would happen, do nothing
-./install.sh --pillar analysts  # explicit pillar select (default: all)
-./install.sh --pillar operators # operators only (write-capable — read the posture above first)
-./install.sh --no-commands      # skip the /acordia- command wrappers
-./uninstall.sh                  # remove what this repo owns from opencode
+omp plugin uninstall acordia-operators@acordia
 ```
 
-Both scripts are idempotent — safe to re-run.
+In Claude Code, uninstall it the same way you installed it: that harness takes no action from a catalog change at all.
+
+**Two legs were divided, and every handle they carried goes with them.** `target-analyst` split along the seam its own prompt carried: `mission-analyst` took the organisation, `terrain-analyst` the technical terrain. `fusion-analyst` decomposed three ways rather than being renamed — the operating picture and multi-source correlation to `cyber-analyst`, non-technical context to `mission-analyst`, take value and data tooling to the new `collection-analyst`. Anything dispatching `target-analyst` or `fusion-analyst`, or the `/target` and `/fusion` handles, must be updated; there are no compatibility aliases under a retired name.
+
+#### Rename history
+
+Agent names have moved twice. 4.0.0 named every agent for the question it answers rather than for the pillar it leads or the grid column it came from; 5.0.0 divided the two legs above. A short alias is formed from its own agent's name, so it is renamed when that name changes — `/defender` became `/overwatch` in 4.0.0, and `/target` and `/fusion` are gone in 5.0.0. `/analyst` is unchanged: still a word of its agent's name, so an existing invocation through it keeps working.
+
+| In | Was | Became |
+|---|---|---|
+| 4.0.0 | `operational-analyst` | `cyber-analyst` |
+| 4.0.0 | `defender-detection-analyst` | `overwatch-analyst` |
+| 4.0.0 | `target-network-analyst` | `target-analyst` |
+| 5.0.0 | `target-analyst` | `mission-analyst` + `terrain-analyst` |
+| 5.0.0 | `fusion-analyst` | retired; its work divided three ways |
+
+#### Upgrading from 2.5.0
+
+The catalog `source` paths moved to the top of the repository, so an existing install must re-resolve the marketplace before it can find the plugin at all:
+
+```sh
+omp plugin marketplace update acordia && omp plugin upgrade
+```
+
+Claude Code picks up a new version only on uninstall-then-reinstall. In omp, check for a stale deployment under `~/.omp/agent/agents/` at the same time: native agent roots resolve **before** plugin roots and dedup first-wins by exact name, so an old copy of `cyber-analyst.md` there silently shadows the plugin's.
 
 ### Invoking them: the plugin namespace
 
-Agents are dispatched by name, in a picker shared with the harness's own. So the distribution also carries one slash-command wrapper per agent, giving a namespaced entry point. **The namespace is the plugin name**, applied by the harness itself:
+Agents are dispatched by name, from a picker shared with the harness's own, so the distribution carries one slash-command wrapper per agent to give a namespaced entry point. **The namespace is the plugin name**, applied by the harness itself:
 
+```text
+/acordia-analysts:analyst      hand the operating picture and the next decision to the lead
+/acordia-analysts:terrain      networks, identity, cloud control planes, host internals
+/acordia-analysts:overwatch    what the defender can see, and what being seen would cost
 ```
-/acordia-analysts:fusion       what all of it together means, and how good the take is
-/acordia-operators:webapp      OWASP WSTG testing of a web target
-/acordia-operators:operator    hand an authorized engagement to the orchestrator
-```
 
-Both omp and Claude Code prefix a plugin's commands with the plugin name, so the two harnesses agree without any per-harness placement rule. opencode namespaces nothing — its command discovery is flat — so there the same wrappers deploy as `/acordia-fusion`, with the prefix in the filename. That is the split this repository already uses for its own `/opsx:*` commands.
+Both harnesses scan `<pluginRoot>/commands/*.md` non-recursively and prefix each command with the plugin name, which is why the wrappers live inside the pillar rather than at the repository root. Ten of them: one canonical wrapper per agent (`/acordia-analysts:terrain-analyst`) plus five short handles — `analyst`, `mission`, `terrain`, `overwatch`, `collection`.
 
-Short handles — `analyst`, `target`, `defender`, `fusion`, `webapp`, `mobile`, `cloud`, `internal` — sit beside a canonical wrapper named for each agent (`/acordia-analysts:fusion-analyst`), so both spellings work. The canonical set is the source of truth; the aliases are generated from it, and a check asserts every wrapper names an agent that actually exists.
+The agent name itself is not wrapped. omp registers plugin agents flat, so `terrain-analyst` dispatches; Claude Code namespaces them, so its Task tool needs `acordia-analysts:terrain-analyst` (verified at 2.1.220). A wrapper names its agent in prose and leaves each harness to resolve it.
 
-**Agent names and skill slugs stay unprefixed on purpose.** Agent dispatch is an exact-name lookup and skills are selected by description match, so a slug prefix would isolate nothing — while breaking the grid bijection and every `skill://` reference. Provenance rides on the `ACORDIA <pillar> — ` description tag, the generated `color`, and this command namespace instead.
+#### Bump the version on every change
 
-**How the agent name itself resolves differs by harness.** Verified against Claude Code 2.1.220: plugin agents are namespaced there too, so the Task tool takes `acordia-analysts:target-network-analyst` and the **bare name fails** with "agent type is not available". omp registers plugin agents flat, by bare name — `fusion-analyst` dispatches. opencode reads the source files directly, also flat. The command wrappers paper over the difference: a wrapper names the agent in prose and the harness resolves it in its own idiom.
-
-### Generated plugin trees
-
-Everything under `plugins/`, `.claude-plugin/`, and `.omp-plugin/` is build output produced by `tools/build-plugins.py` from the sources under `analysts/`, `operators/`, and `commands/acordia/`. It is committed because a marketplace install clones the repository, and it is regenerated wholesale on every build so a renamed skill cannot leave an orphan behind.
+The version is hand-maintained semver in three places across three files that must agree — the manifest and one entry in each catalog:
 
 ```sh
-tools/build-plugins.py            # regenerate the trees in place
-tools/build-plugins.py --check    # build to a tempdir, diff, exit 1 on drift
+grep -ho '"version": "[^"]*"' .claude-plugin/marketplace.json \
+  .omp-plugin/marketplace.json acordia-analysts/.claude-plugin/plugin.json | sort -u
 ```
 
-`--check` is the gate. **Editing a file under `plugins/` is a drift bug** of the same class as editing `analysts/` without touching the competency grid — the next build silently reverts it.
-
-#### Bump `VERSION` on every change
-
-`VERSION` in `tools/build-plugins.py` is the **only** update signal either plugin harness has. omp compares it against the installed version and skips when they match, so an unbumped version means your edit never reaches anyone who already installed the plugin — silently, with no error and no warning.
-
-- **MINOR** — any change that reaches a user: an agent prompt, a skill body, a command wrapper, the generator's output.
-- **MAJOR** — a serious change: the roster (an agent or pillar added or removed), or the shape of the distribution.
-
-Bump it, then rebuild, so the new version lands in the six generated files that carry it.
-
-Real semver, and monotonic on purpose. Verified against omp 17.1.8: bare `omp plugin upgrade` is the path that compares versions, a newer semver upgrades, and an older one is skipped. Two things to avoid — never hang a hash or build metadata off it, because `1.0.0+aaa` and `1.0.0+bbb` compare **equal** and would never upgrade; and note that `omp plugin upgrade <name>@<marketplace>` with an explicit target reinstalls unconditionally and compares nothing, so it is useless for testing this.
-
-**Claude Code has no working upgrade path for marketplace plugins** (verified, 2.1.220): `claude plugin update` fails with "Plugin not found" from either a directory or a GitHub source, and re-running `install` reports "already installed" without refreshing. Only uninstall-then-reinstall picks up a new version, so the version string is informational there. Bump it anyway — omp is the harness that acts on it.
-
-Two trees exist because one `agents/*.md` cannot serve both harnesses: they read `tools` from the same fixed `<plugin-root>/agents/` path, but Claude Code expects capitalised Claude tool names while omp expects lowercase omp names and additionally needs `spawns`. Skills and commands are byte-identical across the trees; only `agents/` differs. Two catalogs exist for the same reason: omp reads `.omp-plugin/marketplace.json` in preference to `.claude-plugin/marketplace.json`, so shipping both hands each harness its own tree from one checkout.
+One line out means the three agree. Nothing inside the repository enforces that — the gates went with the generator — so it is a rule plus one external drift check. **MINOR** for any change that reaches a user: an agent prompt, a skill body, a command wrapper, a catalog description. **MAJOR** for a roster change, or a change to the shape of the distribution including an install-source move; 5.0.0 removed a pillar, and 3.0.0 was both. The version is also the only update signal either harness has — omp skips a plugin whose version is not newer, so an unbumped edit reaches nobody who already installed it — and it must stay plain semver, because build metadata makes two versions compare equal and neither would ever upgrade.
 
 ### Namespace safety
 
-The opencode config directory is a flat namespace shared with opencode's own built-ins and with whatever you keep yourself. So `install.sh` refuses to overwrite anything this repository did not deploy: it checks every destination before writing a single file, and aborts naming the conflict, leaving the harness untouched. `--force` replaces the foreign artifact deliberately:
+Commands are namespaced by the harness. **Agent names and skill slugs are not, on purpose:** dispatch is an exact-name lookup and skills are chosen by description match, so a prefix would isolate nothing while breaking the grid bijection and every `skill://` reference. Provenance rides on the `ACORDIA Analysis — ` description tag instead. Two collision surfaces remain, neither closable from inside a plugin:
 
-```sh
-./install.sh --force            # replace artifacts this repo does not own
-```
+- **Agent names.** omp dedups first-wins across native roots, extension packages, marketplace plugins and bundled agents, in that order, so a same-named agent under `.omp/agents/` or `~/.omp/agent/agents/` wins over the plugin's and nothing warns you.
+- **Skill descriptions.** Selection is a description match over every discovered skill, so one of your own with an overlapping description competes with an ACORDIA skill rather than colliding outright.
 
-Ownership is evidence-based, not name-based — a symlink resolving into this checkout, or a byte-identical copy — and the same rule governs `uninstall.sh`, which leaves name-matching strangers in place. It is defined once in [`tools/ownership.sh`](tools/ownership.sh). Note that ownership is per checkout: installing from a second clone or worktree over an existing deployment counts as foreign and needs `--force`. The plugin harnesses have their own install machinery and need none of this.
-
-### Harness parity gaps
-
-The read-only analyst posture is enforced to a different depth in each harness. All three were checked against the harness's actual permission model, not assumed:
-
-| harness | mechanism | strength |
-| --- | --- | --- |
-| Claude Code | `disallowedTools: Edit, Write, NotebookEdit, Task` on the plugin agent | **enforced** — the tools are subtracted from the inherited set |
-| omp | `tools` allowlist omitting `edit` and `task` | **partial** — `edit` and `task` really are removed; `write` survives |
-| opencode | `permission.edit: deny`, `permission.task: deny` | **enforced for the edit/write/patch tools** — and it is the one vocabulary able to *express* the report sink, though nothing enforces that |
-
-- **omp cannot deny `write`.** The translated allowlist omits it and omp exposes it anyway: `read` and `write` are omp's `XDEV_TRANSPORT_TOOLS`, the channel every `xd://` device is driven through, so they are present whenever the `tools.xdev` setting is on — which is the default. Verified empirically against omp 17.1.8: a leg agent asked to create a scratch file with `write` succeeded. The generated frontmatter records this in `metadata.generated.write_access` rather than implying a guarantee it cannot keep. Disable `tools.xdev` in omp's settings and the allowlist bites.
-- **The report sink is a convention, and no harness enforces it — including opencode.** `operational-analyst` and `fusion-analyst` write their products to `.acordia/reports/`. opencode is the only harness that can *express* that as a path-scoped `edit` rule, but expressing is not enforcing: every analyst carries `bash: allow`, so a scripted write lands at any path in every harness. Claude Code has no path-scoped plugin-agent permission and therefore keeps `Write` for those two (denying it outright would leave them unable to produce the reports their prompts require); omp cannot scope the tool either. Both generated files record the convention, in a comment and in `metadata.generated` respectively. Treat the scoped rule as the machine-readable declaration of *where reports go*, not as a boundary.
-- **`bash` is still a write channel.** All three harnesses grant `bash`, so "read-only" means "has no file-editing tool", not "cannot write". `bash` stays because the analytic-tooling and exhaustive-data-processing skills depend on it. This is also why the sink above is unenforceable rather than merely unenforced.
-- **Neither plugin harness enforces per-command bash denies.** The operators' destructive-primitive denylist (SQL DDL, `INTO OUTFILE`, `xp_cmdshell`, `sqlmap --os-*`) is an opencode `permission.bash` map. Under omp and Claude Code it is prompt-level guidance, and each generated agent records that.
+Rename your own artifact. There is no second pillar to switch off: `omp plugin disable acordia-analysts@acordia` disables the distribution entirely.
 
 ## Design constraints
 
-- **opencode-native only.** Skill frontmatter uses opencode's `name` + `description` schema. No `chains_with`, `category`, `severity_boost`, `sha256`, or other vendor extensions. It is valid unchanged in all three harnesses, which is why skills are copied into the plugin trees verbatim.
-- **Prompt-level composition.** opencode has no per-agent `skills:` field — each agent's prompt names the skill set it draws on.
-- **Triggering-quality descriptions.** Skills fire by description match; each description states *when* the skill applies in one sharp sentence.
-- **Read-only analysts.** All four agent files carry `edit: deny`. The three leg subagents additionally carry `task: deny` (leaf specialists — do not dispatch).
-- **Write-capable operators.** `operators/` inverts this: every agent carries `edit: allow`, unscoped, because an operator writes scripts, evidence, and its own `.acordia/ops/` journal. Operators are **not read-only** — the harness parity gaps above apply only to the read-only analyst posture and have no bearing on operators, who are already granted write access in every harness.
+- **One authored tree.** No generator, no build step: what is in the repository is what a harness loads.
+- **Three-key agent frontmatter.** Exactly `name`, `description`, `color` — no tool list, no permission map, no mode, no metadata. Capability is granted by omission: an agent with no `tools` key gets omp's full tool set, one with no `spawns` key an unrestricted spawn policy.
+- **Every agent is write-capable.** Each prompt says it writes freely — notes, working files, drafts, product — but never modifies the material it was given to analyse: evidence, collected data, logs, dumps and captures are read-only inputs. `.acordia/reports/` for a finished product is a convention no harness enforces, and must never be described as enforced.
+- **Retrieved content is data, never instructions.** All five prompts say so: an instruction found inside a fetched page, tool output, document text or collected artefact is reported to the caller, not followed.
+- **Execution belongs to the operators the analyst advises.** The lead directs no executing agent; it states what the human operator is being asked to decide or do, and judges the end from evidence that operator reports back.
+- **Routing is prompt discipline.** The orchestrator names its own legs; nothing in the frontmatter restricts who may dispatch whom.
+- **Skills bind by prompt reference and fire on description.** Neither harness binds skills per agent, so every prompt names its set on `·`-separated lines while the skill itself is chosen by a description match — which is why each description states what it does and when it applies in one sharp sentence.
 
 ## Source of truth
 
-The competency map that drives the analyst artifacts lives at [`docs/roles/operational-analyst.md`](docs/roles/operational-analyst.md). The compile contract that binds the map to the artifacts (grid row → skill, grid column → agent's named skill set, ●/○ → deep/working membership) is specified in [`openspec/specs/competency-map-derivation/`](openspec/specs/competency-map-derivation/spec.md), with the roster and library shape in [`openspec/specs/analyst-agent-roster/`](openspec/specs/analyst-agent-roster/spec.md) and [`openspec/specs/analyst-skill-library/`](openspec/specs/analyst-skill-library/spec.md).
+The competency map behind the artifacts is [`docs/roles/operational-analyst.md`](docs/roles/operational-analyst.md) — rows of skills scored `●` deep / `○` working against five columns of specialisation, one per agent. The contract binding map to artifacts (grid row → skill, grid column → an agent's skill set, ●/○ → deep/working) is in [`openspec/specs/competency-map-derivation/`](openspec/specs/competency-map-derivation/spec.md). Editing an artifact under `acordia-analysts/` without touching the map is a drift bug; when the map changes, the artifacts follow it. A row's identity is a stable kebab-case id carried in the row itself rather than a line number: nothing reads the anchor at install time, so a line reference that shifts does not fail, it just points at the wrong competency.
 
-The exploratory history that produced the current shape is preserved under [`openspec/changes/archive/`](openspec/changes/archive/) — the original `derive-analyst-agents-skills` change and the follow-on `credential-harvest-capability` proposal.
+The literature behind the doctrine is registered in [`docs/roles/sources.md`](docs/roles/sources.md): every work introduced once, with author, title and lib.ai document id under a short key, and cited elsewhere by key and section. A doctrinal claim — how the work is divided, why a judgement is framed this way, what an operation is for — traces there; technique detail traces to its grid row instead. [`openspec/specs/doctrinal-provenance/`](openspec/specs/doctrinal-provenance/spec.md) is the contract, and a literature search that finds nothing is recorded as a gap rather than filled in from memory.
 
-Editing the artifacts under `analysts/` without touching the map is a source-of-truth drift bug. When the map changes, regenerate from it.
+[`docs/roles/archive/operator.md`](docs/roles/archive/operator.md) is a retired record, kept for one purpose: it documents what the withdrawn operations pillar ported from the CyberStrike fork (commit `359655518`) and where it deliberately diverged. Nothing in the shipped tree derives from it.
 
-The operator pillar has no competency map and derives nothing from one — it is a provenance-tracked port of an existing offensive agent/skill roster. Its source of truth is [`docs/roles/operator.md`](docs/roles/operator.md): the CyberStrike-agent-to-operator-agent table, the skill-clone provenance, and what was deliberately left out of the port. Editing `operators/` without checking that provenance record is the same class of drift bug as editing `analysts/` without checking the competency map.
+Five capabilities are published under [`openspec/specs/`](openspec/specs/): `agent-roster`, `skill-library`, `competency-map-derivation`, `doctrinal-provenance` and `plugin-distribution`. The history behind the current shape is under [`openspec/changes/`](openspec/changes/).
 
 ## How to extend
 
-The mechanism for adding new agents or skills — frontmatter contracts, permission model, prompt-level composition — is documented in [`docs/agents-skills-extension-workbook.md`](docs/agents-skills-extension-workbook.md). Read it before authoring new pillars or new skills.
+**A new agent** is one file at `acordia-analysts/agents/<name>.md`, its frontmatter exactly three keys:
+
+```yaml
+---
+name: terrain-analyst
+description: ACORDIA Analysis — What does the target's technical terrain look like, what can reach what …
+color: blue
+---
+```
+
+`name` must equal the filename stem, because dispatch is an exact-name lookup. `description` opens with the `ACORDIA Analysis — ` tag and then says what the agent is for; it is all a caller sees in the picker. `color` is `cyan` for the orchestrator and `blue` for the legs. Add nothing else — a `tools` key subtracts capability rather than adding it, and frontmatter the parser cannot read makes the agent disappear from `/agents` with a warning rather than an error. An agent derives from a column of the map, so a sixth agent means a sixth column, marked across the rows it owns, in the same change.
+
+The body names the skills the agent draws on as `·`-separated slugs under a heading; that is the only binding between an agent and its skills. **A new agent also needs a command wrapper** in `commands/`, or it has no namespaced entry point: a flat `<name>.md` with `description` and `argument-hint` frontmatter, dispatching the agent in prose. Copy [`acordia-analysts/commands/overwatch-analyst.md`](acordia-analysts/commands/overwatch-analyst.md).
+
+**A new skill** is a directory at `acordia-analysts/skills/<slug>/` holding `SKILL.md`, and the directory name must equal the frontmatter `name` — that bijection is what makes a slug named in a prompt resolvable. Long enumerations belong in a `references/` subdirectory beside it, as in [`credential-harvest-triage/`](acordia-analysts/skills/credential-harvest-triage/), rather than in the body. Write the description to discriminate against the skill's nearest sibling rather than to sound complete: when the harness picks what to read, every skill's name and description is all it has.
+
+A skill traces to the competency map and says so in frontmatter:
+
+```yaml
+metadata:
+  acordia:
+    family: target-modelling
+    grid_row: protocol-routing-architecture
+    grid_deep_in: [Terrain]
+    grid_working_in: [Def]
+    row: protocol-routing-architecture
+    source: docs/roles/operational-analyst.md
+```
+
+41 of the 45 anchor to a row that way, `row` naming the row's minted identity and `source` the map with no line fragment. The other four are procedural rather than derived: each carries `grid_row: null`, `procedural: true` and the change that authorised it as its `source`, and `aleph-entity-graph` additionally declares `cross_cutting` over the skills it composes. A skill with neither a row nor such a record is inventing capability the map does not claim. Where a skill's body rests on a specific work it adds `doctrine_source` — register keys from `docs/roles/sources.md` — alongside the grid anchor rather than in place of it.
 
 ## Verifying an install
 
-```sh
-tools/build-plugins.py --check              # the plugin trees match their sources
+There are no build gates. Verification is that the thing loads and runs.
 
-opencode debug agent operational-analyst    # resolves permissions, mode, prompt
+```sh
+omp plugin marketplace update acordia && omp plugin upgrade    # reports 5.0.0
 ```
 
-Expect `edit: deny` on all four analyst agents (with the `.acordia/reports/**` report-sink rule on `operational-analyst` and `fusion-analyst`); `task: deny` on the three legs. In omp and Claude Code, confirm the plugin's commands appear as `/acordia-analysts:*`. Agents resolve by bare name in omp, and as `acordia-analysts:<agent>` in Claude Code.
+Then in omp, `/agents` lists all five — the check that matters, because a frontmatter mistake makes an agent vanish quietly rather than fail loudly — and `/skills` lists the ACORDIA skills, matching the directory count. Dispatch the lead and one leg and confirm each returns. In Claude Code, `/agents` lists the same five, which is the proof that one tree serves both.
+
+Two invariants that build gates used to enforce are now checked by hand. The catalogs agree — `diff .claude-plugin/marketplace.json .omp-plugin/marketplace.json` — and every skill slug named in a prompt resolves:
+
+```sh
+python3 -c "
+import glob, os, pathlib
+have = {os.path.basename(os.path.dirname(s)) for s in glob.glob('acordia-analysts/skills/*/SKILL.md')}
+for a in glob.glob('acordia-analysts/agents/*.md'):
+    for line in pathlib.Path(a).read_text().splitlines():
+        if ' · ' in line:
+            for slug in line.strip().split(' · '):
+                if slug not in have: print('UNRESOLVED', a, slug)
+"
+```
+
+Both print nothing when the tree is sound.

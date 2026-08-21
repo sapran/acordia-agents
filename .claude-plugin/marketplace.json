@@ -4,32 +4,19 @@
     "name": "ACORDIA"
   },
   "metadata": {
-    "description": "ACORDIA analysis and operations agents, skills, and commands."
+    "description": "ACORDIA analysis agents, skills, and commands."
   },
   "plugins": [
     {
       "name": "acordia-analysts",
-      "source": "./plugins/claude/acordia-analysts",
-      "version": "2.4.0",
-      "description": "ACORDIA Analysis — four read-only decision-support agents and a 43-skill analytic library.",
+      "source": "./acordia-analysts",
+      "version": "5.0.0",
+      "description": "ACORDIA Analysis — five decision-support agents and a 45-skill analytic library.",
       "category": "security",
       "keywords": [
         "security",
         "analysis",
         "intelligence",
-        "acordia"
-      ]
-    },
-    {
-      "name": "acordia-operators",
-      "source": "./plugins/claude/acordia-operators",
-      "version": "2.4.0",
-      "description": "ACORDIA Operations — five write-capable offensive-security agents and a 30-skill technique library.",
-      "category": "security",
-      "keywords": [
-        "security",
-        "offensive-security",
-        "pentest",
         "acordia"
       ]
     }

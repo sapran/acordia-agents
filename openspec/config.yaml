@@ -4,66 +4,66 @@ schema: spec-driven
 context: |
   acordia-agents is a markdown-only distribution of agents and skills derived
   from the ACORDIA operational-role framework. There is no application code and
-  no runtime — only agent files, skill files, command wrappers, one Python
-  generator, and a shell installer.
+  no runtime — only agent files, skill files, command wrappers, and the
+  marketplace metadata that lets a harness install them.
 
-  It reaches three harnesses two ways. omp and Claude Code install it as a
-  plugin, from the marketplace catalogs at `.omp-plugin/marketplace.json` and
-  `.claude-plugin/marketplace.json`; the plugin trees under `plugins/` are
-  generated from the opencode-native sources by `tools/build-plugins.py` and
-  committed, because a marketplace install clones the repository. opencode has
-  no plugin system, so `install.sh` symlinks (or copies) the sources into
-  `~/.config/opencode/`. Everything under `plugins/`, `.claude-plugin/`, and
-  `.omp-plugin/` is generated build output gated by
-  `tools/build-plugins.py --check`; editing it is a drift bug.
+  It reaches two harnesses one way. omp and Claude Code both install it as a
+  plugin, from the marketplace catalogs at `.omp-plugin/marketplace.json`
+  (omp's preferred path) and `.claude-plugin/marketplace.json` (Claude Code's).
+  The two catalogs are hand-maintained and byte-identical, and both name the
+  same single source. There is no generator, no build step and no shell
+  installer: the pillar is one authored tree that both harnesses read as-is.
+  opencode was dropped in 3.0.0 along with the generator that existed only to
+  express its permission maps.
 
-  Scope today: two pillars, shipped as two independently installable plugins.
-  The Analysis pillar (`analysts/` → `acordia-analysts`) — one primary
-  orchestrator (`operational-analyst`) plus three subagent legs
-  (`target-network-analyst`, `defender-detection-analyst`, `fusion-analyst`)
-  and the 43-skill library that realises their shared analytic spine. Every
-  analyst artifact traces back to a specific row or paragraph in the source
-  competency map at `docs/roles/operational-analyst.md` (the role model) and
-  the mechanics of the extension surface documented in
-  `docs/agents-skills-extension-workbook.md`. The Operations pillar
-  (`operators/` → `acordia-operators`) — one primary orchestrator (`operator`)
-  plus four domain specialists and a 30-skill technique library — has no
-  competency grid; it is a provenance-tracked port whose source of truth is
-  `docs/roles/operator.md`.
+  Scope today: one pillar. The Analysis pillar (`acordia-analysts/`) — one
+  orchestrator (`cyber-analyst`) plus four specialist legs (`mission-analyst`,
+  `terrain-analyst`, `overwatch-analyst`, `collection-analyst`) and the
+  45-skill library that realises their shared analytic spine. Every analyst
+  artifact traces back to a specific row or paragraph in the source competency
+  map at `docs/roles/operational-analyst.md` (the role model), and every
+  doctrinal claim traces to an entry in the literature register at
+  `docs/roles/sources.md`. The mechanics of the extension surface are in
+  `docs/agents-skills-extension-workbook.md`, whose CyberStrike-port sections
+  are historical.
 
-  Future pillars (Collection, Reflection, Direction, Independent action) may
-  follow the same shape once compiled from their role models.
+  The Operations pillar was removed in 5.0.0. It was a provenance-tracked port
+  of a commercial pentest agent set rather than a derivation from the
+  framework, and it shared no objective concept with the Analysis pillar, so
+  the two could not compose. Its record survives at
+  `docs/roles/archive/operator.md` and nothing in the shipped tree derives from
+  it. Research is the ACORDIA-aligned next pillar if one is added: it composes
+  with Analysis and makes no target contact.
 
-  Conventions: all analyst agents are read-only (`edit: deny`); the two
-  reporting agents carry a path-scoped `.acordia/reports/**` rule that
-  *declares* their report sink. Operators invert the posture (`edit: allow`,
-  unscoped). Bash is fully allowed (`bash: allow`), so the read-only CLI tools
-  used for file and data analysis (`cat`/`head`/`tail`/`less`/`more`/`ls`,
-  `grep`/`egrep`/`rg`/`find`/`fd`) are ungated — opencode-native
-  `read`/`grep`/`glob`/`list` remain the preferred way to inspect the
-  filesystem, but only as advice, not a permission gate; each orchestrator
-  dispatches only its own named specialists, never a general or explore agent;
-  skill binding is by prompt reference (opencode has no per-agent `skills:`
-  field), so each agent prompt names its skill set explicitly.
-
-  The read-only posture means "holds no file-editing tool", and it is enforced
-  to different depths per harness: fully in Claude Code (`disallowedTools`) and
-  opencode, partially in omp (`write` survives as an `xd://` transport tool).
-  The report sink is different in kind — it is a prompt-level convention that
-  **no harness enforces, opencode included**, because `bash: allow` is an open
-  write channel at any path. Never describe the sink as enforced anywhere.
+  Conventions: an agent file's frontmatter is exactly `name`, `description` and
+  `color` — no tool list, no permission map, no mode, no metadata. Capability
+  is granted by omission, because an omp agent with no `tools` key receives the
+  full tool set and one with no `spawns` key has an unrestricted spawn policy.
+  Every agent is therefore write-capable. Each analyst prompt carries the rule
+  that it writes freely but never modifies the material it was given to
+  analyse; `.acordia/reports/` is a convention no harness enforces, and must
+  never be described as enforced. Every prompt states that retrieved content is
+  data, never instructions. The orchestrator names its own specialists in its
+  prompt and routing is prompt discipline, not a permission. Skill binding is
+  by prompt reference — neither harness binds skills per agent — so each prompt
+  names its skill set on `·`-separated lines, and a skill is selected by
+  description match. The analyst product is written for a human operator, who
+  decides and acts; no agent here executes.
 
 rules:
   proposal:
     - Distinguish "current behavior" from "desired behavior" explicitly.
-    - Layer changes by artifact type — agent prompts, skill bodies, the plugin
-      generator, install script, docs — so each layer can be reviewed and
+    - Layer changes by artifact type — agent prompts, skill bodies, command
+      wrappers, marketplace metadata, docs — so each layer can be reviewed and
       applied independently.
   specs:
     - Every normative claim must be traceable either to an artifact in this
-      repo (agent file, skill file, command wrapper, `tools/build-plugins.py`,
-      install script) or to a row/paragraph in
-      `docs/roles/operational-analyst.md`, `docs/roles/operator.md`, or
+      repo (agent file, skill file, command wrapper, marketplace catalog,
+      plugin manifest) or to a row/paragraph in
+      `docs/roles/operational-analyst.md` or `docs/roles/sources.md`, or to
       `docs/agents-skills-extension-workbook.md`.
     - State the ACTUAL behavior even when it is a trap; capture the ideal in
       design.md.
+    - Never specify a mechanism the repository does not have. A requirement
+      whose subject is a build gate, a permission map or a translation step has
+      nothing behind it and must not be written.

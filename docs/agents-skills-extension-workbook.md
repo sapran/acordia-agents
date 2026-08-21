@@ -9,12 +9,20 @@ directory and CyberStrike loads it on next start.
 > `packages/cyberstrike/src/agent/agent.ts` and are **out of scope** here. See
 > [Markdown-only limits](#markdown-only-limits) for what those are and the
 > markdown equivalent.
+>
+> **Reading this inside acordia-agents:** this workbook describes CyberStrike's own
+> extension surface, which is why it talks about `mode`, `permission` maps and a
+> `skills:` list. As of distribution 3.0.0 this repository ships none of that — an
+> agent file here carries exactly `name`, `description` and `color`, each pillar is
+> one authored tree with no generator, and opencode is no longer a target harness.
+> What stays load-bearing for this repository is §8: the CyberStrike platform-tool
+> substitutions and the `.acordia/ops/` operation-journal layout.
 
 Agents and skills are **two independent systems** loaded by **two different code
 paths**. An agent works with zero skills; a skill ships without any agent. They
 meet at exactly one point: an agent's `skills:` list *references* skills by name.
 
-```
+```text
 AGENT track (always):   pick mode ─▶ set permissions ─▶ write prompt ─▶ (reference skills, optional)
 SKILL track (optional): only if the methodology doesn't exist yet ─▶ author SKILL.md ─▶ agent references it
 ```
@@ -58,7 +66,7 @@ Skill markdown is discovered by `Skill.state()`
 live in a folder named after the skill. Load order (later entries win on a name
 collision):
 
-```
+```text
 1. External (Claude Code compatible)   glob: skills/**/SKILL.md
      global:  ~/.claude/skills/**        ~/.agents/skills/**
      project: <up-tree>/.claude/skills/** <up-tree>/.agents/skills/**
@@ -182,7 +190,7 @@ to the skill folder.
 
 Verification (`SkillSigning.verify`) resolves a status per skill:
 
-```
+```text
 no sha256                                   → "unverified"   (loads normally)
 sha256 present, mismatches body             → "tampered"     ⚠ SKIPPED — not loaded
 sha256 matches, signed_by ≠ official        → "community"
@@ -374,6 +382,7 @@ Bypass rate limiting and exhaust backend resources via expensive GraphQL queries
 - No type check needed for the markdown path (no TypeScript changes).
 
 <a name="markdown-only-limits"></a>
+
 ### Markdown-only limits
 
 These require editing `agent.ts` (native path) and are **not achievable** in
@@ -441,7 +450,7 @@ reads → `deny`). Verify a resolved agent with `opencode debug agent <name>`.
 writable sink without opening up the rest of the tree:
 `edit: { "*": deny, ".acordia/reports/**": allow }`. In this repo that block is
 reserved for the two agents holding the *Briefing & written reporting* grid
-competency (`operational-analyst`, `fusion-analyst`), which write their reports to
+competency (`cyber-analyst`, `fusion-analyst`), which write their reports to
 `.acordia/reports/`; every other analyst uses a blanket `edit: deny`. Note this is
 a **posture** control, not a sandbox — `bash: "*": allow` already permits scripted
 writes — so the scoped block declares the sanctioned output path rather than
@@ -579,14 +588,14 @@ broken one still fails it.
 
 To verify, start omp and check that the four analysts appear in the agent
 roster the `task` tool advertises, that `/acordia-analysts:fusion` is
-registered, and that `operational-analyst` can spawn its three legs while the
+registered, and that `cyber-analyst` can spawn its three legs while the
 legs cannot spawn anything.
 
 ---
 
 ## 8. CyberStrike substitution contract — for future ports
 
-`operators/` is the first pillar ported from a CyberStrike-derived fork rather than
+`acordia-operators/` is the first pillar ported from a CyberStrike-derived fork rather than
 derived from an ACORDIA competency map. Its prompts and skill bodies called twelve
 platform tools that exist only inside CyberStrike (methodology engine, vulnerability
 reporting, attack-script runner, hackbrowser crawler, `skill` CLI). This section is
@@ -642,11 +651,10 @@ way:
 
 The path mirrors the analyst pillar's existing `.acordia/reports/` sink, so the
 two pillars share one operator-visible convention. The journal is **discipline,
-not a permission scope**: it is described in every operator prompt's body, but
+not a permission scope**: it is described in every operations prompt's body, but
 no `edit` rule attempts to confine writes to it — a path scope on a write tool
 is unenforceable in every harness, because `bash: allow` is an open write
 channel at any path. That omp scopes a tool by name only, never by path, is an
 additional limitation rather than the reason. `scope_check`'s substitution
 follows the same logic as the analyst pillar's read-only posture: an absent or
 silent scope file means a target is **untested**, never implicitly in scope.
-

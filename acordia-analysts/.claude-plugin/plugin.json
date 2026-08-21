@@ -1,0 +1,15 @@
+{
+  "name": "acordia-analysts",
+  "version": "5.0.0",
+  "description": "ACORDIA Analysis — five decision-support agents and a 45-skill analytic library.",
+  "author": {
+    "name": "ACORDIA"
+  },
+  "repository": "https://github.com/sapran/acordia-agents",
+  "keywords": [
+    "security",
+    "analysis",
+    "intelligence",
+    "acordia"
+  ]
+}
