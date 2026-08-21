@@ -85,6 +85,7 @@ ssh -o BatchMode=yes BOLT_SSH "mkdir -p ~/bolt/$RUN && cd ~/bolt/$RUN && \
 ```
 
 Every run gets its own timestamped directory containing:
+
 - `cmd.sh` — exactly what was executed
 - `output.txt` — everything it printed
 

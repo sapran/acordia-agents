@@ -180,7 +180,7 @@ wpscan --url https://target.com --enumerate u,p,t
 
 ### Manual Testing Points
 
-```
+```text
 1. Authentication
    - Login forms
    - Password reset
@@ -207,7 +207,7 @@ wpscan --url https://target.com --enumerate u,p,t
 
 ## Reconnaissance Flow
 
-```
+```text
 Target Domain
      │
      ├── Passive Subdomain Enumeration

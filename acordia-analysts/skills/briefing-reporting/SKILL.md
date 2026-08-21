@@ -13,13 +13,16 @@ metadata:
 # Briefing & Written Reporting
 
 ## Objective
+
 Communicate the operational picture and the recommended course of action crisply, so the recipient can decide and act without reconstructing your analysis or misreading your confidence.
 
 ## When to use
+
 - Handing off a judgement, a target read, or a recommended move to a decision-maker or the next operator.
 - Producing a written product (spot report, target package, after-action) others will act on.
 
 ## Method
+
 - Lead with the bottom line: the judgement and the recommended action, before any supporting detail.
 - Separate fact from inference from recommendation, and mark the confidence on each (see calibrated-confidence).
 - Give only the evidence that changes the decision; push the rest to an annex, and name the key gaps and risks plainly.
@@ -27,6 +30,7 @@ Communicate the operational picture and the recommended course of action crisply
 - State what you need from the reader: a decision, a resource, or an acknowledgement, with the deadline.
 
 ## Signals / outputs
+
 - A bottom-line-up-front judgement and recommendation.
 - Confidence, key assumptions, and gaps flagged inline.
 - An explicit ask: the decision or action required, by when.

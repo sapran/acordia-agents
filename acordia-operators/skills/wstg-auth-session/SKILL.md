@@ -74,7 +74,7 @@ ffuf -u https://TARGET/login -X POST -d "username=FUZZ&password=test" \
 
 ### SQL Injection in Login
 
-```
+```text
 admin' --
 admin' #
 admin'/*
@@ -121,7 +121,7 @@ curl -sI https://TARGET/ | grep -i "set-cookie"
 
 ## Session Fixation Test
 
-```
+```text
 1. Note session token before login (pre-auth)
 2. Login with valid credentials
 3. Check if session token changed (post-auth)
@@ -172,7 +172,7 @@ curl -s -H "Cookie: session=REGULAR_USER" https://TARGET/api/admin/users
 
 ## OAuth Testing Checklist
 
-```
+```text
 1. Redirect URI manipulation:
    - redirect_uri=https://evil.com
    - redirect_uri=https://TARGET.evil.com

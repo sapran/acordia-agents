@@ -13,7 +13,7 @@ metadata:
 
 ## Kerberos Authentication Flow
 
-```
+```text
 Client                    KDC (DC)                   Service
    │                         │                          │
    │──AS-REQ (username)─────>│                          │
@@ -157,6 +157,7 @@ ticketer.py -nthash SERVICE_NTLM -domain-sid S-1-5-21-DOMAIN-SID \
 ```
 
 **Common Service SPNs:**
+
 | Service | SPN |
 |---------|-----|
 | SMB/CIFS | cifs/hostname |

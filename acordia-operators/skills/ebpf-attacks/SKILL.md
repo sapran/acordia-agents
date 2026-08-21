@@ -134,6 +134,7 @@ ebpf cleanup --dry-run
 ```
 
 The cleanup tool uses three detection methods:
+
 1. `bpftool prog list` — enumerate all loaded BPF programs
 2. `/sys/fs/bpf/` — check for pinned programs
 3. `/sys/kernel/debug/tracing/` — check for registered kprobe/uprobe events
@@ -141,6 +142,7 @@ The cleanup tool uses three detection methods:
 ## Detection Considerations
 
 eBPF programs are detectable by:
+
 - `bpftool prog list` — shows all loaded BPF programs
 - `/sys/kernel/debug/tracing/kprobe_events` — shows registered kprobes
 - `/sys/kernel/debug/tracing/uprobe_events` — shows registered uprobes

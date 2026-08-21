@@ -1,6 +1,7 @@
 # competency-map-derivation Specification
 
 ## Purpose
+
 Establishes the competency grid in `docs/roles/operational-analyst.md` as the single source of truth for the analyst agents and skills, and fixes the derivation rules: row-to-skill bijection, column-to-agent prompt skill sets, deep-versus-working mark semantics, and the structural mappings from grid to artifact.
 
 ## Requirements
@@ -14,10 +15,12 @@ the grid, in the same change, which is why the grid edit SHALL come first and th
 follow it rather than the reverse.
 
 #### Scenario: Grid edit drives regeneration
+
 - **WHEN** a cell or row in the grid changes
 - **THEN** the affected skills and agent prompt skill sets are updated from the grid in the same change, not edited independently
 
 #### Scenario: The grid moves first
+
 - **WHEN** a skill is added, merged or removed
 - **THEN** the grid row is edited before the skill directory and the prompt lines are touched
 
@@ -26,6 +29,7 @@ follow it rather than the reverse.
 Each skill row of the grid SHALL compile to exactly one library skill, and each library skill SHALL trace back to exactly one grid row. There SHALL be no skill without a row and no row without a skill.
 
 #### Scenario: Bijection holds
+
 - **WHEN** the grid rows and the library skills are enumerated
 - **THEN** they form a one-to-one correspondence
 
@@ -38,6 +42,7 @@ the agent's `·`-separated skill lines, because neither target harness binds ski
 frontmatter.
 
 #### Scenario: Column defines the agent's set
+
 - **WHEN** the T&N column is read top to bottom
 - **THEN** every marked row's skill is named in `target-analyst`'s prompt, and unmarked rows are not
 
@@ -46,6 +51,7 @@ frontmatter.
 A `●` mark SHALL denote a deep/defining skill for that agent and a `○` mark SHALL denote a working/baseline skill; both place the skill in the agent's prompt skill set, but the distinction SHALL be preserved for prompt emphasis and documentation.
 
 #### Scenario: Deep and working both included, distinctly
+
 - **WHEN** a row has `●` in one column and `○` in another
 - **THEN** the skill is named in both agents' prompts, marked deep for the first and working for the second
 
@@ -57,10 +63,12 @@ header → a documentation grouping of the skills, carried as the skill's `metad
 rather than as a harness field, because neither harness has a skill `category`.
 
 #### Scenario: Italic question becomes the dispatch signal
+
 - **WHEN** a leg's italic operating question is read
 - **THEN** it is used (in meaning) as that subagent's `description`
 
 #### Scenario: Section header becomes a documented grouping
+
 - **WHEN** a grid section header is read
 - **THEN** the skills beneath it are grouped under one family in documentation and in skill metadata, not under a harness-level category
 

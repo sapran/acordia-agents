@@ -128,7 +128,7 @@ nxc smb 10.0.0.1 -u users.txt -p 'Spring2024!' --no-bruteforce
 
 ### Path 1: Domain User to Domain Admin
 
-```
+```text
 User Credential
     │
     ├─► Kerberoast SPN accounts
@@ -146,7 +146,7 @@ User Credential
 
 ### Path 2: Compromised Workstation to DC
 
-```
+```text
 Local Admin on Workstation
     │
     ├─► LSASS dump → cached domain creds

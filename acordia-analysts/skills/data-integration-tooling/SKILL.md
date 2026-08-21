@@ -13,13 +13,16 @@ metadata:
 # Data Integration & Correlation Tooling
 
 ## Objective
+
 Provide the data-handling muscle behind fusion: ingest, normalise, and correlate large, mixed datasets so that patterns and links surface which no manual review would find.
 
 ## When to use
+
 - When the collected take exceeds what you can read by hand, or spans formats (logs, dumps, captures, exports) that must be joined.
 - When repeated correlation on the same keys justifies a pipeline over one-off inspection.
 
 ## Method
+
 - Inventory the sources before joining: enumerate each input with `ls`/`find`/`glob`, type it, and record its expected record count, so the pipeline reconciles against a known denominator rather than absorbing a truncated feed silently.
 - Ingest and normalise over exhaustive coverage: parse each source in full into a common schema — standardising identities, timestamps, IPs, and hosts — and assert the ingested row count against the inventory, never sampling the head of a large export as a stand-in for the whole.
 - Choose the join model — relational, graph, or time-series — that fits the question; graph for relationships, time-series for sequence and cadence.
@@ -29,6 +32,7 @@ Provide the data-handling muscle behind fusion: ingest, normalise, and correlate
 - Degradation: if a source cannot be parsed into the schema, hold it out of the join explicitly and report the coverage gap and its effect on any conclusion, rather than joining the parseable remainder and presenting it as complete.
 
 ## Signals / outputs
+
 - A normalised, correlatable dataset with entities resolved across sources.
 - Repeatable queries/pipelines that answer recurring fusion questions at scale.
 - Provenance trail linking every derived link back to its raw records.

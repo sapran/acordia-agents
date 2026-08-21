@@ -1,6 +1,6 @@
 # The Operator
 
-### Provenance record for the Operations pillar of ACORDIA
+## Provenance record for the Operations pillar of ACORDIA
 
 **Version 1.1 · revised for distribution 3.0.0**
 

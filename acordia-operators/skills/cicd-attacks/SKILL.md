@@ -56,7 +56,7 @@ curl -s -H "Private-Token: $GITLAB_TOKEN" "$GITLAB_URL/api/v4/user" | jq .userna
 
 ### Phase 4 — Cleanup (MANDATORY)
 
-```
+```text
 revert injected pipeline steps, delete dispatch workflows, revoke leaked tokens
 ```
 

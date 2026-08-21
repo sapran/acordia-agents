@@ -20,7 +20,8 @@ Exploit URL redirect parameters to redirect users to attacker-controlled domains
 ### Phase 1: Identify Redirect Parameters
 
 Common parameter names:
-```
+
+```text
 url, redirect, redirect_url, redirect_uri, return, return_url, returnTo,
 next, goto, target, dest, destination, rurl, redir, forward, continue,
 callback, path, out, view, login_url, image_url, go, link, ref

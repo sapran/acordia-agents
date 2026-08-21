@@ -1,6 +1,7 @@
 # skill-library Specification
 
 ## Purpose
+
 Defines the skill libraries the two pillars ship — where a skill lives, the frontmatter contract both
 harnesses parse, the description that selects it, the analyst library's one-to-one derivation from the
 competency grid, the operations library's upstream provenance, and the reading and reference-file
@@ -95,14 +96,17 @@ Where two are inseparable, the two skills SHALL be merged rather than shipped as
 The library SHALL contain exactly one `SKILL.md` file for each skill row of the appendix grid in `docs/roles/operational-analyst.md`, and SHALL NOT merge, split, or omit rows. Section-header rows (the italic group labels) are not skills and SHALL NOT produce files. The library MAY additionally contain **procedural cross-cutting skills** that reuse multiple grid rows and would violate the one-competency-per-row invariant if added as rows themselves; each such skill SHALL declare its cross-cutting nature explicitly in its own body and SHALL NOT appear in the grid.
 
 #### Scenario: Row count matches file count for competency skills
+
 - **WHEN** the grid lists N skill rows (excluding italic section headers)
 - **THEN** the library contains at least N `SKILL.md` files, one traceable to each row
 
 #### Scenario: Header rows produce no skill
+
 - **WHEN** a grid line is an italic section label (e.g. *Analytic spine*)
 - **THEN** no `SKILL.md` is created for it
 
 #### Scenario: Procedural skill declares its non-grid status
+
 - **WHEN** a procedural cross-cutting skill is inspected
 - **THEN** its body states it is procedural/cross-cutting and does not correspond to a grid row
 
@@ -176,14 +180,17 @@ The criterion above is normative and determines scope on its own. A skill meetin
 Seven skills SHALL each carry a named `## Credential extraction` section covering, for that skill's domain: artefact locations, canonical extraction tools, and portable extraction patterns. The seven are `disk-memory-forensics`, `identity-directory-trust`, `log-artefact-interpretation`, `cloud-controlplane-analysis`, `web-api-authflow-analysis`, `os-host-internals`, and `implant-payload-re`. The section SHALL be additive — it does not replace the existing `Objective`, `When to use`, `Method`, or `Signals / outputs` sections.
 
 #### Scenario: Section present in each credential-adjacent skill
+
 - **WHEN** any of the seven skills' `SKILL.md` is inspected
 - **THEN** it contains a `## Credential extraction` H2 section with domain-specific artefact locations, tools, and patterns
 
 #### Scenario: Enrichment is additive, not a rewrite
+
 - **WHEN** an enriched skill is compared against its pre-enrichment content
 - **THEN** the existing sections are unchanged and only the new `## Credential extraction` section is added
 
 #### Scenario: Passive posture preserved
+
 - **WHEN** a credential-extraction section is read
 - **THEN** it describes analysis of already-collected material only, references no active credential validation, and stores no raw credential values in its examples
 
@@ -691,21 +698,26 @@ Nothing SHALL claim to enforce the posture. It is a discipline stated in a promp
 no harness can bind a tool call to a remote host.
 
 #### Scenario: The skill is present and authored
+
 - **WHEN** `acordia-operators/skills/bolts/SKILL.md` is read
 - **THEN** it declares `family: operations-discipline`, carries no `metadata.cyberstrike`, and names its CyberStrike ancestor in prose
 
 #### Scenario: The posture separates remote from local
+
 - **WHEN** the skill body is read
 - **THEN** it names the tooling that runs on the bolt and the work that stays on the local machine, as two explicit lists
 
 #### Scenario: No enforcement is claimed
+
 - **WHEN** the skill's `## The operating rule` section is read
 - **THEN** it states that nothing enforces the posture and that a local invocation would succeed, claiming no guarantee that tooling cannot run locally
 
 #### Scenario: The four operating mechanics are present
+
 - **WHEN** the skill body is read
 - **THEN** it defines the registry that records each bolt, how a bolt is verified before first use, how a long-running scan survives a dropped connection, and where retrieved artifacts land
 
 #### Scenario: The bolt is distinguished from a target
+
 - **WHEN** the skill is read alongside the prompts' scope guardrail
 - **THEN** it states that the bolt is operator infrastructure exempt from the scope file, and that everything it is aimed at must appear in `.acordia/ops/scope.md`

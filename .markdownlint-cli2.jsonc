@@ -1,0 +1,51 @@
+// Lint policy for the ACORDIA distribution. Read by markdownlint-cli2 and by the
+// DavidAnson.vscode-markdownlint extension, which is powered by the same engine.
+// `.markdownlintignore` is NOT read by either — only by the legacy markdownlint-cli v1 —
+// so exclusions must live in `ignores` here.
+//
+// Zero violations verified 2026-08-21 against markdownlint-cli2 0.23.2 / markdownlint 0.41.1,
+// whose rule set matches the extension's schema (both know MD056, MD058, MD059, MD060).
+// A newer markdownlint adds rules: re-verify the zero when adopting one.
+{
+  "config": {
+    "default": true,
+
+    // One paragraph per line is deliberate: it keeps a prose diff to the paragraph
+    // that changed. Reflowing to 80 columns would rewrite every file in the repo.
+    "MD013": false,
+
+    // OpenSpec repeats `#### Scenario:` names under different requirements by design.
+    "MD024": { "siblings_only": true },
+
+    // docs/agents-skills-extension-workbook.md uses a named anchor for intra-doc links.
+    "MD033": { "allowed_elements": ["a"] },
+
+    // Standalone bold labels are intended emphasis, not headings. Promoting the 37
+    // occurrences (7 analyst skills and both role documents) would restructure
+    // documents whose shape is deliberate.
+    "MD036": false,
+
+    // A code span's trailing space is sometimes semantic here: the agent description
+    // prefix is exactly `ACORDIA Analysis — `, space included, and quoting it without
+    // the space would misstate the contract.
+    "MD038": false,
+
+    // Every distribution file carries `description` in frontmatter, which is its title.
+    "MD041": { "front_matter_title": "^\\s*\"?(title|description)\"?\\s*[:=]" },
+
+    // Demands visual pipe alignment. The 55 it cannot auto-fix are all in ported
+    // operations skills whose cells contain em dashes and inline code, where aligning
+    // pipes by character count is churn on provenance-tracked files for no reader.
+    "MD060": false
+  },
+  "ignores": [
+    // OpenSpec owns this tree's format. A delta spec's first line must be
+    // `## ADDED Requirements` or `## MODIFIED Requirements`, so it can never carry the
+    // top-level heading MD041 wants; and archived changes are immutable by contract, so
+    // a violation there could never be fixed even if it were ours to fix.
+    "openspec/changes/**",
+    // Vendored tooling, not part of the distribution; upstream owns its formatting.
+    ".claude/**",
+    ".codex/**"
+  ]
+}

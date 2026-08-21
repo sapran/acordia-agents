@@ -14,12 +14,15 @@ metadata:
 # Aleph Entity Graph
 
 ## Cross-cutting notice
+
 This skill is **procedural and non-grid**. It corresponds to no row of the competency grid in `docs/roles/operational-analyst.md`; it composes existing rows — `multi-source-fusion`, `data-integration-tooling`, `exhaustive-data-processing`, `assessing-take-value` and `analytic-tooling-scripting` — into the specific discipline of working a corpus that has already been ingested into Aleph. Do not add it to the grid.
 
 ## Objective
+
 Turn an Aleph instance from a document pile into a queryable entity graph: find the entities that matter, establish who and what they connect to, judge how good the underlying material is, and read only the text you actually need.
 
 ## When to use
+
 - The collected material has been ingested into an Aleph instance (OCCRP investigative platform) rather than handed over as loose files.
 - You need to relate people, companies, addresses, phones, emails, payments and documents to each other, not just search text.
 - You must cross-check a name from elsewhere in the operation against an already-indexed corpus.
@@ -27,9 +30,11 @@ Turn an Aleph instance from a document pile into a queryable entity graph: find 
 Use `exhaustive-data-processing` instead when the material is a raw dump on disk. Use this skill once it is *in* Aleph — Aleph has already done the extraction and entity resolution, and re-grinding the files by hand discards that work.
 
 ## The data model in one paragraph
+
 Aleph stores **FollowTheMoney (FtM) entities**, grouped into **collections** (one investigation or one dataset). Every entity has a `schema` (`Person`, `Company`, `Address`, `Email`, `Document`, `Pages`…), a `caption`, and typed `properties`. Schemata inherit: `Person` and `Company` are both `LegalEntity`, which is a `Thing`. Properties whose type is `entity` are **the graph edges** — `Ownership.owner` points at a `LegalEntity`, and Aleph auto-generates the reverse edge, so a company can be walked back to its owners. Some schemata (`Ownership`, `Directorship`, `Payment`, `UnknownLink`) exist purely to *be* a relationship between two entities. Read `aleph://schema/<Name>` before writing a filter against a schema you have not used.
 
 ## Tooling — state which one you have
+
 - **If the `aleph-mcp` tools are mounted**, use them. The server registers **seventeen read tools** whose bare names are `list_collections`, `get_collection`, `search_entities`, `get_entity`, `expand_entity`, `entity_tags`, `similar_entities`, `match_entity`, `get_profile`, `profile_tags`, `profile_similar`, `expand_profile`, `list_entitysets`, `get_entityset`, `entityset_items`, `xref_results`, `get_entity_text`. A harness may expose them under a mount prefix composed from the server name — `search_entities` appearing as `aleph_search_entities`, or under a mount path of its own — and the server neither applies nor guarantees any prefix. **Look for the verbs, not a literal prefix**, and use whatever form your harness actually lists.
 - **Otherwise fall back to `bash`** with the HTTP API directly:
   `curl -s -H "Authorization: ApiKey $ALEPHCLIENT_API_KEY" "$ALEPHCLIENT_HOST/api/2/entities?q=…&filter:schema=Person&limit=20" | jq …`
@@ -38,6 +43,7 @@ Aleph stores **FollowTheMoney (FtM) entities**, grouped into **collections** (on
 Do not assume either path exists — check, say which you are on, and name the constraint if neither is available.
 
 ## Method
+
 1. **Inventory before querying.** `list_collections` (or `GET /api/2/collections`) to see what this key can read, then `get_collection` for each candidate. Its `statistics` block breaks the collection down by schema, country and language — that is your denominator and it costs one call.
 2. **Facet before pulling rows.** Run the search you intend with `limit=0` and `facets=["schema","collection_id","countries","languages"]`. You learn the shape of the result set for almost no context, and you find out immediately whether the query is too broad.
 3. **Narrow with filters, not with paging.** `filters` are exact matches — different keys are ANDed, values inside one list are ORed. `q` is an Elasticsearch query_string: quote phrases, use `AND`/`OR`/`NOT` and wildcards. Add `highlight` when you need to see *why* something matched without reading the document.
@@ -54,6 +60,7 @@ Do not assume either path exists — check, say which you are on, and name the c
 6. **Script the repetitive part.** Per `analytic-tooling-scripting`: when the same pivot must run over dozens of entities, write the loop and aggregate the results, rather than issuing dozens of interactive calls and reading each one.
 
 ## Limits that change the method
+
 These are Aleph's, not the tool's, and no amount of paging works around them:
 
 - **`limit + offset` may never exceed 9999** on entity search — Elasticsearch's result window. Deep pagination is therefore *not* a way to read a whole collection. If a result set is larger, it must be split by facet (per schema, per collection, per country, per date range) or narrowed. A tool that clamps this silently would let you believe you reached the end; treat any total above 9999 as "unenumerated".
@@ -64,7 +71,9 @@ These are Aleph's, not the tool's, and no amount of paging works around them:
 - **Rate limiting** is around 30 requests/minute for unprivileged callers. Prefer one faceted query over twenty narrow ones.
 
 ## Assessing the take
+
 Feed what you find into `assessing-take-value` rather than treating an Aleph hit as fact:
+
 - **Provenance is per collection, not per instance.** A `Person` from a leaked archive and a `Person` from a sanctions list carry entirely different weight. Always carry `collection_id` with a claim.
 - **Entities are derived, not observed.** Most were generated by extraction or by a mapping over a source table. An `Ownership` edge is only as good as the registry row behind it.
 - **Cross-reference matches are candidates; a profile is a decision.** `xref_results` and `similar_entities` return scores, and a match without a human `judgement` is a hypothesis — route it through `hypothesis-testing`, not into the picture. A `profile_id` is the other side of that: someone already judged those entities to be one actor, which upgrades a candidate to a recorded decision. Treat it as evidence of a human decision, not as ground truth — it is scoped to a collection, it can be wrong, and `profile_similar` shows you what that decision left unresolved.
@@ -72,12 +81,14 @@ Feed what you find into `assessing-take-value` rather than treating an Aleph hit
 - **Absence proves little.** Not finding a name may mean the corpus never covered that jurisdiction. Say which collections you actually searched, and name the gap through `naming-the-gaps`.
 
 ## Signals / outputs
+
 - A named set of entities with ids and collection provenance, not a list of documents.
 - The relationship paths that were actually walked, with the property names traversed and any edge whose `count` exceeded the expansion cap flagged as partial.
 - Identity-resolution decisions made explicit: which entities you treated as the same actor, and on what evidence.
 - A coverage statement: which collections were searched, which queries were run, and which result sets exceeded the 9999 ceiling and were therefore only sampled.
 
 ## Guardrails
+
 - **Read only.** This skill searches, expands and reads. It never ingests, writes, tags, cross-references on demand, or deletes — those change another team's investigation. If a write is genuinely needed, hand it to the operator or the human, do not attempt it.
 - The API key is expected to be READ-scoped; if a call fails with 403 mentioning WRITE or admin, that is the boundary working, not an obstacle to route around.
 - Never place raw credential values, personal identifiers beyond what the judgement requires, or bulk document text into a report. Report classifications, entity ids and provenance.

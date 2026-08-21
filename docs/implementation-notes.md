@@ -14,17 +14,22 @@ rather than instructions (now stated in all nine prompts)._
   defined only inside `bolts/SKILL.md`. The five operations prompts each point explicitly at
   `.acordia/ops/` so an agent knows the journal exists before it loads `operation-journal`; nothing
   gives it the same signal for the bolt registry. Because the working-knowledge line only makes a
-  skill *available* for selection rather than autoloading it, an agent that never selects `bolts` can
+  skill _available_ for selection rather than autoloading it, an agent that never selects `bolts` can
   run tooling locally without learning that a registry of network positions was configured for the
   engagement. The fix is one clause in the prompts' journal sentence, or a row in
   `operation-journal`'s file table marking `.acordia/bolts.json` as the sibling that records execution
-  position. Parked because `cyber-operator`'s prompt body has 38 characters of headroom against the
+  position. Parked because `cyber-operator`'s prompt body has 16 characters of headroom against the
   10,000-character ceiling, so adding prose there is blocked until technique detail moves into a
   skill — which is the same work the ceiling note below calls for.
-- **`cyber-operator` is 38 characters from its ceiling.** 9,962 of 10,000 after `bolts` was named.
-  Any further slug must fit in 35 characters including its ` · ` separator, and any prose addition is
-  blocked outright. `agent-roster` prescribes the remedy: move technique detail into the skill that
-  owns it, never delete routing or guardrails.
+- **`cyber-operator` has 16 characters left.** 9,984 of 10,000, measured on the body after the
+  frontmatter with `wc -m` (not `wc -c` — the em dashes are multi-byte). 4.2.0's lead heading, heading
+  spacing and three fence languages took it from 9,960, spending 24 of the 40 characters that were
+  free — 60% of the headroom, for a change that altered no prose. What still fits is a slug of up to
+  13 characters plus its 3-character ` · ` separator: `bolts` (5), `attack-jwt` (10) and
+  `ad-security` (11) would all land, but the median operator slug is around 15 and would not. What is
+  blocked outright is prose. `agent-roster` prescribes the remedy: move technique detail into the
+  skill that owns it, never delete routing or guardrails. Formatting is charged against this budget
+  too, so treat a repo-wide style change as a content change on this one file.
 - **`skill-library`'s cloned-count header says thirty, the tree carries thirty-one.** The requirement
   `Thirty operations skills cloned from CyberStrike` enumerates 26 standalone + 4 WSTG bundles = 30,
   but 31 files carry `metadata.cyberstrike`; `attack-sqli` accounts for the difference and has its own

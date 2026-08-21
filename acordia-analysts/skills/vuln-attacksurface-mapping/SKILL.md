@@ -13,13 +13,16 @@ metadata:
 # Vulnerability & Attack-Surface Mapping
 
 ## Objective
+
 Build and prioritize the target's attack surface — every reachable entry point and its weaknesses — ranked not by CVSS but by exploitability times proximity to the crown jewels.
 
 ## When to use
+
 - When terrain and mission analysis must converge into a decision on where to strike first.
 - When there are more findings than time, and prioritization must reflect mission value.
 
 ## Method
+
 - Inventory the reachable recon feeds with `glob` / `find` / `list`: external scan outputs, internal Nmap results, cloud-asset inventories, identity enumeration dumps, application/API catalogues, and human-surface OSINT.
 - Read in bounded, context-scoped slices per source — one scanner report, one cloud-asset export, one identity slice — rather than concatenating every feed into a single wall of text in context; drive coverage with an exhaustive `grep`/parser pass over the whole feed to locate every candidate finding, then read the scoped range around each — every hit, not just the first.
 - Aggregate the surface: external and internal exposure, services, apps/APIs, cloud, identity, and human entry points from all recon feeds.
@@ -30,6 +33,7 @@ Build and prioritize the target's attack surface — every reachable entry point
 - If a scanner-output parser (e.g. an `nmap` XML reader, a cloud CSPM export tool) is unavailable, fall back to raw `grep` over the report files; if the underlying scan or asset feed was never produced, flag the gap and refuse to rank a surface you cannot see.
 
 ## Signals / outputs
+
 - Consolidated attack-surface inventory with exploitability assessed.
 - Prioritized target list ranked by mission-weighted value, not raw severity.
 - Recommended initial and follow-on entry points with the path each opens toward the objective.
