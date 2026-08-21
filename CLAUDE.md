@@ -30,8 +30,8 @@ acordia-analysts/.claude-plugin/plugin.json
 
 The version is the **only** update signal either harness has. omp compares it against the installed version and skips when they match, so an unbumped version means your edit never reaches anyone who already installed the plugin. It fails silently: no error, no warning, users keep running the old prompts. Claude Code has no working upgrade path for marketplace plugins at all (verified, 2.1.220), so there the version is informational and only uninstall-then-reinstall refreshes.
 
-- **MINOR** (`5.0.0` → `5.1.0`) — any change that reaches a user: an agent prompt, a skill body, a command wrapper, a description.
-- **MAJOR** (`5.0.0` → `6.0.0`) — the roster (an agent or pillar added or removed), or the shape of the distribution itself, including a move of the install source path.
+- **MINOR** (`6.0.0` → `6.1.0`) — any change that reaches a user: an agent prompt, a skill body, a command wrapper, a description.
+- **MAJOR** (`6.0.0` → `7.0.0`) — the roster (an agent or pillar added or removed), or the shape of the distribution itself, including a move of the install source path or the addition of an install route.
 
 Real semver, and monotonic — never hang a hash or build metadata off it. `1.0.0+aaa` and `1.0.0+bbb` compare **equal** and would never upgrade (verified, omp 17.1.8).
 
@@ -39,7 +39,7 @@ Real semver, and monotonic — never hang a hash or build metadata off it. `1.0.
 
 ## Commands
 
-There is no build, no lint and no test suite. What remains is the spec workflow, the two install paths, and the by-hand checks below.
+There is no build, no lint and no test suite. What remains is the spec workflow, the three install paths, and the by-hand checks below.
 
 ```sh
 openspec validate --all --strict       # gate any change touching openspec/
@@ -49,9 +49,16 @@ claude plugin install acordia-analysts@acordia --scope local
 omp plugin marketplace add ./.         # omp install — note `./.`, a bare `.` is rejected
 omp plugin install acordia-analysts@acordia --scope user
 omp plugin marketplace update acordia && omp plugin upgrade   # pick up a version bump
+
+tools/install-omp.sh --profile <name>    # omp native install — symlinks 5 agents + 45 skills, edits no config
+tools/uninstall-omp.sh --profile <name>  # removes only symlinks whose target is inside a pillar checkout
 ```
 
 Verification is "it loads and runs", not a gate. After installing: `/agents` must list all five ACORDIA agents — a frontmatter mistake makes `discoverAgents()` skip the file with a warning and the agent silently vanishes — then dispatch the lead and one leg and confirm each runs.
+
+**The native route exists because a marketplace install serves nothing when `claude-plugins` is disabled.** That provider is the reader for marketplace plugins, and it reports no error when off: `omp plugin list`, `installed_plugins.json`, the lockfile's `"enabled": true` and the `node_modules/` symlink all still say the plugin is healthy, and only `omp config get disabledProviders` names the cause. omp's native agent and skill roots are gated by no provider, which is what the scripts write to. Nothing else reaches them: with that provider off, an `extensions:` entry and a registered `omp plugin link` package each load the skills and serve none of the agents, and only CLI `omp -e <path>` does — an omp bug, so do not try to fix it here by adding a `package.json`.
+
+**A native install shadows a plugin install of the same names, first-wins and silently.** Native roots resolve before plugin roots and dedup by exact agent name, so a checkout linked into `~/.omp/agent/agents/` wins over the published plugin with no warning anywhere, and a user with both active is testing their working tree while reading the version number of the release. Never leave the two routes both active: `tools/uninstall-omp.sh` before falling back to the marketplace, and when a user reports the wrong prompt behaviour, look for a native install under their agent directory before believing the version they quote.
 
 **Withdrawing a plugin from the catalogs does not uninstall it.** The retired `acordia-operators` plugin was published up to 4.2.0; its catalog entry no longer exists, so no upgrade path can resolve it and none removes it. An install made before 5.0.0 stays resident and dispatchable at 4.2.0 until the user runs `omp plugin uninstall acordia-operators@acordia` by hand. Expect it in the wild, and say so in any release note: a catalog withdraws the offer, never the copy already on disk.
 
