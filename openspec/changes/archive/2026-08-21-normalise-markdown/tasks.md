@@ -12,8 +12,8 @@
 
 ## 2. Fix every violation
 
-- [x] 2.1 Run markdownlint's own `--fix` (2,937 fixed). Do not hand-roll a fixer: a fence-unaware
-      one injects blank lines into code blocks, which markdownlint never asks for.
+- [x] 2.1 Run markdownlint's own `--fix` (548 fixes in 73 files, leaving 47). Do not hand-roll a
+      fixer: a fence-unaware one injects blank lines into code blocks, which markdownlint never asks for.
 - [x] 2.2 Audit every line `--fix` changed. It rewrote `__proto__` to `**proto**` in
       `attack-prototype-pollution` under MD050; restore it as a code span.
 - [x] 2.3 Add a language to all 39 bare fences. Use `text` — inference misclassified 11 of 39.
@@ -45,7 +45,7 @@
 
 ## 5. Verify
 
-- [x] 5.1 Linter reports zero across the 120 files in scope.
+- [x] 5.1 Linter reports zero across the 120 files in scope, at cli2 0.23.2 and at 0.22.0/0.20.0/0.18.1.
 - [x] 5.2 Classify every changed line; account for each one that is not blank, a fence marker, a
       heading or a blockquote marker.
 - [x] 5.3 Confirm `--fix` touched no fenced content.

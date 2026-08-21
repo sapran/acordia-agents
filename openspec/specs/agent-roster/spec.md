@@ -156,12 +156,16 @@ The line is prose the model reads, not a field any harness parses. Its adjacency
 therefore a readability convention, and this capability SHALL NOT state it as a contract: a blank line
 between the two changes nothing either harness does. Two deleted generators did depend on it —
 `tools/translate-omp.py --autoload deep` read the following line to populate omp's `autoloadSkills`
-until `9fa90c5`, released at 2.4.0, and its successor `tools/build-plugins.py` kept parsing that line
-on every build as a gate, failing when it named no skills, until `e503b8a`, released at 3.0.0. Since
-3.0.0 nothing emits from the line and nothing gates on it, and this capability forbids `autoloadSkills`
+until `9fa90c5`, and its successor `tools/build-plugins.py` kept parsing that line on every build as a
+gate, failing when it named no skills, until `e503b8a` — the commit whose next version bump is 3.0.0.
+Since then nothing emits from the line and nothing gates on it, and this capability forbids `autoloadSkills`
 outright.
 
-A check of these lines SHALL locate them by heading text rather than by line position. A positional
+A check of these lines SHALL locate them by heading text rather than by line position, and SHALL accept
+the full set of heading texts in use: the three `CLAUDE.md` names, plus `## Your defining spine (deep)`
+and `## Baseline you carry (working)`, which the analyst orchestrator uses instead. A check written from
+the three alone reports the orchestrator as broken while it is correct — the deleted
+`tools/build-plugins.py` carried both depth variants for exactly this reason. A positional
 check reports success when it can no longer find them: all 196 slug occurrences sat directly under
 their heading before this change and all 196 are separated by a blank line after it, so a check keyed
 on position would silently inspect none while still passing.

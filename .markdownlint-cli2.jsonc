@@ -33,9 +33,12 @@
     // Every distribution file carries `description` in frontmatter, which is its title.
     "MD041": { "front_matter_title": "^\\s*\"?(title|description)\"?\\s*[:=]" },
 
-    // Demands visual pipe alignment. The 55 it cannot auto-fix are all in ported
-    // operations skills whose cells contain em dashes and inline code, where aligning
-    // pipes by character count is churn on provenance-tracked files for no reader.
+    // Demands visual pipe alignment. 55 of its 411 cannot be auto-fixed, spread over ten
+    // operations skills; five of those sit on separator rows holding no cells at all.
+    // Nine of the ten files are provenance-tracked ports where re-flowing upstream text is
+    // forbidden. The tenth, gcp-postexploit, is authored here and holds 6 of the 55, so the
+    // provenance argument covers most of this and not all of it — the rest is that aligning
+    // pipes by character count is churn no reader benefits from.
     "MD060": false
   },
   "ignores": [

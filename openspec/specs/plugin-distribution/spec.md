@@ -200,6 +200,16 @@ document. Emphasis-normalising rules are unsafe next to identifiers that carry u
 - **WHEN** the lint policy is read
 - **THEN** it names the markdownlint version its zero was verified against
 
+#### Scenario: Adopting a newer linter re-verifies the zero
+
+- **WHEN** a change raises the markdownlint version the policy names
+- **THEN** that change re-runs the linter and records the new zero, because a newer release adds rules
+
+#### Scenario: An automated fix is inspected line by line
+
+- **WHEN** an automated fix is applied to this tree
+- **THEN** every line it changed is classified before the change is committed, and any edit to prose or to an identifier is reverted
+
 #### Scenario: No gate is introduced
 
 - **WHEN** the repository is searched for a lint invocation in a build script, hook or workflow
