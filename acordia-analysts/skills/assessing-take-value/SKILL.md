@@ -5,9 +5,10 @@ metadata:
   acordia:
     family: take-handling
     grid_row: assessing-take-value
-    grid_deep_in: [Fus]
+    grid_deep_in: [Coll]
     grid_working_in: [Core]
-    source: docs/roles/operational-analyst.md#L103
+    row: assessing-take-value
+    source: docs/roles/operational-analyst.md
 ---
 
 # Assessing Value/Quality of the Collected Take

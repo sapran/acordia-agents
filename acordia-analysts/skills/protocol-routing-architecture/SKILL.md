@@ -5,9 +5,10 @@ metadata:
   acordia:
     family: target-modelling
     grid_row: protocol-routing-architecture
-    grid_deep_in: ['T&N']
+    grid_deep_in: [Terrain]
     grid_working_in: [Def]
-    source: docs/roles/operational-analyst.md#L83
+    row: protocol-routing-architecture
+    source: docs/roles/operational-analyst.md
 ---
 
 # Protocol, Routing & Network Architecture

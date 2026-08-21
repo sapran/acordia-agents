@@ -7,7 +7,8 @@ metadata:
     grid_row: deception-detection
     grid_deep_in: [Core, Def]
     grid_working_in: []
-    source: docs/roles/operational-analyst.md#L71
+    row: deception-detection
+    source: docs/roles/operational-analyst.md
 ---
 
 # Deception Detection / Anti-Manipulation

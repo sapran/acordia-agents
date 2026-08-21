@@ -7,7 +7,8 @@ metadata:
     grid_row: hypothesis-testing
     grid_deep_in: [Core]
     grid_working_in: [Def]
-    source: docs/roles/operational-analyst.md#L69
+    row: hypothesis-testing
+    source: docs/roles/operational-analyst.md
 ---
 
 # Hypothesis Testing (Competing Hypotheses)

@@ -5,9 +5,10 @@ metadata:
   acordia:
     family: target-modelling
     grid_row: vuln-attacksurface-mapping
-    grid_deep_in: ['T&N']
+    grid_deep_in: [Terrain]
     grid_working_in: [Core, Def]
-    source: docs/roles/operational-analyst.md#L88
+    row: vuln-attacksurface-mapping
+    source: docs/roles/operational-analyst.md
 ---
 
 # Vulnerability & Attack-Surface Mapping

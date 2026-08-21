@@ -7,7 +7,8 @@ metadata:
     grid_row: human-automation-teaming
     grid_deep_in: [Core]
     grid_working_in: []
-    source: docs/roles/operational-analyst.md#L77
+    row: human-automation-teaming
+    source: docs/roles/operational-analyst.md
 ---
 
 # Human–Automation Teaming

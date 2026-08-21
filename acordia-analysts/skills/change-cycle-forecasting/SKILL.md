@@ -5,9 +5,10 @@ metadata:
   acordia:
     family: target-modelling
     grid_row: change-cycle-forecasting
-    grid_deep_in: ['T&N']
-    grid_working_in: []
-    source: docs/roles/operational-analyst.md#L81
+    grid_deep_in: [Mission]
+    grid_working_in: [Terrain]
+    row: change-cycle-forecasting
+    source: docs/roles/operational-analyst.md
 ---
 
 # Change-Cycle Forecasting

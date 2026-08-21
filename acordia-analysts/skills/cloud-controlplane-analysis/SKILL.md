@@ -5,9 +5,10 @@ metadata:
   acordia:
     family: target-modelling
     grid_row: cloud-controlplane-analysis
-    grid_deep_in: ['T&N']
-    grid_working_in: [Def, Fus]
-    source: docs/roles/operational-analyst.md#L86
+    grid_deep_in: [Terrain]
+    grid_working_in: [Def, Coll]
+    row: cloud-controlplane-analysis
+    source: docs/roles/operational-analyst.md
 ---
 
 # Cloud Control-Plane & Service Analysis

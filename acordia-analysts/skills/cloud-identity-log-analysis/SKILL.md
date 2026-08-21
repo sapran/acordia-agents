@@ -6,8 +6,9 @@ metadata:
     family: defender-reading
     grid_row: cloud-identity-log-analysis
     grid_deep_in: [Def]
-    grid_working_in: ['T&N', Fus]
-    source: docs/roles/operational-analyst.md#L92
+    grid_working_in: [Terrain, Coll]
+    row: cloud-identity-log-analysis
+    source: docs/roles/operational-analyst.md
 ---
 
 # Cloud & Identity Log Analysis

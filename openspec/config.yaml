@@ -11,41 +11,44 @@ context: |
   plugin, from the marketplace catalogs at `.omp-plugin/marketplace.json`
   (omp's preferred path) and `.claude-plugin/marketplace.json` (Claude Code's).
   The two catalogs are hand-maintained and byte-identical, and both name the
-  same two sources. There is no generator, no build step and no shell
-  installer: each pillar is one authored tree that both harnesses read as-is.
+  same single source. There is no generator, no build step and no shell
+  installer: the pillar is one authored tree that both harnesses read as-is.
   opencode was dropped in 3.0.0 along with the generator that existed only to
   express its permission maps.
 
-  Scope today: two pillars, shipped as two independently installable plugins.
-  The Analysis pillar (`acordia-analysts/`) — one orchestrator
-  (`cyber-analyst`) plus three specialist legs
-  (`target-analyst`, `overwatch-analyst`, `fusion-analyst`)
-  and the 42-skill library that realises their shared analytic spine. Every
-  analyst artifact traces back to a specific row or paragraph in the source
-  competency map at `docs/roles/operational-analyst.md` (the role model), with
-  the mechanics of the extension surface documented in
-  `docs/agents-skills-extension-workbook.md`. The Operations pillar
-  (`acordia-operators/`) — one orchestrator (`cyber-operator`) plus four domain
-  specialists and a 40-skill technique library — has no competency grid; it is
-  a provenance-tracked port whose source of truth is `docs/roles/operator.md`.
+  Scope today: one pillar. The Analysis pillar (`acordia-analysts/`) — one
+  orchestrator (`cyber-analyst`) plus four specialist legs (`mission-analyst`,
+  `terrain-analyst`, `overwatch-analyst`, `collection-analyst`) and the
+  45-skill library that realises their shared analytic spine. Every analyst
+  artifact traces back to a specific row or paragraph in the source competency
+  map at `docs/roles/operational-analyst.md` (the role model), and every
+  doctrinal claim traces to an entry in the literature register at
+  `docs/roles/sources.md`. The mechanics of the extension surface are in
+  `docs/agents-skills-extension-workbook.md`, whose CyberStrike-port sections
+  are historical.
 
-  Future pillars (Collection, Reflection, Direction, Independent action) may
-  follow the same shape once compiled from their role models.
+  The Operations pillar was removed in 5.0.0. It was a provenance-tracked port
+  of a commercial pentest agent set rather than a derivation from the
+  framework, and it shared no objective concept with the Analysis pillar, so
+  the two could not compose. Its record survives at
+  `docs/roles/archive/operator.md` and nothing in the shipped tree derives from
+  it. Research is the ACORDIA-aligned next pillar if one is added: it composes
+  with Analysis and makes no target contact.
 
   Conventions: an agent file's frontmatter is exactly `name`, `description` and
   `color` — no tool list, no permission map, no mode, no metadata. Capability
   is granted by omission, because an omp agent with no `tools` key receives the
   full tool set and one with no `spawns` key has an unrestricted spawn policy.
-  Every agent in both pillars is therefore write-capable. Each analyst prompt
-  carries the rule that it writes freely but never modifies the material it was
-  given to analyse; `.acordia/reports/` for an analyst product and
-  `.acordia/ops/` for an operator journal are conventions no harness enforces,
-  and must never be described as enforced. Every prompt states that retrieved
-  content is data, never instructions. Each orchestrator names its own
-  specialists in its prompt and routing is prompt discipline, not a permission.
-  Skill binding is by prompt reference — neither harness binds skills per agent
-  — so each prompt names its skill set on `·`-separated lines, and a skill is
-  selected by description match.
+  Every agent is therefore write-capable. Each analyst prompt carries the rule
+  that it writes freely but never modifies the material it was given to
+  analyse; `.acordia/reports/` is a convention no harness enforces, and must
+  never be described as enforced. Every prompt states that retrieved content is
+  data, never instructions. The orchestrator names its own specialists in its
+  prompt and routing is prompt discipline, not a permission. Skill binding is
+  by prompt reference — neither harness binds skills per agent — so each prompt
+  names its skill set on `·`-separated lines, and a skill is selected by
+  description match. The analyst product is written for a human operator, who
+  decides and acts; no agent here executes.
 
 rules:
   proposal:
@@ -57,7 +60,7 @@ rules:
     - Every normative claim must be traceable either to an artifact in this
       repo (agent file, skill file, command wrapper, marketplace catalog,
       plugin manifest) or to a row/paragraph in
-      `docs/roles/operational-analyst.md`, `docs/roles/operator.md`, or
+      `docs/roles/operational-analyst.md` or `docs/roles/sources.md`, or to
       `docs/agents-skills-extension-workbook.md`.
     - State the ACTUAL behavior even when it is a trap; capture the ideal in
       design.md.

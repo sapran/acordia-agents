@@ -6,8 +6,9 @@ metadata:
     family: defender-reading
     grid_row: evasion-antianalysis
     grid_deep_in: [Def]
-    grid_working_in: ['T&N']
-    source: docs/roles/operational-analyst.md#L93
+    grid_working_in: [Terrain]
+    row: evasion-antianalysis
+    source: docs/roles/operational-analyst.md
 ---
 
 # Evasion & Anti-Analysis Reasoning

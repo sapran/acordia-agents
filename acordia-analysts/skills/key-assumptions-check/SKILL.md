@@ -7,7 +7,8 @@ metadata:
     grid_row: key-assumptions-check
     grid_deep_in: [Core]
     grid_working_in: []
-    source: docs/roles/operational-analyst.md#L70
+    row: key-assumptions-check
+    source: docs/roles/operational-analyst.md
 ---
 
 # Key-Assumptions Check & Debiasing

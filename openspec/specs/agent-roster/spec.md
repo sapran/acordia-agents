@@ -2,7 +2,7 @@
 
 ## Purpose
 
-Defines the nine ACORDIA agents shipped by the two pillars — one authored markdown file each, the
+Defines the five ACORDIA Analysis agents — one authored markdown file each, the
 three-key frontmatter contract both target harnesses accept, what each agent owns, the write posture
 that separates an agent's own work from the material it was given, and the command wrappers that
 dispatch them.

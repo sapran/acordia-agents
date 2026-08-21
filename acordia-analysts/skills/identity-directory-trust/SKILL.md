@@ -5,9 +5,10 @@ metadata:
   acordia:
     family: target-modelling
     grid_row: identity-directory-trust
-    grid_deep_in: ['T&N']
+    grid_deep_in: [Terrain]
     grid_working_in: [Def]
-    source: docs/roles/operational-analyst.md#L87
+    row: identity-directory-trust
+    source: docs/roles/operational-analyst.md
 ---
 
 # Identity & Directory (AD/Entra) & Trust

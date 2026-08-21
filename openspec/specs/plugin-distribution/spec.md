@@ -2,9 +2,9 @@
 
 ## Purpose
 
-Defines how the distribution reaches a harness: the repository root is a plugin marketplace carrying
-two independently installable pillars, each an authored plugin directory with its own manifest, and
-the hand-maintained version that is the only upgrade signal either harness has.
+Defines how the distribution reaches a harness: the repository root is a plugin marketplace
+carrying one installable pillar, an authored plugin directory with its own manifest, and the
+hand-maintained version that is the only upgrade signal either harness has.
 
 ## Requirements
 

@@ -6,8 +6,9 @@ metadata:
     family: evidence-forensics
     grid_row: disk-memory-forensics
     grid_deep_in: [Def]
-    grid_working_in: ['T&N']
-    source: docs/roles/operational-analyst.md#L98
+    grid_working_in: [Terrain]
+    row: disk-memory-forensics
+    source: docs/roles/operational-analyst.md
 ---
 
 # Disk & Memory Forensics

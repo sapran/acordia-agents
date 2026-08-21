@@ -5,9 +5,10 @@ metadata:
   acordia:
     family: target-modelling
     grid_row: web-api-authflow-analysis
-    grid_deep_in: ['T&N']
+    grid_deep_in: [Terrain]
     grid_working_in: [Def]
-    source: docs/roles/operational-analyst.md#L85
+    row: web-api-authflow-analysis
+    source: docs/roles/operational-analyst.md
 ---
 
 # Web/API, App-Logic & Auth-Flow Analysis

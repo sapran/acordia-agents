@@ -2,7 +2,7 @@
 
 ## Purpose
 
-Establishes the competency grid in `docs/roles/operational-analyst.md` as the single source of truth for the analyst agents and skills, and fixes the derivation rules: row-to-skill bijection, column-to-agent prompt skill sets, deep-versus-working mark semantics, and the structural mappings from grid to artifact.
+Establishes the competency grid in `docs/roles/operational-analyst.md` as the single source of truth for the analyst agents and skills, and fixes the derivation rules: row-to-skill bijection, column-to-agent prompt skill sets, deep-versus-working mark semantics, stable row identity, and the structural mappings from grid to artifact.
 
 ## Requirements
 

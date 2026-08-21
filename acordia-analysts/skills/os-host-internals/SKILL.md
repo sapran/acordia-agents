@@ -5,9 +5,10 @@ metadata:
   acordia:
     family: target-modelling
     grid_row: os-host-internals
-    grid_deep_in: ['T&N', Def]
+    grid_deep_in: [Terrain, Def]
     grid_working_in: [Core]
-    source: docs/roles/operational-analyst.md#L84
+    row: os-host-internals
+    source: docs/roles/operational-analyst.md
 ---
 
 # OS & Host Internals

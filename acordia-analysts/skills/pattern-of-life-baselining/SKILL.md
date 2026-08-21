@@ -5,9 +5,10 @@ metadata:
   acordia:
     family: target-modelling
     grid_row: pattern-of-life-baselining
-    grid_deep_in: ['T&N']
-    grid_working_in: [Core]
-    source: docs/roles/operational-analyst.md#L80
+    grid_deep_in: [Mission]
+    grid_working_in: [Core, Terrain]
+    row: pattern-of-life-baselining
+    source: docs/roles/operational-analyst.md
 ---
 
 # Pattern-of-Life / Behavioural Baselining

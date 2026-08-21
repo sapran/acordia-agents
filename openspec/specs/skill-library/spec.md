@@ -2,10 +2,9 @@
 
 ## Purpose
 
-Defines the skill libraries the two pillars ship — where a skill lives, the frontmatter contract both
-harnesses parse, the description that selects it, the analyst library's one-to-one derivation from the
-competency grid, the operations library's upstream provenance, and the reading and reference-file
-disciplines their bodies follow.
+Defines the analyst skill library — where a skill lives, the frontmatter contract both
+harnesses parse, the description that selects it, its one-to-one derivation from the competency grid,
+and the reading and reference-file disciplines its bodies follow.
 
 ## Requirements
 

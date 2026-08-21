@@ -6,8 +6,9 @@ metadata:
     family: defender-reading
     grid_row: endpoint-telemetry-edr
     grid_deep_in: [Def]
-    grid_working_in: ['T&N']
-    source: docs/roles/operational-analyst.md#L91
+    grid_working_in: [Terrain]
+    row: endpoint-telemetry-edr
+    source: docs/roles/operational-analyst.md
 ---
 
 # Endpoint Telemetry & EDR Internals
