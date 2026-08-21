@@ -9,56 +9,36 @@ dispatch them.
 
 ## Requirements
 
-### Requirement: Nine agents, two pillars, one authored file each
-
-The distribution SHALL ship exactly nine agent files, four under `acordia-analysts/agents/` and five
-under `acordia-operators/agents/`, each the single editable source for every harness. The analyst
-files SHALL be `cyber-analyst.md`, `target-analyst.md`,
-`overwatch-analyst.md`, `fusion-analyst.md`; the operations files SHALL be `cyber-operator.md`,
-`web-application.md`, `mobile-application.md`, `cloud-security.md`, `internal-network.md`. Filename
-stem SHALL equal frontmatter `name`. No generated or translated copy of an agent SHALL exist in the
-repository.
-
-#### Scenario: Roster is complete and named
-
-- **WHEN** the two pillar `agents/` directories are enumerated
-- **THEN** exactly those nine files are present, and each filename stem equals its frontmatter `name`
-
-#### Scenario: No second copy of an agent exists
-
-- **WHEN** the repository is searched for agent files carrying an ACORDIA description
-- **THEN** the only matches are those nine files
-
 ### Requirement: Agent frontmatter is exactly name, description, color
 
 Every agent file's frontmatter SHALL contain `name`, `description` and `color`, and no other key. It
 SHALL NOT declare `tools`, `disallowedTools`, `spawns`, `permission`, `mode`, `autoloadSkills`, or a
 `metadata` block. Omitting `tools` grants the agent the harness's full tool set, and omitting
-`spawns` leaves its spawn policy unrestricted; both are the intent for every agent in both pillars.
-`color` SHALL be `cyan` for the two orchestrators and `blue` for the seven specialists.
+`spawns` leaves its spawn policy unrestricted; both are the intent for every agent in the roster.
+`color` SHALL be `cyan` for the single orchestrator, `cyber-analyst`, and `blue` for the four legs.
 
 #### Scenario: Frontmatter carries three keys
 
-- **WHEN** any of the nine agent files is parsed
+- **WHEN** any of the five agent files is parsed
 - **THEN** its frontmatter keys are exactly `name`, `description`, `color`
 
 #### Scenario: No restriction key survives
 
-- **WHEN** the nine agent files are searched for `tools`, `disallowedTools`, `permission`, `mode` or `spawns`
+- **WHEN** the five agent files are searched for `tools`, `disallowedTools`, `permission`, `mode` or `spawns`
 - **THEN** none is found
 
 #### Scenario: Agent loads in a harness that requires only the contract
 
 - **WHEN** a harness that requires `name`, `description` and a body discovers the pillar
-- **THEN** all nine agents load, and none is skipped as a parse failure
+- **THEN** all five agents load, and none is skipped as a parse failure
 
 ### Requirement: Dispatch descriptions carry the pillar tag and the routing signal
 
-Each agent `description` SHALL open with `ACORDIA Analysis — ` or `ACORDIA Operations — `, naming
-the pillar that supplied it, and SHALL then state the routing signal a caller selects on: for an
-analyst leg, its operating question from `docs/roles/operational-analyst.md`; for an operations
-specialist, its domain and technique coverage; for an orchestrator, that it is the primary to select
-for the pillar's work.
+Each agent `description` SHALL open with `ACORDIA Analysis — `, naming the pillar that supplied it,
+and SHALL then state the routing signal a caller selects on: for a leg, its operating question from
+`docs/roles/operational-analyst.md`; for the orchestrator, that it is the primary to select for the
+pillar's work. `ACORDIA Operations — ` SHALL NOT appear in any shipped artifact, the pillar that
+carried it having been removed.
 
 #### Scenario: Description identifies its pillar
 
@@ -67,21 +47,22 @@ for the pillar's work.
 
 #### Scenario: Description discriminates between two candidates
 
-- **WHEN** a caller compares `target-analyst` and `overwatch-analyst`
-- **THEN** each description names a distinct question — what the target is and whether the action landed, versus whether the operation is being seen
+- **WHEN** a caller compares `mission-analyst` and `terrain-analyst`, the two legs cut from one
+- **THEN** each description names a distinct question — what the target is for and what it depends on,
+  versus which substrates it runs on and where they can be reached
 
 ### Requirement: Orchestrators route to their own specialists by prompt, not by permission
 
-`cyber-analyst` and `cyber-operator` SHALL each name their own specialists in their prompt bodies and
-route work to them there. The routing SHALL be prompt discipline: no agent file declares a spawn
-allowlist, and the specialists are leaf agents by prompt statement rather than by tool restriction.
-Each orchestrator prompt SHALL state that dispatching a leg is the default for a specialist question
-and that it does not re-derive a leg's product.
+`cyber-analyst` SHALL name its four legs in its prompt body and route work to them there. The routing
+SHALL be prompt discipline: no agent file declares a spawn allowlist, and the legs are leaf agents by
+prompt statement rather than by tool restriction. The orchestrator prompt SHALL state that dispatching
+a leg is the default for a specialist question and that it does not re-derive a leg's product.
 
 #### Scenario: Orchestrator names its legs
 
 - **WHEN** `cyber-analyst`'s prompt is read
-- **THEN** it names `target-analyst`, `overwatch-analyst` and `fusion-analyst` as the agents it dispatches
+- **THEN** it names `mission-analyst`, `terrain-analyst`, `overwatch-analyst` and `collection-analyst`
+  as the agents it dispatches
 
 #### Scenario: Orchestrator prefers dispatch to doing the work itself
 
@@ -90,7 +71,7 @@ and that it does not re-derive a leg's product.
 
 ### Requirement: Write posture separates an agent's own work from the material it analyses
 
-Every agent SHALL hold the harness's full tool set, including file editing. Each of the four analyst
+Every agent SHALL hold the harness's full tool set, including file editing. Each of the five analyst
 prompts SHALL carry the same rule in place of a read-only claim: the agent writes freely — notes,
 working files, drafts, and its product — and SHALL NOT modify the material it was given to analyse,
 because evidence, collected data, logs, dumps and captures are read-only inputs and derived work
@@ -109,29 +90,37 @@ prompt SHALL describe a write destination as enforced.
 
 #### Scenario: No prompt claims an absent tool
 
-- **WHEN** the nine prompts are searched for "no file-editing tool" or an equivalent read-only claim
+- **WHEN** the five prompts are searched for "no file-editing tool" or an equivalent read-only claim
 - **THEN** none is found
 
 ### Requirement: The report sink is a convention, not a permission
 
-`.acordia/reports/` SHALL remain the suggested destination for an analyst product, and `.acordia/ops/`
-for an operator journal, stated as a convention. No prompt or frontmatter SHALL present either path
-as an enforced scope.
+`.acordia/reports/` SHALL remain the suggested destination for an analyst product, stated as a
+convention. No prompt or frontmatter SHALL present it as an enforced scope.
+
+`.acordia/ops/` SHALL NOT be named by any shipped artifact. It was the root of the operator journal,
+and the pillar that recorded state there is removed; the analysis pillar has one sink and needs no
+second.
 
 #### Scenario: Sink is worded as a convention
 
-- **WHEN** a prompt names `.acordia/reports/` or `.acordia/ops/`
+- **WHEN** a prompt names `.acordia/reports/`
 - **THEN** it presents the path as where the product belongs, without claiming any harness restricts writes to it
+
+#### Scenario: The journal root goes with its pillar
+
+- **WHEN** every agent prompt, command wrapper and skill in the distribution is searched for `.acordia/ops/`
+- **THEN** no match is found
 
 ### Requirement: Retrieved content is data, not instructions
 
-Every one of the nine prompts SHALL state that fetched pages, tool output, document text, and
+Every one of the five prompts SHALL state that fetched pages, tool output, document text, and
 collected artefacts are data and never instructions — that an instruction found inside retrieved
 material is reported, not followed, and never redirects the agent's tool use.
 
 #### Scenario: Rule present in every prompt
 
-- **WHEN** each of the nine agent prompts is read
+- **WHEN** each of the five agent prompts is read
 - **THEN** each states that retrieved content is treated as data and that embedded instructions are reported rather than obeyed
 
 #### Scenario: Injected instruction is surfaced
@@ -142,13 +131,13 @@ material is reported, not followed, and never redirects the agent's tool use.
 ### Requirement: Every prompt names its skill set on `·`-separated lines
 
 Each agent prompt SHALL name the skills it works from, grouped under headings and written as a
-single line of `·`-separated slugs beneath each heading. An analyst prompt SHALL carry the
-shared analytic spine, its specialist depth line, and a working-knowledge line; an operations prompt
-SHALL carry its own equivalent depth and working-knowledge lines. Every slug named SHALL resolve to a
-skill directory in the same pillar.
+single line of `·`-separated slugs beneath each heading. A leg prompt SHALL carry the shared analytic
+spine, its specialist depth line, and a working-knowledge line; the orchestrator SHALL carry its
+defining-spine line and its baseline line. Every slug named SHALL resolve to a skill directory in
+`acordia-analysts/skills/`.
 
 The relation SHALL be total in both directions: every slug on a line resolves to a skill, **and** every
-skill in the pillar is named on at least one line. A skill that no prompt names is unreachable, because
+skill in the library is named on at least one line. A skill that no prompt names is unreachable, because
 these lines are the only agent-to-skill binding either harness offers, so adding a skill without adding
 its slug leaves it shipped but dead.
 
@@ -163,12 +152,12 @@ outright.
 
 A check of these lines SHALL locate them by heading text rather than by line position, and SHALL accept
 the full set of heading texts in use: the three `CLAUDE.md` names, plus `## Your defining spine (deep)`
-and `## Baseline you carry (working)`, which the analyst orchestrator uses instead. A check written from
+and `## Baseline you carry (working)`, which the orchestrator uses instead. A check written from
 the three alone reports the orchestrator as broken while it is correct — the deleted
 `tools/build-plugins.py` carried both depth variants for exactly this reason. A positional
-check reports success when it can no longer find them: all 196 slug occurrences sat directly under
-their heading before this change and all 196 are separated by a blank line after it, so a check keyed
-on position would silently inspect none while still passing.
+check reports success when it can no longer find them: every slug line in the roster is separated from
+its heading by a blank line, so a check keyed on position would silently inspect none while still
+passing.
 
 #### Scenario: Skill line shape holds
 
@@ -177,12 +166,12 @@ on position would silently inspect none while still passing.
 
 #### Scenario: Every named slug resolves
 
-- **WHEN** every slug named in every prompt is looked up in its own pillar's `skills/`
+- **WHEN** every slug named in every prompt is looked up in the pillar's `skills/`
 - **THEN** each resolves to a directory containing `SKILL.md`
 
 #### Scenario: Every skill is named somewhere
 
-- **WHEN** every skill directory in a pillar is searched for in that pillar's prompts
+- **WHEN** every skill directory in the pillar is searched for in the pillar's prompts
 - **THEN** each appears on at least one prompt's skill line
 
 #### Scenario: A removed skill leaves no dangling slug
@@ -202,15 +191,15 @@ on position would silently inspect none while still passing.
 
 ### Requirement: Analyst prompts carry the four cross-cutting sections
 
-Each analyst prompt SHALL carry a credential-harvest section naming `credential-harvest-triage`, an
-exhaustive-processing section naming `exhaustive-data-processing`, an Aleph-corpora section naming
-`aleph-entity-graph`, and a tool-discipline section stating that native read/grep/glob are preferred
-and `bash` is for work no native tool fits. A leg SHALL state that it cannot fan out and must surface
-an unfinished remainder to the orchestrator.
+Each of the five analyst prompts SHALL carry a credential-harvest section naming
+`credential-harvest-triage`, an exhaustive-processing section naming `exhaustive-data-processing`, an
+Aleph-corpora section naming `aleph-entity-graph`, and a tool-discipline section stating that native
+read/grep/glob are preferred and `bash` is for work no native tool fits. A leg SHALL state that it
+cannot fan out and must surface an unfinished remainder to the orchestrator.
 
 #### Scenario: Sections present
 
-- **WHEN** any of the four analyst prompts is read
+- **WHEN** any of the five analyst prompts is read
 - **THEN** it carries credential-harvest, exhaustive-processing, Aleph-corpora and tool-discipline sections
 
 #### Scenario: Leg surfaces a remainder instead of fanning out
@@ -224,6 +213,12 @@ Every prompt SHALL carry a section stating its return contract. A leg SHALL stat
 hands back, with confidence and named gaps where its judgement is analytic. An orchestrator SHALL
 state that it composes the final product from its legs' returns rather than re-deriving them.
 
+The orchestrator's product SHALL be addressed to a human operator who then acts on it. With no
+executing agent in the distribution, a recommended course of action is a hand-off to a person rather
+than a dispatch: the prompt SHALL state what the operator is being asked to decide or do, and the
+end-neutral loop SHALL judge whether the end was achieved from evidence the operator reports back,
+naming what evidence would settle the question, rather than from action the orchestrator took itself.
+
 #### Scenario: Return contract present
 
 - **WHEN** any agent prompt is read
@@ -234,28 +229,17 @@ state that it composes the final product from its legs' returns rather than re-d
 - **WHEN** an orchestrator receives a leg's product
 - **THEN** its prompt directs it to compose from that product without redoing the leg's work
 
-### Requirement: Operations prompts state the authorization gate and journal discipline
+#### Scenario: The product names its human consumer
 
-Each of the five operations prompts SHALL state that work proceeds only inside authorized scope,
-naming `.acordia/ops/scope.md` as where scope is recorded, and SHALL name the `operation-journal`
-skill as the contract for how operation state is recorded. Each SHALL also carry a guardrails section
-requiring evidence-backed findings, minimal noise and blast radius, least privilege, no fabrication,
-no destructive action beyond a proof of concept, no exfiltration beyond proof, and no persistence.
+- **WHEN** `cyber-analyst`'s return contract is read
+- **THEN** it hands a recommended course of action to the operator it advises, and directs no agent to
+  execute any part of it
 
-#### Scenario: Scope gate present
+#### Scenario: The loop closes on reported evidence
 
-- **WHEN** any operations prompt is read
-- **THEN** it names `.acordia/ops/scope.md` and refuses work on a target absent from it
-
-#### Scenario: Guardrails present
-
-- **WHEN** any operations prompt is read
-- **THEN** it carries the evidence-first, minimal-noise, least-privilege, no-fabrication, no-destruction, no-exfiltration and no-persistence rules
-
-#### Scenario: Journal discipline reachable
-
-- **WHEN** any operations prompt is read
-- **THEN** it names `operation-journal`, so the recording contract is one read away rather than restated in the prompt
+- **WHEN** the orchestrator judges whether an action landed
+- **THEN** its prompt has it judge from what the operator reports, naming the evidence that would
+  settle it, rather than from an action it dispatched
 
 ### Requirement: Prompt bodies name no tool the harness lacks
 
@@ -266,26 +250,31 @@ name.
 
 #### Scenario: No unavailable tool is named
 
-- **WHEN** the nine prompts are searched for tool names
+- **WHEN** the five prompts are searched for tool names
 - **THEN** every named tool exists in the target harnesses
 
 ### Requirement: A namespaced command wrapper for every dispatchable agent
 
-The distribution SHALL ship 18 slash-command wrappers: one canonical wrapper named after each of the
-nine agents, plus nine short aliases. Each wrapper SHALL live in its own pillar's flat `commands/`
-directory — eight under `acordia-analysts/commands/`, ten under `acordia-operators/commands/` —
-because a harness discovers plugin commands from `<pluginRoot>/commands/*.md` without recursion and
-namespaces them by plugin name. Each wrapper SHALL carry `description` and `argument-hint`
-frontmatter, SHALL dispatch exactly the agent it is named for, SHALL pass the caller's argument
-through as the brief, and SHALL ask for a brief when none is supplied.
+The distribution SHALL ship 10 slash-command wrappers: one canonical wrapper named after each of the
+five agents, plus five short aliases. All ten SHALL live in the pillar's flat
+`acordia-analysts/commands/` directory, because a harness discovers plugin commands from
+`<pluginRoot>/commands/*.md` without recursion and namespaces them by plugin name. Each wrapper SHALL
+carry `description` and `argument-hint` frontmatter, SHALL dispatch exactly the agent it is named for,
+SHALL pass the caller's argument through as the brief, and SHALL ask for a brief when none is supplied.
+
+The canonical stems SHALL be the five agent names, and the aliases SHALL be `analyst`, `mission`,
+`terrain`, `overwatch` and `collection`. An alias stem SHALL NOT equal any agent stem: the canonical
+wrapper already holds that stem, so such an alias is a filename collision in one flat directory rather
+than a second handle.
 
 Where renaming a lead agent lengthens its canonical wrapper, the previous single-word wrapper SHALL be
 retained as that agent's short alias, so that an existing invocation keeps working.
 
 #### Scenario: Wrapper count and split
 
-- **WHEN** the two `commands/` directories are enumerated
-- **THEN** eight analyst and ten operations wrappers are present, 18 in total, each a flat `.md` file
+- **WHEN** the pillar's `commands/` directory is enumerated
+- **THEN** ten wrappers are present, five canonical and five aliases, each a flat `.md` file, and no
+  second `commands/` directory ships
 
 #### Scenario: Wrapper dispatches its own agent
 
@@ -294,13 +283,18 @@ retained as that agent's short alias, so that an existing invocation keeps worki
 
 #### Scenario: A renamed lead keeps its old handle
 
-- **WHEN** `/operator` and `/analyst` are invoked
-- **THEN** they dispatch `cyber-operator` and `cyber-analyst` respectively
+- **WHEN** `/analyst` is invoked
+- **THEN** it dispatches `cyber-analyst`
 
 #### Scenario: Empty brief is refused
 
 - **WHEN** a wrapper is invoked with no argument
 - **THEN** it asks what to look at before dispatching
+
+#### Scenario: No alias collides with a canonical wrapper
+
+- **WHEN** the ten wrapper stems are compared with the five agent names
+- **THEN** all ten stems are distinct and no alias stem equals an agent name
 
 ### Requirement: Agent names and skill slugs stay unprefixed
 
@@ -310,7 +304,7 @@ name is the dispatch handle and the slug is bound to its folder.
 
 #### Scenario: Names are bare
 
-- **WHEN** the nine agent names and every skill slug are read
+- **WHEN** the five agent names and every skill slug are read
 - **THEN** none carries a distribution prefix
 
 ### Requirement: A prompt routes to a skill rather than restating its technique
@@ -326,7 +320,7 @@ first where it is absent.
 
 #### Scenario: Prompt names a skill instead of repeating it
 
-- **WHEN** an operations prompt reaches a technique that a named skill carries
+- **WHEN** an agent prompt reaches a technique that a named skill carries
 - **THEN** the prompt gives the situation and the skill slug, and does not repeat the skill's commands
 
 #### Scenario: A moved command survives the move
@@ -347,43 +341,20 @@ deleting the routing or the guardrails.
 
 #### Scenario: Ceiling holds across the roster
 
-- **WHEN** every agent prompt body in both pillars is measured
+- **WHEN** every agent prompt body in the roster is measured
 - **THEN** none exceeds 10,000 characters
-
-### Requirement: The journal contract is named once, not restated per prompt
-
-The `.acordia/ops/` operation-journal contract — the file layout, the severity and confidence scales,
-the log-on-discovery and check-coverage-before-claiming rules, the finding-file shape — SHALL live in
-the `operation-journal` skill. Each of the five operations prompts SHALL name that skill in one sentence
-and SHALL carry only the journal fields specific to its own domain, which the shared contract does not
-cover.
-
-#### Scenario: Prompt points at the skill
-
-- **WHEN** an operations prompt's journal section is read
-- **THEN** it names `operation-journal` and does not restate the scales or the file layout
-
-#### Scenario: Domain-specific fields survive
-
-- **WHEN** `web-application`'s journal section is read
-- **THEN** it still requires WSTG-ID, CWE and MITRE ATT&CK on a finding, because those are its own additions
-
-#### Scenario: Composition boundary stays stated
-
-- **WHEN** `internal-network`'s journal section is read
-- **THEN** it still states that the final assessment report is composed by the orchestrator from this journal, not by the specialist
 
 ### Requirement: A lead agent's name is distinct from its pillar's name
 
-Neither pillar's lead agent SHALL be named with a word that also names the pillar, its skill library,
-its prompts or its artifacts. The analyst lead SHALL be `cyber-analyst` and the operations lead SHALL
-be `cyber-operator`, so that "the operations pillar" and "the operations prompts" can never be read as
-naming an agent.
+The pillar's lead agent SHALL NOT be named with a word that also names the pillar, its skill library,
+its prompts or its artifacts. The analyst lead SHALL be `cyber-analyst`, so that "the analysis pillar"
+and "the analyst prompts" can never be read as naming an agent.
 
 Prose SHALL keep the bare word `operator` only where it means a human or a driving session rather than
 the agent — the analyst guardrail *"execution belongs to the operators you advise"*, an operator
-journal, an operator session, operator-deployed artifacts, and technique content such as a
-default-credential pair. Renaming SHALL NOT rewrite those sites.
+session, operator-deployed artifacts, and technique content such as a default-credential pair.
+Removing the operations pillar strengthens that reading rather than weakening it: with no executing
+agent in the distribution, every `operator` in a shipped prompt is the human the product is handed to.
 
 An archived change SHALL NOT be rewritten to use a later name. It records what was true when it
 shipped. A specification MAY quote a superseded name where it does so in order to forbid it, and a
@@ -392,8 +363,10 @@ site the rename sweep rewrites.
 
 #### Scenario: Pillar word never resolves to an agent
 
-- **WHEN** the live tree is searched case-insensitively for `operator` followed by pillar, library, skill, prompt, agent, wrapper, artifact or file
-- **THEN** the only match is the provenance document's quotation of the superseded wording, and every other such site reads `operations`
+- **WHEN** the five agent `name` values are compared with the words that name the pillar, its skill
+  library, its prompts and its artifacts
+- **THEN** no agent name is one of those words: `analysis` and `analyst` name the pillar and its
+  material, while `cyber-analyst` names the agent
 
 #### Scenario: The human sense survives the rename
 
@@ -408,20 +381,26 @@ site the rename sweep rewrites.
 #### Scenario: A provenance document keeps its filename and its anchors
 
 - **WHEN** `docs/roles/operational-analyst.md` is read
-- **THEN** its grid rows are still at lines L67–L108, every skill anchor still resolves to a row, and a
-  closing note records that the shipped agent is now `cyber-analyst`
+- **THEN** it is still that file, a closing note still records that the shipped agent is
+  `cyber-analyst`, and every skill's grid reference resolves to a row by that row's own identifier
+  rather than by a line number
 
 ### Requirement: A leg agent is named for the question it answers
 
 Each analyst leg SHALL be named for the work its prompt leads with, not for the competency-grid
-column it was derived from. The legs SHALL be `target-analyst`, `overwatch-analyst` and
-`fusion-analyst`. A leg's prompt body SHALL introduce it under its own name, so that a dispatched leg
-never identifies itself to the orchestrator under a name absent from the roster.
+column it was derived from. The legs SHALL be `mission-analyst`, `terrain-analyst`,
+`overwatch-analyst` and `collection-analyst`. A leg's prompt body SHALL introduce it under its own
+name, so that a dispatched leg never identifies itself to the orchestrator under a name absent from
+the roster.
 
-The competency grid in `docs/roles/operational-analyst.md` SHALL keep its column letters **T&N**,
-**Def** and **Fus**. A column labels a leg of the role that document describes; it does not name the
-agent file that implements the leg. The mapping between the two SHALL be recorded in that document,
-appended after the grid so that no skill anchor shifts.
+The competency grid in `docs/roles/operational-analyst.md` SHALL keep the column set
+`competency-map-derivation` fixes — *Core*, **Mission**, **Terrain**, **Def** and **Coll**. Where a
+column label and a leg name now read as the same word, the column was relabelled to the leg's
+question; the leg was not named after the column. **Def** ships as `overwatch-analyst`, which is where
+the direction of naming stays visible. A column labels a leg of the role that document describes; it
+does not name the agent file that implements the leg. The mapping between the two SHALL be recorded in
+that document, and its placement is free, because a skill binds to a stable row identifier rather than
+to a line number and no anchor shifts when the grid is edited.
 
 A short alias SHALL be formed from its own agent's name — a word of that name, or a legible
 contraction of it. An alias SHALL NOT outlive the name it was formed from: when an agent is renamed
@@ -445,30 +424,17 @@ derives from the renamed agent.
 - **WHEN** the live tree outside `openspec/specs/` and `openspec/changes/` is searched for `target-network-analyst` or `defender-detection-analyst`
 - **THEN** no match is found, the specifications being free to quote a superseded name in order to forbid it
 
+#### Scenario: A shared word is the column following the leg
+
+- **WHEN** the **Def** column is traced to the agent that implements it
+- **THEN** it ships as `overwatch-analyst`, so a column label matching a leg name is the column taking
+  the leg's question rather than the leg taking the column's label
+
 #### Scenario: Every alias derives from its own agent
 
-- **WHEN** the nine short aliases are compared with the agents they dispatch
+- **WHEN** the five short aliases are compared with the agents they dispatch
 - **THEN** each alias is a word of its agent's name or a legible contraction of it, and none names a
   term absent from that agent's name
-
-### Requirement: Every operations prompt names the remote-execution posture
-
-Each of the five operations prompts SHALL name `bolts` in its working-knowledge line, so the discipline
-that decides where traffic originates reaches every agent rather than sitting in a library none of them
-references.
-
-`bolts` SHALL NOT enter any agent's specialist-depth line. It is a cross-cutting execution posture, not
-a domain depth, and the depth line is the prompt's claim about where the agent is expert.
-
-#### Scenario: The posture reaches all five prompts
-
-- **WHEN** the working-knowledge line of each operations prompt is read
-- **THEN** every one names `bolts`
-
-#### Scenario: The posture is not a specialist depth
-
-- **WHEN** the specialist-depth lines of the operations prompts are read
-- **THEN** none names `bolts`
 
 ### Requirement: Every prompt opens with a heading naming its agent
 
@@ -480,9 +446,14 @@ The heading SHALL carry no trailing punctuation. It SHALL NOT replace the `descr
 which remains the dispatch signal. This is a readability convention for whoever opens the file; no
 harness reads it.
 
+The first scenario below keeps the title it was published under, though the roster it counts is now
+five. OpenSpec matches a `MODIFIED` block's scenarios to the published spec by title and treats a
+retitle as a dropped scenario, failing validation and refusing the archive, so the count that binds
+is the one in the scenario body. Renumbering the title is a defect, not a tidy-up.
+
 #### Scenario: All nine prompts open with a heading
 
-- **WHEN** the body of each of the nine agent prompts is read
+- **WHEN** the body of each of the five agent prompts is read
 - **THEN** its first non-empty line is a level-one heading naming that agent
 
 #### Scenario: No heading ends in punctuation
@@ -499,3 +470,83 @@ harness reads it.
 
 - **WHEN** a prompt's opening heading is compared with its `description` frontmatter
 - **THEN** the frontmatter still carries the pillar tag and the routing signal
+
+### Requirement: Five agents, one pillar, one authored file each
+
+The distribution SHALL ship exactly five agent files, all under `acordia-analysts/agents/`, each the
+single editable source for every harness. They SHALL be `cyber-analyst.md`, `mission-analyst.md`,
+`terrain-analyst.md`, `overwatch-analyst.md` and `collection-analyst.md`. Filename stem SHALL equal
+frontmatter `name`. No generated or translated copy of an agent SHALL exist in the repository.
+
+`acordia-operators/` SHALL NOT exist. Its five agent files are deleted with the pillar rather than
+moved into this one: "Operations" is not an ACORDIA pillar, and a roster organised by target surface
+is not derived from a competency the way this one is.
+
+#### Scenario: Roster is complete and named
+
+- **WHEN** the pillar's `agents/` directory is enumerated
+- **THEN** exactly those five files are present, and each filename stem equals its frontmatter `name`
+
+#### Scenario: No second copy of an agent exists
+
+- **WHEN** the repository is searched for agent files carrying an ACORDIA description
+- **THEN** the only matches are those five files
+
+#### Scenario: The removed pillar leaves no agent behind
+
+- **WHEN** the repository is searched for `acordia-operators/` and for agent files named
+  `cyber-operator`, `web-application`, `mobile-application`, `cloud-security` or `internal-network`
+- **THEN** neither the directory nor any of those files is present
+
+### Requirement: The roster derives from the grid's five columns
+
+The five agents SHALL be derived one-for-one from the five columns of the competency grid in
+`docs/roles/operational-analyst.md` — *Core*, **Mission**, **Terrain**, **Def** and **Coll** — as
+`cyber-analyst`, `mission-analyst`, `terrain-analyst`, `overwatch-analyst` and `collection-analyst`
+respectively. A column no agent implements, or an agent no column derives, SHALL be a defect in one
+of the two, resolved in the same change rather than left as a roster the grid does not account for.
+
+`target-analyst` and `fusion-analyst` SHALL cease to exist. `target-analyst` SHALL split by the seam
+its own prompt carried: the organisational half — what the target is for, what it depends on,
+crown-jewels and mission-thread work, and the target's bureaucratic characteristics, redundancy and
+reporting culture — becomes `mission-analyst`, and the technical half — networks, protocols, routing,
+identity and directory, cloud control planes, web and application stacks, host internals,
+vulnerability and attack-surface mapping, and operational technology where the target demands it —
+becomes `terrain-analyst`.
+
+`fusion-analyst` SHALL decompose three ways rather than be renamed: the operating picture and
+multi-source correlation go to `cyber-analyst`, which already claimed to hold the target picture;
+non-technical context integration goes to `mission-analyst`, whose subject it is; and the value and
+quality of the collected take, data-integration and correlation tooling, and working bulk material at
+volume go to `collection-analyst`. No agent SHALL inherit the whole of it, because the grid records
+that leg as shallow-but-wide and it failed the grid's own separation criterion — a specialist is made
+by the technical substrate it commands deeply enough to take apart from the inside.
+
+The retirement SHALL be total in the shipped distribution: no agent file, command wrapper, dispatch
+list, skill line or `description` names either retired agent. A specification MAY quote a retired name
+in order to forbid it, and an archived change keeps the names it shipped with.
+
+#### Scenario: Every column has an agent and every agent a column
+
+- **WHEN** the grid's five columns are compared with `acordia-analysts/agents/`
+- **THEN** the mapping is one-to-one in both directions, with no column unimplemented and no agent
+  underived
+
+#### Scenario: Neither retired leg survives in the live tree
+
+- **WHEN** the live tree outside `openspec/` is searched for `target-analyst` or `fusion-analyst`
+- **THEN** no match is found — no agent file, no wrapper, no orchestrator dispatch list, no skill line
+  and no description
+
+#### Scenario: The split is a division, not a rename
+
+- **WHEN** the `mission-analyst` and `terrain-analyst` prompts are read side by side
+- **THEN** the organisational half of the retired leg is in the first and the technical half in the
+  second, and neither claims the other's depth
+
+#### Scenario: The dissolved leg's work is placed, not dropped
+
+- **WHEN** each of that leg's five unique deep competencies is traced into the new roster
+- **THEN** multi-source correlation and the operating picture are the lead's, non-technical context
+  integration is `mission-analyst`'s, and take value and data-integration tooling are
+  `collection-analyst`'s

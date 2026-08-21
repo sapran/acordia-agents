@@ -9,7 +9,7 @@ metadata:
     grid_working_in: [Core]
     row: operational-memory
     source: docs/roles/operational-analyst.md
-    doctrine_source: [Lindsay#intelligence-performance, Monte#attacker-structure]
+    doctrine_source: [Lindsay#intelligence-performance]
 ---
 
 # Operational Memory
