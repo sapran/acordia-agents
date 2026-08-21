@@ -4,17 +4,21 @@ schema: spec-driven
 context: |
   acordia-agents is a markdown-only distribution of agents and skills derived
   from the ACORDIA operational-role framework. There is no application code and
-  no runtime — only agent files, skill files, command wrappers, and the
-  marketplace metadata that lets a harness install them.
+  no runtime — only agent files, skill files, command wrappers, the marketplace
+  metadata that lets a harness install them, and two install scripts under
+  `tools/` for one gated omp case.
 
   It reaches two harnesses one way. omp and Claude Code both install it as a
   plugin, from the marketplace catalogs at `.omp-plugin/marketplace.json`
   (omp's preferred path) and `.claude-plugin/marketplace.json` (Claude Code's).
   The two catalogs are hand-maintained and byte-identical, and both name the
-  same single source. There is no generator, no build step and no shell
-  installer: the pillar is one authored tree that both harnesses read as-is.
-  opencode was dropped in 3.0.0 along with the generator that existed only to
-  express its permission maps.
+  same single source. There is no generator and no build step: the pillar is one
+  authored tree that both harnesses read as-is. Since 6.0.0 two scripts under
+  `tools/` offer a second route for omp users whose `claude-plugins` discovery
+  provider is off, linking the pillar's agents and skills into omp's native
+  roots; they deploy nothing the marketplace route does not, and they are not a
+  build step. opencode was dropped in 3.0.0 along with the generator that
+  existed only to express its permission maps.
 
   Scope today: one pillar. The Analysis pillar (`acordia-analysts/`) — one
   orchestrator (`cyber-analyst`) plus four specialist legs (`mission-analyst`,
