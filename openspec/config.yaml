@@ -4,8 +4,9 @@ schema: spec-driven
 context: |
   acordia-agents is a markdown-only distribution of agents and skills derived
   from the ACORDIA operational-role framework. There is no application code and
-  no runtime — only agent files, skill files, command wrappers, and the
-  marketplace metadata that lets a harness install them.
+  no runtime — only agent files, skill files, command wrappers, the marketplace
+  metadata that lets a harness install them, and two install scripts under
+  `tools/` for one gated omp case.
 
   It reaches two harnesses one way. omp and Claude Code both install it as a
   plugin, from the marketplace catalogs at `.omp-plugin/marketplace.json`

@@ -87,3 +87,14 @@ rather than instructions (now stated in all nine prompts)._
   these four commands out of their table cells into fenced blocks, where a pipe needs no escaping and
   both forms agree. Not done here: three of the four files are provenance-tracked ports and
   restructuring their tables is a content change, not a formatting one.
+
+## `doctrinal-provenance` spec violates the repository's own lint policy
+
+Found while linting the 6.0.0 install-scripts change, which does not touch this file.
+`openspec/specs/doctrinal-provenance/spec.md:3` fires MD022 (blanks-around-headings): its `## Purpose`
+heading is followed immediately by prose with no blank line. The `plugin-distribution` requirement _A
+committed lint policy governs the authored markdown_ asserts that applying the policy to every
+unexcluded file reports zero violations, and `openspec/specs/` is not excluded — so the published spec
+currently contradicts itself by one line. Fix is a single blank line after line 3. Parked because the
+file is outside this change's scope and the assertion it breaks is about the tree, not about anything
+this change altered.

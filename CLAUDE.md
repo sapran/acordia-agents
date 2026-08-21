@@ -4,9 +4,9 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 ## What this repo is
 
-Markdown-only distribution of agents and skills derived from the ACORDIA operational-role framework. **No application code, no runtime, no tests, and since 3.0.0 no build step.** Frontmatter-carrying markdown files and three small JSON files, nothing else.
+Markdown-only distribution of agents and skills derived from the ACORDIA operational-role framework. **No application code, no runtime, no tests, and since 3.0.0 no build step.** Frontmatter-carrying markdown files, three small JSON files, and since 6.0.0 the two install scripts under `tools/` — nothing else.
 
-Two harnesses, one authored tree. omp and Claude Code both install it as a **plugin** from the marketplace catalogs at `.omp-plugin/marketplace.json` (omp reads this one in preference) and `.claude-plugin/marketplace.json` (Claude Code reads this one). Both catalogs point at the one top-level plugin directory, so a checkout is installable exactly as it stands — nothing is generated, nothing is deployed by script.
+Two harnesses, one authored tree. omp and Claude Code both install it as a **plugin** from the marketplace catalogs at `.omp-plugin/marketplace.json` (omp reads this one in preference) and `.claude-plugin/marketplace.json` (Claude Code reads this one). Both catalogs point at the one top-level plugin directory, so a checkout is installable exactly as it stands — nothing is generated, and no script stands between a checkout and a marketplace install. Since 6.0.0 two optional scripts under `tools/` offer omp a second route into its native roots, for the case where the `claude-plugins` provider is off; they copy nothing and generate nothing, and no other route uses them.
 
 One pillar, shipped as one installable plugin:
 

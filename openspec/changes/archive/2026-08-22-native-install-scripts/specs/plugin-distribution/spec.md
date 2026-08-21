@@ -96,7 +96,7 @@ target rather than on a manifest file or on the current checkout's contents, and
 clean links whose checkout has since been deleted, renamed or moved, because a dangling symlink is
 still readable. It SHALL remove the two roots only when it emptied them itself.
 
-Command wrappers SHALL NOT be installed by this route, and each script SHALL say so in its own
+Command wrappers SHALL NOT be installed by this route, and the installer SHALL say so in its own
 output. A wrapper takes its invocation name from the plugin namespace, which only a plugin root
 supplies; a flat name invented for a native root would differ from the same wrapper's name under the
 marketplace route.

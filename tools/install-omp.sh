@@ -23,28 +23,63 @@
 set -euo pipefail
 
 PILLAR_NAME="acordia-analysts"
-REPO_ROOT="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
+
+# Resolve this script through any symlink chain before deriving the checkout, so
+# that a convenience link such as ~/bin/acordia-install still finds the pillar.
+self="${BASH_SOURCE[0]}"
+while [ -L "$self" ]; do
+	link="$(readlink "$self")"
+	case "$link" in
+	/*) self="$link" ;;
+	*) self="$(dirname "$self")/$link" ;;
+	esac
+done
+REPO_ROOT="$(cd "$(dirname "$self")/.." && pwd)"
 PILLAR="$REPO_ROOT/$PILLAR_NAME"
 
 agent_dir=""
 profile=""
 dry_run=0
+linked=0
 
 die() {
 	printf 'error: %s\n' "$1" >&2
 	exit 1
 }
 
+usage() {
+	awk 'NR == 1 { next } /^#/ { sub(/^# ?/, ""); print; next } { exit }' "$self"
+}
+
+# A failure partway through the link loop would otherwise leave a partial install
+# with no explanation. Name the recovery instead of dying silently.
+on_error() {
+	if [ "$linked" -gt 0 ]; then
+		printf '\nerror: failed after creating %d links — the install is partial.\n' "$linked" >&2
+		printf 'Run tools/uninstall-omp.sh to remove what was created, then try again.\n' >&2
+	fi
+}
+trap on_error ERR
+
+require_value() { # require_value <flag> <count-remaining>
+	[ "$2" -ge 2 ] || die "$1 needs a value"
+}
+
+profile_given=0
+agent_dir_given=0
+
 while [ $# -gt 0 ]; do
 	case "$1" in
 	--profile)
-		[ $# -ge 2 ] || die "--profile needs a name"
+		require_value --profile $#
 		profile="$2"
+		profile_given=1
 		shift 2
 		;;
 	--agent-dir)
-		[ $# -ge 2 ] || die "--agent-dir needs a path"
+		require_value --agent-dir $#
 		agent_dir="$2"
+		agent_dir_given=1
 		shift 2
 		;;
 	--dry-run)
@@ -52,7 +87,7 @@ while [ $# -gt 0 ]; do
 		shift
 		;;
 	-h | --help)
-		sed -n '2,26p' "${BASH_SOURCE[0]}" | sed 's/^# \{0,1\}//'
+		usage
 		exit 0
 		;;
 	*)
@@ -61,9 +96,25 @@ while [ $# -gt 0 ]; do
 	esac
 done
 
-if [ -n "$agent_dir" ] && [ -n "$profile" ]; then
+if [ "$agent_dir_given" -eq 1 ] && [ "$profile_given" -eq 1 ]; then
 	die "--agent-dir and --profile are mutually exclusive"
 fi
+
+# An empty value is a mistake, never a request for the default. Falling back
+# silently is how a user installs into the wrong agent directory.
+if [ "$profile_given" -eq 1 ] && [ -z "$profile" ]; then
+	die "--profile was given an empty name"
+fi
+if [ "$agent_dir_given" -eq 1 ] && [ -z "$agent_dir" ]; then
+	die "--agent-dir was given an empty path"
+fi
+
+# A profile is a bare name under ~/.omp/profiles; a path here escapes that root.
+case "$profile" in
+"") ;;
+*/* | . | ..) die "--profile takes a bare profile name, not a path: $profile" ;;
+esac
+
 if [ -z "$agent_dir" ]; then
 	if [ -n "$profile" ]; then
 		agent_dir="$HOME/.omp/profiles/$profile/agent"
@@ -72,8 +123,8 @@ if [ -z "$agent_dir" ]; then
 	fi
 fi
 
-[ -d "$PILLAR/agents" ] || die "no agents directory at $PILLAR/agents — run this from a checkout"
-[ -d "$PILLAR/skills" ] || die "no skills directory at $PILLAR/skills — run this from a checkout"
+[ -d "$PILLAR/agents" ] || die "no agents directory at $PILLAR/agents — run the copy inside a checkout, as <checkout>/tools/install-omp.sh"
+[ -d "$PILLAR/skills" ] || die "no skills directory at $PILLAR/skills — run the copy inside a checkout, as <checkout>/tools/install-omp.sh"
 
 agents_root="$agent_dir/agents"
 skills_root="$agent_dir/skills"
@@ -92,22 +143,28 @@ ours() { # ours <path> — true when path is a symlink already pointing into thi
 }
 
 for src in "$PILLAR"/agents/*.md; do
+	[ -e "$src" ] || continue
 	dst="$agents_root/$(basename "$src")"
 	if [ -e "$dst" ] || [ -L "$dst" ]; then
-		ours "$dst" || collisions="$collisions  $dst\n"
+		ours "$dst" || collisions="$collisions  $dst
+"
 	fi
 done
 for src in "$PILLAR"/skills/*/; do
+	[ -d "$src" ] || continue
 	dst="$skills_root/$(basename "${src%/}")"
 	if [ -e "$dst" ] || [ -L "$dst" ]; then
-		ours "$dst" || collisions="$collisions  $dst\n"
+		ours "$dst" || collisions="$collisions  $dst
+"
 	fi
 done
 
 if [ -n "$collisions" ]; then
-	printf 'error: these entries already exist and were not created by this script:\n' >&2
-	printf "$collisions" >&2
-	printf 'Nothing was installed. Rename or remove them, then run this again.\n' >&2
+	printf 'error: these entries already exist and were not created by this checkout:\n' >&2
+	printf '%s' "$collisions" >&2
+	printf 'Nothing was installed.\n' >&2
+	printf 'Links from another ACORDIA checkout: run tools/uninstall-omp.sh first — it removes those.\n' >&2
+	printf 'Your own agents or skills of the same name: rename them, then run this again.\n' >&2
 	exit 1
 fi
 
@@ -117,6 +174,7 @@ link() { # link <src> <dst>
 		return
 	fi
 	ln -sfn "$1" "$2"
+	linked=$((linked + 1))
 }
 
 if [ "$dry_run" -eq 0 ]; then
@@ -125,16 +183,20 @@ fi
 
 agents=0
 for src in "$PILLAR"/agents/*.md; do
+	[ -e "$src" ] || continue
 	link "$src" "$agents_root/$(basename "$src")"
 	agents=$((agents + 1))
 done
 
 skills=0
 for src in "$PILLAR"/skills/*/; do
+	[ -d "$src" ] || continue
 	src="${src%/}"
 	link "$src" "$skills_root/$(basename "$src")"
 	skills=$((skills + 1))
 done
+
+trap - ERR
 
 if [ "$dry_run" -eq 1 ]; then
 	printf 'dry run: %d agents and %d skills would be linked into %s\n' "$agents" "$skills" "$agent_dir"
@@ -146,3 +208,5 @@ printf 'Linked %d skills into %s\n' "$skills" "$skills_root"
 printf '\nThese are symlinks into %s, so a git pull changes what omp serves.\n' "$REPO_ROOT"
 printf 'A running session holds its roster from startup: restart omp, then check /agents lists %d.\n' "$agents"
 printf 'Command wrappers are not installed by this route — they need the plugin namespace.\n'
+printf 'These names now win over a marketplace install of the same agents, silently. If you have one,\n'
+printf 'uninstall it, or run tools/uninstall-omp.sh to go back to it.\n'
