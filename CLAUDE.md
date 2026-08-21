@@ -39,7 +39,7 @@ Real semver, and monotonic — never hang a hash or build metadata off it. `1.0.
 
 ## Commands
 
-There is no build, no lint and no test suite. What remains is the spec workflow, the three install paths, and the by-hand checks below.
+There is no build, no lint and no test suite. What remains is the spec workflow, the two install paths — plus the native fallback below, which applies only where `claude-plugins` is disabled and is not a third route to offer anyone else — and the by-hand checks.
 
 ```sh
 openspec validate --all --strict       # gate any change touching openspec/

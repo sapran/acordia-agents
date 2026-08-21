@@ -58,7 +58,7 @@ In omp, marketplace content is delivered by the `claude-plugins` capability prov
 
 **opencode was dropped in 3.0.0**, with the shell installer that was its only route in and the generator that existed to express its permission maps; opencode users have no upgrade path and must switch harness.
 
-### Installing without the marketplace
+### If you have disabled `claude-plugins`
 
 The route above works on a stock omp config, where `claude-plugins` is enabled; use it unless that provider is off. When it is off, the install is inert and every stored signal still reports health: `omp plugin list` shows the plugin, `~/.omp/plugins/installed_plugins.json` records it, `~/.omp/plugins/omp-plugins.lock.json` says `"enabled": true`, and `~/.omp/plugins/node_modules/acordia-analysts` symlinks into the plugin cache — with no error and no warning anywhere. One command names the cause, because it reports the merged effective value rather than what any single config file holds:
 
