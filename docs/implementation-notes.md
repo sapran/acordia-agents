@@ -118,3 +118,12 @@ this change altered.
   The fix is to correct that sentence and name the `"**/*.md"` form beside the external gate, not the
   bare `.` form. Parked because rewriting what that section claims is a change to the section, not
   one of the four additions the change that found this was scoped to.
+- **The ceiling's measurement convention is stated everywhere except the spec that mandates it.**
+  `openspec/specs/agent-roster/spec.md:338` says only _"10,000 characters, measured after the
+  frontmatter"_, and its scenario at line 345 repeats the same unstated wording. That ambiguity is
+  exactly what gave one prompt body three different recorded figures. `CLAUDE.md` now states the
+  convention — body after the closing frontmatter delimiter, whitespace-stripped, characters not
+  bytes — but a spec is the authority a normative claim is supposed to trace to, so anyone measuring
+  from the spec reproduces the ambiguity and only readers arriving via `CLAUDE.md` get the answer.
+  The fix belongs in the spec and is therefore an OpenSpec change, which is why it is parked rather
+  than folded into a docs commit.
