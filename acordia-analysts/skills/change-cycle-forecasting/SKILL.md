@@ -1,6 +1,6 @@
 ---
 name: change-cycle-forecasting
-description: Forecast when the target will patch, upgrade, migrate, rotate credentials or decommission, reading the drivers behind the cadence, when an access depends on a config that may vanish.
+description: Forecast when the target will patch, upgrade, migrate, rotate credentials or decommission, reading vendor cadence and EOL dates, when an access depends on a config that may vanish.
 metadata:
   acordia:
     family: target-modelling

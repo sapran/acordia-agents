@@ -1,6 +1,6 @@
 ---
 name: reasoning-under-uncertainty
-description: Reach a defensible provisional judgement when the picture is too thin or too noisy to read cleanly, fixing the decision and its deadline first and triaging knowns from unknowables.
+description: Reach a defensible provisional judgement, fixing the decision and its deadline first and triaging knowns from unknowables, when the picture is too thin or too noisy to read cleanly.
 metadata:
   acordia:
     family: analytic-spine

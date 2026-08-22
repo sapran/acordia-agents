@@ -1,6 +1,6 @@
 ---
 name: nontechnical-context-integration
-description: Fold the non-technical world into the picture — who truly holds access, fiscal calendar, deals, regulatory pressure, morale — binding each to a technical consequence.
+description: Fold the non-technical world into the picture — who truly holds access, fiscal calendar, deals, morale — when behaviour is only explicable through a merger, freeze or layoff.
 metadata:
   acordia:
     family: take-handling

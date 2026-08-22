@@ -1,6 +1,6 @@
 ---
 name: endpoint-telemetry-edr
-description: Reason about what a host sensor genuinely captures and by which mechanism — kernel callbacks, ETW, hooks, minifilters, AMSI, Sysmon — and where it goes blind.
+description: Reason about what a host sensor captures and by which mechanism — kernel callbacks, ETW, hooks, minifilters, AMSI, Sysmon — and where it goes blind, when choosing an execution primitive.
 metadata:
   acordia:
     family: defender-reading

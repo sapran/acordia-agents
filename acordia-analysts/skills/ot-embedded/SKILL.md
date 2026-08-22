@@ -1,6 +1,6 @@
 ---
 name: ot-embedded
-description: Analyse an industrial or embedded target on its own terms — controllers, buses, proprietary protocols, carved firmware — where downtime is physical and fragility is the constraint.
+description: Analyse an industrial or embedded target on its own terms — controllers, buses, Modbus, DNP3, S7, firmware — where downtime is physical, when the target crosses from IT into ICS or SCADA.
 metadata:
   acordia:
     family: target-modelling

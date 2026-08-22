@@ -1,6 +1,6 @@
 ---
 name: os-host-internals
-description: Read one specific host's true state from collected process, service and autorun material and work its native escalation, persistence and pivot mechanisms, predicting how it will log it.
+description: Read one host's true state from collected process, service and autorun material and work its native mechanisms — token abuse, SUID, DLL hijacks — when escalating or pivoting from it.
 metadata:
   acordia:
     family: target-modelling

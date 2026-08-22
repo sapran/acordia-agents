@@ -1,6 +1,6 @@
 ---
 name: take-domain-interpretation
-description: Read collected material in its own subject and language to establish what it actually says rather than what its file type suggests, when the domain is not natively commanded.
+description: Read collected material in its own subject and language to establish what it actually says rather than what its file type suggests, when the domain or tongue is not natively commanded.
 metadata:
   acordia:
     family: take-handling

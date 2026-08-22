@@ -1,6 +1,6 @@
 ---
 name: multi-source-fusion
-description: Consolidate disconnected strands — on-box take, passive collection, open sources, prior operations — into one coherent target picture, weighting genuinely independent corroboration.
+description: Consolidate disconnected strands — on-box take, passive collection, open sources, prior operations — into one target picture, when partial reads must become one and weighted for independence.
 metadata:
   acordia:
     family: take-handling

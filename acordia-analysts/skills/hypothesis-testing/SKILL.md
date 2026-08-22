@@ -1,6 +1,6 @@
 ---
 name: hypothesis-testing
-description: Hold every plausible explanation at once and score the evidence against each, weighting what discriminates and hunting the observation that would kill the leader, when several readings fit.
+description: Hold every plausible explanation at once and score evidence against each, weighting what discriminates and hunting the observation that would kill the leader, when several readings fit.
 metadata:
   acordia:
     family: analytic-spine

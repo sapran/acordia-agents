@@ -1,6 +1,6 @@
 ---
 name: outcome-judgement
-description: Call whether an action achieved the operation's intended end by inventorying first-party against independent channels, separating the payload ran from the system actually changed.
+description: Call whether an action achieved its intended end by inventorying first-party against independent channels, separating the payload ran from the system changed, when indicators lie.
 metadata:
   acordia:
     family: analytic-spine

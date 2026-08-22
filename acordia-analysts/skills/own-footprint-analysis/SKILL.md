@@ -1,6 +1,6 @@
 ---
 name: own-footprint-analysis
-description: Enumerate and ledger every indicator the operation itself emits across host, network and infrastructure, so you know what a responder could recover before you go quiet.
+description: Enumerate and ledger every indicator the operation emits — dropped files, host logs, C2 domains, TLS certificates, VPS records — so you know what a responder could recover.
 metadata:
   acordia:
     family: defender-reading

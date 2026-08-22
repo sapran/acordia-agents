@@ -1,6 +1,6 @@
 ---
 name: pattern-of-life-baselining
-description: Baseline the target's normal rhythms from authentication, telemetry and calendar sources — working hours, admin windows, batch jobs — so activity can be timed into the routine.
+description: Baseline the target's normal rhythms from authentication, telemetry and calendar sources — working hours, admin windows, batch jobs — when activity must be timed into the routine.
 metadata:
   acordia:
     family: target-modelling

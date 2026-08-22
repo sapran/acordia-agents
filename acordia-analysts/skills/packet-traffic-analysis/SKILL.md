@@ -1,6 +1,6 @@
 ---
 name: packet-traffic-analysis
-description: Read the wire from a capture or flow export, building the conversation graph and fingerprinting hosts and services from real traffic instead of active probing.
+description: Read the wire from a capture or flow export, building the conversation graph from Zeek aggregates and fingerprinting hosts from TLS, DNS, SMB and Kerberos, instead of active probing.
 metadata:
   acordia:
     family: evidence-forensics

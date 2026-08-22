@@ -1,6 +1,6 @@
 ---
 name: overwatch
-description: Hold a live read on whether the defender has noticed, working your reach into their own security operations, and convert it into a go-quiet, move or pull-out call.
+description: Hold a live read on whether the defender has noticed, working your reach into their SIEM, EDR and SOAR queues, whenever an operation is live and a go-quiet call may be needed.
 metadata:
   acordia:
     family: defender-reading

@@ -1,6 +1,6 @@
 ---
 name: aleph-entity-graph
-description: Work a corpus already ingested into an Aleph instance as a FollowTheMoney entity graph — facet before pulling rows, pivot on neighbours and cross-references — rather than re-grinding it.
+description: Work a corpus already in an Aleph instance as a FollowTheMoney entity graph — facet before pulling rows, pivot on neighbours and cross-references — rather than re-grinding it.
 metadata:
   acordia:
     family: take-handling

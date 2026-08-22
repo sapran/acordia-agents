@@ -1,6 +1,6 @@
 ---
 name: detection-capability-analysis
-description: Model the defender's detection surface before you act, separating what their sensors can collect from what is collected and what is analysed into an alert.
+description: Model the defender's detection surface before you act, separating what their sensors can collect from what is collected and what is analysed into an alert, then score each one.
 metadata:
   acordia:
     family: defender-reading

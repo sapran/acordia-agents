@@ -1,6 +1,6 @@
 ---
 name: protocol-routing-architecture
-description: Reconstruct the target network's shape from device configs, routing tables, firewall rules and VPN definitions to establish what can reach what, before planning movement.
+description: Reconstruct the target network's shape from device configs, routing tables, firewall rules and VPNs — L2 and L3 topology, VLANs, chokepoints — before planning movement across a segment.
 metadata:
   acordia:
     family: target-modelling
