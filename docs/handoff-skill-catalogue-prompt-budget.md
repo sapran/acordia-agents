@@ -122,15 +122,15 @@ its 24,639 figure exactly:
 
 | | before | after |
 |---|--:|--:|
-| description total / mean / max | 16,061 / 357 / 438 | 7,923 / 176 / 190 |
-| largest analyst's catalogue (`overwatch-analyst`, 30 skills) | 16,331 | **10,973** |
-| whole 45-skill library | 24,639 | 16,501 |
+| description total / mean / max | 16,061 / 357 / 438 | 8,099 / 180 / 192 |
+| largest analyst's catalogue (`overwatch-analyst`, 30 skills) | 16,331 | **11,114** |
+| whole 45-skill library | 24,639 | 16,677 |
 
-**Criterion 2 — no analyst over 12,000 — met.** The largest is 10,973, and the spec now carries a
+**Criterion 2 — no analyst over 12,000 — met.** The largest is 11,114, and the spec now carries a
 hard 200-character per-description ceiling rather than a mean, because a mean bounds the library
 without bounding any single role.
 
-**Criterion 3 — mean ≤180, none over ~250 — met**, at mean 176 and max 190.
+**Criterion 3 — mean ≤180, none over ~250 — met**, at mean 180.0 and max 192.
 
 **Criterion 1 — a machine-readable per-analyst skill set — not done**, and deliberately. Producing
 that list surfaced two defects this document did not know about, both parked in
@@ -147,6 +147,6 @@ taken on the host, not in this repository. The figures above are arithmetic on t
 formula, which is a projection and not the compiled-prompt evidence the criterion asks for. Read the
 rendered block on the gateway after upgrading, and confirm the compact-format warning is absent.
 
-Note that the whole 45-skill library still costs 16,501 and so still leaves too little of an
+Note that the whole 45-skill library still costs 16,677 and so still leaves too little of an
 18,000-character budget for a host's own skills. That is by design — role-scoping is the fix, and
 this change is what makes role-scoping sufficient once criterion 1 exists.
