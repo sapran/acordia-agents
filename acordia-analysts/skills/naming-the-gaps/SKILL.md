@@ -1,6 +1,6 @@
 ---
 name: naming-the-gaps
-description: Convert a vague sense of knowing too little into a ranked list of intelligence gaps, each phrased as an answerable question with a collection route and an owner, plus a decide-anyway line for the gaps you will carry as open risk, when a picture feels good enough to act on or collection is running with nobody able to say what it should answer.
+description: Convert a vague sense of knowing too little into ranked intelligence gaps, each an answerable question with a route and an owner, when collection has no stated question.
 metadata:
   acordia:
     family: analytic-spine

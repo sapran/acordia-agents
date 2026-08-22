@@ -4,9 +4,9 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 ## What this repo is
 
-Markdown-only distribution of agents and skills derived from the ACORDIA operational-role framework. **No application code, no runtime, no tests, and since 3.0.0 no build step.** Frontmatter-carrying markdown files and three small JSON files, nothing else.
+Markdown-only distribution of agents and skills derived from the ACORDIA operational-role framework. **No application code, no runtime, no tests, and since 3.0.0 no build step.** Frontmatter-carrying markdown files, four small JSON files, and since 6.0.0 the two install scripts under `tools/` — nothing else.
 
-Two harnesses, one authored tree. omp and Claude Code both install it as a **plugin** from the marketplace catalogs at `.omp-plugin/marketplace.json` (omp reads this one in preference) and `.claude-plugin/marketplace.json` (Claude Code reads this one). Both catalogs point at the one top-level plugin directory, so a checkout is installable exactly as it stands — nothing is generated, nothing is deployed by script.
+Two harnesses, one authored tree. omp and Claude Code both install it as a **plugin** from the marketplace catalogs at `.omp-plugin/marketplace.json` (omp reads this one in preference) and `.claude-plugin/marketplace.json` (Claude Code reads this one). Both catalogs point at the one top-level plugin directory, so a checkout is installable exactly as it stands — nothing is generated, and no script stands between a checkout and a marketplace install. Since 6.0.0 two optional scripts under `tools/` offer omp a second route into its native roots, for the case where the `claude-plugins` provider is off; they copy nothing and generate nothing, and no other route uses them.
 
 One pillar, shipped as one installable plugin:
 
@@ -14,7 +14,7 @@ One pillar, shipped as one installable plugin:
 
 Analysis is the ACORDIA core pillar — real-time decision support and target understanding — and the framework's own resource-allocation finding is that starving it produces capability without effectiveness. Shipping it alone is that argument executed: a roster derived from a competency grid, not one organised by target surface.
 
-The pillar directory holds `.claude-plugin/plugin.json`, `agents/`, `commands/` and `skills/` — the layout both harnesses discover from a plugin root. **All five agents are write-capable.** Capability is granted by omission: an agent file names no `tools`, so omp hands it the full set, and no `spawns`, so its spawn policy is unrestricted. There is no permission frontmatter anywhere in this repository, and a capability problem is never fixed by adding a denylist.
+The pillar directory holds `.claude-plugin/plugin.json`, `agents/`, `commands/` and `skills/` — the layout both harnesses discover from a plugin root — plus `skill-sets.json`, which declares each analyst's skill set so a host can render a catalogue for one analyst rather than for all 45. Neither harness reads that file; it exists for a host or operator doing role-scoping, and it carries no version, so the three-occurrence version count below is unaffected. **All five agents are write-capable.** Capability is granted by omission: an agent file names no `tools`, so omp hands it the full set, and no `spawns`, so its spawn policy is unrestricted. There is no permission frontmatter anywhere in this repository, and a capability problem is never fixed by adding a denylist.
 
 **The consumer is a human operator.** The distribution ships no executing agent, so an analyst product is handed to a person who then acts on it: a recommended course of action is a hand-off rather than a dispatch, the prompt states what the operator is being asked to decide or do, and the lead's end-neutral loop judges whether the end was achieved from evidence that operator reports back. Every `operator` in a shipped prompt is that human. `.acordia/reports/` is where a finished product belongs, by convention.
 
@@ -30,8 +30,8 @@ acordia-analysts/.claude-plugin/plugin.json
 
 The version is the **only** update signal either harness has. omp compares it against the installed version and skips when they match, so an unbumped version means your edit never reaches anyone who already installed the plugin. It fails silently: no error, no warning, users keep running the old prompts. Claude Code has no working upgrade path for marketplace plugins at all (verified, 2.1.220), so there the version is informational and only uninstall-then-reinstall refreshes.
 
-- **MINOR** (`5.0.0` → `5.1.0`) — any change that reaches a user: an agent prompt, a skill body, a command wrapper, a description.
-- **MAJOR** (`5.0.0` → `6.0.0`) — the roster (an agent or pillar added or removed), or the shape of the distribution itself, including a move of the install source path.
+- **MINOR** (`6.0.0` → `6.1.0`) — any change that reaches a user: an agent prompt, a skill body, a command wrapper, a description.
+- **MAJOR** (`6.0.0` → `7.0.0`) — the roster (an agent or pillar added or removed), or the shape of the distribution itself, including a move of the install source path or the addition of an install route.
 
 Real semver, and monotonic — never hang a hash or build metadata off it. `1.0.0+aaa` and `1.0.0+bbb` compare **equal** and would never upgrade (verified, omp 17.1.8).
 
@@ -39,7 +39,7 @@ Real semver, and monotonic — never hang a hash or build metadata off it. `1.0.
 
 ## Commands
 
-There is no build, no lint and no test suite. What remains is the spec workflow, the two install paths, and the by-hand checks below.
+There is no build, no lint and no test suite. What remains is the spec workflow, the two install paths — plus the native fallback below, which applies only where `claude-plugins` is disabled and is not a third route to offer anyone else — and the by-hand checks.
 
 ```sh
 openspec validate --all --strict       # gate any change touching openspec/
@@ -49,13 +49,20 @@ claude plugin install acordia-analysts@acordia --scope local
 omp plugin marketplace add ./.         # omp install — note `./.`, a bare `.` is rejected
 omp plugin install acordia-analysts@acordia --scope user
 omp plugin marketplace update acordia && omp plugin upgrade   # pick up a version bump
+
+tools/install-omp.sh --profile <name>    # omp native install — symlinks 5 agents + 45 skills, edits no config
+tools/uninstall-omp.sh --profile <name>  # removes only symlinks whose target is inside a pillar checkout
 ```
 
 Verification is "it loads and runs", not a gate. After installing: `/agents` must list all five ACORDIA agents — a frontmatter mistake makes `discoverAgents()` skip the file with a warning and the agent silently vanishes — then dispatch the lead and one leg and confirm each runs.
 
+**The native route exists because a marketplace install serves nothing when `claude-plugins` is disabled.** That provider is the reader for marketplace plugins, and it reports no error when off: `omp plugin list`, `installed_plugins.json`, the lockfile's `"enabled": true` and the `node_modules/` symlink all still say the plugin is healthy, and only `omp config get disabledProviders` names the cause. omp's native agent and skill roots are gated by no provider, which is what the scripts write to. Nothing else reaches them: with that provider off, an `extensions:` entry and a registered `omp plugin link` package each load the skills and serve none of the agents, and only CLI `omp -e <path>` does — an omp bug, so do not try to fix it here by adding a `package.json`.
+
+**A native install shadows a plugin install of the same names, first-wins and silently.** Native roots resolve before plugin roots and dedup by exact agent name, so a checkout linked into `~/.omp/agent/agents/` wins over the published plugin with no warning anywhere, and a user with both active is testing their working tree while reading the version number of the release. Never leave the two routes both active: `tools/uninstall-omp.sh` before falling back to the marketplace, and when a user reports the wrong prompt behaviour, look for a native install under their agent directory before believing the version they quote.
+
 **Withdrawing a plugin from the catalogs does not uninstall it.** The retired `acordia-operators` plugin was published up to 4.2.0; its catalog entry no longer exists, so no upgrade path can resolve it and none removes it. An install made before 5.0.0 stays resident and dispatchable at 4.2.0 until the user runs `omp plugin uninstall acordia-operators@acordia` by hand. Expect it in the wild, and say so in any release note: a catalog withdraws the offer, never the copy already on disk.
 
-## The two invariants that lost their gate
+## The three invariants that lost their gate
 
 Both used to be enforced by the deleted build. Run each by hand when you touch an agent prompt, a skill directory, or a catalog.
 
@@ -84,7 +91,42 @@ Silence means every slug resolved.
 diff .claude-plugin/marketplace.json .omp-plugin/marketplace.json
 ```
 
-Silence means they agree. Also confirm all three JSON files parse: `python3 -c "import json; [json.load(open(p)) for p in ('.claude-plugin/marketplace.json','.omp-plugin/marketplace.json','acordia-analysts/.claude-plugin/plugin.json')]"`.
+Silence means they agree. Also confirm all four JSON files parse — `skill-sets.json` included, because nothing else opens it and there is no build step to fail: `python3 -c "import json; [json.load(open(p)) for p in ('.claude-plugin/marketplace.json','.omp-plugin/marketplace.json','acordia-analysts/.claude-plugin/plugin.json','acordia-analysts/skill-sets.json')]"`.
+
+**The declared skill sets match the prompts.** `acordia-analysts/skill-sets.json` is a transcription of what each prompt names, and the prompt is the authority. It is inert to both harnesses, so a prompt edited without the file loads perfectly and ships a wrong declaration. A prompt names a skill in **two** ways, and a check that knows only the first reports live skills as dead: a slug on a `·`-separated line, and a slug in backticks — the four procedural skills use the second, in every prompt. The backtick binding counts **only for a skill whose own frontmatter says `procedural: true`**, so ordinary prose that happens to backtick a grid-row slug does not silently bind it; a grid-row skill is bound by its `·` line or not at all. The check also rejects a group name outside `spine`/`deep`/`working`/`procedural`, and a `spine` group on the orchestrator — both pass a set-union comparison untouched while breaking what a host reads.
+
+```sh
+python3 - <<'EOF'
+import json,glob,os,re,pathlib
+SK='acordia-analysts/skills/%s/SKILL.md'
+have={os.path.basename(os.path.dirname(s)) for s in glob.glob('acordia-analysts/skills/*/SKILL.md')}
+proc={s for s in have if re.search(r'^\s*procedural:\s*true\s*$',pathlib.Path(SK%s).read_text(),re.M|re.I)}
+GROUPS={'spine','deep','working','procedural'}
+decl=json.load(open('acordia-analysts/skill-sets.json'))['analysts']
+bad=0; covered=set(); spines={}
+for name in sorted(decl):
+    g=decl[name]
+    if set(g)-GROUPS: print(name,'unknown group(s)',sorted(set(g)-GROUPS)); bad+=1
+    txt=pathlib.Path('acordia-analysts/agents/%s.md'%name).read_text()
+    listed=set(); prev=''
+    for line in txt.splitlines():
+        s=line.strip()
+        if s and prev.startswith('#') and re.fullmatch(r'[a-z0-9][\w.-]*( · [a-z0-9][\w.-]*)*',s):
+            listed|={x.strip() for x in s.split('·')}
+        if s: prev=s
+    prompt=listed|{t for t in re.findall(r'`([a-z0-9][a-z0-9-]*)`',txt) if t in proc}
+    d={x for v in g.values() for x in v}; covered|=d
+    if 'spine' in g: spines[name]=tuple(g['spine'])
+    for label,diff in (('resolves to no skill',d-have),('declared, not in prompt',d-prompt),('in prompt, not declared',prompt-d)):
+        if diff: print(name,label,sorted(diff)); bad+=1
+if 'spine' in decl.get('cyber-analyst',{}): print('orchestrator carries a spine group'); bad+=1
+if len(set(spines.values()))>1: print('spine differs between legs'); bad+=1
+if have-covered: print('declared for no analyst',sorted(have-covered)); bad+=1
+print('problems:',bad)
+EOF
+```
+
+`problems: 0` means the declaration is current. Anything else names what to fix, and the fix is the file, never the prompt. This belongs in `~/ai/checks/check-acordia.sh` beside the other resolutions; until it is there, run it by hand whenever you touch a prompt or the declaration.
 
 ## Source of truth — do not skip this
 

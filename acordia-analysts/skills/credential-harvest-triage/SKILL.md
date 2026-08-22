@@ -1,6 +1,6 @@
 ---
 name: credential-harvest-triage
-description: Inventory and rank the credential material inside collected material — an LSASS dump, disk image, cloud-state export, config directory, browser profile or log bundle — classifying each finding by type, scope, freshness and reuse potential so the best is acted on first and nothing is lost, and fusing candidates several analysts surfaced without double-counting.
+description: Inventory and rank credential material inside collected data — an LSASS dump, disk image, browser profile — by type, scope, freshness and reuse, so the best is acted on first.
 metadata:
   acordia:
     family: take-handling

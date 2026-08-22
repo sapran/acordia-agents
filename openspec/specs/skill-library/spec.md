@@ -44,11 +44,11 @@ reads as dropping it and fails the archive step. The title is legacy; its body c
 
 ### Requirement: Skill frontmatter contract
 
-Each `SKILL.md` SHALL declare `name` (lowercase-hyphen, 1-64 characters) and `description` (1-1024
-characters), and MAY declare `metadata`. It SHALL declare no other key. A `metadata` block SHALL carry
-the `acordia` key alone: with the ported library gone, no `metadata.cyberstrike` block remains anywhere
-in the tree, and one SHALL NOT be reintroduced except by a change that ports material and needs a
-provenance record for it.
+Each `SKILL.md` SHALL declare `name` (lowercase-hyphen, 1-64 characters) and `description` (1-200
+characters, per *The description is the selection surface*), and MAY declare `metadata`. It SHALL
+declare no other key. A `metadata` block SHALL carry the `acordia` key alone: with the ported library
+gone, no `metadata.cyberstrike` block remains anywhere in the tree, and one SHALL NOT be reintroduced
+except by a change that ports material and needs a provenance record for it.
 
 Every CyberStrike-only field SHALL stay dropped: `category`, `version`, `author`, `tags`, `owasp_id`,
 `cis_id`, `cis_benchmark`, `tech_stack`, `cwe_ids`, `chains_with`, `prerequisites`, `severity_boost`.
@@ -72,7 +72,7 @@ No skill SHALL declare a tool list, a permission map, or any harness-restriction
 #### Scenario: Field values are within the contract
 
 - **WHEN** any skill's frontmatter is validated
-- **THEN** `name` matches the kebab-case pattern and is at most 64 characters, `description` is 1-1024 characters, and the body is non-empty
+- **THEN** `name` matches the kebab-case pattern and is at most 64 characters, `description` is 1-200 characters, and the body is non-empty
 
 #### Scenario: No signing or restriction fields
 
@@ -88,7 +88,19 @@ No skill SHALL declare a tool list, a permission map, or any harness-restriction
 
 Because both harnesses select a skill by matching its `description`, each `description` SHALL open
 with an imperative naming the work only that skill does, and SHALL then give the trigger — the
-situation in which that work is wanted. It SHALL be 1–1024 characters.
+situation in which that work is wanted. It SHALL be 1–200 characters.
+
+The ceiling is a budget obligation, not a style preference. A host renders the library as a
+*catalogue* in the system prompt — one entry per skill, costing `97 + len(name) + len(description) +
+len(location)` characters — and that catalogue has a finite budget, 18,000 characters on OpenClaw
+2026.7.1. A host that exceeds the budget does not drop the overrunning skill and does not fail: it
+drops **every** description in the catalogue and renders names and paths alone. An overlong
+description therefore costs every *other* skill its selection surface, which is why the bound is
+per-description and hard rather than an aggregate the library could average its way past.
+
+Across the library the mean `description` length SHALL be at most 180 characters, so that the
+catalogue for any single analyst's skill set stays under 12,000 characters and leaves a host room for
+skills of its own.
 
 A description SHALL NOT open with a selection-boilerplate clause: `Use when`, `Apply when`, `Use to`,
 `Use this skill`, and their variants are prohibited openings, because they are common to every skill
@@ -96,6 +108,11 @@ and therefore discriminate between none of them. A bare topic label SHALL NOT be
 
 Within a family, no two descriptions SHALL compete: each SHALL name work its siblings do not cover.
 Where two are inseparable, the two skills SHALL be merged rather than shipped as competing siblings.
+
+Compression SHALL NOT be achieved by dropping the trigger. Where a description must lose material to
+reach the ceiling, what goes is enumeration — worked examples, lists of artefact types, restatements
+of the body — and what stays is the pair a selecting model needs: the work only this skill does, and
+the situation that calls for it.
 
 #### Scenario: Description states applicability
 
@@ -111,6 +128,16 @@ Where two are inseparable, the two skills SHALL be merged rather than shipped as
 
 - **WHEN** every description under `acordia-analysts/skills/` is read
 - **THEN** none begins with `Use when`, `Apply when`, `Use to`, `Use this skill` or an equivalent selection-boilerplate clause
+
+#### Scenario: Every description is within the ceiling
+
+- **WHEN** every `description` under `acordia-analysts/skills/` is measured as characters after YAML folding
+- **THEN** none exceeds 200 characters, and the mean across the library is at most 180
+
+#### Scenario: A role-scoped catalogue renders with descriptions
+
+- **WHEN** a host loads the skill set named in any one analyst's prompt and renders its catalogue at `97 + len(name) + len(description) + len(location)` per entry
+- **THEN** the total is under 12,000 characters, so the catalogue renders with descriptions intact rather than degrading to the names-and-paths compact format
 
 #### Scenario: The worked collision is separated
 

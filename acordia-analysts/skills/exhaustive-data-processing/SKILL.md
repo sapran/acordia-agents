@@ -1,6 +1,6 @@
 ---
 name: exhaustive-data-processing
-description: Prove complete coverage of a bulk corpus by putting a script-first tool pass across 100% of it, reading only the located regions into context and reconciling a coverage ledger, so no conclusion rests on the opening portion of an artefact — the reading discipline every evidence skill follows when a dump, image, archive or dataset outgrows a single read.
+description: Prove complete coverage of a bulk corpus with a script-first pass across all of it, reading only the located regions into context, when an artefact outgrows a single read.
 metadata:
   acordia:
     family: take-handling

@@ -1,6 +1,6 @@
 ---
 name: assessing-take-value
-description: Judge whether collected take is genuine, complete, current and worth having — the real thing rather than truncated, corrupted, wrongly decrypted or a deception feed planted for you to find — measured against an expected record count and against the requirement it was meant to answer, right after collection and before anything is built on it.
+description: Judge whether collected take is genuine, complete, current and worth having rather than truncated, corrupted or a planted deception feed, before anything is built on it.
 metadata:
   acordia:
     family: take-handling

@@ -1,6 +1,6 @@
 ---
 name: identity-directory-trust
-description: Map the target's identity fabric from directory artefacts such as BloodHound exports, LDAP dumps and NTDS extractions — privileged principals, constrained, unconstrained and resource-based delegation, ADCS, LAPS and gMSA material, domain and tenant trust — to find the shortest identity path from a foothold to control of a Windows AD or Entra-backed enterprise.
+description: Map the target's identity fabric from BloodHound, LDAP or NTDS artefacts — principals, delegation, ADCS, LAPS — when a foothold must become AD or Entra domain control.
 metadata:
   acordia:
     family: target-modelling

@@ -1,6 +1,6 @@
 ---
 name: target-friction-susceptibility
-description: Establish how much friction a target organisation absorbs before its performance actually degrades — the rigidity of its standard operating procedures, whether it holds redundant systems and people trained to use them, and whether its culture surfaces problems or buries them — whenever the intended end is disruption or degradation rather than collection and the question is whether this particular target would feel it.
+description: Establish how much friction a target organisation absorbs before its performance degrades — SOP rigidity, redundancy, whether its culture surfaces problems — when the end is disruption.
 metadata:
   acordia:
     family: target-modelling

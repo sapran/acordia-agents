@@ -33,7 +33,8 @@ acordia-agents/
 │   ├── agents/     cyber-analyst · mission-analyst · terrain-analyst
 │   │               overwatch-analyst · collection-analyst
 │   ├── commands/   10 command wrappers
-│   └── skills/     45 skills, one SKILL.md each
+│   ├── skills/     45 skills, one SKILL.md each
+│   └── skill-sets.json   per-analyst declared skill sets, for role-scoped hosts
 ├── .claude-plugin/marketplace.json   # Claude Code reads this catalog
 ├── .omp-plugin/marketplace.json      # omp prefers this one; byte-identical
 ├── docs/roles/                       # the competency map and the source register
@@ -57,6 +58,40 @@ claude plugin install acordia-analysts@acordia
 In omp, marketplace content is delivered by the `claude-plugins` capability provider, which reads Claude Code's plugin registry alongside omp's own — so one Claude Code install can be inherited rather than registered twice, and so disabling that provider leaves the plugin installed and contributing nothing. `/reload-plugins` refreshes skills and commands after an install; new tools or hooks need a restart.
 
 **opencode was dropped in 3.0.0**, with the shell installer that was its only route in and the generator that existed to express its permission maps; opencode users have no upgrade path and must switch harness.
+
+### If you have disabled `claude-plugins`
+
+The route above works on a stock omp config, where `claude-plugins` is enabled; use it unless that provider is off. When it is off, the install is inert and every stored signal still reports health: `omp plugin list` shows the plugin, `~/.omp/plugins/installed_plugins.json` records it, `~/.omp/plugins/omp-plugins.lock.json` says `"enabled": true`, and `~/.omp/plugins/node_modules/acordia-analysts` symlinks into the plugin cache — with no error and no warning anywhere. One command names the cause, because it reports the merged effective value rather than what any single config file holds:
+
+```sh
+omp config get disabledProviders    # `claude-plugins` in the list means no marketplace plugin loads
+```
+
+Disabling it is a mechanical choice rather than a mistake. The provider is the reader for marketplace plugins, and it reads both `~/.omp/plugins/installed_plugins.json` and `~/.claude/plugins/installed_plugins.json`, so enabling it also surfaces every plugin registered in Claude Code's registry, not only omp's. `claude-plugins` and `claude` are distinct ids in one shared `disabledProviders` namespace: disabling `claude` — Claude Code's context files, commands, skills and MCP — does not disable marketplace plugins, and disabling `claude-plugins` does not disable the rest.
+
+For that case the checkout installs itself into omp's native agent and skill roots, which are gated by no discovery provider at all:
+
+```sh
+tools/install-omp.sh                       # ~/.omp/agent, or $PI_CODING_AGENT_DIR when set
+tools/install-omp.sh --profile gdx         # ~/.omp/profiles/gdx/agent
+tools/install-omp.sh --agent-dir <path>    # an explicit agent directory
+tools/install-omp.sh --dry-run             # print what would be linked, change nothing
+tools/uninstall-omp.sh                     # same three flags; removes only our own links
+```
+
+Target-directory precedence is `--agent-dir`, then `--profile` (resolving to `~/.omp/profiles/<name>/agent`), then `$PI_CODING_AGENT_DIR`, then `~/.omp/agent`; the first two are mutually exclusive. The five agent files and 45 skill directories are linked as **symlinks rather than copies**, so a `git pull` changes what omp serves, and no configuration file is edited. Anything already in either root that is not one of our own symlinks aborts the run with every colliding path printed and nothing created at all, so the installer can never take over a dispatch handle you own; re-running it is idempotent. The uninstaller matches each link on its recorded target, so a real file or a symlink pointing elsewhere is left alone, and a link whose checkout has since been deleted, renamed or moved is still cleaned up.
+
+**The command wrappers are not installed by this route.** A wrapper takes its namespace from the plugin name, applied by the harness, so `/acordia-analysts:terrain` exists only through a plugin root. Agents dispatch by bare name either way, so the roster is fully reachable without them.
+
+**A native install silently shadows a marketplace one.** Native roots resolve before plugin roots and dedup first-wins by exact agent name, so with both routes active you are running your checkout while believing you run the published version, and nothing says so. Run `tools/uninstall-omp.sh` before returning to the marketplace route.
+
+No packaging change would remove the need for these scripts. With `claude-plugins` disabled, a user `extensions:` entry and a properly registered `omp plugin link` package both load the skills and serve none of the agents; only the CLI flag `omp -e <absolute path>` serves agents from such a root, which contradicts omp's own discovery documentation and is an omp bug rather than a packaging error. Adding a `package.json` to the pillar buys nothing, so it ships none.
+
+### Upgrading to 6.0.0
+
+**6.0.0 withdraws nothing.** The roster, the skill library and the marketplace route are unchanged; what is new is the second install route above, for users whose `claude-plugins` provider is off. An existing marketplace install upgrades in place as usual, and a user who never disabled that provider has nothing to do differently.
+
+If you adopt the script route, adopt only one: a native install shadows a marketplace one silently, so uninstall whichever you are leaving.
 
 ### Upgrading to 5.0.0
 
@@ -115,7 +150,7 @@ grep -ho '"version": "[^"]*"' .claude-plugin/marketplace.json \
   .omp-plugin/marketplace.json acordia-analysts/.claude-plugin/plugin.json | sort -u
 ```
 
-One line out means the three agree. Nothing inside the repository enforces that — the gates went with the generator — so it is a rule plus one external drift check. **MINOR** for any change that reaches a user: an agent prompt, a skill body, a command wrapper, a catalog description. **MAJOR** for a roster change, or a change to the shape of the distribution including an install-source move; 5.0.0 removed a pillar, and 3.0.0 was both. The version is also the only update signal either harness has — omp skips a plugin whose version is not newer, so an unbumped edit reaches nobody who already installed it — and it must stay plain semver, because build metadata makes two versions compare equal and neither would ever upgrade.
+One line out means the three agree. Nothing inside the repository enforces that — the gates went with the generator — so it is a rule plus one external drift check. **MINOR** for any change that reaches a user: an agent prompt, a skill body, a command wrapper, a catalog description. **MAJOR** for a roster change, or a change to the shape of the distribution including an install-source move; 5.0.0 removed a pillar, 6.0.0 added a second install route, and 3.0.0 was both. The version is also the only update signal either harness has — omp skips a plugin whose version is not newer, so an unbumped edit reaches nobody who already installed it — and it must stay plain semver, because build metadata makes two versions compare equal and neither would ever upgrade.
 
 ### Namespace safety
 
@@ -183,11 +218,16 @@ metadata:
 
 There are no build gates. Verification is that the thing loads and runs.
 
+In omp, check the discovery providers before anything else. The install-state commands answer what is registered, never what is loaded, and all of them report health for a plugin that is serving nothing:
+
 ```sh
-omp plugin marketplace update acordia && omp plugin upgrade    # reports 5.0.0
+omp config get disabledProviders                               # must not list `claude-plugins`
+omp plugin marketplace update acordia && omp plugin upgrade    # reports 6.0.0
 ```
 
 Then in omp, `/agents` lists all five — the check that matters, because a frontmatter mistake makes an agent vanish quietly rather than fail loudly — and `/skills` lists the ACORDIA skills, matching the directory count. Dispatch the lead and one leg and confirm each returns. In Claude Code, `/agents` lists the same five, which is the proof that one tree serves both.
+
+After a native install the restart is not optional: a running session holds the roster it started with, so restart omp, then `/agents` must list five and a `skill://<slug>` read must resolve — `skill://take-domain-interpretation`, say, which proves a linked skill directory is served through its symlink rather than merely sitting in the root.
 
 Two invariants that build gates used to enforce are now checked by hand. The catalogs agree — `diff .claude-plugin/marketplace.json .omp-plugin/marketplace.json` — and every skill slug named in a prompt resolves:
 

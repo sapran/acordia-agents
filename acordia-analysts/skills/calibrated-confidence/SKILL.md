@@ -1,6 +1,6 @@
 ---
 name: calibrated-confidence
-description: Attach an honest confidence level to a judgement on a stable scale, separating the estimate from its strength and resolvable uncertainty from irreducible, and tracking your own hits and misses, whenever someone will target, time or risk something on that judgement and 'high confidence' is at risk of being rhetoric rather than a measured claim.
+description: Attach a confidence level to a judgement on a stable scale, separating the estimate from its strength and resolvable uncertainty from irreducible, when someone will act on it.
 metadata:
   acordia:
     family: analytic-spine

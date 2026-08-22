@@ -1,6 +1,6 @@
 ---
 name: key-assumptions-check
-description: Surface the assumptions a plan silently rests on, mark which of them are load-bearing, stress each for supporting evidence and freshness, and name the analyst biases in play — confirmation, anchoring on first access, mirror-imaging the defender, sunk cost — when success depends on the target or defender behaving as expected, or the team converged fast on one read.
+description: Surface the assumptions a plan silently rests on, mark the load-bearing ones and stress each for evidence and freshness, when success depends on expected behaviour.
 metadata:
   acordia:
     family: analytic-spine
