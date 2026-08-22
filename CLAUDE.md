@@ -62,7 +62,7 @@ Verification is "it loads and runs", not a gate. After installing: `/agents` mus
 
 **Withdrawing a plugin from the catalogs does not uninstall it.** The retired `acordia-operators` plugin was published up to 4.2.0; its catalog entry no longer exists, so no upgrade path can resolve it and none removes it. An install made before 5.0.0 stays resident and dispatchable at 4.2.0 until the user runs `omp plugin uninstall acordia-operators@acordia` by hand. Expect it in the wild, and say so in any release note: a catalog withdraws the offer, never the copy already on disk.
 
-## The three invariants that lost their gate
+## The four invariants that lost their gate
 
 Both used to be enforced by the deleted build. Run each by hand when you touch an agent prompt, a skill directory, or a catalog.
 
@@ -84,6 +84,46 @@ for a in glob.glob('acordia-analysts/agents/*.md'):
 ```
 
 Silence means every slug resolved.
+
+**Every grid mark reaches the skill that cites the row.** `grid_deep_in` and `grid_working_in` are
+transcriptions of one table row, and nothing reads the table, so a mark added, moved or removed in
+`docs/roles/operational-analyst.md` changes no artifact until someone copies it across by hand. The
+failure is silent and it has shipped: up to 6.2.0 ten spine skills carried a `grid_working_in` that
+four agent prompts contradicted, because the grid stated the shared spine by section membership
+instead of by marks. Derive the fields from the table rather than reviewing them:
+
+```sh
+python3 - <<'EOF'
+import glob,os,pathlib,re
+COLS=['Core','Mission','Terrain','Def','Coll']
+grid={}
+for line in pathlib.Path('docs/roles/operational-analyst.md').read_text().splitlines():
+    m=re.match(r'^\| (.*?) \| `([a-z0-9-]+)` \| (.*) \|$',line)
+    if not m: continue
+    c=[x.strip() for x in m.group(3).split('|')]
+    if len(c)!=5: continue
+    grid[m.group(2)]=([COLS[i] for i,x in enumerate(c) if x=='\u25cf'],
+                      [COLS[i] for i,x in enumerate(c) if x=='\u25cb'])
+bad=0
+for f in sorted(glob.glob('acordia-analysts/skills/*/SKILL.md')):
+    slug=os.path.basename(os.path.dirname(f)); t=pathlib.Path(f).read_text()
+    row=re.search(r'^    row: (.+)$',t,re.M)
+    if not row or row.group(1).strip() in ('null','~'): continue
+    rid=row.group(1).strip()
+    if rid not in grid: print(slug,'cites unknown row',rid); bad+=1; continue
+    deep,work=grid[rid]
+    for key,want in (('grid_deep_in',deep),('grid_working_in',work)):
+        have=re.search(r'^    %s: (.*)$'%key,t,re.M)
+        got=[x for x in have.group(1).strip('[] ').split(', ') if x] if have else None
+        if got!=want: print(slug,key,'is',got,'grid says',want); bad+=1
+print('problems:',bad)
+EOF
+```
+
+Silence but for `problems: 0` means every skill matches its row. Then confirm the marks match the
+prompts: a leg's column carrying a mark on a row whose slug that leg's prompt never names — or the
+reverse — is the same drift one step further out, and the declared-skill-set check above catches
+only the prompt-to-JSON half of it.
 
 **The two marketplace catalogs are byte-identical.** They carry the same single source and the same version; the only reason both exist is that omp prefers one path and Claude Code reads the other. One entry each does not collapse the pair into one file — two harnesses still read two filenames, and that reason is unchanged by how many plugins each lists.
 
