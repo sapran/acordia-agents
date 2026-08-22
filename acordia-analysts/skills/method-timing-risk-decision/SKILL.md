@@ -1,6 +1,6 @@
 ---
 name: method-timing-risk-decision
-description: Choose the method, the moment and the exposure to accept by pricing each option's gain, detection risk and reversibility against stated risk appetite, when a window is closing.
+description: Choose the method, the moment and the exposure by pricing each option's gain, detection risk and reversibility against stated risk appetite, when a window is closing.
 metadata:
   acordia:
     family: analytic-spine

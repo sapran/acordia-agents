@@ -144,12 +144,18 @@ malformed` on every call throughout that work, so the selection could not be mad
   never caught up, but `CLAUDE.md` makes the grid normative, so the fix is a grid edit that adds the
   spine marks across the four leg columns, not a prompt edit. This matters more than a bookkeeping
   drift: acceptance criterion 1 of `docs/handoff-skill-catalogue-prompt-budget.md` asks for a
-  machine-readable per-analyst skill list, and generating that list from the prompts as they stand
-  would harden the drift into a declared field.
-- **Three skills are named in no agent prompt.** `aleph-entity-graph`, `credential-harvest-triage`
-  and `exhaustive-data-processing` appear in no `·`-separated skill line in any of the five prompts.
-  Prompt naming is the only agent→skill binding this distribution has, so these three are reachable
-  only by a host that loads the whole library and selects on description alone. All three are
-  procedural skills (`grid_row: null`), which is why no grid column places them and why the slug
-  check cannot catch the omission — it verifies that every named slug resolves, not that every skill
-  is named. Deciding which analyst adopts each is the same division-of-work call as the note above.
+  machine-readable per-analyst skill list, which necessarily records one of the two as the set.
+  **Still open after 6.2.0**, which declared the sets as the prompts state them rather than as the
+  grid does. That was judged to surface the drift rather than harden it: `skill-sets.json` and the
+  grid are now two machine-readable records whose disagreement a single command can show, where
+  before nothing compared them at all. The check also proves the 12-skill spine is identical across
+  all four legs, so what remains is one question — whether the grid should carry `○` marks for the
+  spine in the four leg columns — and that is still a claim about how analytic work is divided, so it
+  still needs the literature the outage withheld.
+- **~~Three skills are named in no agent prompt.~~ Withdrawn in 6.2.0 — the finding was wrong.**
+  `aleph-entity-graph`, `credential-harvest-triage` and `exhaustive-data-processing` are named in
+  **all five** prompts, in backticks, in their own procedural sections. The scan that produced the
+  finding read only `·`-separated skill lines, which is not the only binding a prompt uses. No skill
+  in the library is unreachable. The real consequence was a three-skill undercount in every
+  analyst's set, which is corrected in `openspec/changes/archive/*-declare-analyst-skill-sets/` along
+  with the catalogue figures that were computed from it.

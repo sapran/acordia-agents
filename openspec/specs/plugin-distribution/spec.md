@@ -11,9 +11,15 @@ hand-maintained version that is the only upgrade signal either harness has.
 ### Requirement: One authored tree per pillar serves every harness
 
 The plugin SHALL be a single authored directory at the repository root — `acordia-analysts/` —
-containing `.claude-plugin/plugin.json`, `agents/`, `commands/` and `skills/`. The same directory
-SHALL serve every target harness: there SHALL be no per-harness tree, no generated or translated copy
-of any agent, skill or command, and no build step between the checkout and an install.
+containing `.claude-plugin/plugin.json`, `agents/`, `commands/`, `skills/` and `skill-sets.json`. The
+same directory SHALL serve every target harness: there SHALL be no per-harness tree, no generated or
+translated copy of any agent, skill or command, and no build step between the checkout and an install.
+
+`skill-sets.json` declares each agent's skill set so a host can render a catalogue for one analyst
+rather than for the whole library. It ships inside the pillar rather than beside it in `docs/`
+precisely because its consumer is the host that installed the pillar, and it is hand-maintained like
+the catalogs: nothing emits it, and a script that did would be the generated tree this requirement
+forbids. It carries no version, so the three-occurrence version count is unaffected by its presence.
 
 An install SHALL be one of exactly two routes into that one directory, and both SHALL read the
 authored files rather than a copy of them. The marketplace route resolves the catalog and copies the
@@ -26,7 +32,7 @@ is the authored file, reached either by copy of the authored directory or by sym
 #### Scenario: Plugin layout is the authored layout
 
 - **WHEN** a plugin directory is inspected
-- **THEN** it contains `.claude-plugin/plugin.json`, `agents/`, `commands/` and `skills/`, and nothing declares itself generated
+- **THEN** it contains `.claude-plugin/plugin.json`, `agents/`, `commands/`, `skills/` and `skill-sets.json`, and nothing declares itself generated
 
 #### Scenario: No second tree exists
 
@@ -42,6 +48,11 @@ is the authored file, reached either by copy of the authored directory or by sym
 
 - **WHEN** the marketplace route and the script route are compared
 - **THEN** each resolves to files inside `acordia-analysts/`, and neither produces a generated or translated artifact
+
+#### Scenario: The declaration does not join the version count
+
+- **WHEN** the repository's version occurrences are counted
+- **THEN** there are exactly three, across `plugin.json` and the two catalogs, and `skill-sets.json` carries none
 
 ### Requirement: Two marketplace catalogs, hand-maintained and identical
 

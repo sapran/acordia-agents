@@ -1,6 +1,6 @@
 ---
 name: vuln-attacksurface-mapping
-description: Consolidate every recon feed — scans, cloud inventories, API catalogues, OSINT — into one attack surface ranked by exploitability times proximity to the crown jewels rather than by CVSS.
+description: Consolidate every recon feed — scans, cloud inventories, API catalogues, OSINT — into one surface ranked by exploitability times proximity to crown jewels, not CVSS, when choosing where to strike.
 metadata:
   acordia:
     family: target-modelling

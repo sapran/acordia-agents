@@ -1,6 +1,6 @@
 ---
 name: deception-detection
-description: Test whether the picture you act on was planted, denied or shaped to steer you, weighting channels the target does not know you hold, when evidence is suspiciously convenient.
+description: Test whether the picture you act on was planted, denied or shaped to steer you, weighting channels the target does not know you hold, when evidence is too convenient.
 metadata:
   acordia:
     family: analytic-spine

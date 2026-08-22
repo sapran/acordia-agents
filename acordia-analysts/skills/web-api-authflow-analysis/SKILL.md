@@ -1,6 +1,6 @@
 ---
 name: web-api-authflow-analysis
-description: Trace a web app or API's logic and auth flows — OAuth, OIDC, SAML, sessions — from HAR archives, OpenAPI exports and captured tokens, when identity or state assumptions may be subvertible.
+description: Trace a web app or API's logic and auth flows — OAuth, OIDC, SAML, sessions — from HAR archives, OpenAPI exports and tokens, when identity or state assumptions may be subvertible.
 metadata:
   acordia:
     family: target-modelling

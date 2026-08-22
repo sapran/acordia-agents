@@ -1,6 +1,6 @@
 ---
 name: cloud-identity-log-analysis
-description: Predict what cloud control-plane and identity providers will log about a planned action, preferring the thinner trail, when working a tenant with stolen tokens or federated identity.
+description: Predict what cloud control-plane and identity providers will log about a planned action, preferring the thinner trail, when working a tenant with stolen or federated tokens.
 metadata:
   acordia:
     family: defender-reading

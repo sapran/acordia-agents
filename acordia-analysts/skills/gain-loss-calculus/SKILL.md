@@ -1,6 +1,6 @@
 ---
 name: gain-loss-calculus
-description: Weigh a move's gain against its full cost — exposure, burnt access, attribution, foreclosed paths — and against waiting, when the next step buys progress but spends something scarce.
+description: Weigh a move's gain against its full cost — exposure, burnt access, attribution, foreclosed paths — and against waiting, when progress would spend something scarce.
 metadata:
   acordia:
     family: analytic-spine

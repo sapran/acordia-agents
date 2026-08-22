@@ -1,6 +1,6 @@
 ---
 name: log-artefact-interpretation
-description: Reconstruct an ordered account of events from raw host, network and cloud logs, establishing what each source records and its blind spots first, when answering what actually happened.
+description: Reconstruct an ordered account of events from raw host, network and cloud logs, establishing what each source records and its blind spots, when answering what actually happened.
 metadata:
   acordia:
     family: evidence-forensics

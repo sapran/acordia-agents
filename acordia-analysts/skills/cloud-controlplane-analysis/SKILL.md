@@ -1,6 +1,6 @@
 ---
 name: cloud-controlplane-analysis
-description: Model a target's AWS, Azure or GCP estate at the control plane from collected exports — IAM policies, service principals, federation chains — when administration lives in the API.
+description: Model a target's AWS, Azure or GCP estate at the control plane from collected exports — IAM policies, service principals, federation — when administration lives in the API.
 metadata:
   acordia:
     family: target-modelling

@@ -1,6 +1,6 @@
 ---
 name: c2-beacon-exfil-analysis
-description: Examine the operation's own C2 and exfil traffic as a defender would — JA3, JARM, SNI, beacon interval and jitter — and tune it below their thresholds, when NDR or TLS inspection is up.
+description: Examine your own C2 and exfil traffic as a defender would — JA3, JARM, SNI, beacon interval and jitter — and tune it below their thresholds, when NDR or TLS inspection is up.
 metadata:
   acordia:
     family: defender-reading

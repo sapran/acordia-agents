@@ -1,6 +1,6 @@
 ---
 name: disk-memory-forensics
-description: Read a host's disk and memory as a responder would, driving Volatility walks and parsing filesystem timelines, registry and event logs, when checking what your actions left behind.
+description: Read a host's disk and memory as a responder would, driving Volatility walks and parsing filesystem timelines, registry and event logs, when checking what you left.
 metadata:
   acordia:
     family: evidence-forensics
