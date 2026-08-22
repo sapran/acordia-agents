@@ -1,6 +1,6 @@
 ---
 name: multi-source-fusion
-description: Consolidate disconnected strands — your own on-box take, passive collection, open sources, prior operations and human or business context — into one coherent target picture by resolving entities across sources, correlating on shared keys, and naming convergence and contradiction while weighting genuinely independent corroboration over volume from one echoing feed.
+description: Consolidate disconnected strands — on-box take, passive collection, open sources, prior operations — into one coherent target picture, weighting genuinely independent corroboration.
 metadata:
   acordia:
     family: take-handling

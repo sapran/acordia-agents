@@ -1,6 +1,6 @@
 ---
 name: hypothesis-testing
-description: Hold every plausible explanation at once and score the evidence against each in a matrix, weighting the items that discriminate between them and hunting the observation that would kill the leader, when the picture admits several readings of attribution, target function, intent or detection status and you are tempted to lock onto the first.
+description: Hold every plausible explanation at once and score the evidence against each, weighting what discriminates and hunting the observation that would kill the leader, when several readings fit.
 metadata:
   acordia:
     family: analytic-spine

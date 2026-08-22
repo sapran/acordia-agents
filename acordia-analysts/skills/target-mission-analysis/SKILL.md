@@ -1,6 +1,6 @@
 ---
 name: target-mission-analysis
-description: Reverse-engineer what the target organisation exists to produce, trace its mission threads end to end through the systems, data, people and third parties that must all work, and rank the crown jewels and single points of dependence it cannot afford to lose, when a broad target must become a short list of objectives with a defensible so-what.
+description: Reverse-engineer what the target organisation exists to produce, trace its mission threads end to end, and rank the crown jewels it cannot afford to lose.
 metadata:
   acordia:
     family: target-modelling

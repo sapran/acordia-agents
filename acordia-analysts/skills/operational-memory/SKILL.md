@@ -1,6 +1,6 @@
 ---
 name: operational-memory
-description: Carry what the operation has established across sessions and dispatches — findings, discarded hypotheses, source reliability, and the reasoning behind each — so a returning analyst neither re-derives nor silently contradicts them, whenever a specialist returns, a session ends, or the work outlasts the context any single analyst holds.
+description: Carry what the operation has established across sessions and dispatches — findings, discarded hypotheses, source reliability and the reasoning — so a returning analyst does not re-derive it.
 metadata:
   acordia:
     family: take-handling

@@ -1,6 +1,6 @@
 ---
 name: web-api-authflow-analysis
-description: Trace a web application or API's business logic and authentication flows from HAR archives, proxy transcripts, OpenAPI exports, SAML metadata and captured tokens — role and object permissions, token issuance and validation, session lifecycle, OAuth, OIDC and federation trust — to locate where identity, trust or state assumptions can be subverted.
+description: Trace a web application or API's business logic and authentication flows from HAR archives, proxy transcripts and captured tokens, to locate where trust or state assumptions break.
 metadata:
   acordia:
     family: target-modelling

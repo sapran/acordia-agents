@@ -1,6 +1,6 @@
 ---
 name: maintaining-operating-picture
-description: Stop an already-fused picture from rotting while the operation runs, timestamping every update, tracking the deltas since the last read and what each implies, setting decay on perishable facts and re-verifying them before reliance, retiring stale entries against fresh observation and pushing the live state to whoever is steering on it.
+description: Stop an already-fused picture from rotting while the operation runs — timestamping updates, setting decay on perishable facts and re-verifying them before reliance.
 metadata:
   acordia:
     family: take-handling

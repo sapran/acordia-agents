@@ -1,6 +1,6 @@
 ---
 name: briefing-reporting
-description: Compose a bottom-line-up-front product — judgement first, then recommended action, marked confidence, key gaps and an explicit ask with a deadline — when a target read or course of action must be handed to a decision-maker or the next operator and acted on without them reconstructing the analysis.
+description: Compose a bottom-line-up-front product — judgement, recommended action, confidence, gaps, a dated ask — when a read must be handed to a decision-maker and acted on without reconstructing it.
 metadata:
   acordia:
     family: analytic-spine

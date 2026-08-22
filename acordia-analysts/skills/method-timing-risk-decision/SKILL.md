@@ -1,6 +1,6 @@
 ---
 name: method-timing-risk-decision
-description: Choose which method to use, the moment to move and the exposure to accept, by pricing each live option's gain, detection risk and reversibility against the operation's stated risk appetite and then naming the execute-trigger and the fallback, when several viable routes to the objective trade off differently or a window is opening or closing.
+description: Choose the method, the moment and the exposure to accept by pricing each option's gain, detection risk and reversibility against stated risk appetite, when a window is closing.
 metadata:
   acordia:
     family: analytic-spine

@@ -1,6 +1,6 @@
 ---
 name: data-integration-tooling
-description: Join heterogeneous take into one queryable corpus — normalising identities, timestamps, IPs and hosts into a common schema, picking a relational, graph or time-series join model to fit the question, then resolving, deduplicating and enriching entities across datasets — when repeated correlation on the same keys justifies a pipeline over one-off inspection.
+description: Join heterogeneous take into one queryable corpus, normalising identities, timestamps and hosts into a common schema and resolving entities across datasets, when correlation repeats.
 metadata:
   acordia:
     family: take-handling

@@ -1,6 +1,6 @@
 ---
 name: implant-payload-re
-description: Reverse-engineer an implant or payload binary to ground-truth what it really does on a host and over the wire, triaging statically through headers, named sections, entropy and strings before instrumented dynamic runs in isolation against its anti-analysis, whether to validate your own tooling's footprint before deployment or to read a captured third-party sample's capability and indicators.
+description: Reverse-engineer an implant or payload binary to ground-truth what it does on a host and over the wire, triaging statically before instrumented dynamic runs in isolation.
 metadata:
   acordia:
     family: evidence-forensics

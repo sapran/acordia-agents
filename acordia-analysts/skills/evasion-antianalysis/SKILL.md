@@ -1,6 +1,6 @@
 ---
 name: evasion-antianalysis
-description: Shape a planned action against an already-established visibility model, taking each forecast signal and buying the cheapest reduction for it — blending in with LOLBins, legitimate tooling and normal hours, suppression, timing, obfuscation, anti-forensic handling — without the evasion itself becoming the loudest signal on the wire or the host.
+description: Shape a planned action against an already-established visibility model, buying the cheapest reduction for each forecast signal, without the evasion becoming the loudest signal.
 metadata:
   acordia:
     family: defender-reading

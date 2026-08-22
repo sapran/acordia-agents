@@ -1,6 +1,6 @@
 ---
 name: disk-memory-forensics
-description: Read a host's disk and memory the way a responder would, driving Volatility process, injection and hook walks and parsing filesystem timelines, prefetch, amcache and shimcache, registry hives, event logs and deletion traces, either to confirm what your own on-host actions left behind and whether cleanup held, or to reconstruct a target's history, defences and stored secrets.
+description: Read a host's disk and memory the way a responder would, walking memory for injection and parsing filesystem timelines, registry and event logs, to check what your actions left.
 metadata:
   acordia:
     family: evidence-forensics

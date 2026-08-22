@@ -1,6 +1,6 @@
 ---
 name: reasoning-under-uncertainty
-description: Reach a defensible provisional judgement when the picture is too thin or too noisy to read cleanly, fixing the decision and its deadline first, triaging knowns from unknowables, reasoning from the target's structure and incentives under scarcity and filtering by decision-relevance under overload, so the operation moves with explicit reconsider triggers.
+description: Reach a defensible provisional judgement when the picture is too thin or too noisy to read cleanly, fixing the decision and its deadline first and triaging knowns from unknowables.
 metadata:
   acordia:
     family: analytic-spine

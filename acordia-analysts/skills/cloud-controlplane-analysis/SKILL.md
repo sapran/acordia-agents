@@ -1,6 +1,6 @@
 ---
 name: cloud-controlplane-analysis
-description: Model a target's cloud estate at the control plane from collected exports — account and project rosters, IAM policies, service principals, workload identities, assume-role and federation chains, inter-service trust — to find where one API call or a misconfigured grant converts into control, when administration lives in AWS, Azure or GCP rather than on network ports.
+description: Model a target's cloud estate at the control plane from collected exports — IAM policies, service principals, assume-role and federation chains — to find where one grant becomes control.
 metadata:
   acordia:
     family: target-modelling
