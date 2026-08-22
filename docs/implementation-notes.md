@@ -98,3 +98,14 @@ unexcluded file reports zero violations, and `openspec/specs/` is not excluded â
 currently contradicts itself by one line. Fix is a single blank line after line 3. Parked because the
 file is outside this change's scope and the assertion it breaks is about the tree, not about anything
 this change altered.
+
+## `CLAUDE.md` still tells the reader the repository has no lint
+
+Found while adding four missing traps to `CLAUDE.md`, which does not touch this sentence.
+`CLAUDE.md:42` opens the Commands section with _"There is no build, no lint and no test suite"_,
+but `.markdownlint-cli2.jsonc` has been committed since 4.2.0 and a `plugin-distribution`
+requirement asserts that applying it to every unexcluded file reports zero violations â€” so the one
+check a contributor can run locally is the one the section tells them does not exist. The fix is to
+correct the sentence and name `npx markdownlint-cli2 .` in the command block beside the external
+gate. Parked because the four additions in scope were the prompt ceiling, this file, the skill
+mirrors and `check-acordia.sh`, and rewriting what the section claims is a fifth.
