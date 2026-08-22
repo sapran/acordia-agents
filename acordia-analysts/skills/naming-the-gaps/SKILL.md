@@ -1,6 +1,6 @@
 ---
 name: naming-the-gaps
-description: Convert a vague sense of knowing too little into ranked intelligence gaps, each an answerable question with a collection route and an owner, when collection has no stated question.
+description: Convert a vague sense of knowing too little into ranked intelligence gaps, each an answerable question with a route and an owner, when collection has no stated question.
 metadata:
   acordia:
     family: analytic-spine

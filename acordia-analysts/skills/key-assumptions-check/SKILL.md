@@ -1,6 +1,6 @@
 ---
 name: key-assumptions-check
-description: Surface the assumptions a plan silently rests on, mark the load-bearing ones and stress each for evidence and freshness, when success depends on the target behaving as expected.
+description: Surface the assumptions a plan silently rests on, mark the load-bearing ones and stress each for evidence and freshness, when success depends on expected behaviour.
 metadata:
   acordia:
     family: analytic-spine

@@ -1,6 +1,6 @@
 ---
 name: analytic-tooling-scripting
-description: Script your own parser or transform for the take's real format, reconciling output records against an inventory denominator so a silent parse failure cannot shrink it, when no tool fits.
+description: Script your own parser or transform for the take's format, reconciling output records against an inventory denominator so a silent parse failure cannot hide, when no tool fits.
 metadata:
   acordia:
     family: analytic-spine
