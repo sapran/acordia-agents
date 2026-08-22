@@ -62,7 +62,7 @@ Verification is "it loads and runs", not a gate. After installing: `/agents` mus
 
 **Withdrawing a plugin from the catalogs does not uninstall it.** The retired `acordia-operators` plugin was published up to 4.2.0; its catalog entry no longer exists, so no upgrade path can resolve it and none removes it. An install made before 5.0.0 stays resident and dispatchable at 4.2.0 until the user runs `omp plugin uninstall acordia-operators@acordia` by hand. Expect it in the wild, and say so in any release note: a catalog withdraws the offer, never the copy already on disk.
 
-## The two invariants that lost their gate
+## The three invariants that lost their gate
 
 Both used to be enforced by the deleted build. Run each by hand when you touch an agent prompt, a skill directory, or a catalog.
 
@@ -92,6 +92,35 @@ diff .claude-plugin/marketplace.json .omp-plugin/marketplace.json
 ```
 
 Silence means they agree. Also confirm all three JSON files parse: `python3 -c "import json; [json.load(open(p)) for p in ('.claude-plugin/marketplace.json','.omp-plugin/marketplace.json','acordia-analysts/.claude-plugin/plugin.json')]"`.
+
+**The declared skill sets match the prompts.** `acordia-analysts/skill-sets.json` is a transcription of what each prompt names, and the prompt is the authority. It is inert to both harnesses, so a prompt edited without the file loads perfectly and ships a wrong declaration. A prompt names a skill in **two** ways, and a check that knows only the first reports live skills as dead: a slug on a `·`-separated line, and a slug in backticks in a procedural section — the four procedural skills use the second, in every prompt.
+
+```sh
+python3 - <<'EOF'
+import json,glob,os,re,pathlib
+have={os.path.basename(os.path.dirname(s)) for s in glob.glob('acordia-analysts/skills/*/SKILL.md')}
+decl=json.load(open('acordia-analysts/skill-sets.json'))['analysts']
+bad=0; covered=set(); spines={}
+for name in sorted(decl):
+    txt=pathlib.Path('acordia-analysts/agents/%s.md'%name).read_text()
+    listed=set(); prev=''
+    for line in txt.splitlines():
+        s=line.strip()
+        if s and prev.startswith('#') and re.fullmatch(r'[a-z0-9][\w.-]*( · [a-z0-9][\w.-]*)*',s):
+            listed|={x.strip() for x in s.split('·')}
+        if s: prev=s
+    prompt=listed|{t for t in re.findall(r'`([a-z0-9][a-z0-9-]*)`',txt) if t in have}
+    d={x for v in decl[name].values() for x in v}; covered|=d
+    if 'spine' in decl[name]: spines[name]=tuple(decl[name]['spine'])
+    for label,diff in (('resolves to no skill',d-have),('declared, not in prompt',d-prompt),('in prompt, not declared',prompt-d)):
+        if diff: print(name,label,sorted(diff)); bad+=1
+if len(set(spines.values()))>1: print('spine differs between legs'); bad+=1
+if have-covered: print('declared for no analyst',sorted(have-covered)); bad+=1
+print('problems:',bad)
+EOF
+```
+
+`problems: 0` means the declaration is current. Anything else names what to fix, and the fix is the file, never the prompt. This belongs in `~/ai/checks/check-acordia.sh` beside the other resolutions; until it is there, run it by hand whenever you touch a prompt or the declaration.
 
 ## Source of truth — do not skip this
 
