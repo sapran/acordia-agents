@@ -62,7 +62,7 @@ Verification is "it loads and runs", not a gate. After installing: `/agents` mus
 
 **Withdrawing a plugin from the catalogs does not uninstall it.** The retired `acordia-operators` plugin was published up to 4.2.0; its catalog entry no longer exists, so no upgrade path can resolve it and none removes it. An install made before 5.0.0 stays resident and dispatchable at 4.2.0 until the user runs `omp plugin uninstall acordia-operators@acordia` by hand. Expect it in the wild, and say so in any release note: a catalog withdraws the offer, never the copy already on disk.
 
-## The three invariants that lost their gate
+## The four invariants that lost their gate
 
 Both used to be enforced by the deleted build. Run each by hand when you touch an agent prompt, a skill directory, or a catalog.
 
@@ -84,6 +84,66 @@ for a in glob.glob('acordia-analysts/agents/*.md'):
 ```
 
 Silence means every slug resolved.
+
+**Every grid mark reaches the skill and the prompt.** `grid_deep_in` and `grid_working_in` are
+transcriptions of one table row, and the `·`-separated prompt lines are a second transcription of
+the same row. Nothing reads the table, so a mark added, moved or removed in
+`docs/roles/operational-analyst.md` changes no artifact until someone copies it across twice by
+hand. The failure is silent and it has shipped: up to 6.2.0 ten spine skills carried a
+`grid_working_in` that four agent prompts contradicted, because the grid stated the shared spine by
+membership of the *Analytic spine* section instead of by marks — and across the four leg columns
+that left 32 marks missing. Derive both transcriptions from the table rather than reviewing them:
+
+```sh
+python3 - <<'EOF'
+import glob,os,pathlib,re
+COLS=['Core','Mission','Terrain','Def','Coll']
+AGENT=dict(zip(COLS,['cyber-analyst','mission-analyst','terrain-analyst','overwatch-analyst','collection-analyst']))
+MARKS=('\u25cf','\u25cb')
+grid={}
+for line in pathlib.Path('docs/roles/operational-analyst.md').read_text().splitlines():
+    m=re.match(r'^\| (.*?) \| `([a-z0-9-]+)` \| (.*) \|$',line)
+    if not m: continue
+    c=[x.strip() for x in m.group(3).split('|')]
+    if len(c)==5: grid[m.group(2)]=c
+bad=0; seen=set()
+for f in sorted(glob.glob('acordia-analysts/skills/*/SKILL.md')):
+    slug=os.path.basename(os.path.dirname(f)); t=pathlib.Path(f).read_text()
+    mrow=re.search(r'^\s*row:\s*(\S+)\s*$',t,re.M)
+    rid=mrow.group(1) if mrow else None
+    if re.search(r'^\s*procedural:\s*true\s*$',t,re.M|re.I):
+        if rid and rid!='null': print(slug,'is procedural but carries row',rid); bad+=1
+        continue
+    if not rid or rid=='null': print(slug,'is a grid-row skill with no row: id'); bad+=1; continue
+    if rid not in grid: print(slug,'cites unknown row',rid); bad+=1; continue
+    seen.add(rid)
+    for key,glyph in (('grid_deep_in',MARKS[0]),('grid_working_in',MARKS[1])):
+        want=[c for c in COLS if grid[rid][COLS.index(c)]==glyph]
+        h=re.search(r'^\s*%s:\s*\[(.*)\]\s*$'%key,t,re.M)
+        got=[x.strip() for x in h.group(1).split(',') if x.strip()] if h else None
+        if got!=want: print(slug,key,'is',got,'grid says',want); bad+=1
+if set(grid)-seen: print('grid rows no skill claims:',sorted(set(grid)-seen)); bad+=1
+for col in COLS:
+    marked={r for r,c in grid.items() if c[COLS.index(col)] in MARKS}
+    named=set(); prev=''
+    for line in pathlib.Path('acordia-analysts/agents/%s.md'%AGENT[col]).read_text().splitlines():
+        s=line.strip()
+        if s and prev.startswith('#') and re.fullmatch(r'[a-z0-9][\w.-]*( · [a-z0-9][\w.-]*)*',s):
+            named|={x.strip() for x in s.split('·')}
+        if s: prev=s
+    named&=set(grid)
+    if marked!=named:
+        print(col,'column vs',AGENT[col],'prompt: marked-not-named',sorted(marked-named),
+              'named-not-marked',sorted(named-marked)); bad+=1
+print('rows checked: %d of %d'%(len(seen),len(grid)))
+print('problems:',bad)
+EOF
+```
+
+`problems: 0` with `rows checked` equal to the grid's own row count means every mark reached both
+transcriptions. Read the count, not just the verdict: a skill is exempted only by its own
+`procedural: true`, so a grid-row skill that loses its `row:` id is reported rather than skipped,
+and a short count means rows are going unchecked.
 
 **The two marketplace catalogs are byte-identical.** They carry the same single source and the same version; the only reason both exist is that omp prefers one path and Claude Code reads the other. One entry each does not collapse the pair into one file — two harnesses still read two filenames, and that reason is unchanged by how many plugins each lists.
 

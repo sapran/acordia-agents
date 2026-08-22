@@ -159,3 +159,15 @@ malformed` on every call throughout that work, so the selection could not be mad
   in the library is unreachable. The real consequence was a three-skill undercount in every
   analyst's set, which is corrected in `openspec/changes/archive/*-declare-analyst-skill-sets/` along
   with the catalogue figures that were computed from it.
+
+- **`target-mission-analysis` prose contradicts its own row.** `docs/roles/operational-analyst.md`
+  says of the crown-jewels / mission-thread paragraph "Every operational analyst carries this at a
+  working level; the deep method lives with the Target & Network specialist" — but the row is
+  marked `Core ○ · Mission ●` only, and just
+  `cyber-analyst` and `mission-analyst` name the slug — so three legs do not carry it at any level.
+  The sentence also names the **Target & Network** leg, which v1.2 split into Mission and Terrain.
+  Found while fixing the spine rows in 6.3.0 and parked: it is a different row, the marks and the
+  prompts already agree with each other, and nothing is broken downstream. Resolving it means
+  deciding which is true — mark `○` in Terrain/Def/Coll and add the slug to those three prompts, or
+  correct the sentence — and that is a doctrinal call needing a literature selection, not a
+  transcription fix.

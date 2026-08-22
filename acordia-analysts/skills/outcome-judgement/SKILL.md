@@ -6,7 +6,7 @@ metadata:
     family: analytic-spine
     grid_row: outcome-judgement
     grid_deep_in: [Core, Mission, Terrain]
-    grid_working_in: [Coll]
+    grid_working_in: [Def, Coll]
     row: outcome-judgement
     source: docs/roles/operational-analyst.md
 ---
