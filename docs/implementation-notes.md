@@ -98,3 +98,23 @@ unexcluded file reports zero violations, and `openspec/specs/` is not excluded �
 currently contradicts itself by one line. Fix is a single blank line after line 3. Parked because the
 file is outside this change's scope and the assertion it breaks is about the tree, not about anything
 this change altered.
+
+## Parked in 6.0.0
+
+- **The lint policy is not clean, and the obvious command says it is.** `npx markdownlint-cli2 .`
+  resolves `.` to `*.{md,markdown}` because `.markdownlint-cli2.jsonc` declares no `globs`, so it
+  lints two top-level files and reports `0 issues` — a green that proves nothing. The scope the
+  `plugin-distribution` requirement actually asserts is every unexcluded file, which is
+  `npx markdownlint-cli2 "**/*.md"`: 74 files, and it reports three violations, not the one the note
+  above records. `docs/methodology-alignment-proposal.md:96` (MD032, a list without surrounding
+  blanks) and `docs/roles/archive/operator.md:1` (MD041, first line not a top-level heading) join
+  `openspec/specs/doctrinal-provenance/spec.md:3`. Anyone fixing only the blank line believes the
+  requirement is satisfied and it is not. Parked because three unrelated files sit outside the scope
+  of the change that found this.
+- **`CLAUDE.md` still tells the reader the repository has no lint.** `CLAUDE.md:42` opens the
+  Commands section with _"There is no build, no lint and no test suite"_, while
+  `.markdownlint-cli2.jsonc` has been committed since 4.2.0 and the requirement above asserts it is
+  clean — so the one check a contributor can run locally is the one the section says does not exist.
+  The fix is to correct that sentence and name the `"**/*.md"` form beside the external gate, not the
+  bare `.` form. Parked because rewriting what that section claims is a change to the section, not
+  one of the four additions the change that found this was scoped to.
