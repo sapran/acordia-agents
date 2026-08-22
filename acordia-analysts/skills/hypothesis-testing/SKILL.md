@@ -6,7 +6,7 @@ metadata:
     family: analytic-spine
     grid_row: hypothesis-testing
     grid_deep_in: [Core]
-    grid_working_in: [Def]
+    grid_working_in: [Mission, Terrain, Def, Coll]
     row: hypothesis-testing
     source: docs/roles/operational-analyst.md
 ---

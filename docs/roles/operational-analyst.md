@@ -2,9 +2,9 @@
 
 ## A competency map for the Analysis pillar of ACORDIA
 
-**Version 1.2 · 21 August 2026**
+**Version 1.3 · 23 August 2026**
 
-*Offensive framing, written in operator's terms rather than staff doctrine. "Analysis" here is the ACORDIA core pillar — real-time decision support and target understanding — given a human shape: the role, its specialisations, and the skills that make it up. The load-bearing claim is Monte's: analysis directs each step of an operation, and it is analytical judgement, far more than any exploit, that separates operations that land from operations that stall. v1.2 makes two things explicit that earlier versions got wrong. The operation's end is **threefold**, not dual — an **effect** (break, deny, manipulate), **intelligence** (collect), or **access** held because it may become useful later — and beside it sits a second axis, the **operating logic** by which the operation acts: espionage, sabotage or subversion. The analyst's job is end-neutral across all three ends, but never end-agnostic, because they compete for the same access and pull in different directions.*
+*Offensive framing, written in operator's terms rather than staff doctrine. "Analysis" here is the ACORDIA core pillar — real-time decision support and target understanding — given a human shape: the role, its specialisations, and the skills that make it up. The load-bearing claim is Monte's: analysis directs each step of an operation, and it is analytical judgement, far more than any exploit, that separates operations that land from operations that stall. v1.2 makes two things explicit that earlier versions got wrong. The operation's end is **threefold**, not dual — an **effect** (break, deny, manipulate), **intelligence** (collect), or **access** held because it may become useful later — and beside it sits a second axis, the **operating logic** by which the operation acts: espionage, sabotage or subversion. The analyst's job is end-neutral across all three ends, but never end-agnostic, because they compete for the same access and pull in different directions. v1.3 changes no judgement, only the record of one: the twelve spine rows now carry an explicit **○** in every leg column. The shared spine is a claim this map has always made in prose, but the grid encoded it by membership of the *Analytic spine* section rather than by marks — and only marks reach the artifacts, so ten skills shipped a working-knowledge list that all four leg prompts contradicted.*
 
 ## The general role: the operational analyst
 
@@ -21,6 +21,10 @@ Read that list again: finances, procurement, history, the people. None of it is 
 This is why analysis belongs among the core activities of an operation rather than off to one side as support. Underfeed it and you get capability without effect — operators holding access they cannot turn into outcomes. It is also the least teachable part of the craft: it rests on years of mixed technical and non-technical experience and does not compress into a syllabus.
 
 Before any specialisation, then, every operational analyst carries the same analytic spine: reasoning under uncertainty and overload; a working grasp of what the target is *for* and what it most depends on; disciplined hypothesis testing; a standing check on their own assumptions; a working immunity to deception (the analyst is themselves a target); calibrated confidence; the judgement that turns all of it into a recommended course of action at the tempo of the operation; and the end-neutral loop that asks, after each move, whether the operation's end was met and what follows. On top of that spine sits a baseline of technical literacy — enough fluency in traffic, hosts, logs and scripting to read the raw material. Deep technical command is where the specialisations begin.
+
+The spine is shared for a reason the canon states outright, and it is not tidiness. Intelligence tradecraft draws exactly this line between breadth of technique and depth of it: an analyst is not expected to command every method, but "all analysts should be trained to use the core techniques … because they support several of the basic requirements of generating high-quality analysis", techniques "widely applicable across many different types of analysis — strategic and tactical, intelligence and law enforcement, and cyber and business" (`SAT` §3.2, p. 88). The offensive canon supplies the reason a *specialist* needs them most: deep command of one substrate is itself a source of bias, because "no single individual is an expert in all things, and their biases are exacerbated by their field of knowledge" — knowledge decides what kind of hammer you carry — so "the best decisions are made by those that have a balance of knowledge of the technical, psychological, and social aspects of operations" (`Monte`, p. 115). A leg without the spine is the hammer without the balance.
+
+Two of the twelve are load-bearing in that same source. The analyst must "not only analyze the information they have, but also determine what they are lacking", and must "synthesize information from disparate sources across disciplines to answer urgent questions" (`Monte`, p. 60) — which is why naming the gaps belongs to each leg rather than being something the lead asks for on their behalf: a leg that cannot see the edge of its own picture has nothing to report the edge of. And the warrant for weighting judgement above substrate is the pillar's own empirical finding, that "analytical judgement — not exploit availability — [is] the factor distinguishing successful from unsuccessful operations", analysis being what "directs each step of an operation" (`ACORDIA` §B, p. 21).
 
 ## The four specialisations
 
@@ -80,30 +84,35 @@ A junior analyst is the spine plus one leg run competently. A senior analyst is 
 
 ## Appendix — skills at a glance
 
-Reference grid for the map above. **●** deep / defining · **○** working knowledge or draws on it · blank = not central. Read **●** in *Core* as the general analytic spine, **○** in *Core* as the technical or analytic baseline every analyst carries, **●** in a leg as that specialist, and *Core ○ + a leg ●* as a skill that is both baseline-for-all and deep-for-one. Legs: **Mission** the target as an organisation · **Terrain** the technical terrain · **Def** defender & detection · **Coll** collection.
+Reference grid for the map above. **●** deep / defining · **○** working knowledge or draws on it · blank = not central. Read **●** in *Core* as the lead's own depth, **○** in *Core* as the technical or analytic baseline every analyst carries, **●** in a leg as that specialist, and *Core ○ + a leg ●* as a skill the lead carries at baseline and that leg owns deeply. Legs: **Mission** the target as an organisation · **Terrain** the technical terrain · **Def** defender & detection · **Coll** collection.
 
-`Core` is `cyber-analyst`'s own column, and it carries two things. A `●` in the *Analytic spine* or
-*Cross-cutting technical* sections is the **shared spine** — the twelve every analyst carries, named
-in every leg's prompt. A `●` in `Core` anywhere else is the lead's alone: `multi-source-fusion` and
-`maintaining-operating-picture` are held by the lead precisely because handing the fused picture
-across a dispatch boundary is what retired the Fusion leg.
+`Core` is `cyber-analyst`'s own column: a `●` there means the lead holds the skill deeply, and says
+nothing about the legs. **Whether a leg carries a skill is stated by that leg's own mark and nowhere
+else.** The twelve shared-spine rows therefore carry `○` across all four legs, matching the
+`## Shared analytic spine` line every leg's prompt already carried. Up to 6.2.0 that fact was
+encoded twice — explicitly on two rows, and implicitly by membership of the *Analytic spine* section
+on the other ten — and only the explicit form reached `metadata.acordia.grid_working_in`, so ten
+skills shipped a working list their own prompts contradicted. A `●` in `Core` with no leg mark
+beside it is the lead's alone: `multi-source-fusion` and `maintaining-operating-picture` are held by
+the lead precisely because handing the fused picture across a dispatch boundary is what retired the
+Fusion leg.
 
 **Row id** is the row's stable identity. It is minted once, it does not change when the row is reworded, re-marked or moved between sections, and it is never reused after a row is retired. Each grid-row skill cites it as `metadata.acordia.row`. It replaces the line-number anchors carried up to 4.2.0, which resolved silently to the wrong row whenever an edit shifted a line.
 
 | Skill | Row id | Core | Mission | Terrain | Def | Coll |
 |---|---|:--:|:--:|:--:|:--:|:--:|
 | *Analytic spine* | | | | | | |
-| Reasoning under uncertainty & overload | `reasoning-under-uncertainty` | ● |  |  |  |  |
-| Naming the gaps | `naming-the-gaps` | ● |  |  |  | ○ |
-| Hypothesis testing (competing hypotheses) | `hypothesis-testing` | ● |  |  | ○ |  |
-| Key-assumptions check & debiasing | `key-assumptions-check` | ● |  |  |  |  |
-| Deception detection / anti-manipulation | `deception-detection` | ● |  |  | ● |  |
-| Calibrated confidence | `calibrated-confidence` | ● |  |  |  | ○ |
+| Reasoning under uncertainty & overload | `reasoning-under-uncertainty` | ● | ○ | ○ | ○ | ○ |
+| Naming the gaps | `naming-the-gaps` | ● | ○ | ○ | ○ | ○ |
+| Hypothesis testing (competing hypotheses) | `hypothesis-testing` | ● | ○ | ○ | ○ | ○ |
+| Key-assumptions check & debiasing | `key-assumptions-check` | ● | ○ | ○ | ○ | ○ |
+| Deception detection / anti-manipulation | `deception-detection` | ● | ○ | ○ | ● | ○ |
+| Calibrated confidence | `calibrated-confidence` | ● | ○ | ○ | ○ | ○ |
 | Method / timing / risk decision | `method-timing-risk-decision` | ● | ○ | ○ | ○ | ○ |
-| Outcome judgement — end achieved (effect, intel, or access held), did the system actually change, & what now | `outcome-judgement` | ● | ● | ● |  | ○ |
-| Gain/loss calculus & feedback into re-planning | `gain-loss-calculus` | ● |  |  |  |  |
-| Briefing & written reporting | `briefing-reporting` | ● |  |  |  | ○ |
-| Human–automation teaming | `human-automation-teaming` | ● |  |  |  |  |
+| Outcome judgement — end achieved (effect, intel, or access held), did the system actually change, & what now | `outcome-judgement` | ● | ● | ● | ○ | ○ |
+| Gain/loss calculus & feedback into re-planning | `gain-loss-calculus` | ● | ○ | ○ | ○ | ○ |
+| Briefing & written reporting | `briefing-reporting` | ● | ○ | ○ | ○ | ○ |
+| Human–automation teaming | `human-automation-teaming` | ● | ○ | ○ | ○ | ○ |
 | *The target as an organisation* | | | | | | |
 | Target business/mission analysis (crown-jewels / mission-thread) | `target-mission-analysis` | ○ | ● |  |  |  |
 | Pattern-of-life / behavioural baselining | `pattern-of-life-baselining` | ○ | ● | ○ |  |  |

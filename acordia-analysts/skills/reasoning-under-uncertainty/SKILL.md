@@ -6,7 +6,7 @@ metadata:
     family: analytic-spine
     grid_row: reasoning-under-uncertainty
     grid_deep_in: [Core]
-    grid_working_in: []
+    grid_working_in: [Mission, Terrain, Def, Coll]
     row: reasoning-under-uncertainty
     source: docs/roles/operational-analyst.md
 ---
