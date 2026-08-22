@@ -43,7 +43,8 @@ There is no build, no lint and no test suite. What remains is the spec workflow,
 
 ```sh
 openspec validate --all --strict       # gate any change touching openspec/
-~/ai/checks/check-acordia.sh .         # version lockstep, catalogs, slugs, grid and doctrine anchors
+~/ai/checks/check-acordia.sh .         # maintainer-local, outside the repo: lockstep, catalogs,
+                                       # slugs, grid + doctrine anchors, and the version-bump gate
 
 claude plugin marketplace add ./       # Claude Code install from this checkout
 claude plugin install acordia-analysts@acordia --scope local
@@ -137,7 +138,7 @@ If the library holds nothing on the point, say so and name what was searched. An
 
 `docs/implementation-notes.md` records the findings that surface mid-change and fall outside its scope: what, where, why parked, written down instead of fixed. Read it before starting, because it is where the live traps are kept and nothing in the tree states them. Adding, removing or parking an entry is a direct `docs:` commit — no OpenSpec change, no branch, no PR.
 
-**Entries are not struck out when a change resolves them, so check each against the tree before acting on it.** Most 4.x entries describe the retired operations pillar, and the two that recorded `cyber-analyst` phrasing divergences were settled by the 6.0.0 rebuild without being marked: the prompt now matches the canonical questions in the grid, in each leg's `description` and in both of its wrappers. Two findings are live as of 6.0.0 — an action that must be taken **before this repository is ever made public**, a routable address recorded as still fetchable from GitHub by SHA; and `openspec/specs/doctrinal-provenance/spec.md:3`, which breaks the lint policy that a `plugin-distribution` requirement asserts is clean, so the published spec contradicts itself by one blank line.
+**Entries are never struck out when a change resolves them, and they carry no version marker, so check each against the tree before acting on it.** Many describe the retired operations pillar and are history; others were partly settled by a rebuild that did not touch the note. Do not restate the live ones here or anywhere else — an inline list is a second source of truth that nothing gates, and it drifts within a release. One entry does need reading before any public-release step: it records an address that must be dealt with **before this repository is ever made public**.
 
 ## Format contracts
 
@@ -147,14 +148,15 @@ If the library holds nothing on the point, say so and name what was searched. An
 - `description` is the dispatch signal, opening with the pillar provenance tag — `ACORDIA Analysis — ` — then the leg's operating question from the grid, or, for the orchestrator, that it is the primary to select for the pillar's work.
 - `color` is `cyan` for the orchestrator (`cyber-analyst`) and `blue` for the four legs.
 - Body = the agent prompt. It must name the skill set the agent draws on, because there is **no per-agent skills field in either harness**: composition is by prompt reference plus discriminating skill descriptions. Name them under `## Your specialist depth (deep)` and `## Working knowledge (draw on as needed)`, one `·`-separated line of bare skill slugs per heading. Every prompt additionally carries `## Shared analytic spine (every analyst carries this)` in the same shape. The line is prose the model reads, not a parsed field: nothing in either harness consumes it, so its position under the heading is a readability convention rather than a contract. Two generators did depend on the adjacency. `tools/translate-omp.py --autoload deep` read exactly the following line to populate omp's `autoloadSkills`, and died with the flag in `9fa90c5`. Its successor `tools/build-plugins.py` kept parsing that line on every build as a gate — `deep_skills()` read the line after the heading and failed the build when it named no skills — while leaving `autoloadSkills` unset; it died in `e503b8a`, the commit whose next version bump is 3.0.0. Since then nothing emits from the line and nothing checks it, and `autoloadSkills` is forbidden outright, so a blank line after the heading is harmless.
-- **A prompt body stays under 10,000 characters** — a requirement of the `agent-roster` spec, not a style preference. **State the convention whenever you quote a figure:** the body after the closing frontmatter delimiter, leading and trailing whitespace stripped, counting characters and not bytes, because `—` and `·` are multibyte and `wc -c` reads high. Leaving it unstated is how one prompt body acquired three different numbers across this repository's own paperwork. `cyber-analyst` is the binding case at 9,314 with 686 characters left; the other four hold more than 4,000 each. Formatting is charged against the same budget — a heading, a blank line, a fence language — so a repo-wide style change is a content change on whichever file is closest to the ceiling. Reduce a prompt by moving detail into the skill that owns it, never by deleting routing or guardrails.
+- **A prompt body stays under 10,000 characters** — a requirement of the `agent-roster` spec, not a style preference. **State the convention whenever you quote a figure:** the body after the closing frontmatter delimiter, leading and trailing whitespace stripped, counting characters and not bytes, because `—` and `·` are multibyte and `wc -c` reads high. Leaving it unstated is how one prompt body acquired three different numbers across this repository's own paperwork. `cyber-analyst` was the binding case at 6.0.0 and the rest held thousands of characters each, but take the number from the command rather than from here — nothing gates a figure written into prose, and a MINOR prompt edit falsifies it silently. Formatting is charged against the same budget — a heading, a blank line, a fence language — so a repo-wide style change is a content change on whichever file is closest to the ceiling. Reduce a prompt by moving detail into the skill that owns it, never by deleting routing or guardrails. Run this from the repository root; the glob is relative, so anywhere else it prints nothing and that reads exactly like a pass.
 
   ```sh
   python3 -c "
   import re, glob
   for f in sorted(glob.glob('acordia-analysts/agents/*.md')):
       b = re.sub(r'^---\n.*?\n---\n', '', open(f).read(), flags=re.S).strip()
-      print(f'{len(b):6d}  {10000 - len(b):5d} left  {f}')
+      print(f'{len(b):6d}  {10000 - len(b):6d} left  {\"OVER\" if len(b) > 10000 else \"ok\"}  {f}')
+  print('no agents matched — wrong directory') if not glob.glob('acordia-analysts/agents/*.md') else None
   "
   ```
 
@@ -206,7 +208,7 @@ Slash commands (`.claude/commands/opsx/*.md` → `/opsx:*`):
 - `/opsx:archive` — finalise a completed change and archive it.
 - `/opsx:sync` — sync delta specs into main specs without archiving.
 
-The five skills these commands run are mirrored byte-identically under `.claude/skills/` and `.codex/skills/`, so the same workflow is available to both harnesses. The lint policy ignores both trees as vendored, so nothing checks them: edit both copies or they drift silently, and `diff -r .claude/skills .codex/skills` says whether they still agree.
+**The five skills these commands run are mirrored byte-identically under `.claude/skills/` and `.codex/skills/`; the `/opsx:*` wrappers above are not.** `.codex/` holds skills alone, so a Codex user reaches this workflow by skill name and has no slash-command handle. The lint policy ignores both trees as vendored, so nothing checks the mirror either: edit both copies or they drift silently, and `diff -r .claude/skills .codex/skills` says whether they still agree.
 
 Preferred sequence: **literature search → explore → propose → apply → archive → finalise & push branch → open PR to `develop` → review → session-finalise**. Assume parallel agent work: apply changes in worktrees on branches.
 
