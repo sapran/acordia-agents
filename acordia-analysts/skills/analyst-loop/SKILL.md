@@ -1,6 +1,6 @@
 ---
 name: analyst-loop
-description: Run one full analytic round over a live operation — mission read, terrain read, defender read, take read, judgement, next move — and close it on whichever of the operation's three ends is in play, whether an effect, intelligence, or access held for later use. Use whenever fresh material lands or a decision point is reached and a single narrow read will not do.
+description: Run one full analytic round over a live operation — mission, terrain, defender and take reads, then judgement and next move — when fresh material lands or a decision point is reached.
 metadata:
   acordia:
     family: analytic-spine

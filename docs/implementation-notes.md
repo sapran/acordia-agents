@@ -127,3 +127,29 @@ this change altered.
   from the spec reproduces the ambiguity and only readers arriving via `CLAUDE.md` get the answer.
   The fix belongs in the spec and is therefore an OpenSpec change, which is why it is parked rather
   than folded into a docs commit.
+
+## Parked in 6.1.0
+
+Both surfaced while measuring the skill-description compression
+(`openspec/changes/archive/*-compress-skill-descriptions/`). Neither is fixed there, because both
+turn on a claim about how analytic work is divided, and `CLAUDE.md` requires such a claim be selected
+from the literature before it is written — the lib.ai library returned `database disk image is
+malformed` on every call throughout that work, so the selection could not be made.
+
+- **The competency grid and the agent prompts disagree about the analytic spine.** All four legs
+  carry a 12-skill `Shared analytic spine (every analyst carries this)` line, but the grid in
+  `docs/roles/operational-analyst.md:96-106` marks those rows in the `Core` column alone — `○` marks
+  appear in the leg columns only sporadically. Derived from the grid, `mission-analyst` owns 10
+  skills; its prompt names 19. The prose is almost certainly right and the grid is the record that
+  never caught up, but `CLAUDE.md` makes the grid normative, so the fix is a grid edit that adds the
+  spine marks across the four leg columns, not a prompt edit. This matters more than a bookkeeping
+  drift: acceptance criterion 1 of `docs/handoff-skill-catalogue-prompt-budget.md` asks for a
+  machine-readable per-analyst skill list, and generating that list from the prompts as they stand
+  would harden the drift into a declared field.
+- **Three skills are named in no agent prompt.** `aleph-entity-graph`, `credential-harvest-triage`
+  and `exhaustive-data-processing` appear in no `·`-separated skill line in any of the five prompts.
+  Prompt naming is the only agent→skill binding this distribution has, so these three are reachable
+  only by a host that loads the whole library and selects on description alone. All three are
+  procedural skills (`grid_row: null`), which is why no grid column places them and why the slug
+  check cannot catch the omission — it verifies that every named slug resolves, not that every skill
+  is named. Deciding which analyst adopts each is the same division-of-work call as the note above.

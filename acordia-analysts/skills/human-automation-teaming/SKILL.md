@@ -1,6 +1,6 @@
 ---
 name: human-automation-teaming
-description: Divide a workflow between analyst judgement and automation, setting an autonomy level per task from surface-only through recommend-and-confirm to automate-and-act, and designing against automation bias and the failure modes tooling hides, when a filter decides what the analyst ever sees or automation may drive a targeting or effect decision.
+description: Divide a workflow between analyst judgement and automation, setting an autonomy level per task and designing against automation bias, when a filter decides what the analyst ever sees.
 metadata:
   acordia:
     family: analytic-spine

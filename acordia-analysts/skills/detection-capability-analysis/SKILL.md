@@ -1,6 +1,6 @@
 ---
 name: detection-capability-analysis
-description: Model the defender's detection surface from first principles before you act, separating what their sensors and log sources can collect from what is actually collected and what is analysed into an alert, then score each candidate technique for residual risk and flag the canaries and honeytokens that are no-go without mitigation.
+description: Model the defender's detection surface before you act, separating what their sensors can collect from what is collected and what is analysed into an alert, then score each one.
 metadata:
   acordia:
     family: defender-reading
