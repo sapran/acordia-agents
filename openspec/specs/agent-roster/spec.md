@@ -143,7 +143,10 @@ its slug leaves it shipped but dead.
 
 A prompt names a skill in one of **two** ways, and a check that knows only the first reports live
 skills as dead. The ordinary binding is a slug on a `·`-separated line. The second is a slug in
-backticks inside a procedural section — the four cross-cutting procedural skills are named that way,
+backticks, and it SHALL count **only for a skill whose own frontmatter declares `procedural: true`** —
+a grid-row skill is bound by its `·` line or not bound at all, because otherwise any prose that
+happens to backtick a slug binds it silently, turning an editorial mention into a roster change. The
+four cross-cutting procedural skills are named that way,
 in every prompt, because they describe a discipline the prompt has to explain rather than a
 competency it can list. A scan restricted to skill lines finds `aleph-entity-graph`,
 `credential-harvest-triage` and `exhaustive-data-processing` in no prompt at all and reports three
@@ -182,6 +185,16 @@ passing.
 
 - **WHEN** every skill directory in the pillar is searched for in the pillar's prompts
 - **THEN** each appears either on a prompt's skill line or in backticks in a prompt's procedural section
+
+#### Scenario: A backticked grid-row slug does not bind
+
+- **WHEN** a prompt's prose names a grid-row skill in backticks without carrying it on a `·`-separated line
+- **THEN** that skill is not counted as named for the agent, because the backtick binding applies only where the skill declares `procedural: true`
+
+#### Scenario: Group names and the orchestrator's spine are checked
+
+- **WHEN** a declaration carries a group name outside `spine`/`deep`/`working`/`procedural`, or the orchestrator carries a `spine` group
+- **THEN** the check reports it, rather than passing because the union of the groups is unchanged
 
 #### Scenario: A procedural skill counts as named
 
@@ -589,8 +602,16 @@ a fourth occurrence would break that check while adding nothing, since the file 
 with the pillar.
 
 The declared set for each agent SHALL equal the set its prompt names, counting both bindings the
-prompt uses: a slug on a `·`-separated skill line, and a slug named in backticks in a procedural
-section. A declared slug SHALL resolve to a directory under `acordia-analysts/skills/`, and every
+prompt uses: a slug on a `·`-separated skill line, and a slug named in backticks where that skill
+declares `procedural: true`.
+
+Naming covers **directing**, not only doing. The orchestrator declares the procedural skills it
+routes to a leg, because it has to hold the discipline to judge what the leg returns — `cyber-analyst`
+names `aleph-entity-graph` while sending corpus work to `collection-analyst`, and both declare it.
+
+Group names SHALL be exactly `spine`, `deep`, `working` and `procedural`, and the orchestrator SHALL
+carry no `spine` group. Both are invisible to a check that compares the union of the groups: a
+misspelled group still unions to the right set of slugs while a host reading `deep` gets nothing. A declared slug SHALL resolve to a directory under `acordia-analysts/skills/`, and every
 skill in the library SHALL be declared for at least one agent.
 
 The `spine` group SHALL be identical across all four legs. It is the one group whose meaning is that

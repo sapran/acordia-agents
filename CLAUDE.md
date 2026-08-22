@@ -4,7 +4,7 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 ## What this repo is
 
-Markdown-only distribution of agents and skills derived from the ACORDIA operational-role framework. **No application code, no runtime, no tests, and since 3.0.0 no build step.** Frontmatter-carrying markdown files, three small JSON files, and since 6.0.0 the two install scripts under `tools/` — nothing else.
+Markdown-only distribution of agents and skills derived from the ACORDIA operational-role framework. **No application code, no runtime, no tests, and since 3.0.0 no build step.** Frontmatter-carrying markdown files, four small JSON files, and since 6.0.0 the two install scripts under `tools/` — nothing else.
 
 Two harnesses, one authored tree. omp and Claude Code both install it as a **plugin** from the marketplace catalogs at `.omp-plugin/marketplace.json` (omp reads this one in preference) and `.claude-plugin/marketplace.json` (Claude Code reads this one). Both catalogs point at the one top-level plugin directory, so a checkout is installable exactly as it stands — nothing is generated, and no script stands between a checkout and a marketplace install. Since 6.0.0 two optional scripts under `tools/` offer omp a second route into its native roots, for the case where the `claude-plugins` provider is off; they copy nothing and generate nothing, and no other route uses them.
 
@@ -14,7 +14,7 @@ One pillar, shipped as one installable plugin:
 
 Analysis is the ACORDIA core pillar — real-time decision support and target understanding — and the framework's own resource-allocation finding is that starving it produces capability without effectiveness. Shipping it alone is that argument executed: a roster derived from a competency grid, not one organised by target surface.
 
-The pillar directory holds `.claude-plugin/plugin.json`, `agents/`, `commands/` and `skills/` — the layout both harnesses discover from a plugin root. **All five agents are write-capable.** Capability is granted by omission: an agent file names no `tools`, so omp hands it the full set, and no `spawns`, so its spawn policy is unrestricted. There is no permission frontmatter anywhere in this repository, and a capability problem is never fixed by adding a denylist.
+The pillar directory holds `.claude-plugin/plugin.json`, `agents/`, `commands/` and `skills/` — the layout both harnesses discover from a plugin root — plus `skill-sets.json`, which declares each analyst's skill set so a host can render a catalogue for one analyst rather than for all 45. Neither harness reads that file; it exists for a host or operator doing role-scoping, and it carries no version, so the three-occurrence version count below is unaffected. **All five agents are write-capable.** Capability is granted by omission: an agent file names no `tools`, so omp hands it the full set, and no `spawns`, so its spawn policy is unrestricted. There is no permission frontmatter anywhere in this repository, and a capability problem is never fixed by adding a denylist.
 
 **The consumer is a human operator.** The distribution ships no executing agent, so an analyst product is handed to a person who then acts on it: a recommended course of action is a hand-off rather than a dispatch, the prompt states what the operator is being asked to decide or do, and the lead's end-neutral loop judges whether the end was achieved from evidence that operator reports back. Every `operator` in a shipped prompt is that human. `.acordia/reports/` is where a finished product belongs, by convention.
 
@@ -91,17 +91,22 @@ Silence means every slug resolved.
 diff .claude-plugin/marketplace.json .omp-plugin/marketplace.json
 ```
 
-Silence means they agree. Also confirm all three JSON files parse: `python3 -c "import json; [json.load(open(p)) for p in ('.claude-plugin/marketplace.json','.omp-plugin/marketplace.json','acordia-analysts/.claude-plugin/plugin.json')]"`.
+Silence means they agree. Also confirm all four JSON files parse — `skill-sets.json` included, because nothing else opens it and there is no build step to fail: `python3 -c "import json; [json.load(open(p)) for p in ('.claude-plugin/marketplace.json','.omp-plugin/marketplace.json','acordia-analysts/.claude-plugin/plugin.json','acordia-analysts/skill-sets.json')]"`.
 
-**The declared skill sets match the prompts.** `acordia-analysts/skill-sets.json` is a transcription of what each prompt names, and the prompt is the authority. It is inert to both harnesses, so a prompt edited without the file loads perfectly and ships a wrong declaration. A prompt names a skill in **two** ways, and a check that knows only the first reports live skills as dead: a slug on a `·`-separated line, and a slug in backticks in a procedural section — the four procedural skills use the second, in every prompt.
+**The declared skill sets match the prompts.** `acordia-analysts/skill-sets.json` is a transcription of what each prompt names, and the prompt is the authority. It is inert to both harnesses, so a prompt edited without the file loads perfectly and ships a wrong declaration. A prompt names a skill in **two** ways, and a check that knows only the first reports live skills as dead: a slug on a `·`-separated line, and a slug in backticks — the four procedural skills use the second, in every prompt. The backtick binding counts **only for a skill whose own frontmatter says `procedural: true`**, so ordinary prose that happens to backtick a grid-row slug does not silently bind it; a grid-row skill is bound by its `·` line or not at all. The check also rejects a group name outside `spine`/`deep`/`working`/`procedural`, and a `spine` group on the orchestrator — both pass a set-union comparison untouched while breaking what a host reads.
 
 ```sh
 python3 - <<'EOF'
 import json,glob,os,re,pathlib
+SK='acordia-analysts/skills/%s/SKILL.md'
 have={os.path.basename(os.path.dirname(s)) for s in glob.glob('acordia-analysts/skills/*/SKILL.md')}
+proc={s for s in have if re.search(r'^\s*procedural:\s*true\s*$',pathlib.Path(SK%s).read_text(),re.M|re.I)}
+GROUPS={'spine','deep','working','procedural'}
 decl=json.load(open('acordia-analysts/skill-sets.json'))['analysts']
 bad=0; covered=set(); spines={}
 for name in sorted(decl):
+    g=decl[name]
+    if set(g)-GROUPS: print(name,'unknown group(s)',sorted(set(g)-GROUPS)); bad+=1
     txt=pathlib.Path('acordia-analysts/agents/%s.md'%name).read_text()
     listed=set(); prev=''
     for line in txt.splitlines():
@@ -109,11 +114,12 @@ for name in sorted(decl):
         if s and prev.startswith('#') and re.fullmatch(r'[a-z0-9][\w.-]*( · [a-z0-9][\w.-]*)*',s):
             listed|={x.strip() for x in s.split('·')}
         if s: prev=s
-    prompt=listed|{t for t in re.findall(r'`([a-z0-9][a-z0-9-]*)`',txt) if t in have}
-    d={x for v in decl[name].values() for x in v}; covered|=d
-    if 'spine' in decl[name]: spines[name]=tuple(decl[name]['spine'])
+    prompt=listed|{t for t in re.findall(r'`([a-z0-9][a-z0-9-]*)`',txt) if t in proc}
+    d={x for v in g.values() for x in v}; covered|=d
+    if 'spine' in g: spines[name]=tuple(g['spine'])
     for label,diff in (('resolves to no skill',d-have),('declared, not in prompt',d-prompt),('in prompt, not declared',prompt-d)):
         if diff: print(name,label,sorted(diff)); bad+=1
+if 'spine' in decl.get('cyber-analyst',{}): print('orchestrator carries a spine group'); bad+=1
 if len(set(spines.values()))>1: print('spine differs between legs'); bad+=1
 if have-covered: print('declared for no analyst',sorted(have-covered)); bad+=1
 print('problems:',bad)

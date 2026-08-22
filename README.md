@@ -33,7 +33,8 @@ acordia-agents/
 │   ├── agents/     cyber-analyst · mission-analyst · terrain-analyst
 │   │               overwatch-analyst · collection-analyst
 │   ├── commands/   10 command wrappers
-│   └── skills/     45 skills, one SKILL.md each
+│   ├── skills/     45 skills, one SKILL.md each
+│   └── skill-sets.json   per-analyst declared skill sets, for role-scoped hosts
 ├── .claude-plugin/marketplace.json   # Claude Code reads this catalog
 ├── .omp-plugin/marketplace.json      # omp prefers this one; byte-identical
 ├── docs/roles/                       # the competency map and the source register

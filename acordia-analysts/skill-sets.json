@@ -1,5 +1,5 @@
 {
-  "$schema-note": "Hand-maintained. Each analyst's declared skill set, transcribed from the skill lines and procedural sections of acordia-analysts/agents/<name>.md, which remain the authority. A host loads one analyst's union of these groups to render a role-scoped skills catalogue.",
+  "note": "Hand-maintained. Each analyst's declared skill set, transcribed from the skill lines and procedural sections of acordia-analysts/agents/<name>.md, which remain the authority. A host loads one analyst's union of these groups to render a role-scoped skills catalogue. An orchestrator declares a procedural skill it directs a leg to apply: it must hold the discipline to judge what comes back, so naming covers directing, not only doing.",
   "source": "acordia-analysts/agents/",
   "groups": {
     "spine": "Analytic tradecraft the prompt states every analyst carries. Absent for cyber-analyst, whose deep set is that spine.",
