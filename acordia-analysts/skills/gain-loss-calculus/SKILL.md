@@ -6,7 +6,7 @@ metadata:
     family: analytic-spine
     grid_row: gain-loss-calculus
     grid_deep_in: [Core]
-    grid_working_in: []
+    grid_working_in: [Mission, Terrain, Def, Coll]
     row: gain-loss-calculus
     source: docs/roles/operational-analyst.md
 ---

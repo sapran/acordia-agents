@@ -6,7 +6,7 @@ metadata:
     family: analytic-spine
     grid_row: briefing-reporting
     grid_deep_in: [Core]
-    grid_working_in: [Coll]
+    grid_working_in: [Mission, Terrain, Def, Coll]
     row: briefing-reporting
     source: docs/roles/operational-analyst.md
 ---

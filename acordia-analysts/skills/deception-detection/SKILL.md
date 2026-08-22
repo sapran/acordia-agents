@@ -6,7 +6,7 @@ metadata:
     family: analytic-spine
     grid_row: deception-detection
     grid_deep_in: [Core, Def]
-    grid_working_in: []
+    grid_working_in: [Mission, Terrain, Coll]
     row: deception-detection
     source: docs/roles/operational-analyst.md
 ---
