@@ -161,8 +161,9 @@ malformed` on every call throughout that work, so the selection could not be mad
   with the catalogue figures that were computed from it.
 
 - **`target-mission-analysis` prose contradicts its own row.** `docs/roles/operational-analyst.md`
-  line 19 says "Every operational analyst carries this at a working level; the deep method lives
-  with the Target & Network specialist", but the row is marked `Core ○ · Mission ●` only, and just
+  says of the crown-jewels / mission-thread paragraph "Every operational analyst carries this at a
+  working level; the deep method lives with the Target & Network specialist" — but the row is
+  marked `Core ○ · Mission ●` only, and just
   `cyber-analyst` and `mission-analyst` name the slug — so three legs do not carry it at any level.
   The sentence also names the **Target & Network** leg, which v1.2 split into Mission and Terrain.
   Found while fixing the spine rows in 6.3.0 and parked: it is a different row, the marks and the
