@@ -171,3 +171,20 @@ malformed` on every call throughout that work, so the selection could not be mad
   deciding which is true — mark `○` in Terrain/Def/Coll and add the slug to those three prompts, or
   correct the sentence — and that is a doctrinal call needing a literature selection, not a
   transcription fix.
+
+## Parked in 6.3.0
+
+Both found while rebuilding `acordia-map.html`, and both sit outside that rebuild's scope.
+
+- **The map's search icon emits a console error and draws no circle.** `acordia-map.html` carries
+  `<circle cx=11 cy=11 r=7/>` in the sidebar search SVG. The attribute value is unquoted, so the
+  parser reads the self-closing slash as part of it and the browser rejects `r` with
+  `Expected length, "7/"`. Verified in a real page load: one console error, and the magnifier's
+  circle is missing. The fix is `r="7"`. Parked because the defect is in the page's hand-written
+  shell, which a data rebuild does not touch.
+- **Nothing in the repository can rebuild the map.** The DATA blob inside `acordia-map.html` is
+  generated output with no generator: each regeneration has re-derived the renderer and the metric
+  formulas by reading the previous blob. This one was rebuilt by a script kept outside the repo,
+  because committing a build tool would change the shape of the distribution — a MAJOR bump plus an
+  OpenSpec change under `plugin-distribution`, which is a decision of its own rather than part of a
+  docs refresh.
