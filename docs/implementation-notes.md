@@ -171,3 +171,11 @@ malformed` on every call throughout that work, so the selection could not be mad
   deciding which is true — mark `○` in Terrain/Def/Coll and add the slug to those three prompts, or
   correct the sentence — and that is a doctrinal call needing a literature selection, not a
   transcription fix.
+
+- **The prompts-to-`skill-sets.json` drift check lives outside this repository.** Noted in
+  `docs/handoff-handback-contract.md`: a consumer deployment now guards that hop in its own
+  generator, and the check would be more useful in the repository that owns both files. The check
+  itself is written out in `CLAUDE.md` and runs by hand; what is missing is CI to run it. Parked
+  while adding the hand-back contract in 6.4.0, because this repository ships no CI at all today, so
+  the change is "adopt CI" rather than "add one check" — its own decision, with its own trade-offs,
+  and outside the three acceptance criteria that handoff set.
