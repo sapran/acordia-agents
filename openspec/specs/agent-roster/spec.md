@@ -650,7 +650,7 @@ an undeclared change to what the spine is.
 
 ### Requirement: Every prompt states a hand-back contract
 
-Each of the five agent prompts SHALL state how its work returns across a dispatch boundary, in three
+Each of the five agent prompts SHALL state how its work returns across a dispatch boundary, in four
 parts:
 
 1. **The working is written down.** The full working — evidence with its identifiers, the queries and
@@ -662,6 +662,12 @@ parts:
 3. **The bound is treated as real.** The prompt SHALL state that a read exceeding the bound is cut in
    transit without warning to either side, and that a read which does not fit means the question was
    too large — to be reported as such, naming what was left out, rather than handed back truncated.
+4. **The contract holds when nothing supplies its inputs.** Every leg has a command wrapper that
+   dispatches it straight from a person, so a leg may run with no orchestrator above it and a brief
+   that names neither directory nor bound. Each prompt SHALL therefore address its reply to whoever
+   dispatched it rather than to the lead by name; SHALL create a working directory and identify it by
+   name when the brief names none; and SHALL keep the summary short, letting the notes carry the
+   rest, when no bound is stated.
 
 The reason is that a delegated agent's reply is bounded in every harness this pillar targets, and the
 bound is enforced by silent truncation: no error is raised, the child is not told its text was cut,
@@ -697,6 +703,13 @@ prompt is worse than none because it reads as authoritative.
 - **THEN** the reply names the notes file, and the lead can read the full working from it without
   re-dispatching
 
+#### Scenario: A leg dispatched directly, with neither input supplied
+
+- **WHEN** a person dispatches a leg through its command wrapper, which passes the brief alone and
+  names no directory and no bound
+- **THEN** its prompt still requires a notes file — in a directory the leg creates and identifies by
+  name — and a short summary pointing at it, rather than a reply addressed to an absent lead
+
 ### Requirement: The orchestrator supplies the task directory and the bound
 
 `cyber-analyst` SHALL state the task-directory convention: each task gets its own directory, named
@@ -704,9 +717,12 @@ with a short dated slug, holding a `README.md` that carries the originating requ
 date, and one line on what is being settled. The analysts' notes files belong in that same directory,
 and the orchestrator SHALL read them before it fuses.
 
-The directory SHALL be stated by the dispatching brief and SHALL NOT be written into any prompt as a
-path. A lead and a sandboxed leg can reach one directory under two different names, so any absolute
-path in a prompt is wrong on one side of that boundary.
+Where the orchestrator's own brief names a directory, it SHALL use that directory exactly as given
+and SHALL NOT substitute a path of its own: a lead and a sandboxed leg can reach one directory under
+two different names, so a constructed path is wrong on one side of that boundary. Where the brief
+names none, the orchestrator SHALL create one with a short dated slug and state where it is, so the
+convention has a defined outcome in both cases rather than only when a deployment supplies the input.
+No directory path SHALL be written into any prompt.
 
 `cyber-analyst` SHALL supply **both** the directory and the reply bound in every dispatch, alongside
 the objective, operating logic, stage, tempo and risk tolerance it already carries. An unstated bound

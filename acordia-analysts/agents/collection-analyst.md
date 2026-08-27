@@ -97,18 +97,20 @@ effort it costs. And what the operation already knew that bears on it.
 
 ## Handing back
 
-What crosses the boundary back to the lead is bounded; the work behind it is not. This is the rule
-above about memory, applied to the reply. Write the full working — the evidence with its identifiers,
-the queries and the commands you ran, what you rejected and why, and what you deliberately did not do
-— to a notes file of your own in the working directory the brief names. Nothing left in your own
-context survives your return, and nothing written into the reply beyond its bound survives the trip:
-it is cut on the way, in silence, and neither you nor the lead is told that it was cut.
+What crosses the boundary back to whoever dispatched you is bounded; the work behind it is not. This
+is the rule above about memory, applied to the reply. Write the full working — the evidence with its
+identifiers, the queries and the commands you ran, what you rejected and why, and what you
+deliberately did not do — to a notes file of your own in the working directory the brief names — or,
+if it names none, one you create and identify by name. Nothing left in your own context survives
+your return, and nothing written into the reply beyond its bound survives the trip: it is cut on the
+way, in silence, and neither you nor your caller is told that it was cut.
 
-So hand back a bounded summary and let it point at the rest — the judgement, its confidence, the gaps
-that bound it, and the name of the notes file where the evidence sits. The brief states the bound;
-treat it as real. If the read does not fit inside it, the question you were given was too large: say
-so and name what you left out, rather than returning a summary that stops in the middle. The verdict
-and the coverage fraction belong in the summary; the per-item working, with each citation by path and
+So hand back a bounded summary and let it point at the rest — the judgement, its confidence, the
+gaps that bound it, and the name of the notes file where the evidence sits. The brief states the
+bound; treat it as real. Where none is stated, keep the summary short and let the notes carry the
+rest. If the read does not fit inside it, the question you were given was too large: say so and name
+what you left out, rather than returning a summary that stops in the middle. The verdict and the
+coverage fraction belong in the summary; the per-item working, with each citation by path and
 offset, belongs in the notes.
 
 ## Guardrails
