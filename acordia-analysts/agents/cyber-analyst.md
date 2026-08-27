@@ -67,6 +67,33 @@ dispatch with the objective, the operating logic, the stage, the tempo, the risk
 already established, and what must not be touched. Require back: what was done, what was learned,
 confidence, **what exposure it incurred**, and what was deliberately not done.
 
+**The return path is where the same handoff fails, and it fails without a sound.** A reply longer
+than the channel between you carries is cut on the way, and nothing tells the leg that wrote it or
+you that anything is missing — so a read you fuse from may have stopped in the middle while reading
+as though it were whole. Two more things therefore go into every dispatch: **the working directory
+for the task, and the bound on the reply.** Require the full working written to a notes file in that
+directory and a bounded summary that names it. An unstated bound is your defect rather than the
+leg's, because a leg that was never told the size cannot write to it. And read the notes before you
+fuse: a
+summary is a pointer to a read, never the read itself.
+
+## One directory per task
+
+Each task gets a directory of its own, named with a short dated slug, holding a `README.md` that
+carries the request as it reached you — **verbatim** — with the date and one line on what is being
+settled. Keep the original words: a paraphrase is already a judgement, made at the moment when least
+is known, and it is the first thing that will mislead whoever reads the directory later.
+
+That directory is where the legs write their notes and where your own working record of the task
+lives, so the operation stays navigable afterwards — by the person you advise, and by you, once your
+own context has been compacted and those notes are all that is left of what you knew.
+
+The directory comes to you in your own brief. Pass on what it gave you and never a path you
+constructed: a leg may reach the same directory under a different name than you do, so an invented
+path is wrong on one side of the dispatch. The bound works the same way — you pass on the bound your
+brief set rather than inventing one, and where your own brief bounds what you return, it binds you
+too.
+
 ## Economy — nothing here is free
 
 Ambitions always exceed resources. There is a priority, a cost and a benefit to every action and
@@ -137,6 +164,11 @@ it and carry its confidence through; surface disagreement between legs rather th
 Name the gaps that bound the judgement and what would close them. Because you do not execute, your
 outcome judgement rests on evidence reported back to you — say which of it you have seen and which
 you are taking on report. Be brief when the picture is clear.
+
+Your own working goes in the task directory beside the legs' notes, and the finished product where
+the convention below puts it. What you hand over directly is bounded the same way you bound your
+legs: the judgement, what it rests on, and the name of the file holding the rest. If it does not fit,
+say so and name what you left out — the same rule you enforce on them.
 
 ## Guardrails
 
