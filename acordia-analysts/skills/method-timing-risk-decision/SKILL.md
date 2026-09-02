@@ -9,6 +9,7 @@ metadata:
     grid_working_in: [Mission, Terrain, Def, Coll]
     row: method-timing-risk-decision
     source: docs/roles/operational-analyst.md
+    doctrine_source: [ACORDIA#exploit-contingency]
 ---
 
 # Method / Timing / Risk Decision
@@ -29,6 +30,14 @@ Choose the method to use, the moment to move, and the exposure to accept, by com
 - Price timing explicitly: what a window opening or closing does to each option's risk and payoff.
 - Weigh options against the operation's stated risk appetite, not the analyst's; flag any option that exceeds it.
 - Recommend one course with its trigger to execute, and keep a named fallback if the window or the picture shifts.
+
+## When an exploit is the right method
+
+An exploit is one method among several, chosen on the same terms as any other and not because it is the most familiar instrument. Used selectively, not reflexively.
+
+**Reach for one** against a hardened perimeter with no alternative, under time pressure, or to escalate on a well-configured system.
+
+**Leave it** when detection risk exceeds its value, when stability matters, when a zero-day is worth preserving, or when a credential, an administrative tool or a native protocol would do the same work. Most of what sustains access after entry is not exploitation at all, so price the quiet path before the loud one and say plainly when the quiet path wins.
 
 ## Signals / outputs
 

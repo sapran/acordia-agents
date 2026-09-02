@@ -286,8 +286,13 @@ The distribution SHALL ship 10 slash-command wrappers: one canonical wrapper nam
 five agents, plus five short aliases. All ten SHALL live in the pillar's flat
 `acordia-analysts/commands/` directory, because a harness discovers plugin commands from
 `<pluginRoot>/commands/*.md` without recursion and namespaces them by plugin name. Each wrapper SHALL
-carry `description` and `argument-hint` frontmatter, SHALL dispatch exactly the agent it is named for,
-SHALL pass the caller's argument through as the brief, and SHALL ask for a brief when none is supplied.
+carry `description` and `argument-hint` frontmatter, SHALL pass the caller's argument through as the
+brief, and SHALL ask for a brief when none is supplied.
+
+A wrapper SHALL resolve to exactly one agent, the one it is named or aliased for. **How it does so
+depends on whether that agent dispatches.** A leg wrapper SHALL dispatch its agent as a subagent. A
+lead wrapper SHALL instead carry its agent's prompt body into the invoking session, because a
+dispatched agent cannot itself dispatch and the lead's work is directing four legs.
 
 The canonical stems SHALL be the five agent names, and the aliases SHALL be `analyst`, `mission`,
 `terrain`, `overwatch` and `collection`. An alias stem SHALL NOT equal any agent stem: the canonical
@@ -306,22 +311,28 @@ retained as that agent's short alias, so that an existing invocation keeps worki
 #### Scenario: Wrapper dispatches its own agent
 
 - **WHEN** any wrapper is read
-- **THEN** it names exactly one agent, the one it is named or aliased for
+- **THEN** it resolves to exactly one agent, the one it is named or aliased for
+
+#### Scenario: A leg wrapper dispatches, a lead wrapper carries
+
+- **WHEN** a leg wrapper and a lead wrapper are compared
+- **THEN** the leg wrapper dispatches its agent as a subagent, and the lead wrapper carries the agent's
+  prompt body into the invoking session
 
 #### Scenario: A renamed lead keeps its old handle
 
 - **WHEN** `/analyst` is invoked
-- **THEN** it dispatches `cyber-analyst`
+- **THEN** it enters `cyber-analyst`, carrying its prompt body into the invoking session
 
 #### Scenario: Empty brief is refused
 
 - **WHEN** a wrapper is invoked with no argument
-- **THEN** it asks what to look at before dispatching
+- **THEN** it asks what to look at before proceeding
 
 #### Scenario: No alias collides with a canonical wrapper
 
 - **WHEN** the ten wrapper stems are compared with the five agent names
-- **THEN** all ten stems are distinct and no alias stem equals an agent name
+- **THEN** no alias stem equals any agent stem
 
 ### Requirement: Agent names and skill slugs stay unprefixed
 
@@ -362,14 +373,23 @@ first where it is absent.
 
 ### Requirement: Prompt bodies stay under a measured ceiling
 
-No agent prompt body SHALL exceed 10,000 characters, measured after the frontmatter. A prompt that
+No agent prompt body SHALL exceed 10,500 characters, measured after the frontmatter. A prompt that
 crosses the ceiling SHALL be reduced by moving technique detail to the skill that owns it, never by
 deleting the routing or the guardrails.
+
+The ceiling SHALL be enforced by the repository's drift gate rather than by inspection. An unenforced
+ceiling is how the orchestrator was allowed to sit at 9,921 of 10,000 characters with no signal, so
+that a 353-character entry guard crossed it silently while every other invariant reported clean.
 
 #### Scenario: Ceiling holds across the roster
 
 - **WHEN** every agent prompt body in the roster is measured
-- **THEN** none exceeds 10,000 characters
+- **THEN** none exceeds 10,500 characters
+
+#### Scenario: A crossed ceiling fails the gate
+
+- **WHEN** an agent prompt body exceeds the ceiling
+- **THEN** the drift gate fails, naming the agent and its measured size
 
 ### Requirement: A lead agent's name is distinct from its pillar's name
 
@@ -647,3 +667,171 @@ an undeclared change to what the spine is.
 
 - **WHEN** `skill-sets.json` is parsed
 - **THEN** it declares no version field, and the repository still holds exactly three version occurrences across three files
+
+### Requirement: Every prompt states a hand-back contract
+
+Each of the five agent prompts SHALL state how its work returns across a dispatch boundary, in four
+parts:
+
+1. **The working is written down.** The full working — evidence with its identifiers, the queries and
+   commands run, what was rejected and why, and what was deliberately not done — SHALL be written to
+   a notes file in the task's working directory before the agent returns.
+2. **What returns is bounded and self-describing.** The reply SHALL be a summary carrying the
+   judgement, its confidence, the gaps that bound it, and **the name of the notes file** where the
+   evidence lives.
+3. **The bound is treated as real.** The prompt SHALL state that a read exceeding the bound is cut in
+   transit without warning to either side, and that a read which does not fit means the question was
+   too large — to be reported as such, naming what was left out, rather than handed back truncated.
+4. **The contract holds when nothing supplies its inputs.** Every leg has a command wrapper that
+   dispatches it straight from a person, so a leg may run with no orchestrator above it and a brief
+   that names neither directory nor bound. Each prompt SHALL therefore address its reply to whoever
+   dispatched it rather than to the lead by name; SHALL create a working directory and identify it by
+   name when the brief names none; and SHALL keep the summary short, letting the notes carry the
+   rest, when no bound is stated.
+
+The reason is that a delegated agent's reply is bounded in every harness this pillar targets, and the
+bound is enforced by silent truncation: no error is raised, the child is not told its text was cut,
+and the parent cannot see that it received a fragment. Files the child wrote are not carried back but
+remain readable, so the durable half of the work SHALL travel by the filesystem and only the
+judgement by the reply.
+
+The bound SHALL be stated by the dispatching brief and SHALL NOT be written into any prompt as a
+number. A count correct for one harness is wrong on every other, and a wrong number in a shipped
+prompt is worse than none because it reads as authoritative.
+
+#### Scenario: Contract present in every prompt
+
+- **WHEN** each of the five agent prompts is read
+- **THEN** each states that the full working goes to a notes file, that the reply is a bounded
+  summary naming that file, and that the bound is treated as real
+
+#### Scenario: No prompt hard-codes a limit
+
+- **WHEN** the five prompts are searched for a character count, a token count or any other numeric
+  reply limit
+- **THEN** none is found, and each prompt attributes the bound to the dispatching brief
+
+#### Scenario: A read that does not fit is reported, not truncated
+
+- **WHEN** an analyst's read exceeds the bound its brief stated
+- **THEN** its prompt requires it to say the question was too large and name what was left out,
+  rather than return a summary that stops mid-sentence
+
+#### Scenario: The summary can be followed to the evidence
+
+- **WHEN** a lead receives a leg's reply
+- **THEN** the reply names the notes file, and the lead can read the full working from it without
+  re-dispatching
+
+#### Scenario: A leg dispatched directly, with neither input supplied
+
+- **WHEN** a person dispatches a leg through its command wrapper, which passes the brief alone and
+  names no directory and no bound
+- **THEN** its prompt still requires a notes file — in a directory the leg creates and identifies by
+  name — and a short summary pointing at it, rather than a reply addressed to an absent lead
+
+### Requirement: The orchestrator supplies the task directory and the bound
+
+`cyber-analyst` SHALL state the task-directory convention: each task gets its own directory, named
+with a short dated slug, holding a `README.md` that carries the originating request **verbatim**, the
+date, and one line on what is being settled. The analysts' notes files belong in that same directory,
+and the orchestrator SHALL read them before it fuses.
+
+Where the orchestrator's own brief names a directory, it SHALL use that directory exactly as given
+and SHALL NOT substitute a path of its own: a lead and a sandboxed leg can reach one directory under
+two different names, so a constructed path is wrong on one side of that boundary. Where the brief
+names none, the orchestrator SHALL create one with a short dated slug and state where it is, so the
+convention has a defined outcome in both cases rather than only when a deployment supplies the input.
+No directory path SHALL be written into any prompt.
+
+`cyber-analyst` SHALL supply **both** the directory and the reply bound in every dispatch, alongside
+the objective, operating logic, stage, tempo and risk tolerance it already carries. An unstated bound
+is the orchestrator's defect and not the leg's, because a leg told nothing cannot size a reply it was
+never given the size of.
+
+The convention exists so an operation is navigable afterwards — by the human operator the pillar
+hands its product to, or by the orchestrator itself once its own context has been compacted. The
+request is kept verbatim because a paraphrase is already an analytic judgement, made at the moment
+least is known.
+
+#### Scenario: Convention stated in the lead prompt
+
+- **WHEN** `cyber-analyst`'s prompt is read
+- **THEN** it states the per-task directory, the dated slug, the `README.md` holding the request
+  verbatim with its date and what is being settled, and that the legs' notes go in the same directory
+
+#### Scenario: Both are supplied on dispatch
+
+- **WHEN** `cyber-analyst` dispatches any leg
+- **THEN** its prompt requires the brief to state the working directory and the bound on the reply
+
+#### Scenario: No path is baked into a prompt
+
+- **WHEN** the five prompts are searched for an absolute task-directory path
+- **THEN** none is found, and the directory is attributed to the dispatching brief
+
+#### Scenario: The lead reads the notes before fusing
+
+- **WHEN** the legs have returned and the orchestrator fuses their reads
+- **THEN** its prompt requires it to read the notes files in the task directory, not to fuse from the
+  bounded summaries alone
+
+### Requirement: The orchestrator is entered by a route that leaves it able to dispatch
+
+`cyber-analyst` exists to direct four legs, so any route that delivers its doctrine while removing its
+ability to dispatch delivers a lead that cannot lead. The pillar's lead wrappers SHALL therefore carry
+the orchestrator's prompt body into the invoking session rather than instruct a harness to dispatch the
+orchestrator as a subagent. A wrapper SHALL NOT describe switching a session to an agent, because no
+harness the pillar targets provides that operation.
+
+The orchestrator's prompt body SHALL appear byte-identically in `agents/cyber-analyst.md` and in every
+wrapper that carries it, and the repository's drift gate SHALL fail when they diverge, in the same
+manner as the byte-identity check on the two marketplace catalogs.
+
+#### Scenario: A lead wrapper carries the doctrine rather than delegating it
+
+- **WHEN** a lead wrapper is read
+- **THEN** it contains the orchestrator's prompt body, and instructs no harness to dispatch the
+  orchestrator as a subagent
+
+#### Scenario: No wrapper claims a session can become an agent
+
+- **WHEN** any command wrapper in the pillar is read
+- **THEN** it describes no operation that switches the current session to a named agent
+
+#### Scenario: Wrapper and agent bodies are checked for drift
+
+- **WHEN** a lead wrapper's copy of the orchestrator body differs from `agents/cyber-analyst.md`
+- **THEN** the drift gate fails, naming the wrapper and the divergence
+
+### Requirement: The orchestrator refuses to act as a lead when it cannot dispatch
+
+An orchestrator that finds itself unable to dispatch has been entered by the wrong route. It SHALL stop
+and report that, naming the correct route, rather than proceeding to do the legs' work itself. The
+failure this prevents is silent: a dispatched orchestrator receives its full doctrine, keeps every
+other tool, and produces a confident product assembled from no specialist reads.
+
+#### Scenario: Orchestrator entered as a subagent
+
+- **WHEN** `cyber-analyst` is dispatched as a subagent and cannot spawn further agents
+- **THEN** its prompt directs it to stop and report the wrong entry route rather than continue as a lead
+
+#### Scenario: Refusal names the working route
+
+- **WHEN** the orchestrator reports that it cannot dispatch
+- **THEN** it names the command wrapper as the route that leaves it able to
+
+### Requirement: A carried brief is framed as material, not instruction
+
+A wrapper that carries doctrine into the invoking session interpolates the caller's brief into the same
+document as that doctrine, at its end, where recency weights it most heavily. The wrapper SHALL
+therefore label the brief as material to act on rather than instructions to obey, and SHALL state
+before the brief appears that a directive found inside it — to change the doctrine, the entry route, or
+tool use — is reported to the caller rather than followed. This extends the retained guardrail on
+retrieved content, which names fetched pages and tool output but not the brief.
+
+#### Scenario: Brief is labelled as material
+
+- **WHEN** a lead wrapper is read
+- **THEN** the brief is introduced as material rather than instruction, and the sentence saying so
+  appears before the interpolation point
