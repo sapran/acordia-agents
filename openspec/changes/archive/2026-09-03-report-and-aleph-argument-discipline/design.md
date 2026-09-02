@@ -62,15 +62,24 @@ land against a named surface rather than in the abstract.
 The server's schema already requires `entity_id`, so a skill that only listed parameter names would
 be redundant with the tool description the analyst can already see.
 
-What the schema cannot carry is the **shape of the failure**. An unrecognised key is dropped rather
-than refused, which splits the outcome in two: sometimes the call fails naming a missing `entity_id`,
-which is diagnostic; and sometimes it reaches the server carrying no identifier and returns a
-not-found, which reads as a bad *identifier* rather than a bad *call*. The second outcome is why the
-mistake survived five occurrences across two runs — the analyst concluded the entity did not exist
-and moved on.
+What the schema cannot carry is the **shape of the failure**, and the first draft of this change got
+that shape wrong. It claimed an unrecognised key was dropped rather than refused, and that the call
+could therefore reach Aleph and return a not-found reading as a bad identifier. Reproduced against
+the pinned server, that is false: the generated input schema is closed
+(`additionalProperties: false`), and validation raises two errors — `entity_id: Missing required
+argument` and `<key>: Unexpected keyword argument` — before the tool body runs, so a wrong-key call
+never reaches Aleph at all. The claim was invented mechanism, and it is exactly the defect this
+repository is most prone to.
 
-Naming both outcomes is the part that is not redundant. The count is included because it is the
-evidence that the failure is silent enough to repeat.
+What the run actually shows is a diagnostic failure rather than a silent one. Eight calls over four
+entities were refused, each reply naming the offending key — and the loop around them called
+`json.loads` on the error text, failed, and printed `Expecting value: line 1 column 1 (char 0)`,
+which is why the same mistake repeated. The sentence the server sent was correct and was thrown
+away. So the skill's rule is *read the whole error text*, not *beware a silent drop*.
+
+The separate `not found (404)` replies in that run came from calls that did carry `entity_id` — with
+a truncated value. Distinguishing the two failures is the part that is not redundant with the schema:
+one means the call is malformed, the other means the identifier is.
 
 ## Why serialisation, and why it points at an existing skill
 

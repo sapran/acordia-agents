@@ -30,28 +30,42 @@ in its last step, never as the way an argument object is built.
 - **`briefing-reporting` gains a rendering discipline.** A second format is produced with a real
   parser for that format, never a hand-written line-prefix pass, and the analyst says which parser
   was used. The reason is stated: inline emphasis, code spans, tables and inline links are precisely
-  what a regex converter drops, and it drops them without erroring.
-- **`briefing-reporting` gains a citation-completeness rule.** An identifier is carried into the
-  product whole, however long; shortening belongs to what is *displayed*, not to what is recorded. A
-  truncated id reads as a citation and cannot be looked up.
-- **`briefing-reporting` gains the verification that would have caught both.** A rendered product is
-  checked twice: no source-format tokens survive, and a sample of its evidence references is
-  *resolved* against the system that issued them. Counting links is named as detecting neither
-  failure.
+  what a regex converter drops, and it drops them without erroring. The rule carries its own bound —
+  raw-HTML passthrough off, markup inside quoted evidence escaped — because the product embeds
+  verbatim corpus material and a real parser renders what a regex pass left inert, in the reader's
+  browser.
+- **`briefing-reporting` gains a citation-completeness rule, bounded by class.** An identifier is
+  carried into the product whole, however long; shortening belongs to what is *displayed*, not to
+  what is recorded. A truncated id reads as a citation and cannot be looked up. The rule governs
+  identifiers that exist to be resolved: a credential, token or key is not cited at all whatever its
+  length, and a personal identifier goes only as far as the judgement requires — which is what
+  `credential-harvest-triage` and this skill's siblings already require, and which an unqualified
+  "in full, however long" would have overridden as the more recent and more specific instruction.
+- **`briefing-reporting` gains the verification that would have caught both, scoped to a passive
+  re-read.** A rendered product is checked twice: no source-format tokens survive, and a sample of
+  its evidence references is *resolved* against the system that issued them — the instance or
+  casefile already read from, by the same read call. Resolving a reference that came out of the cited
+  material, or one addressing a target-owned or third-party system, is refused: that would make
+  writing the report an active touch, and would let retrieved content choose where the agent
+  connects. Counting links is named as detecting neither failure.
 - **`aleph-entity-graph` gains a `### Constructing the call` subsection**, placed with the tooling
   paragraph — where the analyst decides which path they are on — rather than inside the method, where
   it would read as a step to perform once.
 - **It names the identifier argument**: `entity_id` on `get_entity`, `get_entity_text`,
   `expand_entity`, `entity_tags` and `similar_entities`; `profile_id` for a profile. Not `id`, not
-  `entity`. It states why the mistake is expensive: an unrecognised key is dropped rather than
-  refused, so the call either fails naming a missing `entity_id` or reaches the server and returns a
-  not-found that reads like a bad identifier instead of a bad call.
+  `entity`. It states what actually happens on a wrong key, measured against the pinned server: the
+  input schema is closed (`additionalProperties: false`), so the call is **refused before it reaches
+  Aleph** with two errors — one naming the missing `entity_id`, one naming the unexpected key. The
+  skill therefore requires the whole error text to be read, because in the measured run the loop
+  around the call parsed the error as JSON, printed `Expecting value: line 1 column 1`, and discarded
+  the line that named the key. A genuine `not found (404)` is named as the other failure: a wrong
+  identifier, most often a truncated one.
 - **It requires the argument object to be built in code.** A `q` with quoted phrases joined by `OR`
   needs every inner quote escaped; a hand-written object escapes the first and stops. Serialising the
   object inside a script removes the escaping from the analyst's hands, and is the same path
   `analytic-tooling-scripting` already recommends for throughput.
-- **No new capability is claimed.** Every argument name traces to the pinned `aleph-mcp` server
-  source; every failure count traces to the measured run.
+- **No new capability is claimed.** Every argument name and the refusal behaviour trace to the pinned
+  `aleph-mcp` server, reproduced rather than recalled; every failure count traces to the measured run.
 
 ## Capabilities
 
