@@ -9,8 +9,11 @@ orchestrator as a subagent. A wrapper SHALL NOT describe switching a session to 
 harness the pillar targets provides that operation.
 
 The orchestrator's prompt body SHALL appear byte-identically in `agents/cyber-analyst.md` and in every
-wrapper that carries it, and the repository's drift gate SHALL fail when they diverge, in the same
-manner as the byte-identity check on the two marketplace catalogs.
+wrapper that carries it. The repository SHALL carry its own drift gate at `tools/check-acordia.sh`,
+and that gate SHALL fail when they diverge, in the same manner as the byte-identity check on the two
+marketplace catalogs. The gate travels with the files it guards: three hand-maintained copies of a
+prose body, where a partial edit still parses and still reads plausibly, are only defensible when a
+fresh clone inherits the check along with the duplication.
 
 #### Scenario: A lead wrapper carries the doctrine rather than delegating it
 
@@ -135,3 +138,41 @@ retained as that agent's short alias, so that an existing invocation keeps worki
 
 - **WHEN** the ten wrapper stems are compared with the five agent names
 - **THEN** no alias stem equals any agent stem
+
+### Requirement: Five agents, one pillar, one authored file each
+
+The distribution SHALL ship exactly five agent files, all under `acordia-analysts/agents/`, each the
+single editable source for every harness. They SHALL be `cyber-analyst.md`, `mission-analyst.md`,
+`terrain-analyst.md`, `overwatch-analyst.md` and `collection-analyst.md`. Filename stem SHALL equal
+frontmatter `name`. No generated or translated copy of an agent SHALL exist in the repository.
+
+A lead wrapper's verbatim copy of the orchestrator body is not a second source and SHALL NOT be
+edited directly: the agent file remains the only editable one, the copy is carried so that a session
+entered through the wrapper holds the doctrine, and `tools/check-acordia.sh` fails when the two
+diverge. A contributor changing the orchestrator edits `agents/cyber-analyst.md` and regenerates the
+wrappers from it.
+
+`acordia-operators/` SHALL NOT exist. Its five agent files are deleted with the pillar rather than
+moved into this one: "Operations" is not an ACORDIA pillar, and a roster organised by target surface
+is not derived from a competency the way this one is.
+
+#### Scenario: Roster is complete and named
+
+- **WHEN** the pillar's `agents/` directory is enumerated
+- **THEN** exactly those five files are present, and each filename stem equals its frontmatter `name`
+
+#### Scenario: No second copy of an agent exists
+
+- **WHEN** the repository is searched for agent files carrying an ACORDIA description
+- **THEN** the only matches are those five files
+
+#### Scenario: A wrapper's carried copy is not a second editable source
+
+- **WHEN** a lead wrapper's copy of the orchestrator body is compared with `agents/cyber-analyst.md`
+- **THEN** they are byte-identical, and only the agent file is edited directly
+
+#### Scenario: The removed pillar leaves no agent behind
+
+- **WHEN** the repository is searched for `acordia-operators/` and for agent files named
+  `cyber-operator`, `web-application`, `mobile-application`, `cloud-security` or `internal-network`
+- **THEN** neither the directory nor any of those files is present

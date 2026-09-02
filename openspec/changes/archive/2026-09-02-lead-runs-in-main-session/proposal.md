@@ -45,7 +45,7 @@ exactly what loads them.
   without the ability to dispatch, it stops and reports that it was entered by the wrong route rather
   than proceeding as a lead without legs.
 - **The duplication is made impossible to drift.** The orchestrator's body now exists in three files.
-  `~/ai/checks/check-acordia.sh` gains a fifth invariant asserting the two wrappers contain the agent
+  `~/ai/checks/check-acordia.sh` gains a seventh invariant asserting the two wrappers contain the agent
   body byte-identically, in the same manner as the existing byte-identity check on the two marketplace
   catalogs.
 - **No doctrine is authored.** The inlined text is the existing prompt, unchanged. The only new prose

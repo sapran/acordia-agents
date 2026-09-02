@@ -15,7 +15,7 @@
 
 ## 3. Drift gate
 
-- [x] 3.1 Add a fifth invariant to `~/ai/checks/check-acordia.sh`: the orchestrator body appears
+- [x] 3.1 Add a seventh invariant to `~/ai/checks/check-acordia.sh`: the orchestrator body appears
   byte-identically in both wrappers and the agent file; failure names the diverging file.
 - [x] 3.2 Negative-test it — induce drift in one wrapper, confirm the gate fails naming that file,
   restore, confirm it passes.

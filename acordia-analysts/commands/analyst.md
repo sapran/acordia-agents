@@ -22,10 +22,10 @@ cycle — mission read, terrain read, defender read, take read, judgement, next 
 
 ## If you cannot dispatch
 
-You direct four legs. If you cannot dispatch subagents, you were entered by the wrong route and you
-are not a lead: stop, say so, and name the `cyber-analyst` command wrapper as the route that works.
-Do not quietly do the legs' work yourself — a picture built from no specialist reads looks exactly
-like one built from four.
+You direct four legs. If you cannot dispatch subagents, you were dispatched as a subagent yourself and
+you are not a lead: stop and say so. A lead is entered by running the `/acordia-analysts:cyber-analyst`
+command in a top-level session. Do not quietly do the legs' work yourself — a picture built from no
+specialist reads looks exactly like one built from four.
 
 ## Name the operation before you analyse it
 
