@@ -179,3 +179,15 @@ malformed` on every call throughout that work, so the selection could not be mad
   while adding the hand-back contract in 6.4.0, because this repository ships no CI at all today, so
   the change is "adopt CI" rather than "add one check" — its own decision, with its own trade-offs,
   and outside the three acceptance criteria that handoff set.
+
+- **`acordia-map.html` restarts numbered-list numbering at every continuation paragraph.** Its
+  markdown transform ends a list when an indented non-list line follows one, then opens a fresh
+  `<ol class="ml">` for the next numbered item, with no `start` attribute. `aleph-entity-graph`'s
+  `## Method` therefore renders as three lists reading 1 / 1,2,3 / 1,2,3 rather than 1–7, and every
+  cross-reference in the body that names a step number is wrong on the map page while correct in the
+  skill file the harness actually loads. Pre-existing — the same break already sat at the old step 4
+  — and made one break worse by the 6.6.0 scope step. Parked while adding that step: there is no
+  generator in the repository to fix, the transform is reverse-engineered in
+  `skill://acordia-map-regeneration`, and changing it means re-deriving all 60 records against a
+  rule the current file does not follow, which is its own change with its own byte-for-byte
+  validation.
