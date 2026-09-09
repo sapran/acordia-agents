@@ -41,7 +41,7 @@ Six steps. Four dispatch to the leg that owns them; the last two are the orchest
 - **End-neutral closure.** Every pass reaches a judgement *and* a next move. "Insufficient information" is not a stopping point — it is a gap to name and a collection task to hand back.
 - **Gap-naming on every judgement.** Run `naming-the-gaps`: state the specific reads you do not yet have and what would close them. The loop's output includes the gaps that bound it.
 - **Calibrated confidence on every judgement.** Run `calibrated-confidence`: attach a confidence band to each claim; where the legs disagree, surface the disagreement rather than averaging it away.
-- **Passive posture.** The loop reads, models, and judges. It never acts — no file edits, no payloads, no credential validation. Execution belongs to the human operator the analyst advises, so the loop's outcome judgement rests on evidence reported back rather than observed first-hand; say which is which.
+- **Passive posture.** The loop reads, models, and judges. It never acts — no edits to the material under analysis, no payloads, no credential validation. Execution belongs to the human operator the analyst advises, so the loop's outcome judgement rests on evidence reported back rather than observed first-hand; say which is which.
 - **Handoff discipline.** Each dispatch carries the objective, the operating logic, the stage, the tempo, the risk tolerance, what is already established, and what must not be touched; each return carries what was done, what was learned, its confidence, the exposure it incurred, and what was deliberately not done. The boundary between units is where mistakes enter, and this is what keeps them out.
 
 ## Where this runs

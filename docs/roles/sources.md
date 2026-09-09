@@ -81,3 +81,12 @@ recall.
 - **An empirical base rate for objective drift.** `Monte` states that operations move between
   objective categories and that this is normal (p. 25), but gives no frequency, and nothing else in
   the library measures it. The grid claims drift happens, not how often.
+- **A doctrinal position on disclosing credential material in a finished product.** Searched for what
+  a report hands over as against what it judges, and for handling norms separating collected evidence
+  from the operation's own material. The library grounds the *distinction* — `Monte` p. 125 defines
+  operational security as minimising exposure of the operation's own existence, which is why one's own
+  credentials are a different category rather than a stricter case of the target's, and `Monte` p. 129
+  with `Heuer` p. 79 ground reading a value only when a judgement needs it. It holds nothing on what a
+  product may disclose to the party that owns the credential. The ownership-gated disclosure rule in
+  `credential-harvest-triage` and `briefing-reporting` is therefore this repository's own reasoning
+  from the consumer's need, and is marked as such rather than attributed.

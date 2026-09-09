@@ -71,4 +71,4 @@ Per-OS map of on-disk and in-memory credential stores. Extraction is passive ana
 
 **Cross-cutting**
 
-- OS-store credentials classify by user scope (`scope: account` or `host`), except LSA/machine-account material which is `scope: host`+ (can pivot to domain via silver-ticket-style analysis — flag for `identity-directory-trust`). Reporting via [`credential-harvest-triage`](../credential-harvest-triage/SKILL.md); source cites path within the collected image, redacting the analyst's own home directory.
+- OS-store credentials classify by user scope (`scope: account` or `host`), except LSA/machine-account material which is `scope: host`+ (can pivot to domain via silver-ticket-style analysis — flag for `identity-directory-trust`). Reporting via [`credential-harvest-triage`](../credential-harvest-triage/SKILL.md), ownership settled first. Send store extractions — `secretsdump`, `chainbreaker`, a keyring parse — to a file rather than to standard output, and let the path within the collected image identify the finding while you triage it, redacting your own home directory.

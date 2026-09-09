@@ -68,4 +68,4 @@ Credentials leak into logs constantly. Extraction here is grep-shaped across col
 
 **Cross-cutting**
 
-- Log-sourced credentials often have unknown freshness (log retention window) and unknown revocation status. Mark `freshness: unknown` unless the log line carries a timestamp inside the retention SLA. Classification and reporting via [`credential-harvest-triage`](../credential-harvest-triage/SKILL.md); source path in the report references the log file, not the credential value.
+- Log-sourced credentials often have unknown freshness (log retention window) and unknown revocation status. Mark `freshness: unknown` unless the log line carries a timestamp inside the retention SLA. Classification and reporting via [`credential-harvest-triage`](../credential-harvest-triage/SKILL.md), ownership settled first. Redirect the grep to a file rather than letting it print — a log sweep matches in bulk, so a printed one puts every hit on your screen and into the session record at once — and identify a finding by log file plus line while you triage it.
