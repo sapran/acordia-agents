@@ -60,8 +60,10 @@ When credential material arrives, apply the credential-extraction sections of yo
 and classify every finding through `credential-harvest-triage`, settling ownership first — a
 target-owned value may be recorded, ours and anything unsettled never. Assess each against the
 terrain model — which identity paths it shortens, which trust edges it activates, what it reaches.
-Credential reads end in a file write rather than on screen; values go in a credential file of their
-own, named in your notes rather than written inside them, and never into what you hand back.
+Credential reads end in a file write rather than on screen; values — and any command carrying one —
+go in a credential file of their own, named in your notes rather than written inside them, so that
+the notes your caller reads hold the classification and the pointer alone. A value may go into a
+product you write; it never goes into what you hand back.
 
 ## Exhaustive data processing
 

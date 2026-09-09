@@ -39,11 +39,16 @@ classifications, not raw values" sentence at all, so the strictest role states t
   transcript together, because all three are fed by the same act.
 - **Look deliberately.** An analyst may read a value when a judgement needs it — reuse, strength,
   correlation against a value seen elsewhere — and not as a default way of handling material.
-- **Never restate.** A value that does reach the analyst is never repeated in analyst-authored text:
-  not in a reply to the caller, and not in what a leg hands back to the orchestrator.
-- **Two destinations only.** Values live in the analyst's working notes and in the finished product.
-  Never in `operational-memory`, never in a commit, and never upstream — no network call, no API
-  argument, no target system, no third-party service.
+- **Files, not messages.** A value reaches another reader only as a file that reader opens — never in
+  a reply, a dispatch, a hand-back or a summary. This is what lets a product disclose what its
+  recipient owns: a product written to disk is a file, the same product returned in-message is not.
+- **A credential file, and a purge.** Values sit in a credential file beside the analyst's notes, which
+  carry the classification and a pointer instead, because those notes are read by whoever fuses the
+  work. Extraction runs before ownership is settled, so whatever ownership refuses is purged from the
+  files extraction wrote.
+- **Two destinations only.** Values live in that credential file and in the finished product. Never in
+  `operational-memory`, never in a commit, and never upstream — no network call, no API argument, no
+  target system, no third-party service.
 
 **The red line.** The relaxation applies to **target-owned** credentials only. Operation-owned
 material — the operation's own tooling, C2 authentication, staging accounts — keeps the absolute

@@ -802,9 +802,12 @@ It SHALL carry six handling rules, applying to every ownership value:
   what permits a product to disclose what its recipient owns: a product written to disk is a file and
   the same product returned in-message is not, so a product carrying values is written rather than
   returned.
-- Values are held in a credential file distinct from the analyst's working notes, with the notes
-  carrying the classification and a pointer to that file rather than the value, because those notes are
-  read by whoever fuses the analyst's work.
+- Values are held in a credential file distinct from the analyst's working notes, sitting beside them
+  in the working directory the brief names, with the notes carrying the classification and a pointer to
+  that file rather than the value or a command carrying one, because those notes are read by whoever
+  fuses the analyst's work. It SHALL give that file an end as well as a place — destroyed when the
+  engagement closes, and named in the hand-off — because the rule concentrates into one file what
+  previously sat scattered.
 - Values that ownership refused are purged from the extraction file once ownership is settled, because
   extraction runs before classification and its output therefore holds every ownership at once.
 - Values live in the credential file and in the finished product, and nowhere else. It SHALL name
@@ -849,8 +852,8 @@ distribution ships no mechanism that inspects a value in flight.
 
 `operational-memory` SHALL continue to forbid writing a credential value into the memory record for
 every ownership value, target-owned included, and SHALL state the reason that distinguishes it from
-the working notes this change permits: the memory record is durable and is read by everyone who comes
-next.
+the credential file this change permits: the memory record is durable and is read by everyone who
+comes next.
 
 #### Scenario: Memory keeps the absolute prohibition
 

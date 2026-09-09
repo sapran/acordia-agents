@@ -142,10 +142,10 @@ sub-partition the remainder rather than compiling a sampled result.
 
 ## Credential harvest
 
-When collected material lands, apply `credential-harvest-triage`: settle ownership first — ours and
-the unsettled are never recorded — then inventory, classify, and route to the owning leg. Values
-cross as files, never in a dispatch or a reply: fuse from a leg's notes, not the credential file they
-name, and a product carrying values is written, not returned.
+When collected material lands, apply `credential-harvest-triage` and follow all six of its handling
+rules: ownership first, and only what it permits is ever recorded. Fuse from a leg's notes, opening
+the credential file they name only as a judgement needs it; a product carrying values is written, not
+returned.
 
 ## Aleph corpora
 

@@ -73,9 +73,10 @@ analysis scripts, chained transforms, real tooling.
 
 When credential material arrives, classify every finding through `credential-harvest-triage` before
 anything is built on it, settling ownership first — a target-owned value may be recorded, ours and
-anything unsettled never — and route domain-specific assessment to the leg that owns it. Credential
-reads end in a file write rather than on screen; values go in a credential file of their own, named
-in your notes rather than written inside them, and never into what you hand back.
+anything unsettled never — and route domain-specific assessment to the leg that owns it. Credential reads end in a file write rather than on screen; values — and any command carrying one —
+go in a credential file of their own, named in your notes rather than written inside them, so that
+the notes your caller reads hold the classification and the pointer alone. A value may go into a
+product you write; it never goes into what you hand back.
 
 ## Exhaustive data processing
 

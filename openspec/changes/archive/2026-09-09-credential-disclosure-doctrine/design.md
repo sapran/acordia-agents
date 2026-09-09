@@ -39,7 +39,11 @@ cannot drift from the source of truth, and this change touches no competency.
 - Enforcement. No hook, no filter, no helper. Named as out of scope in the proposal and restated in
   the specs as a prohibition on claiming enforcement the distribution does not have.
 - A masking or fingerprinting scheme. Considered and dropped — see Decisions.
-- A second `.acordia/` sink. Working notes are notes; the prompts already permit writing them.
+- A second `.acordia/` sink. Values live in a credential file beside the analyst's notes in the
+  working directory the brief already names, not in a new tree under `.acordia/`. Review corrected an
+  earlier draft of this design that put values in the working notes themselves: the orchestrator is
+  required to read a leg's notes before fusing, so that draft would have pulled every value into its
+  context automatically.
 - Any change to `docs/roles/operational-analyst.md`, `skill-sets.json`, or the roster.
 
 ## Decisions
@@ -126,10 +130,13 @@ unavoidable in doctrine. "Look deliberately" bounds how often it happens; it can
 proposal names the `PreToolUse` / `PostToolUse` hook as the thing that would, and places it outside
 this change rather than implying the prose achieves it.
 
-**Working notes become a credential store nobody destroys.** → The rule confines values to the
-engagement's own notes and the product, and `operational-memory` stays closed so nothing accumulates
-across engagements. Beyond that, the lifetime of an operator's own working directory is the operator's
-to manage; the distribution states a convention and has never claimed to enforce a path.
+**The credential file becomes a store nobody destroys.** → This is the risk the doctrine creates
+rather than inherits: it gathers into one named file what previously sat scattered through notes. The
+rule therefore gives the file a place, an end and an owner — beside the notes in the working directory
+the brief names, destroyed when the engagement closes, named in the hand-off so whoever inherits it
+knows it exists. `operational-memory` stays closed so nothing accumulates across engagements. Beyond
+that the lifetime of an operator's own working directory is the operator's to manage; the distribution
+states a convention and has never claimed to enforce a path.
 
 **`briefing-reporting` is the largest single reversal and the easiest to half-apply.** → Its citation
 paragraph, its verification paragraph and its spec requirement all move together. Applying the
