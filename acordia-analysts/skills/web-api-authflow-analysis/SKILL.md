@@ -45,10 +45,10 @@ Passive analysis of collected auth material — tokens, cookies, API-key strings
 
 **JWTs**
 
-- Split on `.`; base64url-decode header and payload (payload only for classification; do not archive contents that are themselves PII/credentials).
+- Split on `.`; base64url-decode header and payload. The token itself is a credential and follows the ownership gate. What it carries is graded separately, and does not inherit the outer token's ownership: identity claims are personal data, kept only as far as the judgement requires, while a credential nested inside the payload — an embedded access or refresh token, a delegation token, a shared-secret claim — is its own finding whose ownership is settled on its own terms before anything is kept.
 - Header fields to record: `alg` (flag `none` and `HS256` with weak-secret risk), `kid` (key identifier — useful for correlation), `typ`.
 - Payload fields to record: `iss`, `aud`, `sub`, `iat`, `exp`, `scope`/`scp`, `roles`, `azp`. Compute `exp - now` for freshness; expired ≠ useless (still shows the auth model).
-- Tooling: `jwt-cli decode --no-verify`, `python -c 'import jwt; print(jwt.decode(t, options={"verify_signature": False}))'`.
+- Tooling: `jwt-cli decode --no-verify`, `python -c 'import jwt; print(jwt.decode(t, options={"verify_signature": False}))'`. Both print by default and the second puts the token in the process table and the shell history: redirect the output to your credential file and pass the token from a file or a variable, never as a literal argument.
 
 **OAuth 2 / OIDC**
 
@@ -75,4 +75,4 @@ Passive analysis of collected auth material — tokens, cookies, API-key strings
 
 **Cross-cutting**
 
-- Web/API credentials often have narrow `scope` but broad `reuse-potential` (same token works across many endpoints). Refresh tokens and long-lived PATs always mark P0 or P1 depending on scope. All classification and reporting flows through [`credential-harvest-triage`](../credential-harvest-triage/SKILL.md); the report cites cookie name / claim identifier, never the token itself.
+- Web/API credentials often have narrow `scope` but broad `reuse-potential` (same token works across many endpoints). Refresh tokens and long-lived PATs always mark P0 or P1 depending on scope. All classification and reporting flows through [`credential-harvest-triage`](../credential-harvest-triage/SKILL.md), ownership settled first. Send capture and decode output to a file rather than to standard output, and let the cookie name or claim identifier carry the finding while you triage it.

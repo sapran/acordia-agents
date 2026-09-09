@@ -203,3 +203,17 @@ malformed` on every call throughout that work, so the selection could not be mad
   `task` is present, and stop if it is not — rather than prose about a missing tool. Parked
   deliberately out of the 6.7.0 change, whose three items were the profile-scope lead fix and the two
   skill bodies; this is an agent-prompt change with its own A/B proof obligation.
+- **`acordia-analysts/agents/cyber-analyst.md` is effectively at its ceiling.** After 6.8.0 the
+  orchestrator body sits at 10,442 of the 10,500 characters `openspec/specs/agent-roster/spec.md`
+  allows, enforced by `tools/check-acordia.sh` check 8. The credential routing rule was rewritten three
+  times to fit, and the shape it finally took — the orchestrator names `credential-harvest-triage` and
+  adopts its six handling rules by reference, stating in its own words only the two decisions that are
+  its alone — is defensible on the merits but was reached under space pressure rather than chosen. Two
+  review rounds found defects in the versions written while saving characters, including one where a
+  closed grant became a list of prohibitions and personal third-party credentials fell through it.
+  Candidate fix: move technique detail out to the skill that owns it, as the spec's own remedy directs.
+  `## Name the operation before you analyse it` (1,536 chars) and `## What this pillar is, and is not`
+  (1,391) are the largest sections and the likeliest donors, though both read as doctrine rather than
+  technique, so the move needs judgement rather than a cut. Parked out of 6.8.0 deliberately: it is an
+  editorial pass over the orchestrator prompt with its own review obligation, and doing it inside a
+  safety-sink diff would have coupled unrelated risk into one reviewable unit.

@@ -98,4 +98,4 @@ Feed what you find into `assessing-take-value` rather than treating an Aleph hit
 
 - **Read only.** This skill searches, expands and reads. It never ingests, writes, tags, cross-references on demand, or deletes — those change another team's investigation. If a write is genuinely needed, hand it to the operator or the human, do not attempt it.
 - The API key is expected to be READ-scoped; if a call fails with 403 mentioning WRITE or admin, that is the boundary working, not an obstacle to route around.
-- Never place raw credential values, personal identifiers beyond what the judgement requires, or bulk document text into a report. Report classifications, entity ids and provenance.
+- Never place personal identifiers beyond what the judgement requires, or bulk document text, into a report — report classifications, entity ids and provenance. A credential surfaced from the corpus follows the ownership gate in `credential-harvest-triage` rather than this rule: a target-owned one may be reported, your own may not.
