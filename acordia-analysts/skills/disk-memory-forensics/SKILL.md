@@ -58,4 +58,4 @@ Post-collection extraction from disk images and memory captures. All work is pas
 
 **Cross-cutting**
 
-- Every extraction is classified and reported via [`credential-harvest-triage`](../credential-harvest-triage/SKILL.md); this skill never emits raw values.
+- Every extraction is classified and reported via [`credential-harvest-triage`](../credential-harvest-triage/SKILL.md), ownership settled first. Send the parser's output to a file rather than to standard output — a printed dump lands in the session record as well as on your screen — and work from the receipt.

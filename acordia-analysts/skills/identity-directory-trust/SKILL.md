@@ -60,4 +60,4 @@ Passive extraction from directory-service artefacts already in hand (NTDS dumps,
 
 **Cross-cutting**
 
-- Directory-derived credentials classify as `scope: domain` or higher; `krbtgt`, tier-0 accounts, and enterprise-CA private keys always mark `priority: P0`. All output flows through [`credential-harvest-triage`](../credential-harvest-triage/SKILL.md); no raw hashes or keys in reports.
+- Directory-derived credentials classify as `scope: domain` or higher; `krbtgt`, tier-0 accounts, and enterprise-CA private keys always mark `priority: P0`. All output flows through [`credential-harvest-triage`](../credential-harvest-triage/SKILL.md), ownership settled first; `secretsdump` and its kin write to a file rather than to standard output, and the account name plus its domain path identifies a finding while you triage it.
