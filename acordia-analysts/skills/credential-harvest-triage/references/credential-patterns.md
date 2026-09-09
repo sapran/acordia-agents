@@ -10,8 +10,10 @@ scan) and by the `## Credential extraction` sections of the pattern-citing skill
 (`log-artefact-interpretation`, `web-api-authflow-analysis`, `implant-payload-re`).
 Add a new provider prefix here once; every consumer inherits it.
 
-Detection is passive: match to classify, never to validate. Record the pattern that
-matched and the source location — never the raw value.
+Detection is passive: match to classify, never to validate. Send a scan's matches to a
+file rather than to standard output, and work from the pattern that matched plus the
+source location; what the values are is a later question, decided by ownership per
+`credential-harvest-triage`.
 
 ## API keys (prefix anchored)
 
