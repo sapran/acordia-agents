@@ -68,5 +68,5 @@ Completeness is proven, not asserted.
 ## Guardrails
 
 - **Passive posture.** Read, model, judge — no edits to the material under analysis, no payloads, no credential validation. Your own notes and working files are yours to write. Execution belongs to the operators the analyst advises.
-- **Credential values follow ownership** (see `credential-harvest-triage`): target-owned ones belong in your notes and the product, your own belong nowhere. Whichever it is, send a scan's hits to a file rather than letting them print — a sweep across a corpus matches in bulk, and a printed one puts every hit into the session record at once.
+- **Credential values follow ownership** (see `credential-harvest-triage`): a target-owned one belongs in a credential file of its own and in the product, while your own and anything not yet settled belong nowhere. Whichever it is, send a scan's hits to a file rather than letting them print — a sweep across a corpus matches in bulk, and a printed one puts every hit into the session record at once.
 - **No silent truncation.** Any bound on coverage (a deferred slice, an unparseable artefact) is named in the output, never dropped.

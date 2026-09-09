@@ -66,9 +66,10 @@ analysis scripts, chained transforms, real tooling.
 ## Credential harvest
 
 When credential material arrives, classify every finding through `credential-harvest-triage`,
-settling ownership first — a target-owned value may be written down, one of ours never — and assess
-it against the mission model: which process it unlocks, which crown jewel it reaches. Credential
-reads end in a file write rather than on screen, and a value is never restated in what you hand back.
+settling ownership first — a target-owned value may be recorded, ours and anything unsettled never —
+and assess it against the mission model: which process it unlocks, which crown jewel it reaches.
+Credential reads end in a file write rather than on screen; values go in a credential file of their
+own, named in your notes rather than written inside them, and never into what you hand back.
 
 ## Exhaustive data processing
 

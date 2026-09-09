@@ -45,7 +45,7 @@ Passive analysis of collected auth material — tokens, cookies, API-key strings
 
 **JWTs**
 
-- Split on `.`; base64url-decode header and payload. The token itself is a credential and follows the ownership gate; the identity claims inside it are personal data and are kept only as far as the judgement requires, whoever owns the token.
+- Split on `.`; base64url-decode header and payload. The token itself is a credential and follows the ownership gate. What it carries is graded separately, and does not inherit the outer token's ownership: identity claims are personal data, kept only as far as the judgement requires, while a credential nested inside the payload — an embedded access or refresh token, a delegation token, a shared-secret claim — is its own finding whose ownership is settled on its own terms before anything is kept.
 - Header fields to record: `alg` (flag `none` and `HS256` with weak-secret risk), `kid` (key identifier — useful for correlation), `typ`.
 - Payload fields to record: `iss`, `aud`, `sub`, `iat`, `exp`, `scope`/`scp`, `roles`, `azp`. Compute `exp - now` for freshness; expired ≠ useless (still shows the auth model).
 - Tooling: `jwt-cli decode --no-verify`, `python -c 'import jwt; print(jwt.decode(t, options={"verify_signature": False}))'`.

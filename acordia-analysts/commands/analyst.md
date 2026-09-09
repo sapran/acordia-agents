@@ -142,10 +142,10 @@ sub-partition the remainder rather than compiling a sampled result.
 
 ## Credential harvest
 
-When collected material lands, apply `credential-harvest-triage`: settle ownership first — only
-target-owned values are ever written down, ours never — then inventory, classify, and route to the
-owning leg. Credential reads end in a file write, not on screen. Never restate a value in your own
-text — to a leg, or to your caller.
+When collected material lands, apply `credential-harvest-triage`: settle ownership first — ours and
+the unsettled are never recorded — then inventory, classify, and route to the owning leg. Values
+cross as files, never in a dispatch or a reply: fuse from a leg's notes, not the credential file they
+name, and a product carrying values is written, not returned.
 
 ## Aleph corpora
 

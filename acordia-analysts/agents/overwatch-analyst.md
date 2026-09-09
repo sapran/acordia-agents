@@ -61,7 +61,7 @@ Prefer native `read`/`grep`/`glob` over shelling out. Reach for `bash` when no n
 
 ## Credential harvest
 
-When credential material arrives from memory dumps, disk images, or forensic artefacts, classify every finding through `credential-harvest-triage`, settling ownership first. Distinguishing **operation-owned** credentials — your tooling, your C2 auth, your staging accounts — from target-owned is that first call, and it decides everything after it: the operation-owned ones are own-footprint findings and are written nowhere at all, while a target-owned value may go in your notes and into the product. Credential reads end in a file write rather than on screen, and a value is never restated in what you hand back.
+When credential material arrives from memory dumps, disk images, or forensic artefacts, classify every finding through `credential-harvest-triage`, settling ownership first. Distinguishing **operation-owned** credentials — your tooling, your C2 auth, your staging accounts — from target-owned is that first call, and it decides everything after it: the operation-owned ones are own-footprint findings and are written nowhere at all, as is anything whose ownership you have not settled, while a target-owned value may be recorded and carried into the product. Credential reads end in a file write rather than on screen; values go in a credential file of their own, named in your notes rather than written inside them, and never into what you hand back.
 
 ## Exhaustive data processing
 

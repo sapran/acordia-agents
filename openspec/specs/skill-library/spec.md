@@ -777,15 +777,16 @@ values — `target`, `operation`, `third-party`, `unknown` — and SHALL state t
 as `operation` until adjudicated, because one collected artefact holds both kinds and the error costs
 are asymmetric.
 
-It SHALL grant the following to a **target-owned** credential and to no other ownership value: its
-value may be written to the analyst's working notes, and it may be carried into the finished product.
-It SHALL state that an **operation-owned** credential — the operation's own tooling, C2
-authentication, staging accounts — is written nowhere at all, working notes included, because
-protecting the operation's own material is operational security rather than evidence handling
-(`Monte`#operational-security). It SHALL state that a **third-party** credential is disclosed when it
-is corporate and carried by classification alone when it is personal.
+It SHALL grant the following to a **target-owned** credential and to a corporate **third-party** one,
+and to no other ownership value: the value may be recorded in a credential file and carried into the
+finished product. It SHALL state that an **operation-owned** credential — the operation's own tooling,
+C2 authentication, staging accounts — is written nowhere at all, because protecting the operation's
+own material is operational security rather than evidence handling (`Monte`#operational-security). It
+SHALL state that a **personal third-party** credential is carried by classification alone, because
+disclosing an individual's own credential to their employer harms someone who is not party to the
+operation.
 
-It SHALL carry four handling rules, applying to every ownership value:
+It SHALL carry six handling rules, applying to every ownership value:
 
 - A command reading credential-bearing material terminates in a file write rather than in standard
   output, and the analyst works from the receipt it returns — type, count and source location. It
@@ -796,10 +797,18 @@ It SHALL carry four handling rules, applying to every ownership value:
   elsewhere — and not as the default way of handling material. It SHALL state the reason: acquiring
   awareness costs exposure (`Monte`#operational-security), and information past the minimum a
   judgement needs raises confidence without raising accuracy (`Heuer`#information-quantity).
-- A value that does reach the analyst is never repeated in analyst-authored text — neither in a reply
-  to the caller nor in what a leg hands back to the orchestrator.
-- Values live in the analyst's working notes and in the finished product, and nowhere else. It SHALL
-  name durable memory, a commit, and any upstream destination — a network call, an API argument, a
+- A value reaches another reader only as a file that reader opens, never in a reply, a dispatch, a
+  hand-back or a summary, and never quoted into prose composed in-session. It SHALL state that this is
+  what permits a product to disclose what its recipient owns: a product written to disk is a file and
+  the same product returned in-message is not, so a product carrying values is written rather than
+  returned.
+- Values are held in a credential file distinct from the analyst's working notes, with the notes
+  carrying the classification and a pointer to that file rather than the value, because those notes are
+  read by whoever fuses the analyst's work.
+- Values that ownership refused are purged from the extraction file once ownership is settled, because
+  extraction runs before classification and its output therefore holds every ownership at once.
+- Values live in the credential file and in the finished product, and nowhere else. It SHALL name
+  durable memory, a commit, and any upstream destination — a network call, an API argument, a
   target-owned system, a third-party service — as excluded, with no ownership value exempt from the
   upstream exclusion.
 
@@ -812,21 +821,23 @@ distribution ships no mechanism that inspects a value in flight.
 - **THEN** it carries an `ownership` field taking `target`, `operation`, `third-party` or `unknown`,
   and states that `unknown` is handled as `operation` until adjudicated
 
-#### Scenario: Only target-owned material may be written
+#### Scenario: Ownership decides what may be written
 
 - **WHEN** the triage skill's guardrails are read
-- **THEN** a target-owned value may be written to working notes and carried into the product, an
-  operation-owned value is written nowhere including working notes, and a third-party value is
-  disclosed when corporate and carried by classification alone when personal
+- **THEN** a target-owned value and a corporate third-party one may be recorded in a credential file
+  and carried into the product, an operation-owned value is written nowhere at all, an unsettled one is
+  handled as operation-owned, and a personal third-party one is carried by classification alone
 
-#### Scenario: The four handling rules are present
+#### Scenario: The six handling rules are present
 
 - **WHEN** the triage skill's guardrails are read
 - **THEN** they require a credential-reading command to terminate in a file write rather than standard
   output and state that one act feeds displayed output, context and transcript together; require a
-  value to be read when a judgement needs it rather than by default; forbid restating a value in
-  analyst-authored text including a hand-back to the orchestrator; and confine values to working notes
-  and the product, naming durable memory, a commit and every upstream destination as excluded
+  value to be read when a judgement needs it rather than by default; permit a value to cross only as a
+  file its reader opens and never in a reply, dispatch, hand-back or summary; hold values in a
+  credential file distinct from the working notes; require values ownership refused to be purged from
+  the extraction file; and confine values to that file and the product, naming durable memory, a commit
+  and every upstream destination as excluded
 
 #### Scenario: No enforcement is claimed
 
@@ -839,7 +850,7 @@ distribution ships no mechanism that inspects a value in flight.
 `operational-memory` SHALL continue to forbid writing a credential value into the memory record for
 every ownership value, target-owned included, and SHALL state the reason that distinguishes it from
 the working notes this change permits: the memory record is durable and is read by everyone who comes
-next, whereas working notes belong to one engagement.
+next.
 
 #### Scenario: Memory keeps the absolute prohibition
 

@@ -58,9 +58,10 @@ analysis scripts, chained transforms, real tooling.
 
 When credential material arrives, apply the credential-extraction sections of your specialist skills
 and classify every finding through `credential-harvest-triage`, settling ownership first — a
-target-owned value may be written down, one of ours never. Assess each against the terrain model —
-which identity paths it shortens, which trust edges it activates, what it reaches. Credential reads
-end in a file write rather than on screen, and a value is never restated in what you hand back.
+target-owned value may be recorded, ours and anything unsettled never. Assess each against the
+terrain model — which identity paths it shortens, which trust edges it activates, what it reaches.
+Credential reads end in a file write rather than on screen; values go in a credential file of their
+own, named in your notes rather than written inside them, and never into what you hand back.
 
 ## Exhaustive data processing
 
