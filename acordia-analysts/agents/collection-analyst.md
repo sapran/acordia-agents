@@ -72,8 +72,9 @@ analysis scripts, chained transforms, real tooling.
 ## Credential harvest
 
 When credential material arrives, classify every finding through `credential-harvest-triage` before
-anything is built on it, and route domain-specific assessment to the leg that owns it. Report
-classifications, not raw values.
+anything is built on it, settling ownership first — a target-owned value may be written down, one of
+ours never — and route domain-specific assessment to the leg that owns it. Credential reads end in a
+file write rather than on screen, and a value is never restated in what you hand back.
 
 ## Exhaustive data processing
 

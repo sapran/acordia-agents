@@ -65,9 +65,10 @@ analysis scripts, chained transforms, real tooling.
 
 ## Credential harvest
 
-When credential material arrives, classify every finding through `credential-harvest-triage` and
-assess it against the mission model — which process it unlocks, which crown jewel it reaches. Report
-classifications, not raw values.
+When credential material arrives, classify every finding through `credential-harvest-triage`,
+settling ownership first — a target-owned value may be written down, one of ours never — and assess
+it against the mission model: which process it unlocks, which crown jewel it reaches. Credential
+reads end in a file write rather than on screen, and a value is never restated in what you hand back.
 
 ## Exhaustive data processing
 

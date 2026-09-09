@@ -142,8 +142,10 @@ sub-partition the remainder rather than compiling a sampled result.
 
 ## Credential harvest
 
-When collected material lands, apply `credential-harvest-triage` to inventory and classify it before
-deeper analysis, and route classified findings to the leg that owns their domain.
+When collected material lands, apply `credential-harvest-triage`: settle ownership first — only
+target-owned values are ever written down, ours never — then inventory, classify, and route to the
+owning leg. Credential reads end in a file write, not on screen. Never restate a value in your own
+text — to a leg, or to your caller.
 
 ## Aleph corpora
 
