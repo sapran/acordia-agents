@@ -808,8 +808,11 @@ It SHALL carry six handling rules, applying to every ownership value:
   fuses the analyst's work. It SHALL give that file an end as well as a place — destroyed when the
   engagement closes, and named in the hand-off — because the rule concentrates into one file what
   previously sat scattered.
-- Values that ownership refused are purged from the extraction file once ownership is settled, because
-  extraction runs before classification and its output therefore holds every ownership at once.
+- Values that ownership refused are purged from every file the extraction steps wrote — raw tool
+  output included — once ownership is settled, because extraction runs before classification and its
+  output therefore holds every ownership at once. What ownership permitted moves into the credential
+  file and the raw outputs are then deleted, so that they do not become a second durable store with
+  neither an owner nor an end.
 - Values live in the credential file and in the finished product, and nowhere else. It SHALL name
   durable memory, a commit, and any upstream destination — a network call, an API argument, a
   target-owned system, a third-party service — as excluded, with no ownership value exempt from the
@@ -839,8 +842,9 @@ distribution ships no mechanism that inspects a value in flight.
   value to be read when a judgement needs it rather than by default; permit a value to cross only as a
   file its reader opens and never in a reply, dispatch, hand-back or summary; hold values in a
   credential file distinct from the working notes; require values ownership refused to be purged from
-  the extraction file; and confine values to that file and the product, naming durable memory, a commit
-  and every upstream destination as excluded
+  every file the extraction steps wrote, with the raw outputs deleted once what was permitted has moved
+  into the credential file; and confine values to that file and the product, naming durable memory, a
+  commit and every upstream destination as excluded
 
 #### Scenario: No enforcement is claimed
 

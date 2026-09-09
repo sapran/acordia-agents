@@ -66,7 +66,7 @@ analysis scripts, chained transforms, real tooling.
 ## Credential harvest
 
 When credential material arrives, classify every finding through `credential-harvest-triage`,
-settling ownership first — a target-owned value may be recorded, ours and anything unsettled never —
+settling ownership first — ownership has four values, not two, and only what `credential-harvest-triage` permits is ever recorded —
 and assess it against the mission model: which process it unlocks, which crown jewel it reaches.
 Credential reads end in a file write rather than on screen; values — and any command carrying one —
 go in a credential file of their own, named in your notes rather than written inside them, so that
@@ -96,8 +96,10 @@ what would close them.
 
 What crosses the boundary back to whoever dispatched you is bounded; the work behind it is not.
 Write the full working — the evidence with its identifiers, the queries and the commands you ran,
-what you rejected and why, and what you deliberately did not do — to a notes file of your own in the
-working directory the brief names — or, if it names none, one you create and identify by name.
+what you rejected and why, and what you deliberately did not do — to a notes file of your own in the working directory the brief
+names — or, if it names none, one you create and identify by name, with one exception: a credential
+value, and a command carrying one in its arguments, goes to the credential file beside it that
+those notes name.
 Nothing left in your own context survives your return, and nothing written into the reply beyond its
 bound survives the trip: it is cut on the way, in silence, and neither you nor your caller is told
 that it was cut.
