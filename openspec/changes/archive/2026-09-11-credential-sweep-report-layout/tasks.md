@@ -5,20 +5,29 @@
   anatomies, what fills the fixed blocks, rules that are not cosmetic, self-check; verify the file
   is markdown, carries exactly one ` ```css ` block, four ` ```html ` blocks and one ` ```sh `
   block, and that the section order matches
-- [x] 1.2 Reproduce the delivered stylesheet verbatim plus exactly two added rules — `.cred.sys`
-  and `.mono` — and name both additions and their reasons immediately below the block; verify every
-  class the four anatomies use has a rule in the sheet
-- [x] 1.3 Write the four block anatomies as placeholder-only HTML in `ANGLE_CAPS` form, never
-  `{BRACED}`, with an example entity identifier of at least 40 characters; verify the file carries
-  no real credential value, no real entity id and no real hostname, and that
-  `grep -cE '\{[A-Z_]{2,}\}'` over the file returns 0
-- [x] 1.4 State the seven rules that are not cosmetic, and close the section by deferring
-  disclosure to `SKILL.md`'s `## Guardrails`, rendering and citation to `briefing-reporting`, and
-  the coverage denominator to `exhaustive-data-processing`; verify the file asserts no doctrinal
-  claim and therefore carries no `doctrine_source` anywhere
-- [x] 1.5 Add the self-check script and the sentence stating its expected verdict; verify the
-  script prints only class names, integer counts and stripped `h2` text, and emits no `pre`,
-  `summary` or attribute value
+- [x] 1.2 Reproduce the delivered stylesheet verbatim plus three changed rules — `.cred.sys`,
+  `.mono` and `ul,ol` — and name each change and its reason immediately below the block; verify
+  every class the four anatomies use has a rule in the sheet, that `.mono` is actually used
+  somewhere in the layout, and that the Gaps `<ol>` resolves to the authored margins rather than
+  user-agent defaults
+- [x] 1.3 Write the four `div.cred` anatomies as placeholder-only HTML drawn from a closed
+  `ANGLE_CAPS` vocabulary declared in its own section, never `{BRACED}`, with an example entity
+  identifier of at least 40 characters, an `Ownership` row on both credential blocks, the holder
+  named by role only, and a derived key-type label rather than the artefact's own first line;
+  verify the file carries no real credential value, no real entity id and no real hostname, that
+  `grep -cE '\{[A-Z_]{2,}\}'` over the file returns 0, and that every token in the vocabulary
+  section appears in an anatomy and vice versa
+- [x] 1.4 State the eight rules that are not cosmetic, including the ownership gate on the
+  disclosure element, and close the section by deferring disclosure to `SKILL.md`'s
+  `## Guardrails`, rendering and citation to `briefing-reporting`, the coverage denominator to
+  `exhaustive-data-processing` and the shape of a gap to `naming-the-gaps`; verify the file asserts
+  no doctrinal claim — no sentence arguing why a product should be shaped a given way rather than
+  stating a rule — and therefore carries no `doctrine_source` anywhere
+- [x] 1.5 Add the self-check script, the sentence stating its expected verdict, the basis of the
+  40-character short-link constant, and the statement that a clean verdict is a lint result rather
+  than a proof and does not replace resolving a sample of the evidence references; verify the
+  script blanks every `<pre>` body before its class and placeholder scans and that no probe can
+  emit a `pre` body, a `summary` body, an attribute value or an evidence identifier
 
 ## 2. The skill body
 
@@ -54,9 +63,14 @@
 - [x] 4.4 Assemble a minimal document from the reference file's own CSS and HTML blocks and run the
   file's own self-check against it; verify it prints `none`, `0`, `none`, `0`, a short-link count of
   `0`, and a section list ending Coverage, Gaps, Hand-off
-- [x] 4.5 Mutation-prove the self-check: delete the `.mono` rule and confirm it names `mono`;
-  restore, change one example href to a `{BRACED}` token and confirm it names that token; restore
-  and confirm the verdict returns clean
+- [x] 4.5 Mutation-prove every probe against the substituted skeleton, each mutation moving
+  exactly one output line: `.mono` rule deleted; a surviving `{BRACED}` token; the template copied
+  with nothing substituted; an href truncated to its display form; an href that is not the anchor's
+  first attribute; a single-quoted `style`; a single-quoted undefined class; an orphan `pre.key`
+  carrying an extra attribute; a keyless `<details>` preceding an orphan `pre.key`; a `<details
+  open>`; an anchor with no `href`. Re-run the pre-review patterns against the same documents and
+  confirm they reported clean, and confirm an artefact quoted inside a `<pre>` body reaches none of
+  the script's output
 - [x] 4.6 Render the assembled document in a browser and confirm it paints — one `.cred.sys`, every
   `<details>` closed by default, the `pre.key` panel dark, the `table.kv` label column 150px
 - [x] 4.7 Confirm the competency grid is untouched: `git diff --stat origin/develop -- docs/roles/`

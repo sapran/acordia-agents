@@ -13,7 +13,7 @@ that show why an unwritten layout is also an unchecked one:
 
 - one `<span class="mono">` with **no `.mono` rule in the stylesheet**, so the span rendered
   unstyled and nothing said so;
-- one evidence link emitted as `href="{ALEPH}/entities/e6cb04bb…"` — an **unsubstituted template
+- one evidence link emitted as `href="{ALEPH}/entities/<id>…"` — an **unsubstituted template
   placeholder**, a well-formed link to nothing. This is exactly the failure `briefing-reporting`
   already names: "a truncated identifier produces a well-formed link to nothing, and counting links
   detects neither failure." The skill names the failure; nothing in the distribution catches it.
@@ -45,21 +45,34 @@ detection patterns.
   residual, excluded and borderline, coverage, gaps, hand-off, footer.
 - **The stylesheet**, verbatim, with `.cred.sys` replacing the inline border and `.mono` given the
   rule it was missing.
-- **Four block anatomies** — system dossier, credential (login variant), credential (key variant),
-  excluded/borderline — each with its field labels, so the artefact, the account and the holder stay
-  three distinguishable things.
+- **Four `div.cred` anatomies** — system dossier, credential (login variant), credential (key
+  variant), excluded/borderline — each with its field labels, so the artefact, the account and the
+  holder role stay three distinguishable things, and each credential block carrying an `Ownership`
+  row.
+- **A closed placeholder vocabulary** the self-check carries, so a slot left unsubstituted in a real
+  report is named rather than shipped.
+- **Two report modes** — `exact` for the credential owner's own responder, `classified` for any
+  other reader — deciding whether a disclosure element appears at all and whether working-file
+  locations are named.
 - **What fills the fixed blocks** — the dateline's fields, the bottom line's counted clauses, the
   coverage probe grid and its three `p.meta` (scoping receipt, unenumerated sets, legs and note
   files), the gaps list, the hand-off ask and standing record, the footer's assertions.
-- **Seven rules that are not cosmetic** — a value only ever inside a collapsed `<details>`;
-  `(exact)` on a summary hiding a verbatim secret; the whole identifier in `href` with only the
-  display text shortened; no placeholder token surviving into the product; every class defined and
-  no `style=` attribute; no count without a denominator, and an unenumerable set labelled
-  unenumerated; the product written to disk and never read back into the session.
-- **A self-check** run against the draft before hand-over, printing a verdict and no content.
-
-Run verdict-only against the 2026-09-11 report, that self-check prints both real defects and the
-inline-style inconsistency, and passes the two things that report got right.
+- **Eight rules that are not cosmetic** — a value only ever inside a collapsed `<details>`; that
+  `<details>` written **only where ownership permits the value into the product**, so an
+  ownership-refused finding is a credential block with no disclosure element rather than an empty
+  one; `(exact)` on a summary hiding a verbatim secret; the whole identifier in `href` with only the
+  display text shortened; no placeholder token surviving into the product, braced or from the
+  vocabulary; every class defined and no `style=` attribute; no count without a denominator, and an
+  unenumerable set labelled unenumerated; the product written to disk and never read back into the
+  session.
+- **A self-check** run against the draft before hand-over, printing a verdict — class names,
+  integer counts and truncated section titles — and never a `pre` body, a `summary` body, an
+  attribute value or an evidence identifier. A precursor of it, run verdict-only against the
+  delivered 2026-09-11 report, printed both real defects and the inline-style inconsistency; the
+  shipped version is stricter and is mutation-proved against a substituted skeleton instead, because
+  the delivered report may not be read again.
+- **A stated limit** — a clean verdict is a lint result, not a proof, and a sample of the evidence
+  references must still be resolved against the issuing system per `briefing-reporting`.
 
 **Presentation only.** The reference decides how a finding is shown, never whether it may be shown.
 What may be disclosed remains decided by `## Guardrails` in `SKILL.md`, gated on ownership. The file

@@ -342,9 +342,12 @@ Each bucket's slice SHALL be dispatched with only that slice. The procedure SHAL
 - **WHEN** `references/report-layout.md` is read
 - **THEN** it organises the product by the system each credential opens, requires every credential
   value to sit inside a collapsed disclosure element rather than in a heading, dateline, banner,
-  field cell or summary, requires an evidence link to carry the whole identifier with only the
-  displayed text shortened, and states that it decides presentation only while `SKILL.md`'s
-  guardrails decide what may be disclosed
+  field cell, tag or summary, requires that disclosure element to be written only where ownership
+  permits the value into the product so that an ownership-refused finding is a credential block
+  with no disclosure element at all, requires every credential block to carry an `Ownership` row,
+  requires an evidence link to carry the whole identifier with only the displayed text shortened,
+  and states that it decides presentation only while `SKILL.md`'s guardrails decide what may be
+  disclosed
 
 ### Requirement: `analyst-loop` skill exists
 

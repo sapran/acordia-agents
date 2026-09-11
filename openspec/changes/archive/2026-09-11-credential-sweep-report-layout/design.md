@@ -70,32 +70,71 @@ The stop condition is written into the work rather than trusted to judgement: a 
 *why* an analytic product should be shaped a given way — an argument rather than a rule — is a
 doctrinal claim, and authoring it requires the literature pass first.
 
-### Three corrections, and no fourth
+### Three corrections, then a fourth round from review
 
-The layout is codified **as delivered**, with exactly three changes:
+The layout was codified **as delivered**, with three changes:
 
-1. `.mono` is defined. The delivered report used the class once with no rule behind it.
+1. `.mono` is defined — and, after review, actually used, on the key fingerprint. Defining a rule
+   nothing reaches leaves the "every class is defined" probe unable to exercise it.
 2. `.cred.sys` replaces an inline `style="border-left:4px solid var(--accent)"` that one system
    block carried and another did not. This is not a tidy-up: it turns "no element carries a
-   `style=` attribute" into a property the self-check can assert, which the inline version made
-   impossible.
-3. No unsubstituted placeholder. The template's own examples are deliberately `ANGLE_CAPS`
-   (`FULL_ENTITY_ID_EXACTLY_AS_ALEPH_RETURNS_IT`) rather than `{BRACED}`, so the self-check's
-   `\{[A-Z_]{2,}\}` probe catches a real report's leftover `{ALEPH}` while never firing on the
-   template it was extracted from.
+   `style=` attribute" into a property the self-check can assert.
+3. No unsubstituted placeholder. The template's own slots are a **closed vocabulary** the self-check
+   carries by name, alongside the `{BRACED}` probe.
 
-The example identifier is also 42 characters, above the self-check's 40-character short-link
-threshold. This is load-bearing rather than incidental: a template whose own examples tripped the
-short-link probe would train an author to expect a non-zero count and read the real failure as
-noise.
+The original reasoning for a braces-only probe — that `ANGLE_CAPS` examples would never fire on the
+template — was wrong, and review caught it: the check runs against the draft report, never against
+this file, so the only placeholder vocabulary a real report can contain is the one the template
+teaches. A braces-only probe closed the 2026-09-11 defect for the form that report used and left it
+open for the form the template teaches. The vocabulary is an explicit allowlist rather than a
+general all-caps pattern so that legitimate report text — `UNENUMERATED` in the coverage note, an
+environment-variable name in an excluded-material verdict — does not fire it. A probe that fires on
+legitimate content trains the author to ignore it, which is the same failure as no probe at all.
+
+Review then found three more, all folded in before merge:
+
+4. **Ownership had no place on the page.** The guardrails make ownership the first decision and the
+   one that governs whether a value may be written at all, and the anatomies rendered a value slot
+   unconditionally. Both credential blocks now carry an `Ownership` row, an eighth non-cosmetic rule
+   gates the `<details>` on it, and the document order says where an ownership-refused finding
+   lives — its own system section, as a block with no disclosure element.
+5. **The key tag contradicted rule 1.** "The tag carries the key's own header line" is safe for PEM
+   armour and unsafe for a JWT or a prefixed API key, whose first bytes are the secret. The tag now
+   carries a derived key-type label, with the PEM armour line named as the one permitted literal.
+6. **`REPORT_MODE` was named once and never defined**, while the layout required operation-side
+   working-file detail on a page that leaves the analyst's control. Two modes are defined, the
+   holder is named by role rather than by individual, the footer author is a role designator, and
+   every working file is named relative to the brief's working directory.
 
 ### The self-check reports a verdict, not content
 
 Verification of a product carrying credential values may only run against the draft or through a
-check that reports a verdict — the disclosure doctrine's carve-out. The script therefore prints
-class names, integer counts and stripped `h2` text and nothing else; no line of it can emit a
-credential value, a summary body or a `pre` body. Run against the delivered 2026-09-11 report it
-printed five lines naming both defects, and no report content.
+check that reports a verdict — the disclosure doctrine's carve-out. Review showed the first draft
+overstated this: three of its prints echoed report-derived substrings, and one of them scanned
+`pre` bodies, so a captured artefact quoted inside a disclosure could put its own class names and
+braced tokens into the analyst's context as tool output — an injection channel opened by the very
+check meant to keep content out. The shipped script blanks every `<pre>` body before the class and
+placeholder scans, and the file states what the verdict includes rather than claiming it prints
+nothing.
+
+Review also found the check blind in five ways, each of which let a real defect through clean, and
+two of which had a disclosure cost:
+
+- `<pre class="key">` matched as an exact literal, so `<pre class="key" id="k9">` or
+  `class="mono key"` was counted in neither total and a credential rendered open on the page
+  reported `0`.
+- `<details>.*?<pre class="key">` under `re.S` crossed `</details>`, so one keyless `<details>` —
+  which the file's own certificate rule invites — masked a later orphan value.
+- `class="…"` and `style="…"` matched double quotes only, so the single-quoted spelling defeated two
+  of the non-cosmetic rules, including the one `.cred.sys` exists to make checkable.
+- `<a href="…"` required `href` to be the anchor's first attribute, so a link with any attribute
+  before it escaped the short-link count entirely, and an anchor with no `href` was invisible.
+- A `<details open>` was detected only accidentally, and reported as the wrong fault.
+
+All five are fixed, each is mutation-proved, and the old patterns were re-run against the same five
+documents to confirm they reported clean. The output gains a `details shipped open` line and an
+anchor triple, and `pre.key outside <details>` is renamed `pre.key not collapsed`, which is true of
+both faults it now detects.
 
 ### The delta keeps the published scenario title and adds beside it
 
