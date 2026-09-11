@@ -217,3 +217,10 @@ malformed` on every call throughout that work, so the selection could not be mad
   technique, so the move needs judgement rather than a cut. Parked out of 6.8.0 deliberately: it is an
   editorial pass over the orchestrator prompt with its own review obligation, and doing it inside a
   safety-sink diff would have coupled unrelated risk into one reviewable unit.
+- **`acordia-map.html` is stale by a full release.** Measured 2026-09-11 against the 6.8.0 tree: 13
+  of 45 skill records drift on section length, and the version badge reads `v6.7.0` against a
+  shipped `6.8.0`. The file is tracked and ships with each change, but there is no generator — the
+  transform is reverse-engineered and error-prone (see `skill://acordia-map-regeneration`). Parked
+  out of the 6.9.0 report-layout change deliberately: regenerating it there would fold an unrelated
+  release into a PR about report layout. Candidate fix: its own change run after 6.9.0 merges, so
+  one regeneration picks up both releases.
