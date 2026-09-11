@@ -18,17 +18,19 @@ This skill is **procedural and cross-cutting**. It does not correspond to a row 
 
 ## Objective
 
-Turn a pile of collected material into a ranked, classified inventory of credential findings — with source, scope, reuse potential, and priority attached to each — so the operation can act on the best material first and set the rest aside without losing it.
+Turn collected material into a ranked, classified inventory of credential findings — with source, scope, asset relationship, mission relevance, reuse potential, and priority attached to each — so the operation can act on the best material first and set the rest aside without losing it. For Aleph-backed work, triage consumes the lead's orientation packet before credential prioritisation begins.
 
 ## When to use
 
+- An Aleph-backed credential sweep is planned and the lead's orientation packet is available to steer the work.
 - A collection archive arrives (LSASS dump, disk image, cloud state export, log bundle, config directory, backup, browser profile) and no one has looked inside yet.
 - Multiple specialist analysts have surfaced credential candidates and someone needs to fuse them into one prioritised list without double-counting.
 - The operation is deciding whether to move on a specific credential and needs a defensible read on its type, scope, and freshness first.
 
+
 ## Classification schema
 
-Every credential finding SHALL be classified along these axes. `ownership` is settled first, because it decides what may be written down at all — see Guardrails.
+Every credential finding SHALL be classified along these axes. `ownership` is settled first, because it decides what may be written down at all — see Guardrails. For an orientation-first sweep, the non-secret asset associations connect each finding to the system and mission context that made it worth searching.
 
 | Field | Values (examples) |
 |-------|-------------------|
@@ -39,22 +41,43 @@ Every credential finding SHALL be classified along these axes. `ownership` is se
 | `scope` | account, service, host, tenant, domain, cross-tenant |
 | `source` | absolute path or artefact identifier (redact home dir / user) |
 | `provenance` | in-memory, file-on-disk, log-line, config-value, network-capture |
+| `asset` | non-secret entity or asset identifier, or `unresolved` |
+| `asset-class` | VPN, SSH, identity, cloud, database, file-share, object-storage, Kubernetes/container, CI/CD, web/API, backup, management-plane, unknown |
+| `mission-relevance` | high, medium, low, unknown |
+| `credential-hypothesis` | expected credential form from the orientation packet, or `unplanned` for a residual discovery |
 | `reuse-potential` | high (broad scope, likely valid), medium (narrow scope or unknown freshness), low (revoked-likely, single-use), unknown |
-| `freshness` | timestamp of the source artefact or "unknown" |
-| `priority` | P0/P1/P2/P3 — derived from scope × reuse-potential × freshness |
-| `next-action` | who owns follow-up (specialist name), or "hold" |
+| `freshness` | timestamp of the source artefact or `unknown` |
+| `priority` | P0/P1/P2/P3 — derived from scope, reuse-potential, freshness, confidence, asset criticality and mission relevance |
+| `next-action` | who owns follow-up (specialist name), or `hold` |
+
+For raw archives, the asset fields may remain `unresolved` or `unknown` until the evidence supports an association. For Aleph, the lead's orientation packet supplies the expected asset classes, fingerprints, credential hypotheses and mission context.
 
 ## Triage procedure
 
-1. **Inventory** the archive: list every file, size, mtime, MIME/file-type. Note directory shape (single dump vs. multi-user backup vs. cloud state export). Output: an inventory table.
-2. **Bucket partition**: split the inventory by material class into leg-owned buckets, so that the per-category scan and deep-pass below run in parallel — the orchestrator dispatches each slice to its handling leg with **only that slice**, not the whole archive. Current mapping:
+For an Aleph-backed sweep, validate the lead-supplied orientation packet and declared collection scope
+before credential prioritisation. The packet must contain the asset register, mission relevance, system
+fingerprints, expected credential forms, planned bucket owners and named gaps. If it is missing or
+incomplete, report the missing fields and coverage impact and return an orientation task to the lead;
+do not launch generic credential priorities. For a raw archive, retain the local artefact inventory as
+the first step because the archive itself is the available source of shape; an orientation packet, when
+supplied, still steers bucket selection and pattern choice.
+
+1. **Inventory** the selected material: for Aleph, reconcile the material to the packet's asset classes;
+   for a raw archive, list every file, size, mtime, MIME/file-type and directory shape. Output an
+   inventory table and declare the denominator.
+2. **Bucket partition**: split the inventory by material class into leg-owned buckets, selecting only
+   the relevant slices named by the orientation packet where one exists. The orchestrator dispatches
+   each slice to its handling leg with **only that slice**, not the whole archive. Current mapping:
    - **Bucket A — identity / directory / cloud control-plane** (AD exports, NTDS, Kerberos, LAPS/gMSA, ADCS, IMDS captures, service-account keys, IaC state) → `terrain-analyst`
    - **Bucket B — host-forensic** (memory captures, SAM/SECURITY hives, DPAPI, Keychain, `shadow`, SSH agent) → whichever leg holds the host under analysis
    - **Bucket C — web / API auth** (JWTs, OAuth tokens, session cookies, provider API keys) → `terrain-analyst`
    - **Bucket D — log-artefact** (application / CI / system logs, connection strings leaked in logs) → `overwatch-analyst`
    - **Bucket E — implant / payload RE** (malware configs, embedded keys in binaries) → cross-cutting via `implant-payload-re`, findings reported to `cyber-analyst`, which holds the fused picture itself
-   Buckets route to legs, not to skills. Each leg then runs steps 3–5 (first-pass scan, deep-pass, classify) on its own slice, applying its own specialist skills; the legs work in parallel, and step 6 re-merges their classifications. Each leg returns a **coverage receipt** for its bucket — declared scope reconciled to covered scope — per `exhaustive-data-processing`; the orchestrator rejects any bucket whose scan did not cover its whole slice and re-dispatches it. The mapping is fixed by domain — reclassify a bucket only through an openspec change, not an in-file edit.
-3. **First-pass scan**: run the pattern library (see `references/credential-patterns.md`) across text-decodable artefacts (`grep -rHnE`, `rg`, or equivalent). The scan SHALL cover 100% of each bucket's text-decodable bytes and record *every* hit — never a sample — with path + line, not the matched string (see `exhaustive-data-processing`). Flag binary artefacts for deep-pass.
+   Buckets route to legs, not to skills. Each leg returns a **coverage receipt** for its bucket — declared scope reconciled to covered scope — per `exhaustive-data-processing`; the orchestrator rejects any bucket whose scan did not cover its whole slice and re-dispatches it. The mapping is fixed by domain — reclassify a bucket only through an openspec change, not an in-file edit.
+3. **Targeted first-pass scan**: run the pattern library (see `references/credential-patterns.md`) using
+   the asset fingerprints and expected credential forms in the packet. The scan SHALL cover 100% of
+   each selected slice's text-decodable bytes and record every hit — never a sample — with path + line,
+   not the matched string. Flag binary artefacts for deep-pass.
 4. **Deep-pass per category**: dispatch to the matching specialist skill:
    - Memory / disk images → `disk-memory-forensics`
    - AD / NTDS / Kerberos / LAPS / ADCS → `identity-directory-trust`
@@ -63,14 +86,34 @@ Every credential finding SHALL be classified along these axes. `ownership` is se
    - JWT / OAuth / API keys / session cookies → `web-api-authflow-analysis`
    - OS credential stores (SAM, DPAPI, Keychain, shadow, SSH agent) → `os-host-internals`
    - Malware / binary configs → `implant-payload-re`
-5. **Classify** each finding into the schema, settling `ownership` first because it governs whether the value may be recorded at all, then purge every value ownership refused from each of the files steps 3 and 4 wrote — raw tool output included, one per tool and per slice, since all of them were written before this question was asked and so hold your own material too. What ownership permitted moves into the credential file; the raw outputs are deleted once it has, so they do not become a second store with no owner. Redact source paths that reveal analyst home dirs or workstation identity.
-6. **Correlate** across findings: same account across sources, same key in multiple archives, one credential unlocking another (e.g. DPAPI master key → browser passwords). Because the buckets were analysed by different legs, this is where their classifications re-merge — hand the per-leg findings to `cyber-analyst`, which holds `multi-source-fusion` itself and resolves cross-leg linkages there. Merge duplicates; note the correlation in `provenance`.
-7. **Prioritise**: rank by scope × reuse-potential × freshness. Break ties by ease-of-use (plaintext > hash > encrypted). Assign P0/P1/P2/P3.
-8. **Report**: emit the classified inventory. State total coverage — buckets scanned, artefacts parsed, any deferred remainder named — so a sampled pass cannot masquerade as a complete one. Target-owned values belong in the product, as does a corporate third-party one; operation-owned, unadjudicated and personal ones appear as classification only, whatever the reader would find useful. A product carrying values is written to disk rather than returned in a reply. For each P0/P1, name the specialist owner and the reuse hypothesis to validate operationally. When the product is an HTML sweep report, build it to the layout in [`references/report-layout.md`](references/report-layout.md) — organised by the system each credential opens, not by artefact or by collection.
+5. **Classify** each finding into the schema, settling `ownership` first because it governs whether the
+   value may be recorded at all, then purge every value ownership refused from each file the extraction
+   wrote — raw tool output included, one per tool and per slice. What ownership permitted moves into the
+   credential file; raw outputs are deleted once it has, so they do not become a second store with no
+   owner. Redact source paths that reveal analyst home dirs or workstation identity.
+6. **Correlate** across findings: same account across sources, same key in multiple archives, one
+   credential unlocking another, and the relationship between each finding and its asset, service,
+   account and mission thread. Hand per-leg findings to `cyber-analyst`, which holds
+   `multi-source-fusion` and resolves cross-leg linkages. Merge duplicates; record correlations in
+   `provenance` and preserve observed versus inferred associations.
+7. **Residual sweep**: search for unexplained endpoints, unknown system classes and credential forms not
+   represented in the orientation packet. Associate residual findings with `unresolved` assets and
+   `unplanned` hypotheses, add newly discovered system classes to the asset register, mark the
+   orientation gap, and report whether a second targeted pass is required.
+8. **Prioritise**: rank by scope, reuse-potential, freshness, confidence, asset criticality and
+   mission relevance. Break ties by ease-of-use (plaintext > hash > encrypted). Assign P0/P1/P2/P3.
+9. **Report** the classified inventory. State total coverage — buckets scanned, artefacts parsed,
+   residual material covered, and any deferred remainder named — so a sampled pass cannot masquerade as
+   complete. Target-owned values belong in the product, as does a corporate third-party one;
+   operation-owned, unadjudicated and personal ones appear as classification only. A product carrying
+   values is written to disk rather than returned in a reply. For each P0/P1, name the specialist owner,
+   asset relationship and reuse hypothesis. When the product is an HTML sweep report, build it to the
+   layout in [`references/report-layout.md`](references/report-layout.md) — organised by the system each
+   credential opens, not by artefact or collection.
 
 ## Pattern library
 
-The pattern library lives in [`references/credential-patterns.md`](references/credential-patterns.md) alongside this skill — provider API-key prefixes, auth-material shapes, password-hash markers, connection-string DSNs, private-key PEM markers, and cloud/k8s secret-file patterns, grouped by class. It is the single source of truth for detection patterns: add a new provider prefix there once and every consumer (this skill's first-pass scan, and the pattern-citing `## Credential extraction` sections in `log-artefact-interpretation`, `web-api-authflow-analysis`, and `implant-payload-re`) inherits it. Anchor detection on the prefix; verify the current format at the provider's docs before acting.
+The pattern library lives in [`references/credential-patterns.md`](references/credential-patterns.md) alongside this skill — provider API-key prefixes, auth-material shapes, password-hash markers, connection-string DSNs, private-key PEM markers, and cloud/k8s secret-file patterns, grouped by class, plus a non-secret asset-fingerprint section used to steer targeted searches to the system classes the orientation packet names. It is the single source of truth for detection patterns: add a new provider prefix or fingerprint there once and every consumer (this skill's first-pass scan, and the pattern-citing `## Credential extraction` sections in `log-artefact-interpretation`, `web-api-authflow-analysis`, and `implant-payload-re`) inherits it. Anchor detection on the prefix; verify the current format at the provider's docs before acting.
 
 ## Report layout
 

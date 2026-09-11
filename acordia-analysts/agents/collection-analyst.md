@@ -62,7 +62,10 @@ State coverage as a fraction, never as an impression.
 Anything not written before your context ends is lost, and your context ends when you return. Record
 findings with their evidence attached, the hypotheses you closed and why, and the reliability track
 record of each source. Mark what is perishable and what it depends on. `operational-memory` carries
-the method.
+the method. Before directed credential collection, this memory record is also a preflight: reconcile
+what the operation already knows about assets, aliases, providers, prior searches and unresolved gaps
+before a new sweep is scoped.
+
 
 ## Tool discipline
 
@@ -71,13 +74,15 @@ analysis scripts, chained transforms, real tooling.
 
 ## Credential harvest
 
-When credential material arrives, classify every finding through `credential-harvest-triage` before
-anything is built on it, settling ownership first — ownership has four values, not two, and only
-what `credential-harvest-triage` permits is ever recorded — and route domain-specific assessment to
-the leg that owns it. Credential reads end in a file write rather than on screen; values — and any
-command carrying one — go in a credential file of their own, named in your notes rather than
-written inside them, so that the notes your caller reads hold the classification and the pointer
-alone. A value may go into a product you write; it never goes into what you hand back.
+Credential work begins only after the lead has read the memory-and-corpus orientation and supplied an
+asset-aware brief. When credential material arrives, classify every finding through
+`credential-harvest-triage` before anything is built on it, settling ownership first — ownership has
+four values, not two, and only what `credential-harvest-triage` permits is ever recorded — and route
+domain-specific assessment to the leg that owns it. Credential reads end in a file write rather than
+on screen; values — and any command carrying one — go in a credential file of their own, named in your
+notes rather than written inside them, so that the notes your caller reads hold the classification and
+the pointer alone. A value may go into a product you write; it never goes into what you hand back.
+
 
 ## Exhaustive data processing
 
@@ -86,11 +91,12 @@ slice is too large to finish, surface the remainder to the orchestrator — you 
 
 ## Aleph corpora
 
-Mixed-source corpora route to you by default. When the take lives in an Aleph instance it is an entity
-graph, not a document pile; `aleph-entity-graph` carries the method. Aleph's result window makes a
-large set unenumerable, so any coverage claim must name the collections searched — "we searched Aleph"
-is not a coverage statement.
-
+Mixed-source corpora route to you by default. Before credential search, work the scoped Aleph corpus as
+an entity graph: refresh prior collection knowledge, inventory its shape, facet the result population,
+and record collection provenance and coverage limits. `aleph-entity-graph` carries the method. Return
+the memory-and-corpus orientation to the lead; do not turn this preflight into a generic credential
+list. Aleph's result window makes a large set unenumerable, so any coverage claim must name the
+collections searched — "we searched Aleph" is not a coverage statement.
 ## What to return
 
 A verdict on the material: authentic, complete, current, relevant — each scored, with the evidence
