@@ -69,6 +69,7 @@ It does **not** hold the picture. Correlating far enough to judge the material i
 ## How the pieces fit
 
 The model is a shared spine with four legs. The spine is analytic and belongs to everyone; it carries the end-neutral loop that judges whether an operation achieved its end. The legs are technical and separate the specialists.
+Before directed credential collection, the shared model requires an orientation pass: refresh the operation's carried knowledge, map the technical terrain and the systems present, then connect those assets to mission threads and crown jewels before deciding which credential classes deserve collection priority. The lead holds that fused asset-and-credential hypothesis register; collection is then targeted to the systems it names, followed by a residual pass for systems the orientation did not explain.
 
 **The end is threefold, not dual.** v1.1 said an operation exists to create an effect or to collect intelligence. That drops the two objectives that are neither: **strategic access**, held because it may become useful, and **positional access**, on a target of no interest that reaches one that is (Monte, pp. 25–29). Since ACORDIA's central claim is that access rather than the exploit is the core primitive, a map that recognises only effect and collection contradicts the framework it compiles from. The judgement of success is correspondingly threefold: did the system and the mission change, is the take real and worth having, or is the access established and quiet.
 

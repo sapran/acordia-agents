@@ -22,10 +22,13 @@ frequently disagrees with the first without anyone noticing.
 
 ## When to use
 
+- Before a directed credential sweep, when the lead needs the prior asset model, previous search record, freshness state and unresolved gaps refreshed before scoping new collection.
 - Whenever a dispatched specialist returns and its context is about to be discarded.
 - At the end of any session, before the working context is lost.
 - When a claim in the operating picture is old enough that nobody now remembers what it rested on.
 - When two strands of the operation appear to contradict each other.
+
+- **Pre-run refresh.** Read the prior asset and collection record before a directed credential sweep. Reconcile known assets, aliases, organisations, domains, providers, previous credential searches, rejected hypotheses and unresolved gaps. Mark each item current, stale, superseded, contradictory or unknown; if no prior record exists, write `no prior memory available` and lower confidence rather than treating absence as a clean slate.
 
 ## Method
 

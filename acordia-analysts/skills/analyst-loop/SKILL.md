@@ -27,6 +27,10 @@ Turn the current state of an operation into a recommended course of action by ru
 
 ## Loop shape
 
+Directed credential collection begins with a collection-planning preflight. The preflight is a gate on credential scoping and prioritisation, not a seventh universal leg read; the six-step end-neutral loop below remains intact.
+
+Before credential planning, the orchestrator refreshes carried operational memory, obtains a technical terrain orientation for the scoped Aleph collection, obtains mission/value assessment for the discovered assets, builds an asset-and-credential hypothesis register, and only then enters credential triage and targeted extraction. A residual sweep follows targeted extraction and feeds unexplained systems back into the asset register.
+
 Six steps. Four dispatch to the leg that owns them; the last two are the orchestrator's own.
 
 1. **Mission read** — through `mission-analyst`: what the target is for, what it depends on, how it behaves, when it will change, how much friction it would absorb — and, after an action, whether the *organisation* changed.
@@ -38,6 +42,7 @@ Six steps. Four dispatch to the leg that owns them; the last two are the orchest
 
 ## Loop invariants
 
+- **Orientation gate.** For directed credential collection, credential scoping waits for the memory refresh, technical terrain orientation, mission/value assessment and lead-held hypothesis register. If the orientation is incomplete, name the gap and return bounded discovery work rather than presenting generic credential priorities as complete.
 - **End-neutral closure.** Every pass reaches a judgement *and* a next move. "Insufficient information" is not a stopping point — it is a gap to name and a collection task to hand back.
 - **Gap-naming on every judgement.** Run `naming-the-gaps`: state the specific reads you do not yet have and what would close them. The loop's output includes the gaps that bound it.
 - **Calibrated confidence on every judgement.** Run `calibrated-confidence`: attach a confidence band to each claim; where the legs disagree, surface the disagreement rather than averaging it away.

@@ -65,14 +65,17 @@ analysis scripts, chained transforms, real tooling.
 
 ## Credential harvest
 
-When credential material arrives, classify every finding through `credential-harvest-triage`,
-settling ownership first — ownership has four values, not two, and only what
-`credential-harvest-triage` permits is ever recorded — and assess it against the mission model:
-which process it unlocks, which crown jewel it reaches. Credential reads end in a file write rather
-than on screen; values — and any command carrying one — go in a credential file of their own, named
-in your notes rather than written inside them, so that the notes your caller reads hold the
-classification and the pointer alone. A value may go into a product you write; it never goes into
-what you hand back.
+Mission valuation precedes credential prioritisation. When the lead supplies Terrain's asset register,
+map each asset to mission threads, crown jewels, organisational processes and likely impact before
+credential extraction begins. Classify each asset as mission-critical, mission-supporting,
+administrative or unknown; state which credential classes would unlock it; separate observed from
+inferred value; and name what information would change the ranking. Do not perform technical credential
+extraction. When credential material later arrives, classify every finding through
+`credential-harvest-triage`, settling ownership first — ownership has four values, not two, and only
+what that skill permits is ever recorded. Credential reads end in a file write rather than on screen;
+values — and any command carrying one — go in a credential file of their own, named in your notes rather
+than written inside them, so that the notes your caller reads hold the classification and the pointer
+alone. A value may go into a product you write; it never goes into what you hand back.
 
 ## Exhaustive data processing
 
@@ -82,9 +85,10 @@ slice is too large to finish, surface the remainder to the orchestrator — you 
 ## Aleph corpora
 
 When the take lives in an Aleph instance, work it as an entity graph rather than a document pile;
-`aleph-entity-graph` carries the method. It is where a corpus yields the org chart, the subsidiary
-chain and the people behind a target model you would otherwise infer. Treat every edge as derived from
-a source row, not observed, and surface the collections you could not cover — you cannot fan out.
+`aleph-entity-graph` carries the method. Use Terrain's non-secret asset register to interpret the org
+chart, subsidiary chain and people behind the target model; connect those assets to mission threads and
+crown jewels, mark source-row provenance and distinguish observed from inferred relationships. Surface
+collections you could not cover — you cannot fan out.
 
 ## What to return
 
