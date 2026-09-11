@@ -266,6 +266,8 @@ A procedural cross-cutting skill MAY ship supplementary content in a `references
 
 Reference files SHALL be markdown. Structured formats (YAML, JSON) SHALL NOT be used unless a consumer exists in the repo — this repo has no code path that loads structured references.
 
+A skill MAY carry more than one reference file. Where it does, the body SHALL carry a separate naming pointer for each, rather than one pointer to the directory, because a session that reads only `SKILL.md` learns of a reference file solely from the pointer that names it.
+
 #### Scenario: Reference file colocated with skill
 
 - **WHEN** a procedural skill declares a reference file
@@ -281,6 +283,11 @@ Reference files SHALL be markdown. Structured formats (YAML, JSON) SHALL NOT be 
 - **WHEN** `acordia-analysts/skills/credential-harvest-triage/` is inspected
 - **THEN** it contains `SKILL.md` and `references/credential-patterns.md`, and `SKILL.md` names the reference file
 
+#### Scenario: `credential-harvest-triage` carries `report-layout.md`
+
+- **WHEN** `acordia-analysts/skills/credential-harvest-triage/` is inspected
+- **THEN** it contains `references/report-layout.md` alongside `references/credential-patterns.md`, and `SKILL.md` carries a naming pointer to each of the two files rather than a single pointer to the `references/` directory
+
 #### Scenario: Reference file is markdown
 
 - **WHEN** any reference file under a procedural skill is inspected
@@ -288,7 +295,7 @@ Reference files SHALL be markdown. Structured formats (YAML, JSON) SHALL NOT be 
 
 ### Requirement: `credential-harvest-triage` skill exists
 
-The library SHALL contain a skill `acordia-analysts/skills/credential-harvest-triage/SKILL.md` providing (a) a classification schema for credential findings (ownership, type, subtype, status, scope, source, reuse potential, priority), (b) a triage procedure that begins with **inventory**, then performs a **bucket partition** step assigning material to a leg-owned bucket, then scans, classifies, correlates, prioritises, and reports, and (c) a **pointer** to a co-located pattern-library reference file for common credential material. It SHALL declare its cross-cutting/procedural nature in its body and SHALL NOT be added as a row to the competency grid.
+The library SHALL contain a skill `acordia-analysts/skills/credential-harvest-triage/SKILL.md` providing (a) a classification schema for credential findings (ownership, type, subtype, status, scope, source, reuse potential, priority), (b) a triage procedure that begins with **inventory**, then performs a **bucket partition** step assigning material to a leg-owned bucket, then scans, classifies, correlates, prioritises, and reports, (c) a **pointer** to a co-located pattern-library reference file for common credential material, and (d) a **pointer** to a co-located report-layout reference file fixing the shape of the HTML sweep product — one that organises by the system each credential opens, holds every credential value inside a collapsed disclosure element, and carries a self-check reporting a verdict rather than content. It SHALL declare its cross-cutting/procedural nature in its body and SHALL NOT be added as a row to the competency grid.
 
 The **bucket partition** step SHALL enumerate five buckets and their target legs:
 
@@ -308,7 +315,7 @@ Each bucket's slice SHALL be dispatched with only that slice. The procedure SHAL
 #### Scenario: Body carries schema, procedure, and pattern library
 
 - **WHEN** the triage skill is inspected
-- **THEN** it contains a classification schema, a bucket-partition step, a numbered triage procedure downstream of the partition, and a pointer to the pattern library at `references/credential-patterns.md`
+- **THEN** it contains a classification schema, a bucket-partition step, a numbered triage procedure downstream of the partition, a pointer to the pattern library at `references/credential-patterns.md`, and a pointer to the report layout at `references/report-layout.md`
 
 #### Scenario: Bucket partition maps to existing legs
 
@@ -329,6 +336,15 @@ Each bucket's slice SHALL be dispatched with only that slice. The procedure SHAL
 
 - **WHEN** the triage skill's classification schema is inspected
 - **THEN** `ownership` is one of its fields
+
+#### Scenario: The report layout fixes presentation without widening disclosure
+
+- **WHEN** `references/report-layout.md` is read
+- **THEN** it organises the product by the system each credential opens, requires every credential
+  value to sit inside a collapsed disclosure element rather than in a heading, dateline, banner,
+  field cell or summary, requires an evidence link to carry the whole identifier with only the
+  displayed text shortened, and states that it decides presentation only while `SKILL.md`'s
+  guardrails decide what may be disclosed
 
 ### Requirement: `analyst-loop` skill exists
 
