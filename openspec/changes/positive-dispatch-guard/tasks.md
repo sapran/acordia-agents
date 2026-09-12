@@ -37,7 +37,7 @@
 
 ## 4. Release
 
-- [x] 4.1 Version `6.10.0` → `6.11.0` across the three manifests.
+- [x] 4.1 Version `6.11.0` → `6.12.0` across the three manifests.
 - [x] 4.2 `openspec validate --all --strict` passes.
 - [x] 4.3 `~/ai/checks/check-acordia.sh` passes all eight checks.
 - [x] 4.4 A/B run — **result partly negative, recorded in the PR.** Two arms (cold read; and prompt as

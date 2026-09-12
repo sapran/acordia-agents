@@ -53,11 +53,19 @@ that owns it, never delete routing or guardrails — so two moves were made:
 - the working-directory convention (dated slug, `README.md` holding the request verbatim) to
   `briefing-reporting`, which owns the shape of a product and its record.
 
-The orchestrator keeps the routing in both cases, and keeps the claim that is its own: that Analysis is
-a core activity and starving it produces capability without effectiveness. Result: 10,453 of 10,500.
+A third was needed after rebasing onto the 6.11.0 restoration, which had already spent the
+`briefing-reporting` move to pay for the orchestrator's ownership closed grant: the prompt's
+restatement of `exhaustive-data-processing`'s method compressed to the pointer, since the technique is
+in the skill already.
+
+The orchestrator keeps the routing in every case, and keeps the claim that is its own: that Analysis is
+a core activity and starving it produces capability without effectiveness. Result: 10,499 of 10,500.
 
 ## Risks
 
-The check costs a line of output at the top of every lead session, on a prompt with 47 characters of
-headroom. If a later change needs that space, the honest move is another move-to-skill, not deleting the
-verdict — a silent guard is what this change exists to end.
+The check costs a line of output at the top of every lead session, on a prompt with **1 character** of
+headroom. That is not comfortable and should not be read as one: the next change to this prompt will
+fail the gate until something else moves to the skill that owns it, which is the ceiling requirement
+working as designed rather than a problem to route around. If a later change needs that space, the
+honest move is another move-to-skill, never deleting the verdict — a silent guard is what this change
+exists to end.

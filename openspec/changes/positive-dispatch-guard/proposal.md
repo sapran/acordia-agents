@@ -14,7 +14,7 @@ The canon supports treating this as analytic work rather than preamble. Monte de
 - Keep every downstream consequence unchanged — the refusal, the named entry route, and the prohibition on quietly doing the legs' work.
 - Move the instrument-choice technique detail out of the orchestrator prompt into `gain-loss-calculus`, which owns comparison against alternatives, to stay under the prompt-body ceiling. This is the remedy the ceiling requirement itself prescribes.
 - Update `docs/roles/operational-analyst.md` in the same change, per the source-of-truth rule.
-- Version `6.10.0` → `6.11.0` (three-file lockstep).
+- Version `6.11.0` → `6.12.0` (three-file lockstep).
 
 ## Impact
 
