@@ -13,7 +13,30 @@ Add a new provider prefix here once; every consumer inherits it.
 Detection is passive: match to classify, never to validate. Send a scan's matches to a
 file rather than to standard output, and work from the pattern that matched plus the
 source location; what the values are is a later question, decided by ownership per
-`credential-harvest-triage`.
+`credential-harvest-triage`. Asset fingerprints below steer search selection; they are
+not credentials and never authorise validation or live access.
+
+## Asset fingerprints used to steer searches
+
+Non-secret system indicators that scope a targeted credential search to the system class
+the orientation packet names. They identify where credential material is likely to sit;
+they carry no secret and confer no permission.
+
+```text
+minioadmin|MINIO_ROOT_USER|MINIO_ROOT_PASSWORD          # MinIO server env/config
+s3\.amazonaws\.com|S3_ACCESS_KEY|S3_SECRET_KEY          # S3-compatible storage refs
+bucket=[A-Za-z0-9._-]+|endpoint_url=.*amazonaws|endpoint_url=.*:9000  # S3/MinIO client config
+(mongodb|postgres|postgresql|mysql|mariadb|redis|mssql)://              # database DSN heads
+DB_HOST|DB_USER|DB_PASS|DATABASE_URL|connectionString   # database config keys
+smb://|\\\\\\\\[A-Za-z0-9.-]+\\\\|mount -t (cifs|nfs)   # SMB/NFS share refs
+kubeconfig|kubectl|\.kube/config|serviceaccount|service-account\.yaml  # Kubernetes
+image: .*registry|docker (login|pull)|DOCKER_AUTH_CONFIG  # registries/container auth
+\.gitlab-ci\.yml|jenkins|JENKINS_URL|GITHUB_ACTIONS|circleci  # CI/CD systems
+vault:|VAULT_TOKEN|secretsmanager|aws_secretsmanager_secret  # secret stores
+openvpn|wireguard|anyconnect|forticlient|pptp|l2tp      # VPN / remote access
+krb5|kinit|keytab|KRB5CCNAME|ntds\.dit|ntdsutil         # Kerberos / directory
+id_rsa|id_ed25519|authorized_keys|known_hosts|ssh-agent # SSH material context
+```
 
 ## API keys (prefix anchored)
 
