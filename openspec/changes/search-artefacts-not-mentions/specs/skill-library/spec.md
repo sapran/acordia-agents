@@ -21,11 +21,17 @@ reading that sends an analyst to the filename.
 The skill SHALL state that a format word or extension in `q` measures **mentions rather than
 artefacts**, because `q` searches text and matches every document that names the format. It SHALL
 carry the measured evidence rather than asserting the effect: on one collection an extension query
-across six config formats returned 13,607 hits — 10,577 web pages and 2,259 spreadsheets — with the
-reported total at the 10,000 cap, where the schema filter for the same classes returned 36 files, 19
-KeePass databases and 17 RDP profiles; and a `kdbx OR KeePass` text query returned 2,684 against those
-same 19. It SHALL place the extension form as a cross-check on a set already in hand and SHALL NOT
-present it as a recall mechanism.
+across five config formats reported the 10,000 cap with its `schema` facets summing to 11,422 —
+8,832 web pages and 2,163 spreadsheets — where a schema filter over the configuration classes that
+ingest recognises (`VPNConfig`, `RDP`, `KeePassDB`) enumerated 36 files, 19 KeePass databases and 17
+RDP profiles; and a `kdbx OR KeePass` text query returned 2,684 against those same 19. A figure above
+the reported cap SHALL be attributed to the facet sum that produced it, because the same skill
+teaches that a reported total is a floor rather than a count.
+
+The skill SHALL state that the two result sets barely overlap rather than implying they cover the
+same classes: only the RDP profiles are reachable both ways, and a KeePass database is invisible to
+an extension list carrying no `.kdbx` term. It SHALL place the extension form as a cross-check on a
+set already in hand and SHALL NOT present it as a recall mechanism.
 
 The skill SHALL state that a fielded filename query is not a rescue: `file_name` is a filter value
 rather than a wildcard-searchable field, a `file_name:*.ext` form returned nothing, and the analyst
@@ -40,14 +46,25 @@ of which 7 sat inside chat pages. It SHALL point at `credential-harvest-triage`'
 The skill SHALL state that a marker discriminates by its **rarest token and never by its
 punctuation**, because the index discards punctuation: a `"</key>"` form reduces to the token `key`
 and returned the cap, as did a bracketed-section marker ANDed with two-character parameter names. It
-SHALL instruct the analyst to price a candidate marker at `limit=0` and read its `schema` facet before
-building on it, and SHALL state that a marker whose count looks like the cap is not a marker.
+SHALL state that the same rule splits a **hyphenated** marker into its parts, so a multi-word marker
+must be quoted as a phrase — `auth-user-pass` unquoted returned 407 where the quoted form returned 1
+— and SHALL NOT present a hyphenated string as a rare single token. It SHALL instruct the analyst to
+price a candidate marker at `limit=0` and read its `schema` facet before building on it, and SHALL
+state that a marker whose count looks like the cap is not a marker.
 
 The skill SHALL connect its existing 66% rule to this failure: adding vocabulary widens a result set
 because only two-thirds of the terms need match, so the same intent spread across synonyms returned
-4,406 where the tight structural form returned 9. It SHALL state that this is language-independent —
-translating a synonym list does not rescue it, and a corpus in another language raises the temptation
-rather than the yield.
+4,406 — 3,592 of them web pages against 219 tables — where the tight structural form returned 9. It
+SHALL reconcile that step's unqualified "precision comes from `filter:`, always" with the new route,
+stating that the claim holds for added words while ANDed rare tokens narrow `q` itself. It SHALL
+state that this is language-independent — translating a synonym list does not rescue it, and a corpus
+in another language raises the temptation rather than the yield.
+
+Because an Aleph hit carries neither a path nor a line, `credential-harvest-triage`'s scan step SHALL
+give the Aleph-side citation shape — `collection_id`, `entity_id` and `schema`, with a
+`get_entity_text` offset where a span is needed — and SHALL forbid requesting `highlight` on a
+credential marker, because in every format covered the secret is the remainder of the matched line
+and a tool result cannot be redirected to a file the way a local scan can.
 
 The coverage statement the skill already requires SHALL additionally separate the classes enumerated
 by schema from the formats reached only by marker, and SHALL name any marker whose result set hit the
@@ -66,7 +83,7 @@ cap as sampled rather than enumerated.
 #### Scenario: Mention counts are not artefact counts
 
 - **WHEN** the subsection's evidence is read
-- **THEN** it carries the measured contrast between an extension query's 13,607 mention hits at the reported cap and the 36 files the schema filter enumerates for the same classes
+- **THEN** it carries the measured contrast between an extension query's 11,422 faceted mention hits at the reported cap and the 36 files a schema filter enumerates over the configuration classes the ingest recognises, and states that the two sets overlap only on the RDP profiles
 
 #### Scenario: A format with no schema is reached by structural marker
 
@@ -105,15 +122,29 @@ they are not usable as search terms because they are short, common tokens.
 The section SHALL state that a pattern behaves differently in the reference's two consumption paths,
 because a reader arriving from either one must be told: over raw bytes the whole pattern applies,
 punctuation included, while as an Aleph `q` term the index discards punctuation so only a rare token
-survives. It SHALL name the subset whose tokens do survive and SHALL point at `aleph-entity-graph`
-for the platform reasoning rather than restating it.
+survives, and a hyphenated marker is split into its parts and must be quoted as a phrase. It SHALL
+name both the rare-token subset and the quoted-phrase subset, and SHALL point at `aleph-entity-graph`
+for the platform reasoning rather than restating it. It SHALL forbid requesting `highlight` on a
+credential marker and SHALL give the Aleph citation shape, because the secret is the remainder of the
+matched line in every format the section covers.
+
+No marker SHALL take the secret it detects into its own match span. The OpenVPN inline-material
+marker SHALL therefore stop at the opening tag, as the file's PEM markers already do, rather than
+spanning to a closing tag across the key body, and the section SHALL say why. Patterns SHALL be
+portable to the tools the scan path actually uses: no backreference, no repetition bound above the
+POSIX ERE limit of 255, and a stated requirement for multi-line matching (`rg -U` or `grep -Pz`) on
+the patterns that need it. The section SHALL also state that its markers sit on the same line as the
+value, so a scan runs with `-l`/`-c` or into a file rather than printing matched lines to a terminal.
+
+A marker SHALL discriminate a configuration rather than prose about one: a bare directive keyword
+common to vendor documentation SHALL be bound to its config-line form instead of shipped alone.
 
 The section SHALL state that a configuration's passphrase commonly sits in a different document from
-the configuration itself, that a located config is therefore the starting point for a pivot to its
-carrier — container, thread or correspondent — and SHALL NOT recommend a corpus-wide
-password-vocabulary query for that purpose. It SHALL carry the measured reason: the obvious forms
-returned 1,911 and 7,084 hits of effectively pure chat noise, and the specific phrase an analyst
-expects returned nothing at all.
+the configuration itself, that a located config is therefore the starting point for a read-only pivot
+to its carrier — container, thread or correspondent entity inside the corpus — and SHALL NOT
+recommend a corpus-wide password-vocabulary query for that purpose, nor any approach to a person. It
+SHALL carry the measured reason: the obvious forms returned 1,911 and 7,084 hits of effectively pure
+chat noise, and the specific phrase an analyst expects returned nothing at all.
 
 Every marker string SHALL be traceable to upstream format documentation or to an observed corpus hit.
 A string that cannot be established SHALL be omitted rather than included from recall.

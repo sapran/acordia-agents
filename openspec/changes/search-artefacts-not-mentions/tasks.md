@@ -24,4 +24,4 @@
 - [x] 5.1 Run `~/ai/checks/check-acordia.sh` against the worktree, the four CLAUDE.md invariant scripts by hand, the catalog diff, the four-file JSON parse check, and `openspec validate --all --strict`.
 - [x] 5.2 Re-run the shipped marker set against the live instance and confirm each string is established by corpus hit or upstream documentation, with no credential value read, printed or recorded.
 - [x] 5.3 Confirm the competency grid is unchanged and both edited skills remain `procedural` with `grid_row: null`, so the bijection and every column's mark set are untouched.
-- [ ] 5.4 Review the complete diff with a correctness reviewer and a security reviewer, fix or explicitly dismiss findings, archive the OpenSpec change, re-run strict validation and the drift gate, and commit on `feat/search-artefacts-not-mentions`.
+- [x] 5.4 Review the complete diff with a correctness reviewer and a security reviewer, fix or explicitly dismiss findings, archive the OpenSpec change, re-run strict validation and the drift gate, and commit on `feat/search-artefacts-not-mentions`.

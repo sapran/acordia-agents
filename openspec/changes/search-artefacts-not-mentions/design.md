@@ -8,7 +8,7 @@ to three orders of magnitude larger than the right one.
 
 ```text
 question asked:     which files in this collection are VPN / RDP / key-store configs?
-query written:      q = ".ovpn OR .rdp OR .ppk OR .pfx OR .p12 OR .dst"   -> 13,607, capped
+query written:      q = ".ovpn OR .rdp OR .ppk OR .pfx OR .p12"   -> 11,422 faceted, capped
 question answered:  which documents in this collection mention those words?
 query that answers: filters = {"schema": ["VPNConfig","RDP","KeePassDB"]} -> 36
 ```
@@ -23,20 +23,27 @@ query that answers: filters = {"schema": ["VPNConfig","RDP","KeePassDB"]} -> 36
 The ladder is the design: each rung exists because the rung above it cannot reach a specific class of
 artefact, and the note that prompted this change had only the bottom rung.
 
-### Measurements, collection `874`, 2026-09-13
+### Measurements, one collection on the operator's instance, 2026-09-13
 
 Read-only, `limit=0`, faceted on `schema`. Obtained through an `aleph-mcp` build predating the
-`collection` scope argument, so scope was passed as `filters={"collection_id": "874"}`; on the current
-server the same scope is the required `collection` argument, and the figures are properties of the
-corpus rather than of either build.
+`collection` scope argument, so scope was passed as a `collection_id` filter; on the current server
+the same scope is the required `collection` argument, and the figures are properties of the corpus
+rather than of either build. The collection id is deliberately not recorded here: the shipped prose
+attributes every figure to "one collection", and this record ships in the same public repository.
+
+A reported total at 10,000 is the cap, not a count, so each capped row also carries the sum of its
+`schema` facet buckets, which do carry true counts.
 
 | Query | Reported total | What it actually is |
 |---|---|---|
-| `.ovpn OR .rdp OR .ppk OR .pfx OR .p12 OR .dst` | 10,000 (cap); facets sum 13,607 | 10,577 HyperText + 2,259 Table + 352 PlainText + 224 Image + 148 Pages + 30 Document + **17 RDP** |
-| `filters={"schema": ["VPNConfig","RDP","KeePassDB"]}` | **36** | 19 KeePassDB + 17 RDP + 0 VPNConfig |
+| `.ovpn OR .rdp OR .ppk OR .pfx OR .p12` | 10,000 (cap); facets sum 11,422 | 8,832 HyperText + 2,163 Table + 144 PlainText + 122 Image + … + **17 RDP** |
+| the same plus `OR .dst`, as originally written | 10,000 (cap); facets sum 13,607 | `.dst` alone adds 2,452 mention hits and locates no config artefact — dropped from the shipped example |
+| `filters={"schema": ["VPNConfig","RDP","KeePassDB"]}` | **36** | 19 KeePassDB + 17 RDP + 0 VPNConfig — overlaps the row above only on the 17 RDP |
 | `kdbx OR KeePass` | 2,684 | 19 of them KeePassDB |
 | `"[Interface]" AND "PrivateKey ="` | **9** | 7 HyperText + 2 PlainText, all config bodies |
-| `(PrivateKey OR PresharedKey OR "[Interface]") AND (впн OR vpn OR amnezia OR wireguard OR туннел)` | 4,406 | 3,592 HyperText — vocabulary noise |
+| `PrivateKey` as a single token | 29 | the rare token the marker rests on |
+| `auth-user-pass` unquoted / `"auth-user-pass"` quoted | 407 / **1** | hyphens are split by the analyser: a multi-word marker must be quoted |
+| `(PrivateKey OR PresharedKey OR "[Interface]") AND (впн OR vpn OR amnezia OR wireguard OR туннел)` | 4,406 | 3,592 HyperText, 219 Table — vocabulary noise, dominated by web pages |
 | `"[Interface]" AND ("Jc" OR "S1" OR "H1")` | 10,000 (cap) | punctuation discarded, tokens too common |
 | `"</key>"` family | 10,000 (cap) | reduces to the token `key` |
 | `file_name:*.ovpn OR file_name:*.rdp OR file_name:*.kdbx` | **0** | `file_name` is a filter value, not a wildcard field |
@@ -62,17 +69,34 @@ string that could not be established was dropped rather than shipped from recall
 
 - **WireGuard / AmneziaWG** — `[Interface]`, `PrivateKey =`, `PresharedKey =`; the obfuscation
   parameters `Jc/Jmin/Jmax`, `S1/S2`, `H1`–`H4` per Amnezia's own documentation, shipped as a
-  file-level discriminator and explicitly **not** as a search term, because they are two-character
-  tokens that return the cap.
-- **OpenVPN** — `auth-user-pass`, `remote-cert-tls server`, `key-direction`, `tls-auth`, and the
-  inline `<cert>`/`<key>`/`<tls-auth>`/`<tls-crypt>` block.
+  file-level discriminator and explicitly **not** as a search term, because `S1`, `H1` and their
+  siblings are two-character tokens that return the cap and the bracketed section name that would
+  narrow them is discarded by the analyser.
+- **OpenVPN** — `"auth-user-pass"`, `"remote-cert-tls server"`, `key-direction`, `tls-auth`, and the
+  inline `<cert>`/`<key>`/`<tls-auth>`/`<tls-crypt>` block, matched at its **opening tag only**.
 - **PuTTY** — `PuTTY-User-Key-File-[23]:`, `Private-Lines:`, `Private-MAC:`, from PuTTY's own PPK
   appendix (formats 2 and 3; format 1 never shipped in a release).
-- **IPsec / IKE** — `crypto isakmp key`, `pre-shared-key`, `crypto ikev2 keyring`, each present in the
-  live corpus.
+- **IPsec / IKE** — `crypto isakmp key` and `crypto ikev2 keyring`, both present in the live corpus.
+  A bare `pre-shared-key` was **bound to its config-line form**: alone it matches vendor manuals and
+  forum prose, reproducing the mention-versus-artefact defect the section exists to prevent.
 - **Windows RDP** — `full address:s:`, `username:s:`. The encrypted-password field was **dropped**: it
   returned nothing in the corpus and could not be established from a source, so the honest cost is one
   missing line rather than one invented pattern.
+
+Three constraints shape the block's form, and each was a review finding:
+
+- **No marker takes the secret into its match span.** The inline-material marker stops at the opening
+  tag rather than spanning to the closing one, as the file's PEM markers already do; otherwise a
+  scan's output file becomes a second store of private keys, which is what the purge rule then has to
+  clean up.
+- **The patterns must run on the tools the scan path names.** `rg` supports no backreferences and
+  POSIX ERE rejects a repetition bound above 255 — and `grep -E -f`/`rg -f` abort the *whole* batch on
+  one uncompilable line, which a loop that ignores the exit code reads as a clean no-hit pass over the
+  entire slice. Hence `{0,255}`, no `\1`, and a stated `-U` requirement for the multi-line patterns.
+- **Hyphenated markers are phrases, not tokens.** The analyser splits `auth-user-pass` into three
+  common words: 407 hits unquoted against 1 quoted. The rare-token list and the quoted-phrase list are
+  therefore given separately, because conflating them recreates the vocabulary widening one paragraph
+  earlier warns about.
 
 ### Literature position
 

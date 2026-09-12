@@ -6,11 +6,14 @@ corpus, and the gap has a default answer that does not work: search the file ext
 
 An extension in `q` is free text, so it matches every document that **mentions** the format — wiki
 pages, inventory spreadsheets, vendor manuals — rather than the files that **are** one. Measured on
-collection `874` of the operator's instance (2026-09-13): `.ovpn OR .rdp OR .ppk OR .pfx OR .p12 OR
-.dst` returned 13,607 hits, of which 10,577 were web pages and 2,259 spreadsheets, and the reported
-total sat at the 10,000 cap — an unenumerated set, which this skill already teaches the analyst to
-treat as unreadable. The same collection holds 36 files of those classes. `kdbx OR KeePass` returned
-2,684 against 19 actual KeePass databases.
+one collection of the operator's instance (2026-09-13), the query as an analyst actually wrote it —
+`.ovpn OR .rdp OR .ppk OR .pfx OR .p12 OR .dst` — reported the 10,000 cap with its `schema` facets
+summing to 13,607: 10,577 web pages and 2,259 spreadsheets. `.dst` is not a configuration format and
+contributes 2,452 of those hits while locating no artefact of any configuration class, so the shipped
+prose quotes the five-format form instead, whose facets sum to 11,422 — 8,832 web pages and 2,163
+spreadsheets. Either way the set is unenumerated, which this skill already teaches the analyst to
+treat as unreadable, and the same collection holds **36** files across the configuration classes the
+ingest recognises. `kdbx OR KeePass` returned 2,684 against 19 actual KeePass databases.
 
 Three separate defects made that the analyst's best available move, and each is a sentence the skills
 do not carry:
@@ -21,7 +24,9 @@ do not carry:
    removes nothing: Aleph's ingest assigns every file an FtM **schema**, the `schema` facet is
    populated, and it carries true counts. `filters={"schema": ["VPNConfig","RDP","KeePassDB"]}`
    returned exactly 36 rows — 19 KeePass databases and 17 RDP profiles — where the extension query
-   returned an unenumerable 13,607.
+   returned an unenumerable 11,422. The two sets overlap only on the 17 RDP profiles: a KeePass
+   database is invisible to an extension list carrying no `.kdbx`, which is why the contrast is
+   between recall mechanisms rather than between two readings of one class set.
 
 2. **No guidance existed for a format with no schema.** A config pasted into a chat message is a
    `HyperText` page like any other, so no facet isolates it, and a WireGuard or AmneziaWG config
