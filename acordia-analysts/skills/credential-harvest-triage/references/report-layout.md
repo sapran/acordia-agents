@@ -1,6 +1,6 @@
 # Credential Sweep Report Layout
 
-This is the fixed shape of the HTML product that step 8 of `credential-harvest-triage` emits. It
+This is the fixed shape of the HTML product that step 9 of `credential-harvest-triage` emits. It
 decides presentation only, and adds nothing to what the skill's `## Guardrails` permit to be
 disclosed.
 
