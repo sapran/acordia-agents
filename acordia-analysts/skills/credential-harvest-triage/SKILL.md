@@ -66,14 +66,15 @@ supplied, still steers bucket selection and pattern choice.
    for a raw archive, list every file, size, mtime, MIME/file-type and directory shape. Output an
    inventory table and declare the denominator.
 2. **Bucket partition**: split the inventory by material class into leg-owned buckets, selecting only
-   the relevant slices named by the orientation packet where one exists. The orchestrator dispatches
-   each slice to its handling leg with **only that slice**, not the whole archive. Current mapping:
+   the relevant slices named by the orientation packet where one exists, so that the per-category scan
+   and deep-pass below run in parallel. The orchestrator dispatches each slice to its handling leg with
+   **only that slice**, not the whole archive. Current mapping:
    - **Bucket A — identity / directory / cloud control-plane** (AD exports, NTDS, Kerberos, LAPS/gMSA, ADCS, IMDS captures, service-account keys, IaC state) → `terrain-analyst`
    - **Bucket B — host-forensic** (memory captures, SAM/SECURITY hives, DPAPI, Keychain, `shadow`, SSH agent) → whichever leg holds the host under analysis
    - **Bucket C — web / API auth** (JWTs, OAuth tokens, session cookies, provider API keys) → `terrain-analyst`
    - **Bucket D — log-artefact** (application / CI / system logs, connection strings leaked in logs) → `overwatch-analyst`
    - **Bucket E — implant / payload RE** (malware configs, embedded keys in binaries) → cross-cutting via `implant-payload-re`, findings reported to `cyber-analyst`, which holds the fused picture itself
-   Buckets route to legs, not to skills. Each leg returns a **coverage receipt** for its bucket — declared scope reconciled to covered scope — per `exhaustive-data-processing`; the orchestrator rejects any bucket whose scan did not cover its whole slice and re-dispatches it. The mapping is fixed by domain — reclassify a bucket only through an openspec change, not an in-file edit.
+   Buckets route to legs, not to skills. Each leg then runs steps 3–5 (targeted first-pass scan, deep-pass, classify) on its own slice, applying its own specialist skills; the legs work in parallel, and step 6 re-merges their classifications. Each leg returns a **coverage receipt** for its bucket — declared scope reconciled to covered scope — per `exhaustive-data-processing`; the orchestrator rejects any bucket whose scan did not cover its whole slice and re-dispatches it. The mapping is fixed by domain — reclassify a bucket only through an openspec change, not an in-file edit.
 3. **Targeted first-pass scan**: run the pattern library (see `references/credential-patterns.md`) using
    the asset fingerprints and expected credential forms in the packet. The scan SHALL cover 100% of
    each selected slice's text-decodable bytes and record every hit — never a sample — with path + line,
