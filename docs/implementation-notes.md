@@ -192,17 +192,6 @@ malformed` on every call throughout that work, so the selection could not be mad
   rule the current file does not follow, which is its own change with its own byte-for-byte
   validation.
 
-- **The `## If you cannot dispatch` guard in `acordia-analysts/agents/cyber-analyst.md` is inert.** It
-  tells an agent that if it cannot dispatch subagents it was dispatched as a leg and must stop and say
-  so. On the opwe run of 2026-09-02 (`~/ai/tasks/tele2-siem`) `cyber-analyst` was dispatched as a peer
-  leg named `CyberLeg`, enumerated its own tool inventory in a thinking block at 14:13:15, saw no
-  `task` tool — omp strips it at `task.maxRecursionDepth: 1` — and never fired the guard: zero
-  occurrences of its language across 391,251 characters of that leg's prose. The section states an
-  absence, and a model does not notice an absence it was not asked to look for. Candidate fix: a
-  positive check the agent must perform and report — enumerate the tool inventory, state whether
-  `task` is present, and stop if it is not — rather than prose about a missing tool. Parked
-  deliberately out of the 6.7.0 change, whose three items were the profile-scope lead fix and the two
-  skill bodies; this is an agent-prompt change with its own A/B proof obligation.
 - **`acordia-analysts/agents/cyber-analyst.md` is effectively at its ceiling.** After 6.8.0 the
   orchestrator body sits at 10,442 of the 10,500 characters `openspec/specs/agent-roster/spec.md`
   allows, enforced by `tools/check-acordia.sh` check 8. The credential routing rule was rewritten three
