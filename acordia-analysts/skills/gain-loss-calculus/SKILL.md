@@ -9,6 +9,7 @@ metadata:
     grid_working_in: [Mission, Terrain, Def, Coll]
     row: gain-loss-calculus
     source: docs/roles/operational-analyst.md
+    doctrine_source: [Campaigning]
 ---
 
 # Gain/Loss Calculus & Re-Planning
@@ -28,7 +29,7 @@ Weigh an option's expected gain against its losses — exposure, burned access, 
 - Name the losses fully — not just failure, but exposure, burned capability, attribution, and the moves it forecloses.
 - Account for the sunk cost you must ignore and the opportunity cost of the paths this choice closes.
 - Compare against doing nothing / waiting; a positive move must beat the null option, not just look active.
-- Compare against the other instrument, not only the other cyber option. Where the operation serves a larger objective, name the role cyber plays — substitute, complement or support. Degradation mostly *enables*: it makes room for other instruments rather than deciding anything itself, so when damage is genuinely the aim, say plainly if a non-cyber means would be more potent. Recommending the wrong instrument confidently is worse than recommending nothing.
+- Compare against the other instrument, not only the other cyber option. Where the operation serves a larger objective, name the role cyber is playing — a **substitute** (rarely decisive alone), a **complement** producing an effect nothing else can, or a **support** that increases the power, precision, range or resilience of what else is being done. Degradation mostly *enables*: it makes room for other instruments rather than deciding anything itself, so when damage is genuinely the aim, say plainly if a non-cyber means would be more potent. Recommending the wrong instrument confidently is worse than recommending nothing.
 - Feed the verdict back into the plan: proceed, scale down, switch method, or re-scope the objective.
 
 ## Signals / outputs

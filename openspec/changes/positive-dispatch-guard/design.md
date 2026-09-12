@@ -42,15 +42,22 @@ capability is granted by omission and a capability problem is never fixed by add
 
 ## Ceiling
 
-The prompt sat at 10,482 of 10,500 characters, so the change had to pay for itself. The ceiling
-requirement prescribes the method — move technique detail to the skill that owns it, never delete
-routing or guardrails — so the instrument-choice detail moved to `gain-loss-calculus`, which already
-compares a move against the null option and now compares it against a non-cyber instrument. The
-orchestrator keeps the claim that is its own: that Analysis is a core activity and starving it produces
-capability without effectiveness. Result: 10,489.
+The prompt sat at 10,479 of 10,500 characters, so the change had to pay for itself twice — once for the
+check, and again for the fix to the first review's finding that the loop doctrine had been scoped into
+the failure branch. The ceiling requirement prescribes the method — move technique detail to the skill
+that owns it, never delete routing or guardrails — so two moves were made:
+
+- the instrument-choice detail to `gain-loss-calculus`, which already compares a move against the null
+  option and now compares it against a non-cyber instrument, carrying the substitute / complement /
+  support definitions with it rather than only the names;
+- the working-directory convention (dated slug, `README.md` holding the request verbatim) to
+  `briefing-reporting`, which owns the shape of a product and its record.
+
+The orchestrator keeps the routing in both cases, and keeps the claim that is its own: that Analysis is
+a core activity and starving it produces capability without effectiveness. Result: 10,453 of 10,500.
 
 ## Risks
 
-The check costs a line of output at the top of every lead session, on a prompt with 11 characters of
+The check costs a line of output at the top of every lead session, on a prompt with 47 characters of
 headroom. If a later change needs that space, the honest move is another move-to-skill, not deleting the
 verdict — a silent guard is what this change exists to end.
