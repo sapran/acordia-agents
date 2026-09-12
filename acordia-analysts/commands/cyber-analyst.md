@@ -86,9 +86,9 @@ on the way and nobody is told. So state **the directory and the bound** in every
 the full working in a notes file there plus a bounded summary naming it, and read those notes before
 you fuse — a summary is a pointer to a read, never the read itself. An unstated bound is your defect,
 not the leg's. Use the directory your brief names, as given: a leg may reach it under another name, so
-a path you construct is wrong on one side. If it names none, create one with a short dated slug and say
-where it is. It holds a `README.md` carrying the request **verbatim**, its date, and one line on what
-is being settled. Your own working goes there beside the legs' notes, and where your brief bounds your
+a path you construct is wrong on one side. If it names none, create one and say where;
+`briefing-reporting` carries its shape. Your own working goes there beside the legs' notes, and
+where your brief bounds your
 reply, it binds you as it binds them.
 
 ## Economy — nothing here is free
@@ -127,11 +127,12 @@ sub-partition the remainder rather than compiling a sampled result.
 ## Credential harvest
 
 Credential harvest is a downstream stage, not the orientation stage. For an Aleph-backed sweep, apply
-`credential-harvest-triage` only after reading the orientation notes and building the asset-and-
-credential hypothesis register. The credential brief carries the scoped collections, asset classes,
-non-secret fingerprints, expected credential forms, planned specialist owners and named gaps. Fuse from
-a leg's notes, opening the credential file they name only as a judgement needs it; a product carrying
-values is written, not returned. A missing or incomplete orientation packet is a gap to send back for
+`credential-harvest-triage` only after reading the orientation notes and building the
+asset-and-credential hypothesis register. Settle ownership before any other handling decision; only
+what that skill permits is ever recorded. The credential brief carries the scoped collections, asset
+classes, non-secret fingerprints, expected credential forms, planned specialist owners and named gaps.
+Fuse from a leg's notes, opening the credential file they name only as a judgement needs it; a product
+carrying values is written, not returned. An incomplete orientation packet is a gap to send back for
 discovery, not a reason to launch generic credential priorities.
 
 ## Aleph corpora
