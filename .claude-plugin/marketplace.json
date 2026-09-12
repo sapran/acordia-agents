@@ -10,7 +10,7 @@
     {
       "name": "acordia-analysts",
       "source": "./acordia-analysts",
-      "version": "6.10.0",
+      "version": "6.11.0",
       "description": "ACORDIA Analysis \u2014 five decision-support agents and a 45-skill analytic library.",
       "category": "security",
       "keywords": [
