@@ -79,6 +79,12 @@ supplied, still steers bucket selection and pattern choice.
    the asset fingerprints and expected credential forms in the packet. The scan SHALL cover 100% of
    each selected slice's text-decodable bytes and record every hit — never a sample — with path + line,
    not the matched string. Flag binary artefacts for deep-pass.
+   For an Aleph-backed slice, establish file class before scanning: facet on `schema`, which Aleph's
+   ingest populates for every file, rather than searching a filename or extension — an extension in
+   `q` matches every document that *mentions* the format and is a cross-check, not the recall
+   mechanism. Reach the formats no facet can isolate, a config pasted into a message among them,
+   through the structural markers in the pattern library. `aleph-entity-graph` carries the measured
+   detail and the tokenisation rule that decides which markers survive as search terms.
 4. **Deep-pass per category**: dispatch to the matching specialist skill:
    - Memory / disk images → `disk-memory-forensics`
    - AD / NTDS / Kerberos / LAPS / ADCS → `identity-directory-trust`

@@ -66,6 +66,22 @@ Do not assume either path exists — check, say which you are on, and name the c
 6. **Read text last, and bounded.** `get_entity_text` with `offset`/`limit`; check `total_chars` and `truncated` before asking for more. A search with `highlight` usually settles whether a term occurs; only read the body when you need the surrounding argument.
 7. **Script the repetitive part.** Per `analytic-tooling-scripting`: when the same pivot must run over dozens of entities, write the loop and aggregate the results, rather than issuing dozens of interactive calls and reading each one.
 
+### Searching for artefacts rather than mentions
+
+**A file's class is a schema, not a filename.** Aleph's ingest assigns every file a FollowTheMoney schema, so the file-type question is answered by the faceting you are already doing: `schemata="Document"` with `facets=["schema"]` returns exact buckets — `PlainText`, `Table`, `Workbook`, `Package`, `HyperText`, `Email`, and the purpose-built classes an analyst hunting configuration material actually wants, `VPNConfig`, `RDP`, `KeePassDB`. A `filters={"schema": [...]}` constraint then enumerates that slice.
+
+**`mime_type` and `extension` may be empty facets, and that says nothing about the corpus.** On a live instance both returned zero buckets over a collection holding millions of documents. It is an indexing property of that instance, not evidence, and it removes no discriminator, because `schema` is populated regardless. "There is no way to slice by file type here" is the wrong inference, and it is the one that sends an analyst to the filename.
+
+**A format word or extension in `q` measures mentions, not artefacts.** `q` searches text, so `.ovpn` matches every wiki page, inventory sheet and vendor manual that says the word. Measured on one collection: `.ovpn OR .rdp OR .ppk OR .pfx OR .p12 OR .dst` returned 13,607 hits — 10,577 web pages and 2,259 spreadsheets — with the reported total sitting at the 10,000 cap, while `filters={"schema": ["VPNConfig","RDP","KeePassDB"]}` returned **36** files on the same collection: 19 KeePass databases and 17 RDP profiles. `kdbx OR KeePass` returned 2,684 against those same 19. Treat the extension form as a cross-check on a set you already hold; it is never the recall mechanism. A fielded rescue does not work either — `file_name:*.ovpn` returned 0, because `file_name` is a filter value rather than a wildcard-searchable field. Filter it exactly when you know the name, and scope by schema otherwise.
+
+**Where a format has no schema of its own, search a structural marker.** A configuration pasted into a chat message is a `HyperText` page like any other, so no facet will isolate it, and a WireGuard or AmneziaWG config carries no extension at all. What distinguishes it is the skeleton of the format: two or more format tokens, ANDed. `"[Interface]" AND "PrivateKey ="` returned 9 rows on that same collection, every one a configuration body and seven of them inside chat pages — material no extension query can reach. The marker set lives in `credential-harvest-triage`'s `references/credential-patterns.md`.
+
+**A marker discriminates by its rarest token, never by its punctuation.** The index discards punctuation, so structure that looks distinctive to a reader collapses to a common word: `"</key>"` reduces to `key` and returned the cap, as did `"[Interface]" AND ("Jc" OR "S1" OR "H1")`. `PrivateKey`, `PresharedKey` and `auth-user-pass` work because the token itself is rare. Price a candidate marker at `limit=0` and read its `schema` facet before building on it — a marker whose count looks like the cap is not a marker.
+
+**Adding vocabulary widens; only structure narrows.** The 66% rule in step 4 is why: every extra synonym is another term that need not match. The same intent as the tight form above, spread across vocabulary — `(PrivateKey OR PresharedKey OR "[Interface]") AND (впн OR vpn OR amnezia OR wireguard OR туннел)` — returned 4,406, dominated by spreadsheets and vendor configuration tables. This is language-independent: translating the synonym list does not rescue it, and a corpus in a language you are working through raises the temptation rather than the yield.
+
+Say so in the coverage statement: which classes you enumerated by schema, which formats you reached only by marker, and which markers hit the cap and were therefore sampled rather than enumerated.
+
 ## Limits that change the method
 
 These are Aleph's, not the tool's, and no amount of paging works around them:
