@@ -66,18 +66,19 @@ resolve, the filename is identification — rather than calling both openable.
 
 ## Impact
 
-`acordia-analysts/skills/*/SKILL.md` — eleven bodies in total: five carrying reference pointers
+`acordia-analysts/skills/*/SKILL.md` — nine bodies in total: five carrying reference pointers
 (`credential-harvest-triage`, `implant-payload-re`, `web-api-authflow-analysis`,
-`log-artefact-interpretation`, `aleph-entity-graph`) and a further six carrying only the pointer at
-the triage skill (`cloud-controlplane-analysis`, `disk-memory-forensics`, `identity-directory-trust`,
-`os-host-internals` — the other three overlap with the first set). Plus
-`openspec/specs/skill-library/spec.md`, the three version literals, and `acordia-map.html` in the
-follow-up commit.
+`log-artefact-interpretation`, `aleph-entity-graph`) and four more carrying only the pointer at the
+triage skill (`cloud-controlplane-analysis`, `disk-memory-forensics`, `identity-directory-trust`,
+`os-host-internals`) — the other three of the seven skill-to-skill pointers sit in bodies already in
+the first set. Plus `openspec/specs/skill-library/spec.md`, the three version literals, and
+`acordia-map.html` in the follow-up commit, whose rebuilt model is what established this count: nine
+skill records changed and no other.
 
-The competency grid does not move, and no column gains or loses a mark. Ten of the eleven edited
+The competency grid does not move, and no column gains or loses a mark. Seven of the nine edited
 skills are grid-row skills whose `row` ids, `grid_deep_in` and `grid_working_in` are untouched; the
-eleventh is procedural with `grid_row: null`. This changes how a body addresses a file, not what any
-analyst is competent in.
+other two — `credential-harvest-triage` and `aleph-entity-graph` — are procedural with
+`grid_row: null`. This changes how a body addresses a file, not what any analyst is competent in.
 
 No reference file's content changes, so nothing about what may be disclosed moves, and
 `credential-harvest-triage`'s `## Guardrails` block is byte-identical. No credential value was read to

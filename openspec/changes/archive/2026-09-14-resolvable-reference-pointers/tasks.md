@@ -21,6 +21,6 @@
 ## 4. Release mechanics
 
 - [x] 4.1 Bump `6.13.0` → `6.14.0` in lockstep across `acordia-analysts/.claude-plugin/plugin.json`, `.claude-plugin/marketplace.json` and `.omp-plugin/marketplace.json`.
-- [ ] 4.2 Regenerate `acordia-map.html` for 6.14.0 in the main checkout as a follow-up `docs:` commit on the integration branch after merge — the map is derived from the merged tree and is never written into a worktree — and confirm the landing page paints with its agent and skill counts intact.
+- [x] 4.2 Regenerate `acordia-map.html` for 6.14.0 in the main checkout as a follow-up `docs:` commit on the integration branch after merge — the map is derived from the merged tree and is never written into a worktree — and confirm the landing page paints with its agent and skill counts intact.
 - [x] 4.3 `~/ai/checks/check-acordia.sh` in the worktree, before the PR.
 - [x] 4.4 `openspec validate --all --strict`.
