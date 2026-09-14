@@ -16,11 +16,13 @@ metadata:
 
 This skill is **procedural and cross-cutting**. It does not correspond to a row in the competency-grid appendix of `docs/roles/operational-analyst.md`. It reuses the credential-extraction procedures embedded in seven grid-row skills (`disk-memory-forensics`, `identity-directory-trust`, `log-artefact-interpretation`, `cloud-controlplane-analysis`, `web-api-authflow-analysis`, `os-host-internals`, `implant-payload-re`) and imposes one shared triage flow across them. Adding it as a grid row would inflate the competency map with a workflow, not a competency.
 
-Two reference files ship inside this skill's own directory, and every pointer to them below carries
-the address to open: the `skill://credential-harvest-triage/references/<file>` form where the harness
-resolves skill URIs, otherwise the same file as a sibling of this one. Never reconstruct a path into a
+Every pointer to this skill's two reference files carries the address to open it:
+`skill://credential-harvest-triage/references/<file>.md` where the harness resolves skill URIs, and
+`references/<file>.md` beside this file where it resolves a sibling. Never reconstruct a path into a
 harness skills directory — a guessed absolute path is how these files get reported missing while being
-installed and current.
+installed and current. Where neither address opens, say so and ask the operator for the installed
+path; never search the filesystem for a copy, because the copy you find may be any vintage and this
+file governs what a sweep detects and discloses.
 
 ## Objective
 
