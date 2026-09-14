@@ -90,3 +90,14 @@ recall.
   product may disclose to the party that owns the credential. The ownership-gated disclosure rule in
   `credential-harvest-triage` and `briefing-reporting` is therefore this repository's own reasoning
   from the consumer's need, and is marked as such rather than attributed.
+- **A doctrinal basis for how a corpus query is constructed.** Searched for precision against volume
+  in collection, and for query formulation over an indexed corpus. The library grounds the adjacent
+  *analytic* claim — `Heuer` p. 81 records the handicapper and clinical-psychologist experiments, in
+  which accuracy stayed flat or fell as information increased while confidence rose steadily, and
+  `Monte` pp. 26–27 distinguish directed collection, which knows the class of information wanted from
+  the outset, from strategic collection's bulk. Neither addresses how a search is phrased against an
+  index. The file-class, structural-marker and tokenisation rules in `aleph-entity-graph` and
+  `credential-patterns.md` are therefore measured behaviour of a live Aleph instance, anchored to
+  those skills' own procedural sources and carrying no literature attribution, per the technique-detail
+  rule in `openspec/specs/doctrinal-provenance` — a citation there would falsely imply a work
+  prescribes the procedure.

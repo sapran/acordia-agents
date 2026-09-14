@@ -52,7 +52,7 @@ Credentials leak into logs constantly. Extraction here is grep-shaped across col
 
 **CI/CD and build logs**
 
-- GitHub Actions/GitLab CI/Jenkins output — masked secrets *sometimes* fail to mask (env vars printed by `env` step, secrets echoed via `set -x`, base64-encoded before mask). Search for the [pattern-library](../credential-harvest-triage/references/credential-patterns.md) prefixes (`ghp_`, `AKIA`, `xox`, `eyJ`) even in logs marked "secrets masked".
+- GitHub Actions/GitLab CI/Jenkins output — masked secrets *sometimes* fail to mask (env vars printed by `env` step, secrets echoed via `set -x`, base64-encoded before mask). Search for the pattern-library prefixes (`ghp_`, `AKIA`, `xox`, `eyJ`) from [`credential-harvest-triage/references/credential-patterns.md`](skill://credential-harvest-triage/references/credential-patterns.md) even in logs marked "secrets masked".
 - Docker build logs — `ARG` credentials leaked into image layers or build output.
 - Terraform apply/plan output — resource creation surfaces secrets in `sensitive = false` outputs.
 
@@ -68,4 +68,4 @@ Credentials leak into logs constantly. Extraction here is grep-shaped across col
 
 **Cross-cutting**
 
-- Log-sourced credentials often have unknown freshness (log retention window) and unknown revocation status. Mark `freshness: unknown` unless the log line carries a timestamp inside the retention SLA. Classification and reporting via [`credential-harvest-triage`](../credential-harvest-triage/SKILL.md), ownership settled first. Redirect the grep to a file rather than letting it print — a log sweep matches in bulk, so a printed one puts every hit on your screen and into the session record at once — and identify a finding by log file plus line while you triage it.
+- Log-sourced credentials often have unknown freshness (log retention window) and unknown revocation status. Mark `freshness: unknown` unless the log line carries a timestamp inside the retention SLA. Classification and reporting via [`credential-harvest-triage`](skill://credential-harvest-triage), ownership settled first. Redirect the grep to a file rather than letting it print — a log sweep matches in bulk, so a printed one puts every hit on your screen and into the session record at once — and identify a finding by log file plus line while you triage it.
