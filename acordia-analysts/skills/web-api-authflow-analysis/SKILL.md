@@ -59,7 +59,7 @@ Passive analysis of collected auth material — tokens, cookies, API-key strings
 
 **API keys by provider**
 
-- Use the pattern-library prefixes from [`credential-harvest-triage/references/credential-patterns.md`](../credential-harvest-triage/references/credential-patterns.md): `AKIA`, `ghp_`, `sk-`, `sk-ant-`, `xox[baprs]-`, `AIza`, `glpat-`, `npm_`, `pypi-`, `dckr_pat_`.
+- Use the pattern-library prefixes from [`credential-harvest-triage/references/credential-patterns.md`](skill://credential-harvest-triage/references/credential-patterns.md): `AKIA`, `ghp_`, `sk-`, `sk-ant-`, `xox[baprs]-`, `AIza`, `glpat-`, `npm_`, `pypi-`, `dckr_pat_`.
 - Provider-specific parse: GitHub PATs disclose scope via `X-OAuth-Scopes` on any `/user` GET (do not call; if the header was captured in a log, record it); AWS access keys carry the account ID in the ID via `sts:GetAccessKeyInfo` documentation (offline mapping only).
 
 **Session cookies**
@@ -75,4 +75,4 @@ Passive analysis of collected auth material — tokens, cookies, API-key strings
 
 **Cross-cutting**
 
-- Web/API credentials often have narrow `scope` but broad `reuse-potential` (same token works across many endpoints). Refresh tokens and long-lived PATs always mark P0 or P1 depending on scope. All classification and reporting flows through [`credential-harvest-triage`](../credential-harvest-triage/SKILL.md), ownership settled first. Send capture and decode output to a file rather than to standard output, and let the cookie name or claim identifier carry the finding while you triage it.
+- Web/API credentials often have narrow `scope` but broad `reuse-potential` (same token works across many endpoints). Refresh tokens and long-lived PATs always mark P0 or P1 depending on scope. All classification and reporting flows through [`credential-harvest-triage`](skill://credential-harvest-triage), ownership settled first. Send capture and decode output to a file rather than to standard output, and let the cookie name or claim identifier carry the finding while you triage it.

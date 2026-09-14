@@ -16,6 +16,14 @@ metadata:
 
 This skill is **procedural and cross-cutting**. It does not correspond to a row in the competency-grid appendix of `docs/roles/operational-analyst.md`. It reuses the credential-extraction procedures embedded in seven grid-row skills (`disk-memory-forensics`, `identity-directory-trust`, `log-artefact-interpretation`, `cloud-controlplane-analysis`, `web-api-authflow-analysis`, `os-host-internals`, `implant-payload-re`) and imposes one shared triage flow across them. Adding it as a grid row would inflate the competency map with a workflow, not a competency.
 
+Every pointer to this skill's two reference files carries the address to open it:
+`skill://credential-harvest-triage/references/<file>.md` where the harness resolves skill URIs, and
+`references/<file>.md` beside this file where it resolves a sibling. Never reconstruct a path into a
+harness skills directory — a guessed absolute path is how these files get reported missing while being
+installed and current. Where neither address opens, say so and ask the operator for the installed
+path; never search the filesystem for a copy, because the copy you find may be any vintage and this
+file governs what a sweep detects and discloses.
+
 ## Objective
 
 Turn collected material into a ranked, classified inventory of credential findings — with source, scope, asset relationship, mission relevance, reuse potential, and priority attached to each — so the operation can act on the best material first and set the rest aside without losing it. For Aleph-backed work, triage consumes the lead's orientation packet before credential prioritisation begins.
@@ -75,7 +83,7 @@ supplied, still steers bucket selection and pattern choice.
    - **Bucket D — log-artefact** (application / CI / system logs, connection strings leaked in logs) → `overwatch-analyst`
    - **Bucket E — implant / payload RE** (malware configs, embedded keys in binaries) → cross-cutting via `implant-payload-re`, findings reported to `cyber-analyst`, which holds the fused picture itself
    Buckets route to legs, not to skills. Each leg then runs steps 3–5 (targeted first-pass scan, deep-pass, classify) on its own slice, applying its own specialist skills; the legs work in parallel, and step 6 re-merges their classifications. Each leg returns a **coverage receipt** for its bucket — declared scope reconciled to covered scope — per `exhaustive-data-processing`; the orchestrator rejects any bucket whose scan did not cover its whole slice and re-dispatches it. The mapping is fixed by domain — reclassify a bucket only through an openspec change, not an in-file edit.
-3. **Targeted first-pass scan**: run the pattern library (see `references/credential-patterns.md`) using
+3. **Targeted first-pass scan**: run the pattern library (see [`references/credential-patterns.md`](skill://credential-harvest-triage/references/credential-patterns.md)) using
    the asset fingerprints and expected credential forms in the packet. The scan SHALL cover 100% of
    each selected slice's text-decodable bytes and record every hit — never a sample — with path + line,
    not the matched string. Flag binary artefacts for deep-pass.
@@ -123,16 +131,16 @@ supplied, still steers bucket selection and pattern choice.
    operation-owned, unadjudicated and personal ones appear as classification only. A product carrying
    values is written to disk rather than returned in a reply. For each P0/P1, name the specialist owner,
    asset relationship and reuse hypothesis. When the product is an HTML sweep report, build it to the
-   layout in [`references/report-layout.md`](references/report-layout.md) — organised by the system each
+   layout in [`references/report-layout.md`](skill://credential-harvest-triage/references/report-layout.md) — organised by the system each
    credential opens, not by artefact or collection.
 
 ## Pattern library
 
-The pattern library lives in [`references/credential-patterns.md`](references/credential-patterns.md) alongside this skill — provider API-key prefixes, auth-material shapes, password-hash markers, connection-string DSNs, private-key PEM markers, and cloud/k8s secret-file patterns, grouped by class, plus a non-secret asset-fingerprint section used to steer targeted searches to the system classes the orientation packet names, and a non-secret config-file structural-marker section for locating VPN, key-store and RDP configuration bodies by format skeleton rather than by filename. It is the single source of truth for detection patterns: add a new provider prefix, fingerprint or structural marker there once and every consumer (this skill's first-pass scan, and the pattern-citing `## Credential extraction` sections in `log-artefact-interpretation`, `web-api-authflow-analysis`, and `implant-payload-re`) inherits it. Anchor detection on the prefix; verify the current format at the provider's docs before acting.
+The pattern library lives in [`references/credential-patterns.md`](skill://credential-harvest-triage/references/credential-patterns.md) alongside this skill — provider API-key prefixes, auth-material shapes, password-hash markers, connection-string DSNs, private-key PEM markers, and cloud/k8s secret-file patterns, grouped by class, plus a non-secret asset-fingerprint section used to steer targeted searches to the system classes the orientation packet names, and a non-secret config-file structural-marker section for locating VPN, key-store and RDP configuration bodies by format skeleton rather than by filename. It is the single source of truth for detection patterns: add a new provider prefix, fingerprint or structural marker there once and every consumer (this skill's first-pass scan, and the pattern-citing `## Credential extraction` sections in `log-artefact-interpretation`, `web-api-authflow-analysis`, and `implant-payload-re`) inherits it. Anchor detection on the prefix; verify the current format at the provider's docs before acting.
 
 ## Report layout
 
-The HTML sweep report has a fixed shape, held in [`references/report-layout.md`](references/report-layout.md) alongside this skill — the section order, the stylesheet, the block anatomies, the field labels each block carries, and the self-check that runs before hand-over. It is the single source of truth for how a sweep is presented: organised by the system each credential opens, so the reader sees an access rather than a list of strings. It decides presentation only and never widens what `## Guardrails` permits to be disclosed.
+The HTML sweep report has a fixed shape, held in [`references/report-layout.md`](skill://credential-harvest-triage/references/report-layout.md) alongside this skill — the section order, the stylesheet, the block anatomies, the field labels each block carries, and the self-check that runs before hand-over. It is the single source of truth for how a sweep is presented: organised by the system each credential opens, so the reader sees an access rather than a list of strings. It decides presentation only and never widens what `## Guardrails` permits to be disclosed.
 
 ## Signals / outputs
 
