@@ -52,7 +52,7 @@ Credentials leak into logs constantly. Extraction here is grep-shaped across col
 
 **CI/CD and build logs**
 
-- GitHub Actions/GitLab CI/Jenkins output — masked secrets *sometimes* fail to mask (env vars printed by `env` step, secrets echoed via `set -x`, base64-encoded before mask). Search for the [pattern-library](../credential-harvest-triage/references/credential-patterns.md) prefixes (`ghp_`, `AKIA`, `xox`, `eyJ`) even in logs marked "secrets masked".
+- GitHub Actions/GitLab CI/Jenkins output — masked secrets *sometimes* fail to mask (env vars printed by `env` step, secrets echoed via `set -x`, base64-encoded before mask). Search for the [`credential-harvest-triage/references/credential-patterns.md`](skill://credential-harvest-triage/references/credential-patterns.md) prefixes (`ghp_`, `AKIA`, `xox`, `eyJ`) even in logs marked "secrets masked".
 - Docker build logs — `ARG` credentials leaked into image layers or build output.
 - Terraform apply/plan output — resource creation surfaces secrets in `sensitive = false` outputs.
 
