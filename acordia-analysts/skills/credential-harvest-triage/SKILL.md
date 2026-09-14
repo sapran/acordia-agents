@@ -79,6 +79,20 @@ supplied, still steers bucket selection and pattern choice.
    the asset fingerprints and expected credential forms in the packet. The scan SHALL cover 100% of
    each selected slice's text-decodable bytes and record every hit — never a sample — with path + line,
    not the matched string. Flag binary artefacts for deep-pass.
+   For an Aleph-backed slice, establish file class before scanning: facet on `schema`, which Aleph's
+   ingest populates for every file, rather than searching a filename or extension — an extension in
+   `q` matches every document that *mentions* the format and is a cross-check, not the recall
+   mechanism. Reach the formats no facet can isolate, a config pasted into a message among them,
+   through the structural markers in the pattern library. An Aleph hit has neither a path nor a line:
+   record it as `collection_id` + `entity_id` + `schema`, plus a `get_entity_text` offset where a span
+   is genuinely needed — bounded to the smallest window that establishes the finding, per **Look
+   deliberately**, because that read puts the value in your context exactly as `highlight` would. The
+   difference is that you chose it for one document. Never record the matched text itself. Do not
+   request `highlight` on a credential marker — for the key-bearing markers the secret is the
+   remainder of the matched line, so the fragment carries the value, and `highlight` returns one for
+   every hit in the set automatically, before any ownership decision has been made; a tool result
+   also cannot be redirected to a file the way a local scan can. `aleph-entity-graph` carries
+   the measured detail and the tokenisation rule that decides which markers survive as search terms.
 4. **Deep-pass per category**: dispatch to the matching specialist skill:
    - Memory / disk images → `disk-memory-forensics`
    - AD / NTDS / Kerberos / LAPS / ADCS → `identity-directory-trust`
@@ -114,7 +128,7 @@ supplied, still steers bucket selection and pattern choice.
 
 ## Pattern library
 
-The pattern library lives in [`references/credential-patterns.md`](references/credential-patterns.md) alongside this skill — provider API-key prefixes, auth-material shapes, password-hash markers, connection-string DSNs, private-key PEM markers, and cloud/k8s secret-file patterns, grouped by class, plus a non-secret asset-fingerprint section used to steer targeted searches to the system classes the orientation packet names. It is the single source of truth for detection patterns: add a new provider prefix or fingerprint there once and every consumer (this skill's first-pass scan, and the pattern-citing `## Credential extraction` sections in `log-artefact-interpretation`, `web-api-authflow-analysis`, and `implant-payload-re`) inherits it. Anchor detection on the prefix; verify the current format at the provider's docs before acting.
+The pattern library lives in [`references/credential-patterns.md`](references/credential-patterns.md) alongside this skill — provider API-key prefixes, auth-material shapes, password-hash markers, connection-string DSNs, private-key PEM markers, and cloud/k8s secret-file patterns, grouped by class, plus a non-secret asset-fingerprint section used to steer targeted searches to the system classes the orientation packet names, and a non-secret config-file structural-marker section for locating VPN, key-store and RDP configuration bodies by format skeleton rather than by filename. It is the single source of truth for detection patterns: add a new provider prefix, fingerprint or structural marker there once and every consumer (this skill's first-pass scan, and the pattern-citing `## Credential extraction` sections in `log-artefact-interpretation`, `web-api-authflow-analysis`, and `implant-payload-re`) inherits it. Anchor detection on the prefix; verify the current format at the provider's docs before acting.
 
 ## Report layout
 
