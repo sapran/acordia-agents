@@ -956,9 +956,14 @@ in another language raises the temptation rather than the yield.
 
 Because an Aleph hit carries neither a path nor a line, `credential-harvest-triage`'s scan step SHALL
 give the Aleph-side citation shape — `collection_id`, `entity_id` and `schema`, with a
-`get_entity_text` offset where a span is needed — and SHALL forbid requesting `highlight` on a
-credential marker, because in every format covered the secret is the remainder of the matched line
-and a tool result cannot be redirected to a file the way a local scan can.
+`get_entity_text` offset where a span is needed, bounded to the smallest window that establishes the
+finding — and SHALL forbid requesting `highlight` on a credential marker, because for the
+key-bearing markers the secret is the remainder of the matched line, `highlight` returns a snippet
+for every hit before any ownership decision has been made, and a tool result cannot be redirected to
+a file the way a local scan can. Because a skill is selected independently by description match,
+**both** `aleph-entity-graph` and `credential-harvest-triage` SHALL carry that prohibition: the
+skill that teaches the marker query SHALL state it where the query is taught, and SHALL note that
+its own general guidance recommending `highlight` does not apply to a credential marker.
 
 The coverage statement the skill already requires SHALL additionally separate the classes enumerated
 by schema from the formats reached only by marker, and SHALL name any marker whose result set hit the
@@ -1019,16 +1024,20 @@ punctuation included, while as an Aleph `q` term the index discards punctuation 
 survives, and a hyphenated marker is split into its parts and must be quoted as a phrase. It SHALL
 name both the rare-token subset and the quoted-phrase subset, and SHALL point at `aleph-entity-graph`
 for the platform reasoning rather than restating it. It SHALL forbid requesting `highlight` on a
-credential marker and SHALL give the Aleph citation shape, because the secret is the remainder of the
-matched line in every format the section covers.
+credential marker and SHALL give the Aleph citation shape, because for the key-bearing markers the
+secret is the remainder of the matched line and `highlight` returns a snippet for every hit
+automatically.
 
 No marker SHALL take the secret it detects into its own match span. The OpenVPN inline-material
 marker SHALL therefore stop at the opening tag, as the file's PEM markers already do, rather than
 spanning to a closing tag across the key body, and the section SHALL say why. Patterns SHALL be
 portable to the tools the scan path actually uses: no backreference, no repetition bound above the
 POSIX ERE limit of 255, and a stated requirement for multi-line matching (`rg -U` or `grep -Pz`) on
-the patterns that need it. The section SHALL also state that its markers sit on the same line as the
-value, so a scan runs with `-l`/`-c` or into a file rather than printing matched lines to a terminal.
+the patterns that need it. The section SHALL identify which of its markers sit on the same line as
+the value, and SHALL give the scan forms that keep its output a store of locations rather than a
+second store of keys: `-l`/`-c`, or `-o` so that only the match span — built to stop short of the
+value — reaches the output. It SHALL rule out a bare `grep` to a terminal and a plain line-mode
+redirect, naming the markers for which that redirect would write the value into the file.
 
 A marker SHALL discriminate a configuration rather than prose about one: a bare directive keyword
 common to vendor documentation SHALL be bound to its config-line form instead of shipped alone.

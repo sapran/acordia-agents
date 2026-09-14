@@ -46,10 +46,16 @@ permission. They exist because a filename is not searchable evidence — a `.ovp
 every document that *mentions* the extension, and a WireGuard or AmneziaWG config carries no
 extension at all.
 
-Unlike the value-shaped patterns further down, every marker here sits on the line the secret is on,
-so a scan runs with `-l`/`-c` or redirects to a file — never a bare `grep` to the terminal. The two
-multi-line patterns need `rg -U` (or `grep -Pz`) to match across a newline at all, and silently
-return nothing without it.
+Unlike the value-shaped patterns further down, several markers here sit on the line the secret is on
+— the WireGuard `PrivateKey` and `PresharedKey` forms and the IPsec/IKE PSK, where the value is the
+remainder of that line. So a scan runs with `-l`/`-c`, or with `-o` so that only the match span
+reaches the output: every marker below is built to stop short of the value, and `-o` is what turns
+that property into an output file holding locations rather than keys. Never a bare `grep` to the
+terminal, and never a plain line-mode redirect — for those three markers it writes the key into the
+file, which step 5's purge then has to clean up. The one multi-line marker here, the `[Interface]`
+… `PrivateKey =` config body, needs `rg -U` (or `grep -Pz`) to match across a newline at all and
+silently returns nothing without it; so do the two `[\s\S]` patterns in the Kubernetes section
+below.
 
 ```text
 \[Interface\][\s\S]{0,255}?PrivateKey\s*=              # WireGuard / AmneziaWG config body
@@ -79,10 +85,11 @@ returns the reported cap, and a hyphenated marker is split into its parts — `a
 unquoted returned 407 where `"auth-user-pass"` quoted returned 1. Search the rare token
 (`PrivateKey`, `PresharedKey`, `isakmp`) or the quoted phrase (`"auth-user-pass"`,
 `"PuTTY-User-Key-File"`, `"remote-cert-tls server"`), ANDed with a second marker from the same
-format. Do not ask for `highlight` on a credential marker: in every format here the secret is the
-remainder of the matched line, so the fragment carries the value, and unlike a local scan a tool
-result cannot be redirected to a file. Record an Aleph hit as `collection_id` + `entity_id` +
-`schema`. `aleph-entity-graph` carries the platform reasoning and the measured figures.
+format. Do not ask for `highlight` on a credential marker: for the key-bearing markers the secret is
+the remainder of the matched line, so the fragment carries the value — and `highlight` returns one
+for every hit in the set automatically, before you have chosen a document to look at. Unlike a local
+scan, a tool result cannot be redirected to a file. Record an Aleph hit as `collection_id` +
+`entity_id` + `schema`. `aleph-entity-graph` carries the platform reasoning and the measured figures.
 
 **The passphrase is usually not in the file.** A config arrives in one message and its password in
 another, so a config located by marker is the starting point for a pivot to its carrier — the

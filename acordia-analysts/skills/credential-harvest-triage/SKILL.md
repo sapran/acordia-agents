@@ -85,9 +85,13 @@ supplied, still steers bucket selection and pattern choice.
    mechanism. Reach the formats no facet can isolate, a config pasted into a message among them,
    through the structural markers in the pattern library. An Aleph hit has neither a path nor a line:
    record it as `collection_id` + `entity_id` + `schema`, plus a `get_entity_text` offset where a span
-   is genuinely needed, and never as the matched text. Do not request `highlight` on a credential
-   marker — the secret is the remainder of the matched line, so the fragment carries the value, and a
-   tool result cannot be redirected to a file the way a local scan can. `aleph-entity-graph` carries
+   is genuinely needed — bounded to the smallest window that establishes the finding, per **Look
+   deliberately**, because that read puts the value in your context exactly as `highlight` would. The
+   difference is that you chose it for one document. Never record the matched text itself. Do not
+   request `highlight` on a credential marker — for the key-bearing markers the secret is the
+   remainder of the matched line, so the fragment carries the value, and `highlight` returns one for
+   every hit in the set automatically, before any ownership decision has been made; a tool result
+   also cannot be redirected to a file the way a local scan can. `aleph-entity-graph` carries
    the measured detail and the tokenisation rule that decides which markers survive as search terms.
 4. **Deep-pass per category**: dispatch to the matching specialist skill:
    - Memory / disk images → `disk-memory-forensics`
