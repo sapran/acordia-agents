@@ -18,7 +18,9 @@ evidence does not support.
 
 The spine is fixed. Everything sits inside a single `<div class="wrap">` under `<body>`; the
 document is `<html lang="…">` naming the corpus language, carries `<meta charset="utf-8">`, and has
-one `<title>` of the form `<Product> — <Target> · <YYYY-MM-DD>`.
+one `<title>` of the form `<Product> — <Target> · <YYYY-MM-DD>`. The file itself takes its task
+directory's stem under `.acordia/reports/`, per `briefing-reporting`, so the corpus is in the
+filename and not only in the title.
 
 0. `<h1>` — the on-page title, `<Product> — <Target>`. The date belongs to the dateline below it,
    not to the heading.
@@ -203,8 +205,7 @@ The bare tag takes `excluded` or `borderline` and nothing else.
   ownership would allow, and the standing record states that a credential file exists and where to
   request it without naming its path.
 
-In both modes a working file is named relative to the working directory the brief set, never by
-absolute path, so no analyst home directory or workstation name reaches the page. That is the
+In both modes a working file is named relative to the task directory, never by absolute path, so no analyst home directory or workstation name reaches the page. That is the
 guardrails' redaction rule applied to the product rather than to the source field.
 
 **Bottom line (`div.banner`).** One paragraph opening `<strong>Bottom line.</strong>`. Every count
@@ -232,7 +233,7 @@ answerable.
 
 **Hand-off.** One `<p>` carrying the ask, with the decision or action required in `<b>`, then a
 `<div class="alert">` opening `<b>Standing record:</b>` for what persists after this product is
-handed over — that a credential file exists, where it sits (relative to the working directory, and
+handed over — that a credential file exists, where it sits (relative to the task directory, and
 only in `exact` mode), and when it is destroyed, per the skill's guardrails.
 
 **Footer.** Generation date and author, the author being a role, cell or team designator rather than
