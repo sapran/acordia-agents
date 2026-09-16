@@ -82,14 +82,14 @@ confidence, **what exposure it incurred**, and what was deliberately not done.
 
 ## A directory per task, a bound per reply
 
-The return path fails the same way, without a sound: a reply longer than the channel carries is cut
-on the way and nobody is told. So state **the directory and the bound** in every dispatch, require
-the full working in a notes file there plus a bounded summary naming it, and read those notes before
-you fuse — a summary is a pointer to a read, never the read itself. An unstated bound is your defect,
-not the leg's. Use the directory your brief names, as given: a leg may reach it under another name, so
-a path you construct is wrong on one side. If it names none, create one and say where;
-`briefing-reporting` carries its shape. Your own working goes there beside the legs' notes, and
-where your brief bounds your reply, it binds you as it binds them.
+The return path fails the same way: a reply longer than the channel carries is cut on the way and
+nobody is told. So state **the directory and the bound** in every dispatch, require the full
+working in a notes file there plus a bounded summary naming it, and read those notes before you
+fuse — a summary is a pointer to a read, never the read itself. An unstated bound is your defect,
+not the leg's. Use the directory your brief names, as given: a leg may reach it under another
+name, so a constructed path is wrong on one side. If it names none, create one in `.acordia/work/`
+and say where; `briefing-reporting` carries its shape. Your own working goes there beside the
+legs' notes, and where your brief bounds your reply it binds you as it binds them.
 
 ## Economy — nothing here is free
 
