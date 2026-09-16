@@ -94,6 +94,6 @@
 
 - [x] 7.1 Commit on the worktree branch, one commit per logical group.
 - [x] 7.2 `/opsx:archive` the change.
-- [ ] 7.3 Open a PR to `develop`.
-- [ ] 7.4 Review the diff with `pr-review-toolkit:code-reviewer`, addressing or dismissing each
+- [x] 7.3 Open a PR to `develop`.
+- [x] 7.4 Review the diff with `pr-review-toolkit:code-reviewer`, addressing or dismissing each
       finding before merge.

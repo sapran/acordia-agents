@@ -58,6 +58,8 @@ write to it and a claim otherwise would describe an enforcement that does not ex
 A task directory and the report produced from it SHALL share one stem of the form
 `<corpus>-<YYYY-MM-DD>-<task-slug>`: the directory is `.acordia/work/<stem>/` and the product is
 `.acordia/reports/<stem>.<ext>`. A date alone SHALL NOT be the sole discriminator in either name.
+Where one task produces more than one product, each product's name SHALL carry the stem plus what
+that product is, so the two do not contend for one filename.
 
 The **corpus token** SHALL be derived from the material under analysis rather than from the wording
 of the request, so that two differently-worded dispatches against one corpus address the same
@@ -111,7 +113,9 @@ convention. No prompt or frontmatter SHALL present it as an enforced scope.
 It is one of the two sinks under the `.acordia/` workspace root, the other being `.acordia/work/`
 for task directories. The two are siblings with distinct contents — finished product on one side,
 the working behind it on the other — and a product SHALL be addressable from its working by the
-shared stem rather than by a path recorded anywhere.
+shared stem rather than by a path recorded anywhere. That pairing is a property of the stem, so
+where a brief names the working directory instead, the stem no longer carries it and the product's
+location SHALL be recorded explicitly.
 
 `.acordia/ops/` SHALL NOT be named by any shipped artifact. It was the root of the operator journal,
 and the pillar that recorded state there is removed; the analysis pillar records no operation state
@@ -129,9 +133,16 @@ and needs no journal root, which is a separate question from how many sinks its 
 
 #### Scenario: The product is reachable from its working
 
-- **WHEN** a finished product exists in `.acordia/reports/`
+- **WHEN** a finished product exists in `.acordia/reports/` and the scheme, rather than a brief,
+  named its task directory
 - **THEN** its filename stem equals the name of the `.acordia/work/` directory the working was done
   in, so one is found from the other without a recorded path
+
+#### Scenario: A briefed directory records the pairing instead
+
+- **WHEN** a brief names the working directory, so its name is not the scheme's stem
+- **THEN** the convention requires the product's location to be recorded explicitly, rather than
+  leaving a reader to derive it from a stem that no longer carries it
 
 ### Requirement: The orchestrator supplies the task directory and the bound
 

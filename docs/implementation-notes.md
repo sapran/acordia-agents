@@ -263,9 +263,20 @@ malformed` on every call throughout that work, so the selection could not be mad
   root.** As of 6.15.0 each leg's guardrail reads "in your own files under `.acordia/`, …
   `.acordia/work/` holds the task directory …"; `cyber-analyst`'s still reads "in your own files,
   never back over the source; `.acordia/reports/` is where a finished product belongs". Not a
-  behaviour gap — the lead's `## A directory per task` section already puts its own working and the
+  behaviour gap — the lead's `## A directory per task, a bound per reply` section already puts its own working and the
   legs' notes under `.acordia/work/`, so every file it writes has a stated home, and the
   `agent-roster` requirement is worded to that (naming both sinks names the root). It is a wording
   asymmetry only. Parked because the fix costs +12 characters against a body at 10,499 of 10,500, and
   buying them means cutting prose elsewhere in the prompt — the shape that silently dropped two
   guardrails in 6.10.0. Pick it up when the orchestrator next gets headroom from a move-to-skill.
+- **Three code spans in `credential-harvest-triage/references/` are broken across a newline.**
+  `credential-patterns.md:100` (`"пароль от конфига"`), `report-layout.md:160` (`RSA private key, 2048-bit`)
+  and `report-layout.md:197` (the footer template). Markdown renders a newline inside a code span as
+  a space, so each displays with the break turned into a space. All three are display strings rather
+  than resolvable slugs, so nothing dereferences them and nothing breaks — unlike the same fault in a
+  skill slug, which silently stops pointing at the skill (one was introduced and fixed inside 6.15.0,
+  in `collection-analyst.md`). Pre-existing, left alone deliberately: re-wrapping those paragraphs
+  touches lines this change has no business in. Worth a check in `~/ai/checks/check-acordia.sh` that
+  pairs backticks in document order and fails on a span containing a newline — the naive regex
+  `` `[^`]*\n[^`]*` `` does NOT work, because skipping intact spans desynchronises the pairing and it
+  reports the gaps between spans as hits.
