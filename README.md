@@ -22,7 +22,7 @@ The roster is derived one-for-one from the five columns of the competency map:
 - **`overwatch-analyst`** — the defender: detection capability, evasion reasoning, own-footprint, and live overwatch of whether the operation is seen.
 - **`collection-analyst`** — the take: what the collected material is actually worth, working bulk material at volume, and the data-integration and correlation tooling that makes it usable.
 
-**The product goes to a person.** Nothing here executes: an analysis is handed to a human operator who then acts, so a recommended course of action is a hand-off rather than a dispatch, and the loop judges the outcome from evidence that operator reports back. Everything an analyst generates belongs under `.acordia/` — `.acordia/work/<corpus>-<date>-<slug>/` for the task's notes and drafts, `.acordia/reports/` for the finished product, which takes its task directory's stem. By convention: the corpus in the name is what keeps two sweeps on one day apart.
+**The product goes to a person.** Nothing here executes: an analysis is handed to a human operator who then acts, so a recommended course of action is a hand-off rather than a dispatch, and the loop judges the outcome from evidence that operator reports back. Where a dispatch names no working directory, everything an analyst generates belongs under `.acordia/` — `.acordia/work/<corpus>-<date>-<slug>/` for the task's notes and drafts, `.acordia/reports/` for the finished product, which takes its task directory's stem. By convention: the corpus in the name is what keeps two sweeps on one day apart, and a brief that names a directory is used as given instead.
 
 Research is the ACORDIA-aligned pillar to compile next if one follows — it composes with Analysis and makes no target contact.
 

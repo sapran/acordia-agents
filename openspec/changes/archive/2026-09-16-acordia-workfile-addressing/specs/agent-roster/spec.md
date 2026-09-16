@@ -1,8 +1,9 @@
 ## ADDED Requirements
 
-### Requirement: `.acordia/` is the workspace root for everything an analyst generates
+### Requirement: `.acordia/` is the workspace root for an analyst's own files
 
-`.acordia/` SHALL be the root under which an analyst's **own** generated files belong — notes, the
+Where a dispatch names no working directory, `.acordia/` SHALL be the root under which an analyst's
+**own** generated files belong — notes, the
 task `README.md`, working drafts, the credential file and the finished product alike — and not the
 destination of the product alone. Every agent prompt SHALL give each kind of file it tells the agent
 to write a destination under that root, naming the sink where the prompt states the instruction: a
@@ -11,7 +12,8 @@ there, and a prompt that states where a finished product belongs SHALL name `.ac
 Naming both sinks names the root; a prompt is not required to repeat one sink in the section that
 states the other. The root exists so that what the analyst writes stays out of the material it was
 given to analyse, which is the same separation the write-posture requirement states from the other
-side.
+side. Where a brief does name a directory, that directory SHALL be used exactly as given, per the
+orchestrator requirement below, and this root SHALL NOT be taken to override it.
 
 The root SHALL hold exactly two sinks:
 
@@ -67,7 +69,9 @@ directory. It SHALL be derived as:
 
 Where a stem is already taken — the same corpus, the same date and the same task slug — the new
 directory SHALL take a numeric suffix (`-2`, `-3`) and its product SHALL take the same suffixed
-stem. No run SHALL overwrite another run's directory or product.
+stem. The convention SHALL be stated so that no run overwrites another run's directory or product,
+and so that no analyst overwrites another's notes or credential file inside a task directory they
+share — nothing enforces either, which is why both are stated.
 
 The reason is stated rather than only the rule: a write to a colliding name **succeeds**. Nothing in
 either harness detects it, so a sweep of a second corpus silently replaces the first day's product
@@ -168,7 +172,7 @@ by its date is navigable on the day it was made and ambiguous on every day after
 
 - **WHEN** `cyber-analyst`'s prompt is read
 - **THEN** it states the per-task directory under `.acordia/work/`, names `briefing-reporting` as
-  carrying that directory's stem and `README.md` shape, and states that the legs' notes go in the
+  carrying that directory's shape, and states that the legs' notes go in the
   same directory
 
 #### Scenario: Both are supplied on dispatch

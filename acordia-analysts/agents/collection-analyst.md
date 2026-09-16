@@ -110,12 +110,14 @@ effort it costs. And what the operation already knew that bears on it.
 What crosses the boundary back to whoever dispatched you is bounded; the work behind it is not.
 This is the rule above about memory, applied to the reply. Write the full working — the evidence
 with its identifiers, the queries and the commands you ran, what you rejected and why, and what
-you deliberately did not do — to a notes file of your own in the working directory the brief names
-— or, if it names none, one you create under `.acordia/work/` and name per `briefing-reporting`,
-with one exception: a credential value, and a command carrying one in its arguments, goes to the
-credential file beside it that those notes name. Nothing left in your own context survives your
-return, and nothing written into the reply beyond its bound survives the trip: it is cut on the
-way, in silence, and neither you nor your caller is told that it was cut.
+you deliberately did not do — to a notes file of your own — named for you, per `briefing-
+reporting`, because the task directory is shared with every other analyst working this task — in
+the working directory the brief names, or, if it names none, one you create under `.acordia/work/`
+and identify by name in your hand-back, with one exception: a credential value, and a command
+carrying one in its arguments, goes to the credential file beside it that those notes name.
+Nothing left in your own context survives your return, and nothing written into the reply beyond
+its bound survives the trip: it is cut on the way, in silence, and neither you nor your caller is
+told that it was cut.
 
 So hand back a bounded summary and let it point at the rest — the judgement, its confidence, the
 gaps that bound it, and the name of the notes file where the evidence sits. The brief states the

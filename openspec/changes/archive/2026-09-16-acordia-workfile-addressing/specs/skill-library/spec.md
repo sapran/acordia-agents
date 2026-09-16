@@ -64,6 +64,46 @@ skill SHALL NOT present it as a restriction on where a write can land.
 - **THEN** it is presented as a convention every analyst follows, with no claim that a harness
   enforces any part of it
 
+### Requirement: A shared task directory gives each file an owner
+
+A task directory is written by the lead and by every leg it dispatched, and legs dispatched in
+parallel write into it at the same time. A file that one analyst owns SHALL therefore carry that
+analyst's name: `notes-<agent>.md`, and `credentials-<agent>.md` where the work produces one.
+
+`briefing-reporting` SHALL state the rule and the failure it prevents rather than the rule alone —
+two analysts both reaching for `notes.md` is the ordinary case rather than the unlucky one, the
+second write **succeeds**, the first analyst's whole working is gone, and the lead, which is
+required to read the notes before it fuses, fuses from one leg's evidence believing it has both. It
+SHALL further state that a credential file two analysts write is worse than a lost one, because the
+surviving values no longer match the classifications the notes carry for them.
+
+Each leg prompt SHALL carry the rule for its own notes file and `credential-harvest-triage` for the
+credential file, and a leg SHALL name its own file in the summary it hands back, so the lead reads
+what was written rather than what it expected to find.
+
+#### Scenario: A file one analyst owns carries that analyst's name
+
+- **WHEN** `briefing-reporting` states how a file inside a task directory is named
+- **THEN** it gives `notes-<agent>.md` and `credentials-<agent>.md`, naming the analyst rather than
+  leaving a bare `notes.md` that any analyst in the directory would reach for
+
+#### Scenario: The collision is stated as ordinary, not unlucky
+
+- **WHEN** the rule's reason is read
+- **THEN** it states that the second write succeeds, that the first analyst's working is lost, and
+  that the lead then fuses from one leg's evidence believing it has both
+
+#### Scenario: The leg prompts and the credential skill carry it too
+
+- **WHEN** a leg prompt says where the full working goes, or `credential-harvest-triage` says where
+  values go
+- **THEN** each states that the file is named for the analyst because the task directory is shared
+
+#### Scenario: The hand-back names the file
+
+- **WHEN** a leg returns its bounded summary
+- **THEN** its prompt requires the summary to name the notes file the leg actually wrote
+
 ### Requirement: A credential file is addressed by the directory that holds it
 
 `credential-harvest-triage` SHALL continue to require a credential file separate from the notes,
