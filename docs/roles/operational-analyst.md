@@ -38,7 +38,7 @@ An operational analyst becomes a specialist not by reasoning differently — the
 
 *"What is this target for, what does it depend on, how does it behave — and would degrading it actually be felt?"*
 
-The target as an **organisation**. The crown-jewels and mission-thread work above, which establishes what the target is trying to do and therefore what matters — because a map of everything is only prioritisable once you know what is worth prioritising. Pattern-of-life and change-cycle forecasting, which are questions about people and procurement more than about packets. The non-technical context — finance, geopolitics, the human terrain — that the old Fusion leg held and that belongs here, beside the mission model it explains.
+The target as an **organisation**. The crown-jewels and mission-thread work above, which establishes what the target is trying to do and therefore what matters — because a map of everything is only prioritisable once you know what is worth prioritising. Pattern-of-life and change-cycle forecasting, which are questions about people and procurement more than about packets. The non-technical context — finance, geopolitics, the human terrain — that the old Fusion leg held and that belongs here, beside the mission model it explains. Target sustainment analysis makes that model continuous: the suppliers, stock and spares, transport, maintenance, trained people, contractors, and external services the organisation needs to keep its mission moving, assessed with its alternatives, recovery conditions, and material gaps rather than as an asset inventory.
 
 And the read that decides whether a disruptive action is worth taking: **friction susceptibility**. Sabotage is the weaponization of friction to degrade performance from within, and how much degradation a target actually suffers depends on its bureaucratic characteristics — the rigidity of its standard operating procedures, whether it holds redundant systems *and* people trained to switch to them — and on its culture, because an organisation whose norms discourage reporting suffers larger practical effects while one that discloses immediately resists those and is exposed instead to blame-shifting and lost trust (Rovner, *Theory of sabotage*, p. 11; Rovner, Cormac & Maschmeyer, *Sand in the gears*, pp. 7–8). This analyst therefore owns the organisational half of *did it land*: whether the mission changed, not whether the host did.
 
@@ -125,6 +125,7 @@ Fusion leg.
 | Change-cycle forecasting ("when will they patch?") | `change-cycle-forecasting` |  | ● | ○ |  |  |
 | Non-technical context integration (finance, geopolitics, human) | `nontechnical-context-integration` |  | ● |  |  |  |
 | Target friction susceptibility — SOP rigidity, redundancy, reporting culture | `target-friction-susceptibility` |  | ● |  |  |  |
+| Target sustainment analysis — suppliers, spares, transport, repair, people, contractors and external services | `target-sustainment-analysis` |  | ● |  |  |  |
 | *The technical terrain* | | | | | | |
 | Packet & traffic analysis (pcap/netflow) | `packet-traffic-analysis` | ○ |  | ● | ● |  |
 | Protocol, routing & network architecture | `protocol-routing-architecture` |  |  | ● | ○ |  |
