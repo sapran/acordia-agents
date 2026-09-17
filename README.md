@@ -12,7 +12,7 @@ One tree serves both because both accept the same agent file: omp's `parseAgentF
 
 One pillar, one installable plugin:
 
-- **`acordia-analysts/`** — the Analysis pillar: one orchestrator and four specialist legs, and the 45-skill library realising their shared analytic spine. Decision support and target understanding; no target interaction, no active testing.
+- **`acordia-analysts/`** — the Analysis pillar: one orchestrator and four specialist legs, and the 46-skill library realising their shared analytic spine. Decision support and target understanding; no target interaction, no active testing.
 
 The roster is derived one-for-one from the five columns of the competency map:
 
@@ -33,7 +33,7 @@ acordia-agents/
 │   ├── agents/     cyber-analyst · mission-analyst · terrain-analyst
 │   │               overwatch-analyst · collection-analyst
 │   ├── commands/   10 command wrappers
-│   ├── skills/     45 skills, one SKILL.md each
+│   ├── skills/     46 skills, one SKILL.md each
 │   └── skill-sets.json   per-analyst declared skill sets, for role-scoped hosts
 ├── .claude-plugin/marketplace.json   # Claude Code reads this catalog
 ├── .omp-plugin/marketplace.json      # omp prefers this one; byte-identical
@@ -79,7 +79,7 @@ tools/install-omp.sh --dry-run             # print what would be linked, change 
 tools/uninstall-omp.sh                     # same three flags; removes only our own links
 ```
 
-Target-directory precedence is `--agent-dir`, then `--profile` (resolving to `~/.omp/profiles/<name>/agent`), then `$PI_CODING_AGENT_DIR`, then `~/.omp/agent`; the first two are mutually exclusive. The five agent files and 45 skill directories are linked as **symlinks rather than copies**, so a `git pull` changes what omp serves, and no configuration file is edited. Anything already in either root that is not one of our own symlinks aborts the run with every colliding path printed and nothing created at all, so the installer can never take over a dispatch handle you own; re-running it is idempotent. The uninstaller matches each link on its recorded target, so a real file or a symlink pointing elsewhere is left alone, and a link whose checkout has since been deleted, renamed or moved is still cleaned up.
+Target-directory precedence is `--agent-dir`, then `--profile` (resolving to `~/.omp/profiles/<name>/agent`), then `$PI_CODING_AGENT_DIR`, then `~/.omp/agent`; the first two are mutually exclusive. The five agent files and 46 skill directories are linked as **symlinks rather than copies**, so a `git pull` changes what omp serves, and no configuration file is edited. Anything already in either root that is not one of our own symlinks aborts the run with every colliding path printed and nothing created at all, so the installer can never take over a dispatch handle you own; re-running it is idempotent. The uninstaller matches each link on its recorded target, so a real file or a symlink pointing elsewhere is left alone, and a link whose checkout has since been deleted, renamed or moved is still cleaned up.
 
 **The command wrappers are not installed by this route.** A wrapper takes its namespace from the plugin name, applied by the harness, so `/acordia-analysts:terrain` exists only through a plugin root. Agents dispatch by bare name either way, so the roster is fully reachable without them.
 
@@ -212,7 +212,7 @@ metadata:
     source: docs/roles/operational-analyst.md
 ```
 
-41 of the 45 anchor to a row that way, `row` naming the row's minted identity and `source` the map with no line fragment. The other four are procedural rather than derived: each carries `grid_row: null`, `procedural: true` and the change that authorised it as its `source`, and `aleph-entity-graph` additionally declares `cross_cutting` over the skills it composes. A skill with neither a row nor such a record is inventing capability the map does not claim. Where a skill's body rests on a specific work it adds `doctrine_source` — register keys from `docs/roles/sources.md` — alongside the grid anchor rather than in place of it.
+42 of the 46 anchor to a row that way, `row` naming the row's minted identity and `source` the map with no line fragment. The other four are procedural rather than derived: each carries `grid_row: null`, `procedural: true` and the change that authorised it as its `source`, and `aleph-entity-graph` additionally declares `cross_cutting` over the skills it composes. A skill with neither a row nor such a record is inventing capability the map does not claim. Where a skill's body rests on a specific work it adds `doctrine_source` — register keys from `docs/roles/sources.md` — alongside the grid anchor rather than in place of it.
 
 ## Verifying an install
 

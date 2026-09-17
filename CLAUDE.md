@@ -10,11 +10,11 @@ Two harnesses, one authored tree. omp and Claude Code both install it as a **plu
 
 One pillar, shipped as one installable plugin:
 
-- **`acordia-analysts/`** — the ACORDIA Analysis pillar. One primary orchestrator (`cyber-analyst`) plus four subagent legs (`mission-analyst`, `terrain-analyst`, `overwatch-analyst`, `collection-analyst`), a 45-skill analytic library, and 10 command wrappers.
+- **`acordia-analysts/`** — the ACORDIA Analysis pillar. One primary orchestrator (`cyber-analyst`) plus four subagent legs (`mission-analyst`, `terrain-analyst`, `overwatch-analyst`, `collection-analyst`), a 46-skill analytic library, and 10 command wrappers.
 
 Analysis is the ACORDIA core pillar — real-time decision support and target understanding — and the framework's own resource-allocation finding is that starving it produces capability without effectiveness. Shipping it alone is that argument executed: a roster derived from a competency grid, not one organised by target surface.
 
-The pillar directory holds `.claude-plugin/plugin.json`, `agents/`, `commands/` and `skills/` — the layout both harnesses discover from a plugin root — plus `skill-sets.json`, which declares each analyst's skill set so a host can render a catalogue for one analyst rather than for all 45. Neither harness reads that file; it exists for a host or operator doing role-scoping, and it carries no version, so the three-occurrence version count below is unaffected. **All five agents are write-capable.** Capability is granted by omission: an agent file names no `tools`, so omp hands it the full set, and no `spawns`, so its spawn policy is unrestricted. There is no permission frontmatter anywhere in this repository, and a capability problem is never fixed by adding a denylist.
+The pillar directory holds `.claude-plugin/plugin.json`, `agents/`, `commands/` and `skills/` — the layout both harnesses discover from a plugin root — plus `skill-sets.json`, which declares each analyst's skill set so a host can render a catalogue for one analyst rather than for all 46. Neither harness reads that file; it exists for a host or operator doing role-scoping, and it carries no version, so the three-occurrence version count below is unaffected. **All five agents are write-capable.** Capability is granted by omission: an agent file names no `tools`, so omp hands it the full set, and no `spawns`, so its spawn policy is unrestricted. There is no permission frontmatter anywhere in this repository, and a capability problem is never fixed by adding a denylist.
 
 **The consumer is a human operator.** The distribution ships no executing agent, so an analyst product is handed to a person who then acts on it: a recommended course of action is a hand-off rather than a dispatch, the prompt states what the operator is being asked to decide or do, and the lead's end-neutral loop judges whether the end was achieved from evidence that operator reports back. Every `operator` in a shipped prompt is that human. `.acordia/` is where an analyst's own files belong — `.acordia/work/<corpus>-<YYYY-MM-DD>-<slug>/` for a task's notes, drafts and credential file, `.acordia/reports/` for the finished product under the same stem — by convention, and a brief that names a working directory is used as given instead.
 
@@ -50,7 +50,7 @@ omp plugin marketplace add ./.         # omp install — note `./.`, a bare `.` 
 omp plugin install acordia-analysts@acordia --scope user
 omp plugin marketplace update acordia && omp plugin upgrade   # pick up a version bump
 
-tools/install-omp.sh --profile <name>    # omp native install — symlinks 5 agents + 45 skills, edits no config
+tools/install-omp.sh --profile <name>    # omp native install — symlinks 5 agents + 46 skills, edits no config
 tools/uninstall-omp.sh --profile <name>  # removes only symlinks whose target is inside a pillar checkout
 ```
 
@@ -203,7 +203,7 @@ acordia-analysts/{agents/*.md, skills/*/SKILL.md}
 
 **Editing an artifact without touching the grid is a source-of-truth drift bug.** The grid moves first and the artifacts follow in the same change — never the reverse, and never one without the other.
 
-The bijection is normative: one skill row → one `SKILL.md`; each of the five grid columns defines exactly one agent's prompt skill set — Core → `cyber-analyst`, Mission → `mission-analyst`, Terrain → `terrain-analyst`, Def → `overwatch-analyst`, Coll → `collection-analyst`; `●` = deep/defining, `○` = working/baseline, and both place the skill in that agent's prompt. The column set is closed: `grid_deep_in` and `grid_working_in` carry those five labels and no others. Italic section-header rows are **not** skills and produce no file. A row may carry `○` marks only, with no `●` anywhere — a competency every leg draws on and none owns — and that is a legitimate row rather than a gap. The library holds 45 skills: 41 grid rows plus four procedural skills that correspond to no row and declare it with `grid_row: null` in their own frontmatter.
+The bijection is normative: one skill row → one `SKILL.md`; each of the five grid columns defines exactly one agent's prompt skill set — Core → `cyber-analyst`, Mission → `mission-analyst`, Terrain → `terrain-analyst`, Def → `overwatch-analyst`, Coll → `collection-analyst`; `●` = deep/defining, `○` = working/baseline, and both place the skill in that agent's prompt. The column set is closed: `grid_deep_in` and `grid_working_in` carry those five labels and no others. Italic section-header rows are **not** skills and produce no file. A row may carry `○` marks only, with no `●` anywhere — a competency every leg draws on and none owns — and that is a legitimate row rather than a gap. The library holds 46 skills: 42 grid rows plus four procedural skills that correspond to no row and declare it with `grid_row: null` in their own frontmatter.
 
 **Row identity lives in the grid, not in a line number.** A skill's anchor names its row's stable kebab-case `row` id, minted once in the grid row itself and never reused, with `source: docs/roles/operational-analyst.md` and no `#L` fragment. Nothing resolves these anchors at install or dispatch time, so a line number that shifts produces no error anywhere — it just points at the wrong competency, silently, which is why the form is retired. `openspec/specs/competency-map-derivation` holds the mechanics; do not restate them here.
 
@@ -270,7 +270,7 @@ Spec-driven changes are how this repo evolves. Config lives at `openspec/config.
 Five capabilities, all describing agents and skills rather than restrictions:
 
 - **`agent-roster`** — the five agents, one file each, what each owns, the three-key frontmatter contract, the write-freely posture, the retrieved-content rule, the hand-off to a human operator, and the 10 command wrappers that dispatch them.
-- **`skill-library`** — the 45 skills, the family taxonomy, the description contract, the folder-slug bijection, and `references/` for long enumerations.
+- **`skill-library`** — the 46 skills, the family taxonomy, the description contract, the folder-slug bijection, and `references/` for long enumerations.
 - **`competency-map-derivation`** — the grid in `docs/roles/operational-analyst.md` as the source every skill traces to: five columns to five agents, and the stable row id an anchor names. This is the provenance machinery that stops the library growing by invention.
 - **`doctrinal-provenance`** — `docs/roles/sources.md` as the register every work is introduced in once, a doctrinal claim traceable to a work and a section, `doctrine_source` on a skill that rests on one, and an empty literature search recorded as a finding rather than filled in.
 - **`plugin-distribution`** — two marketplace catalogs, one `plugin.json`, three version occurrences in lockstep, no generated trees.
