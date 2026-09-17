@@ -20,7 +20,7 @@ so prefer a registered one where both say the same thing.
 
 | Key | Work | id |
 |---|---|---|
-| `ACORDIA` | Styran, V., *Rethinking Exploitation in Cyber War: Reassessing the Role of Software Exploits in Wartime Cyber Operations* — the seven pillars, the core/supporting tiers, the Analysis pillar, the exploit contingency principle. Also published in the CyCon 2026 proceedings (`649a6776`), pp. 281–290. | `17fec536` |
+| `ACORDIA` | Styran, V., *Rethinking Exploitation in Cyber War: Reassessing the Role of Software Exploits in Wartime Cyber Operations* — the seven pillars, the core/supporting tiers, the Analysis pillar, the exploit contingency principle. Also published in the CyCon 2026 proceedings (`649a6776`), pp. 281–290. | `1152d85c` |
 | `Monte` | Monte, M., *Network Attacks & Exploitation: A Framework* (Wiley, 2015) — first principles, the six principles, the five operational objectives, the life cycle, the expertise taxonomy, attacker structure. | `c159a333` |
 
 ## Theory
@@ -47,7 +47,7 @@ so prefer a registered one where both say the same thing.
 | `MTA` | Corbari, Khatod, Popiak & Sinclair, *Mission Thread Analysis: Establishing a Common Framework*. | `7031680f` |
 | `OPM` | U.S. House Committee on Oversight & Government Reform, *The OPM Data Breach* — the advanced-monitoring phase, blue-side overwatch. | `caa10064` |
 | `SilentBattle` | Minárik et al., *CyCon 2019: Silent Battle*. | `d3a10c32` |
-| `Orye-Maennel` | Orye, E. & Maennel, O., *Recommendations for Enhancing the Results of Cyber Effects*. | `a96aa545` |
+| `Orye-Maennel` | Orye, E. & Maennel, O., *Recommendations for Enhancing the Results of Cyber Effects* — effect assessment; offprint p. 5 corresponds to *Silent Battle* proceedings p. 117. | `f28986d1` |
 | `KillChain` | Hutchins, Cloppert & Amin, *Intelligence-Driven Computer Network Defense Informed by Analysis of Adversary Campaigns and Intrusion Kill Chains*. | `75c09042` |
 
 ## Analytic tradecraft

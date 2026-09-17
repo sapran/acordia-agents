@@ -23,7 +23,7 @@ context: |
   Scope today: one pillar. The Analysis pillar (`acordia-analysts/`) — one
   orchestrator (`cyber-analyst`) plus four specialist legs (`mission-analyst`,
   `terrain-analyst`, `overwatch-analyst`, `collection-analyst`) and the
-  45-skill library that realises their shared analytic spine. Every analyst
+  46-skill library that realises their shared analytic spine. Every analyst
   artifact traces back to a specific row or paragraph in the source competency
   map at `docs/roles/operational-analyst.md` (the role model), and every
   doctrinal claim traces to an entry in the literature register at
