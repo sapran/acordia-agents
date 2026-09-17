@@ -817,43 +817,40 @@ skill SHALL NOT present it as a restriction on where a write can land.
 
 ### Requirement: A shared task directory gives each file an owner
 
-A task directory is written by the lead and by every leg it dispatched, and legs dispatched in
-parallel write into it at the same time. A file that one analyst owns SHALL therefore carry that
-analyst's name: `notes-<agent>.md`, and `credentials-<agent>.md` where the work produces one.
+A task directory is written by the lead and by every leg it dispatched, and legs dispatched in parallel write into it at the same time. A single-instance file SHALL carry its analyst's name: `notes-<agent>.md`, and `credentials-<agent>.md` where the work produces one.
 
-`briefing-reporting` SHALL state the rule and the failure it prevents rather than the rule alone —
-two analysts both reaching for `notes.md` is the ordinary case rather than the unlucky one, the
-second write **succeeds**, the first analyst's whole working is gone, and the lead, which is
-required to read the notes before it fuses, fuses from one leg's evidence believing it has both. It
-SHALL further state that a credential file two analysts write is worse than a lost one, because the
-surviving values no longer match the classifications the notes carry for them.
+When the lead dispatches more than one concurrent instance of the same analyst, it SHALL give each assignment a unique brief slug. Those instances SHALL write `notes-<agent>-<brief-slug>.md` and `credentials-<agent>-<brief-slug>.md`, as applicable. `briefing-reporting` SHALL state both forms, name the silent overwrite failure they prevent, and require the hand-back to name the actual file. A direct or single-leg dispatch with no supplied brief slug SHALL use the single-instance form rather than block.
 
-Each leg prompt SHALL carry the rule for its own notes file and `credential-harvest-triage` for the
-credential file, and a leg SHALL name its own file in the summary it hands back, so the lead reads
-what was written rather than what it expected to find.
+#### Scenario: Parallel instances receive unique filenames
 
-#### Scenario: A file one analyst owns carries that analyst's name
+- **WHEN** the lead partitions one analyst's work into concurrent bounded slices
+- **THEN** every slice receives a distinct brief slug and writes notes and credential material using the agent-and-slug filename form
 
-- **WHEN** `briefing-reporting` states how a file inside a task directory is named
-- **THEN** it gives `notes-<agent>.md` and `credentials-<agent>.md`, naming the analyst rather than
-  leaving a bare `notes.md` that any analyst in the directory would reach for
+#### Scenario: A single-instance dispatch has a safe fallback
+
+- **WHEN** an analyst has no brief slug because it was dispatched directly or as a single leg
+- **THEN** it writes the agent-only filename form and identifies that file in its hand-back
 
 #### Scenario: The collision is stated as ordinary, not unlucky
 
 - **WHEN** the rule's reason is read
-- **THEN** it states that the second write succeeds, that the first analyst's working is lost, and
-  that the lead then fuses from one leg's evidence believing it has both
+- **THEN** it states that the second write succeeds, the first working is lost, and the lead can fuse one survivor believing it has both
+
+
+#### Scenario: A file one analyst owns carries that analyst's name
+
+- **WHEN** `briefing-reporting` states how a parallel assignment file is named
+- **THEN** it gives `notes-<agent>-<brief-slug>.md` and `credentials-<agent>-<brief-slug>.md`, while retaining agent-only filenames for a single instance
 
 #### Scenario: The leg prompts and the credential skill carry it too
 
-- **WHEN** a leg prompt says where the full working goes, or `credential-harvest-triage` says where
-  values go
-- **THEN** each states that the file is named for the analyst because the task directory is shared
+- **WHEN** a leg prompt or `credential-harvest-triage` addresses working files
+- **THEN** it defers filename addressing to the shared-directory rule
 
 #### Scenario: The hand-back names the file
 
 - **WHEN** a leg returns its bounded summary
-- **THEN** its prompt requires the summary to name the notes file the leg actually wrote
+- **THEN** it identifies the actual notes file it wrote
 
 ### Requirement: A credential file is addressed by the directory that holds it
 

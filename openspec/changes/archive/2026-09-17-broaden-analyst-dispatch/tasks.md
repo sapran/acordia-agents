@@ -9,4 +9,4 @@
 - [x] 2.1 Bump the three synchronized plugin version declarations to `6.18.0`, the next available minor version; verify the catalogs remain byte-identical and all three values agree.
 - [x] 2.2 Run `~/ai/checks/check-acordia.sh` against the worktree; verify its version, catalog, prompt, provenance, and ceiling checks pass.
 - [x] 2.3 Run `openspec validate --all --strict`; verify the new delta specs validate.
-- [ ] 2.4 Review the complete worktree diff against the proposal and resolve any in-scope correctness issue before archive.
+- [x] 2.4 Review the complete worktree diff against the proposal and resolve any in-scope correctness issue before archive.
