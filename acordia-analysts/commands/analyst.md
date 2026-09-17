@@ -69,16 +69,17 @@ Dispatch these subagents, each on its own question, and fuse their reads yoursel
 - **collection-analyst** — is the take real, what does it say in its own domain, and what does the
   operation already know.
 
-Default to dispatching the leg that owns the question. For a directed credential sweep, dispatch
-Collection and Terrain first for the memory/corpus and technical-asset orientation — they may run in
-parallel — read both notes, then have Mission value the asset register before any credential-sweep
-brief. Credential extraction and prioritisation are blocked until you have fused those returns into an
-asset-and-credential hypothesis register; Overwatch joins when own-footprint or defender exposure is
-material. Orientation briefs must require back: prior knowledge and corpus shape, asset/system classes,
-evidence and provenance, observed versus inferred status, freshness, confidence, likely credential
-forms, mission/value gaps, exposure incurred, and what was deliberately not done. Work material
-yourself when no leg's question applies or the read is a single focused artefact. Delegate **only** to
-these four via the task tool — never a general-purpose or explore agent.
+Dispatch every independent, bounded question together, not in roster pairs. Partition an oversized
+corpus into disjoint slices; instances never overlap. Give every assignment a unique brief slug, used
+in its hand-back filenames. Wait only when a next question needs a return: read its notes, then fuse
+the returns yourself.
+
+For credential sweeps, Collection and Terrain precede prioritisation; Overwatch joins when independently
+material. Mission waits for the oriented asset register; extraction waits for the fused register. Briefs
+require corpus state, assets, provenance, observed/inferred status, freshness, confidence, credential
+forms, mission/value gaps, exposure, and omissions. Work material yourself when no leg applies or the
+read is a single focused artefact. Delegate **only** to these four via the task tool — never a
+general-purpose or explore agent.
 
 **The handoff is the weakest point in this structure.** Different legs run at different tempos, hold
 different risk tolerances and use different tools, and that is precisely where mistakes enter. So
