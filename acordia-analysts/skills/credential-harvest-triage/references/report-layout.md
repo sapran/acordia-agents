@@ -38,7 +38,8 @@ filename and not only in the title.
 6. `<h2>N+3. Coverage</h2>` — one `table.grid`, then three `p.meta`.
 7. `<h2>N+4. Gaps</h2>` — one `<ol>`.
 8. `<h2>N+5. Hand-off</h2>` — one `<p>`, then one `div.alert`.
-9. `<div class="footer">`.
+9. `<h2>N+6. Acronyms and abbreviations</h2>` — one `table.grid` with `Acronym | Full form | Meaning in this report`, or one `div.cv` saying no acronyms were used. Translate the heading and columns with the report.
+10. `<div class="footer">`.
 
 A finding whose ownership refuses disclosure is **not** a separate section. It sits in its own
 system section as an ordinary credential block with no `<details>` at all — the access is real and
@@ -191,6 +192,8 @@ forbids them outside the collapse.
 
 The bare tag takes `excluded` or `borderline` and nothing else.
 
+**Evidence cells.** The credential anatomies use an anchor only for genuine Aleph evidence with a canonical safe locator. Elsewhere an `Evidence` cell uses a source anchor only for another canonical `http` or `https` source locator for the issuing instance with a non-empty authority and no credentials, user-info, query data or fragment; HTML-attribute-escape that locator when materialising `href`. Render any observed, target, signed or credential-bearing URL as inert, sanitised issuer-and-path text instead. For local evidence use escaped `<code>` containing a source-root-relative document path plus its page, section, line or offset; in `classified` mode, do that only for a known sanitised non-credential record, otherwise use a non-locating issuer-qualified citation. Do not manufacture an `href` for a plain record id or a local source, and do not reformat a source path as an Aleph entity.
+
 ## What fills the fixed blocks
 
 **Dateline (`div.sub`).** One line, `·`-separated:
@@ -203,7 +206,8 @@ The bare tag takes `excluded` or `borderline` and nothing else.
   verbatim inside their `<details>`, and the standing record names the working files.
 - `classified` — the reader is anyone else. No `<details>` anywhere in the document, whatever
   ownership would allow, and the standing record states that a credential file exists and where to
-  request it without naming its path.
+  request it without naming its path. A classified report never makes an anchor from a target,
+  signed or credential-bearing URL, and never names a local credential file.
 
 In both modes a working file is named relative to the task directory, never by absolute path, so no analyst home directory or workstation name reaches the page. That is the
 guardrails' redaction rule applied to the product rather than to the source field.
@@ -236,9 +240,11 @@ answerable.
 handed over — that a credential file exists, where it sits (relative to the task directory, and
 only in `exact` mode), and when it is destroyed, per the skill's guardrails.
 
+**Acronyms and abbreviations.** After Hand-off and before the footer, add one `table.grid` with the shared `Acronym | Full form | Meaning in this report` columns, or one `div.cv` saying no acronyms were used. Translate the heading and columns with the report language. `briefing-reporting` governs first-use expansion, which terms belong here and how ambiguous or unestablished terms are recorded.
+
 **Footer.** Generation date and author, the author being a role, cell or team designator rather than
 an individual; that every credential sits inside a system block naming what it opens; that every
-confirmed credential carries a resolving evidence link; that the coverage figures name their
+confirmed credential carries a usable evidence reference; that the coverage figures name their
 denominator; and the closing assertion that **nothing was authenticated against, cracked, or
 used**.
 
@@ -259,7 +265,8 @@ Each of these changes what the reader believes, so none may be dropped for brevi
 - A `<summary>` ends in `(exact)` when what it hides is a verbatim secret. A certificate or other
   public artefact carries no `(exact)`.
 - An evidence link carries the **whole** identifier in `href`; only the link *text* is shortened,
-  with a trailing `…`. Never the reverse — the display may shorten, the record may not.
+  with a trailing `…`. Never the reverse — the display may shorten, the record may not. This applies only to a link permitted by the Evidence-cells rule; otherwise retain the whole identifier as inert text and do not turn an observed locator into a live request.
+- Every evidence-backed statement in a dossier cell — especially reachability, ownership or holder, and dates — in the bottom line, coverage or other narrative carries its own local reference or a clearly mapped report citation. A credential-level reference does not automatically support an unrelated system-level claim; do not add a generic evidence row as a substitute for that mapping.
 - No placeholder token survives into the product, braced or from the vocabulary above. The
   2026-09-11 sweep shipped one `{ALEPH}` href: a well-formed link to nothing, which counting links
   does not detect.
@@ -282,7 +289,8 @@ titles — and never a `pre` body, a `summary` body, an attribute value or an ev
 ```sh
 REPORT=${REPORT:-/path/to/the/draft.html}
 python3 - "$REPORT" <<'PY'
-import re, sys, pathlib
+import html, re, sys, pathlib
+from urllib.parse import urlsplit
 PLACEHOLDERS = ('SYSTEM_OR_ENDPOINT','ACCESS_CLASS_BADGE','ARTEFACT_NAME','ACCOUNT_NAME',
                 'HOLDER_ROLE','KEY_FILENAME','KEY_TYPE_LABEL','KEY_FINGERPRINT',
                 'WHAT_THIS_DISCLOSES','WHAT_WAS_FOUND_WHERE','CREDENTIAL_VALUE','OWNERSHIP_VALUE',
@@ -299,26 +307,47 @@ keys   = re.findall(KEY, t)
 inside = re.findall(r'<details\b[^>]*>(?:(?!</details>).)*?' + KEY, t, re.S)
 anchors = re.findall(r'<a\b[^>]*>', t)
 hrefs   = re.findall(r'<a\b[^>]*href=["\']([^"\']*)["\']', t)
+short_aleph = 0
+unsafe_href = 0
+malformed_url = False
+for href in hrefs:
+    try:
+        parsed = urlsplit(html.unescape(href))
+        path = parsed.path
+    except ValueError:
+        malformed_url = True
+        continue
+    if (parsed.scheme not in ('http', 'https') or not parsed.hostname or
+            parsed.username is not None or parsed.password is not None or parsed.query or parsed.fragment):
+        unsafe_href += 1
+    entity = re.fullmatch(r'/entities/([^/]+)', path)
+    if entity and len(entity.group(1)) < 40:
+        short_aleph += 1
 left = sorted({p for p in PLACEHOLDERS if re.search(r'\b%s\b' % p, safe)} |
               set(re.findall(r'\{[A-Z_]{2,}\}', safe)))
-print('undefined classes    :', sorted(used - defined) or 'none')
-print('inline style attrs   :', len(re.findall(r'\sstyle=["\']', t)))
-print('placeholder tokens   :', left or 'none')
-print('pre.key not collapsed:', len(keys) - len(inside))
-print('details shipped open :', len(re.findall(r'<details\b[^>]*\bopen\b', t)))
-print('anchors/href-less/short:', len(anchors), len(anchors) - len(hrefs),
-      sum(1 for h in hrefs if len(h.rsplit("/", 1)[-1]) < 40))
-print('sections             :', [re.sub(r'<[^>]+>', '', s)[:40]
-                                 for s in re.findall(r'<h2[^>]*>(.*?)</h2>', t, re.S)])
+print('undefined classes       :', sorted(used - defined) or 'none')
+print('inline style attrs      :', len(re.findall(r'\sstyle=["\']', t)))
+print('placeholder tokens      :', left or 'none')
+print('pre.key not collapsed   :', len(keys) - len(inside))
+print('details shipped open    :', len(re.findall(r'<details\b[^>]*\bopen\b', t)))
+print('anchors/href-less/short-Aleph/unsafe:', len(anchors), len(anchors) - len(hrefs), short_aleph, unsafe_href)
+if malformed_url:
+    print('Malformed evidence URL')
+print('sections                :', [re.sub(r'<[^>]+>', '', s)[:40]
+                                    for s in re.findall(r'<h2[^>]*>(.*?)</h2>', t, re.S)])
 PY
 ```
 
-Every count must be `0` and both lists `none`, and the section list must end with Coverage, Gaps and
-Hand-off. `pre.key not collapsed` above zero means a value is rendered open on the page;
-`details shipped open` above zero means one was shipped expanded. The short-link constant is 40
-because an Aleph entity identifier is at least that long, so a shorter final path segment is a
-display form that was pasted into the `href` — change the constant if the issuing system's
-identifiers are shorter.
+Every violation count must be `0` and both lists `none`; total anchors are informational. The section
+list must end with Coverage, Gaps, Hand-off and Acronyms and abbreviations. `pre.key not collapsed`
+above zero means a value is rendered open on the page; `details shipped open` above zero means one
+was shipped expanded. `short-Aleph` counts only parsed paths exactly matching `/entities/<id>`, so a
+query string or fragment cannot make a short identifier look long; ordinary source URLs and local
+locators are not Aleph identifiers. `unsafe` counts an anchor URL that is not `http` or `https` with
+an authority, or that has user-info, query data or a fragment; it must be zero. The threshold is 40
+because an Aleph entity identifier is at least that long; change it if the issuing system's
+identifiers are shorter. A malformed URL reports only `Malformed evidence URL`; it is content-free
+and must not echo the value or a traceback that contains it.
 
 A clean verdict is a lint result, not a proof. It cannot tell a correct system attribution from a
 wrong one, nor a real evidence identifier from a well-formed invention, so a sample of the evidence

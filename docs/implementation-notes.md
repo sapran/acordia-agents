@@ -270,8 +270,8 @@ malformed` on every call throughout that work, so the selection could not be mad
   buying them means cutting prose elsewhere in the prompt — the shape that silently dropped two
   guardrails in 6.10.0. Pick it up when the orchestrator next gets headroom from a move-to-skill.
 - **Three code spans in `credential-harvest-triage/references/` are broken across a newline.**
-  `credential-patterns.md:100` (`"пароль от конфига"`), `report-layout.md:160` (`RSA private key, 2048-bit`)
-  and `report-layout.md:197` (the footer template). Markdown renders a newline inside a code span as
+  `credential-patterns.md:100` (`"пароль от конфига"`), `report-layout.md:161` (`RSA private key, 2048-bit`)
+  and `report-layout.md:200` (the footer template). Markdown renders a newline inside a code span as
   a space, so each displays with the break turned into a space. All three are display strings rather
   than resolvable slugs, so nothing dereferences them and nothing breaks — unlike the same fault in a
   skill slug, which silently stops pointing at the skill (one was introduced and fixed inside 6.15.0,
@@ -280,3 +280,7 @@ malformed` on every call throughout that work, so the selection could not be mad
   pairs backticks in document order and fails on a span containing a newline — the naive regex
   `` `[^`]*\n[^`]*` `` does NOT work, because skipping intact spans desynchronises the pairing and it
   reports the gaps between spans as hits.
+
+## Parked during `human-readable-reports`
+
+- **The retired ACORDIA library id `17fec536` did not resolve, while the proceedings child did.** The recovered work is Styran and Yashchuk, *Rethinking Exploitation in Cyber War*, document `1152d85c-b6e0-4236-9102-4478681251a0`; the source-register repair is unrelated to report readability and remains out of scope.
