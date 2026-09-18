@@ -32,6 +32,6 @@ None.
 - `acordia-analysts/skills/aleph-entity-graph/SKILL.md` and a co-located markdown reference — Aleph evidence tuple, UI locator form, and verdict-only coverage check.
 - `acordia-analysts/skills/credential-harvest-triage/references/report-layout.md` — specialist HTML form and self-check alignment.
 - `openspec/specs/skill-library/spec.md` through a delta spec.
-- The three version declarations and derived `acordia-map.html`.
+- The three version declarations; `acordia-map.html` is explicitly out of scope and remains independently maintained.
 
 Not affected: agent prompts, command wrappers, `skill-sets.json`, marketplace structure, and `tools/check-acordia.sh`. The selected ACORDIA passage grounds the value of analysis as a core function; the Aleph URL and checking mechanics are procedural technique detail and therefore carry no new doctrine-source attribution.
