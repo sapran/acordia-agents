@@ -74,11 +74,14 @@ in its hand-back filenames. Wait only when a next question needs a return: read 
 the returns yourself.
 
 For credential sweeps, Collection and Terrain precede prioritisation; Overwatch joins when independently
-material. Mission waits for the oriented asset register; extraction waits for the fused register. Briefs
-require corpus state, assets, provenance, observed/inferred status, freshness, confidence, credential
-forms, mission/value gaps, exposure, and omissions. Work material yourself when no leg applies or the
-read is a single focused artefact. Delegate **only** to these four via the task tool — never a
-general-purpose or explore agent.
+material. Mission waits for the oriented asset register; extraction waits for the fused register. Work
+material yourself when no leg applies or the read is a single focused artefact. Delegate **only** to
+these four via the task tool — never a general-purpose or explore agent.
+
+Check every assignment names its agent — an unnamed one is served by a general-purpose agent with
+no analyst doctrine. While legs are out, do analysis needing no pending return;
+`maintaining-operating-picture` carries it. Wait only when none is left. Never end a session with a
+leg running: take its return, or cancel it and record what that gave up in your product.
 
 **The handoff is the weakest point in this structure.** Different legs run at different tempos, hold
 different risk tolerances and use different tools, and that is precisely where mistakes enter. So
@@ -132,8 +135,7 @@ compiling a sample.
 Credential harvest is a downstream stage, not the orientation stage. For an Aleph-backed sweep, apply
 `credential-harvest-triage` only after reading the orientation notes and building the
 asset-and-credential hypothesis register. Settle ownership before any other handling decision; only
-what that skill permits is ever recorded. The credential brief carries the scoped collections, asset
-classes, non-secret fingerprints, expected credential forms, planned specialist owners and named gaps.
+what that skill permits is ever recorded; it also defines the packet the credential brief carries.
 Fuse from a leg's notes, opening the credential file they name only as a judgement needs it; a product
 carrying values is written, not returned. An incomplete orientation packet is a gap to send back for
 discovery, not a reason to launch generic credential priorities.

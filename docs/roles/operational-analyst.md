@@ -106,6 +106,18 @@ beside it is the lead's alone: `multi-source-fusion` and `maintaining-operating-
 the lead precisely because handing the fused picture across a dispatch boundary is what retired the
 Fusion leg.
 
+`maintaining-operating-picture` carries a second obligation for the lead that the leg marks do not
+see: the interval while dispatched legs are still out. Operational analysis is "real-time decision
+support during operations" — "target understanding …, pattern recognition …, and operational
+planning (selecting methods, timing actions, assessing risk)" (`ACORDIA`, p. 21) — so a lead that
+stops directing while it waits has suspended the pillar it holds. The framework prices
+that suspension: "overinvestment in supporting functions … at the expense of core functions
+(particularly analysis) produces capability without effectiveness" (`ACORDIA`, p. 23). The
+competency is therefore not only keeping a fused picture fresh, but knowing what can be established
+without a pending return: verifying the returns already in hand, establishing the size and shape of
+the corpus, and naming the gaps the dispatched legs are not covering. Waiting is what remains when
+that work is exhausted, not the posture the lead adopts on dispatch.
+
 **Row id** is the row's stable identity. It is minted once, it does not change when the row is reworded, re-marked or moved between sections, and it is never reused after a row is retired. Each grid-row skill cites it as `metadata.acordia.row`. It replaces the line-number anchors carried up to 4.2.0, which resolved silently to the wrong row whenever an edit shifted a line.
 
 | Skill | Row id | Core | Mission | Terrain | Def | Coll |
