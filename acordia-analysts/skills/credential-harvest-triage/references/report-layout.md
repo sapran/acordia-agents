@@ -194,6 +194,8 @@ The bare tag takes `excluded` or `borderline` and nothing else.
 
 **Evidence cells.** The credential anatomies use an anchor only for genuine Aleph evidence with a canonical safe locator. Elsewhere an `Evidence` cell uses a source anchor only for another canonical `http` or `https` source locator for the issuing instance with a non-empty authority and no credentials, user-info, query data or fragment; HTML-attribute-escape that locator when materialising `href`. Render any observed, target, signed or credential-bearing URL as inert, sanitised issuer-and-path text instead. For local evidence use escaped `<code>` containing a source-root-relative document path plus its page, section, line or offset; in `classified` mode, do that only for a known sanitised non-credential record, otherwise use a non-locating issuer-qualified citation. Do not manufacture an `href` for a plain record id or a local source, and do not reformat a source path as an Aleph entity.
 
+For Aleph evidence, `ALEPH_BASE` is the safe UI origin and every entity anchor follows the common `/entities/<percent-encoded-entity-id>` route. Create the task-directory evidence receipt and run its receipt-to-HTML coverage check from [`aleph-entity-graph`](skill://aleph-entity-graph/references/report-evidence-links.md) before this layout-specific self-check. The receipt check detects an expected entity left inert; this self-check continues to protect the fixed layout and disclosure boundary.
+
 ## What fills the fixed blocks
 
 **Dateline (`div.sub`).** One line, `·`-separated:
@@ -287,8 +289,9 @@ Run this against the draft. It reports a verdict — class names, integer counts
 titles — and never a `pre` body, a `summary` body, an attribute value or an evidence identifier.
 
 ```sh
+RECEIPT=${RECEIPT:-/path/to/evidence-links-<agent>.md}
 REPORT=${REPORT:-/path/to/the/draft.html}
-python3 - "$REPORT" <<'PY'
+python3 - "$RECEIPT" "$REPORT" <<'PY'
 import html, re, sys, pathlib
 from urllib.parse import urlsplit
 PLACEHOLDERS = ('SYSTEM_OR_ENDPOINT','ACCESS_CLASS_BADGE','ARTEFACT_NAME','ACCOUNT_NAME',
@@ -296,7 +299,12 @@ PLACEHOLDERS = ('SYSTEM_OR_ENDPOINT','ACCESS_CLASS_BADGE','ARTEFACT_NAME','ACCOU
                 'WHAT_THIS_DISCLOSES','WHAT_WAS_FOUND_WHERE','CREDENTIAL_VALUE','OWNERSHIP_VALUE',
                 'ALEPH_BASE','FULL_ENTITY_ID_EXACTLY_AS_ALEPH_RETURNS_IT','FULL_ENTITY_ID_TRUNC')
 KEY = r'<pre\b[^>]*class=["\'][^"\']*\bkey\b[^"\']*["\']'
-t = pathlib.Path(sys.argv[1]).read_text()
+receipt, report = map(pathlib.Path, sys.argv[1:])
+expected = [cells[2] for line in receipt.read_text().splitlines()
+            if line.startswith('|') and not line.lower().startswith('| safe ui origin')
+            for cells in [[cell.strip() for cell in line.strip().strip('|').split('|')]]
+            if len(cells) == 4 and cells[0].startswith(('http://', 'https://'))]
+t = report.read_text()
 # blank every <pre> body first: a captured artefact quoted inside one must not
 # reach this script's own output through the class or placeholder scans
 safe = re.sub(r'(<pre\b[^>]*>).*?</pre>', r'\1</pre>', t, flags=re.S)
@@ -325,6 +333,9 @@ for href in hrefs:
         short_aleph += 1
 left = sorted({p for p in PLACEHOLDERS if re.search(r'\b%s\b' % p, safe)} |
               set(re.findall(r'\{[A-Z_]{2,}\}', safe)))
+missing_expected = sum(entity not in html.unescape('\n'.join(hrefs)) for entity in expected)
+print('expected Aleph links    :', len(expected))
+print('missing expected links  :', missing_expected)
 print('undefined classes       :', sorted(used - defined) or 'none')
 print('inline style attrs      :', len(re.findall(r'\sstyle=["\']', t)))
 print('placeholder tokens      :', left or 'none')
@@ -337,8 +348,7 @@ print('sections                :', [re.sub(r'<[^>]+>', '', s)[:40]
                                     for s in re.findall(r'<h2[^>]*>(.*?)</h2>', t, re.S)])
 PY
 ```
-
-Every violation count must be `0` and both lists `none`; total anchors are informational. The section
+Every violation count must be `0` and both lists `none`; `missing expected links` must also be `0`; total anchors are informational. The section
 list must end with Coverage, Gaps, Hand-off and Acronyms and abbreviations. `pre.key not collapsed`
 above zero means a value is rendered open on the page; `details shipped open` above zero means one
 was shipped expanded. `short-Aleph` counts only parsed paths exactly matching `/entities/<id>`, so a
