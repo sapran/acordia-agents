@@ -9,13 +9,14 @@ metadata:
     grid_working_in: [Mission, Terrain, Def, Coll]
     row: human-automation-teaming
     source: docs/roles/operational-analyst.md
+    doctrine_source: [Cvetko-Davydiuk#human-centred-cti]
 ---
 
 # Human–Automation Teaming
 
 ## Objective
 
-Divide the work between analyst judgement and automation so machines carry scale, speed, and recall while the analyst owns the judgement calls, keeping the operation both fast and accountable.
+Divide the work between analyst judgement and automation so machines carry scale, speed, and recall while the analyst owns the judgement calls. Automation may surface a hypothesis; it does not turn it into a supported conclusion.
 
 ## When to use
 
@@ -25,6 +26,7 @@ Divide the work between analyst judgement and automation so machines carry scale
 ## Method
 
 - Split by strength: give automation volume, correlation, and monitoring; keep intent, ambiguity, deception, and irreversible calls with the human.
+- Treat every automated score, correlation, or proposed explanation as a hypothesis until an analyst adopts or rejects it. Retain the evidence, confidence and provenance that make the result inspectable.
 - Set the autonomy level per task — automate-and-act, recommend-and-confirm, or surface-only — matched to the cost of a wrong move.
 - Design against automation bias: the analyst must be able to see the evidence and overrule the machine, not rubber-stamp it.
 - Watch for the failure modes automation hides — silent misses, stale models, adversary gaming the filter — and sample its output by hand.
