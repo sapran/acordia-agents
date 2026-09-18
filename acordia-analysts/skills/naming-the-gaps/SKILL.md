@@ -15,7 +15,7 @@ metadata:
 
 ## Objective
 
-Convert a vague sense of "we don't know enough" into an explicit, prioritised list of intelligence gaps, each tied to a way to close it, so collection is aimed instead of opportunistic.
+Convert a vague sense of "we don't know enough" into an explicit, prioritised list of intelligence gaps in the target model, each tied to a way to close it, so collection is aimed instead of opportunistic.
 
 ## When to use
 
@@ -25,8 +25,8 @@ Convert a vague sense of "we don't know enough" into an explicit, prioritised li
 ## Method
 
 - Restate the decision the picture must support; every gap is judged by whether it changes that decision.
-- Walk the target model deliberately (access, structure, defences, people, timing) and mark each element as observed, inferred, or blank.
-- For each blank, name the specific question in answerable form, not a topic ("does host X reboot nightly?" not "patching").
+- Walk the target model deliberately (access, structure, defences, people, timing) and mark each element as observed, inferred, or unknown.
+- For each unknown, name the specific question in answerable form, not a topic ("does host X reboot nightly?" not "patching").
 - Rank gaps by leverage over the decision times feasibility of closing them; drop the merely-interesting.
 - Assign each priority gap a collection route (existing access, new access needed, or open-source) and an owner.
 

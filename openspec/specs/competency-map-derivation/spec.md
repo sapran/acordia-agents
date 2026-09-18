@@ -72,14 +72,24 @@ A `●` mark SHALL denote a deep/defining skill for that agent and a `○` mark 
 ### Requirement: Structural mappings from grid to artifact
 
 The derivation SHALL bind the grid's structure to artifacts as follows: the leg's italic operating
-question → subagent `description`; the leg's prose paragraph → agent prompt body; the grid's section
-header → a documentation grouping of the skills, carried as the skill's `metadata.acordia` family tag
-rather than as a harness field, because neither harness has a skill `category`.
+question → subagent `description`; the leg's prose paragraph → agent prompt body; the operating-model
+prose under `## How the pieces fit` → the orchestrator's routing and fusion instructions; the grid's
+section header → a documentation grouping of the skills, carried as the skill's `metadata.acordia`
+family tag rather than as a harness field, because neither harness has a skill `category`.
+
+The operating-model prose SHALL distinguish a real information dependency from a roster-based pairing:
+it directs the orchestrator to fan out independent bounded specialist questions, including disjoint
+slices owned by one leg, while keeping lead fusion and every dependency-driven join barrier.
 
 #### Scenario: Italic question becomes the dispatch signal
 
 - **WHEN** a leg's italic operating question is read
 - **THEN** it is used (in meaning) as that subagent's `description`
+
+#### Scenario: Operating model directs lead routing
+
+- **WHEN** the `## How the pieces fit` prose is read
+- **THEN** the orchestrator prompt derives its fan-out, dependency-barrier and lead-fusion instructions from it
 
 #### Scenario: Section header becomes a documented grouping
 
@@ -265,3 +275,11 @@ The competency models target-side organisational sustainment: suppliers and cont
 #### Scenario: Target sustainment stays distinct from digital supply chains
 - **WHEN** the row and its derived skill are read
 - **THEN** they cover organisational sustainment dependencies and explicitly exclude digital supply-chain analysis
+
+### Requirement: Shared-spine prose carries selected intelligence-analysis framing
+
+The shared analytic-spine prose in `docs/roles/operational-analyst.md` SHALL state that the running target model makes collection gaps explicit and is intelligible to the human operator; that automated output remains a hypothesis until an analyst makes a confidence- and provenance-bounded conclusion; and that access or collected intelligence is not by itself evidence of strategic outcome. The prose SHALL cite the applicable register keys and derive no additional grid rows or prompt skill bindings.
+
+#### Scenario: Grid framing reaches derived documentation without changing bindings
+- **WHEN** the grid prose and derived skill metadata are inspected after the doctrine changes
+- **THEN** the selected sources frame the existing shared-spine skills, while the five columns, row identities, marks and prompt skill lines remain unchanged
