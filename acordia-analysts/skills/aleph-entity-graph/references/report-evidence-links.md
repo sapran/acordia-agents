@@ -24,7 +24,7 @@ Use the full exact entity ID in the link destination. Display may shorten only a
 
 ## Coverage check
 
-Render the report, then run this from a shell that has Python 3. It parses the receipt and HTML anchors, blanks disclosure bodies before inspection, and reports counts only. It exits non-zero if any expected entity is absent, has the wrong origin or route, has an unsafe link, or is represented by an anchor with no `href`.
+Render the report, then run this from a shell that has Python 3. It parses the receipt and HTML anchors, ignores anchors inside disclosure `<pre>` blocks, and reports counts only. It exits non-zero if any expected entity is absent, has the wrong origin or route, has an unsafe link, or is represented by an anchor with no `href`.
 
 ```sh
 python3 - "$RECEIPT" "$REPORT" <<'PY'
@@ -34,52 +34,70 @@ from urllib.parse import quote, urlsplit
 receipt, report = map(pathlib.Path, sys.argv[1:])
 expected = []
 for line in receipt.read_text().splitlines():
-    if not line.startswith('|') or line.lower().startswith('| safe ui origin') or line.startswith('|---'):
+    if (not line.startswith('|') or line.lower().startswith('| safe ui origin') or
+            all(not cell.strip().replace('-', '') for cell in line.strip().strip('|').split('|'))):
         continue
     cells = [cell.strip() for cell in line.strip().strip('|').split('|')]
     if len(cells) != 4:
         raise SystemExit('receipt rows: invalid')
     origin, collection, entity, offset = cells
     p = urlsplit(origin)
-    if p.scheme not in ('http', 'https') or not p.netloc or p.username or p.password or p.query or p.fragment or p.path not in ('', '/'):
+    if p.scheme not in ('http', 'https') or not p.hostname or p.username or p.password or p.query or p.fragment or p.path not in ('', '/'):
         raise SystemExit('receipt origins: unsafe')
     expected.append((origin.rstrip('/'), collection, entity, offset))
 
 class Anchors(html.parser.HTMLParser):
     def __init__(self):
-        super().__init__(); self.anchors = []; self.pre = 0
+        super().__init__(); self.anchors = []; self.current = None; self.pre = 0
     def handle_starttag(self, tag, attrs):
         if tag == 'pre': self.pre += 1
-        if tag == 'a' and not self.pre: self.anchors.append(dict(attrs))
+        if tag == 'a' and not self.pre:
+            if self.current is not None: self.anchors.append(self.current)
+            hrefs = [value for name, value in attrs if name.lower() == 'href']
+            values = [value or '' for _name, value in attrs]
+            self.current = [hrefs, values, []]
+    def handle_data(self, data):
+        if self.current is not None: self.current[2].append(data)
     def handle_endtag(self, tag):
+        if tag == 'a' and self.current is not None:
+            self.anchors.append(self.current); self.current = None
         if tag == 'pre' and self.pre: self.pre -= 1
 
 parser = Anchors(); parser.feed(report.read_text())
-hrefs = [a.get('href') for a in parser.anchors]
-href_less = sum(h is None for h in hrefs)
-unsafe = wrong_origin = wrong_route = missing = 0
+if parser.current is not None: parser.anchors.append(parser.current)
+entity_values = [entity for _origin, _collection, entity, _offset in expected]
+href_less = sum(
+    not hrefs and any(entity in ' '.join(values + text) for entity in entity_values)
+    for hrefs, values, text in parser.anchors
+)
+duplicate_href = sum(len(hrefs) > 1 for hrefs, _values, _text in parser.anchors)
+hrefs = [hrefs[0] for hrefs, _values, _text in parser.anchors if hrefs]
+unsafe = sum(bool(
+    (p := urlsplit(h)).scheme not in ('http', 'https') or not p.hostname or
+    p.username or p.password or p.query or p.fragment
+) for h in hrefs)
+wrong_origin = wrong_route = missing = 0
 for origin, _collection, entity, _offset in expected:
     want = f'{origin}/entities/{quote(entity, safe="")}'
-    matching = [h for h in hrefs if h and entity in h]
+    matching = [h for h in hrefs if entity in h]
     if want in hrefs:
         continue
     if not matching:
         missing += 1; continue
     parsed = [urlsplit(h) for h in matching]
-    if any(p.scheme not in ('http', 'https') or not p.netloc or p.username or p.password or p.query or p.fragment for p in parsed):
-        unsafe += 1
-    elif any(f'{p.scheme}://{p.netloc}' != origin for p in parsed):
+    if any(f'{p.scheme}://{p.netloc}' != origin for p in parsed):
         wrong_origin += 1
     else:
         wrong_route += 1
 print('expected:', len(expected))
-print('linked:', len(expected) - missing - wrong_origin - wrong_route - unsafe)
+print('linked:', len(expected) - missing - wrong_origin - wrong_route)
 print('missing:', missing)
 print('wrong-origin:', wrong_origin)
 print('wrong-route:', wrong_route)
 print('unsafe:', unsafe)
 print('href-less-anchors:', href_less)
-raise SystemExit(bool(missing or wrong_origin or wrong_route or unsafe or href_less))
+print('duplicate-href-anchors:', duplicate_href)
+raise SystemExit(bool(missing or wrong_origin or wrong_route or unsafe or href_less or duplicate_href))
 PY
 ```
 

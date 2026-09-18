@@ -105,7 +105,7 @@ Feed what you find into `assessing-take-value` rather than treating an Aleph hit
 
 ## Reporting Aleph evidence
 
-For a finished report, preserve each cited entity as a link-ready receipt and make it navigable only from a safe issuing-instance origin. [`references/report-evidence-links.md`](skill://aleph-entity-graph/references/report-evidence-links.md) defines the receipt, entity route and verdict-only coverage check; use it before drafting, not to retrofit a finished product.
+For a finished report, preserve each cited entity as a link-ready receipt and make it navigable only from a safe issuing-instance origin. [`references/report-evidence-links.md`](skill://aleph-entity-graph/references/report-evidence-links.md) defines the receipt, entity route and verdict-only coverage check; use it before drafting, not to retrofit a finished product. This `skill://` reference is the sole path: never reconstruct a harness skill-directory path or an absolute install path.
 
 ## Signals / outputs
 
