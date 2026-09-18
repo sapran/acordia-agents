@@ -103,3 +103,4 @@ recall.
   those skills' own procedural sources and carrying no literature attribution, per the technique-detail
   rule in `openspec/specs/doctrinal-provenance` — a citation there would falsely imply a work
   prescribes the procedure.
+- **A doctrinal rule for constructing a clickable evidence locator.** Searched ACORDIA, Monte, and the library for intelligence reporting, evidence traceability, source attribution, and reader verification. `ACORDIA` grounds analysis as a core function; it does not prescribe a URL route. The Aleph entity route, safe-origin handling, and receipt check are therefore this repository's procedural technique detail, anchored to `aleph-entity-graph` rather than attributed to literature.
