@@ -9,13 +9,14 @@ metadata:
     grid_working_in: [Def, Coll]
     row: outcome-judgement
     source: docs/roles/operational-analyst.md
+    doctrine_source: [Lindsay#intelligence-performance]
 ---
 
 # Outcome Judgement (End Achieved)
 
 ## Objective
 
-After an action, judge whether the operation's intended end was actually achieved — the effect (break / deny / manipulate) took hold, or the intelligence was genuinely collected — and decide what happens next. This includes verifying that the target system genuinely changed in the intended way, separating "the payload ran" from "the effect occurred," and both from what the target may be showing you deliberately.
+After an action, judge whether the operation's intended end was actually achieved — the effect (break / deny / manipulate) took hold, the intelligence was genuinely collected, or access held for later use is established, durable and quiet — and decide what happens next.
 
 ## When to use
 
@@ -33,6 +34,7 @@ After an action, judge whether the operation's intended end was actually achieve
 - **Watch for deception and honeypot tells** — effects that are too clean, mirrored responses, or verification channels the defender controls; treat a channel the defender may control as untrusted and flag the gap.
 - Weigh cost paid: what the action cost in exposure, access, or attribution, and whether that changes the win.
 - Classify: end achieved / partial / failed / unknown-pending-confirmation, and derive the next move — exploit, re-attempt, collect more, or withdraw.
+- **Separate operational performance from strategic outcome**: access and collection can create option value without proving that the operator's wider political, military, or organisational aim has been achieved.
 - **Degradation**: if only the first-party return is available and no independent channel can be read, cap the verdict at "delivered, effect unconfirmed" and say so rather than reporting success.
 
 ## Signals / outputs

@@ -56,6 +56,8 @@ so prefer a registered one where both say the same thing.
 |---|---|---|
 | `Heuer` | Heuer, R. J., *Psychology of Intelligence Analysis* (CIA, 1999). | `5d880095` |
 | `SAT` | Pherson, R. & Heuer, R. J., *Structured Analytic Techniques for Intelligence Analysis*. | `7bc0dcc4` |
+| `Clark` | Clark, R. M., *Intelligence Analysis: A Target-Centric Approach* — the shared target model, explicit knowledge gaps, and the analyst's relationship with collectors and customers. | `508633d1` |
+| `Cvetko-Davydiuk` | Cvetko, M. & Davydiuk, A., *Human-Centric Approaches in Cyber Threat Intelligence: Integrating Analytical Insight with Automation* — analytical coherence under ambiguity; separating algorithmic hypotheses from confirmed conclusions with confidence and provenance. | `8e547dcd` |
 
 ## Registered but absent from the library
 
