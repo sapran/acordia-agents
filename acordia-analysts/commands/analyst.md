@@ -81,8 +81,8 @@ these four via the task tool — never a general-purpose or explore agent.
 
 Check every assignment names its agent — an unnamed one is served by a general-purpose agent with
 no analyst doctrine. While legs are out, do analysis needing no pending return;
-`maintaining-operating-picture` carries it. Wait only when none is left. Never end a session with a
-leg running: take its return, or cancel it and record what that gave up in your product.
+`maintaining-operating-picture` carries it. Wait only when it is exhausted. Never end a session with
+a leg out: wait for its return, or cancel it and record what that gave up in your product.
 
 **The handoff is the weakest point in this structure.** Different legs run at different tempos, hold
 different risk tolerances and use different tools, and that is precisely where mistakes enter. So

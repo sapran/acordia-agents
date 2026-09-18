@@ -293,7 +293,7 @@ malformed` on every call throughout that work, so the selection could not be mad
   window, 62–78% of active lead time in the largest runs. Any claim that the new doctrine *reduced*
   lead idling requires a fresh prospective A/B of print-mode sessions scored from session JSONL.
   Re-reading the motivating corpus would confirm nothing.
-- **The orchestrator prompt now sits at 10,493 of the 10,500-character ceiling — 7 characters of
+- **The orchestrator prompt now sits at 10,496 of the 10,500-character ceiling — 4 characters of
   margin.** The next addition to `cyber-analyst.md` must relocate something first. The
   `## A directory per task` section restates hand-back shape that `briefing-reporting` owns and is
   the obvious next candidate, but it was deliberately not touched here: this change had no business

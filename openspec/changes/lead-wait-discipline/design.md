@@ -21,7 +21,7 @@ So the body is **under** the ceiling, and the gate passing was never in contradi
 - The lead has a named alternative to waiting, and waiting is the residual case.
 - No dispatched leg's work is lost to a lifecycle boundary without a record.
 - Every assignment names its agent, positively.
-- The orchestrator body ends **at or below the spec's 10,500-character ceiling**, which is the only acceptance criterion the repository actually enforces. **Measured result: 266 characters freed, a 375-character budget, 368 used, final body 10,493 with 7 characters of margin.** "No net growth against 10,391" was an invented stricter bar and is withdrawn — it would have capped the clauses at 266 and contradicted the budget used everywhere else.
+- The orchestrator body ends **at or below the spec's 10,500-character ceiling**, which is the only acceptance criterion the repository actually enforces. **Measured result: 266 characters freed, a 375-character budget, 371 used, final body 10,496 with 4 characters of margin.** "No net growth against 10,391" was an invented stricter bar and is withdrawn — it would have capped the clauses at 266 and contradicted the budget used everywhere else.
 
 ## Non-goals
 
@@ -43,7 +43,7 @@ The real slack is a genuine duplication. The credential brief's required content
 
 Both are technique detail for one procedure, and `credential-harvest-triage` — already named in that same section, already `procedural: true` — owns it. The two raw lists total 323 characters. Stating the packet once, in the skill, also removes a latent drift bug: two lists of what a credential brief must carry, which did not agree.
 
-**Forecast working budget: 109 + 323 = 432 characters.** *Measured on implementation: only 266 were freed, because each removed enumeration left a short routing pointer behind, giving a real budget of 375. The three clauses used 368; the final body is 10,493, with 7 characters of margin.* The forecast is kept here beside the measurement because the gap between them is the lesson: raw sentence length is not freed length when the sentence is replaced rather than deleted.
+**Forecast working budget: 109 + 323 = 432 characters.** *Measured on implementation: only 266 were freed, because each removed enumeration left a short routing pointer behind, giving a real budget of 375. The three clauses used 371; the final body is 10,496, with 4 characters of margin.* The forecast is kept here beside the measurement because the gap between them is the lesson: raw sentence length is not freed length when the sentence is replaced rather than deleted.
 
 ### Where each sentence lives
 
@@ -75,7 +75,7 @@ Cancelling a leg is legitimate — 6 of the 16 non-yielding legs in the window w
 
 ## Risks
 
-- **The budget may not be enough.** *Resolved on implementation: 368 of 375 used, 7 characters of margin. No second relocation was needed.* Had it been, the `## A directory per task` section restates hand-back shape that `briefing-reporting` owns and was the next candidate. The margin is thin: the next addition to this prompt must relocate something first.
+- **The budget may not be enough.** *Resolved on implementation: 371 of 375 used, 4 characters of margin. No second relocation was needed.* Had it been, the `## A directory per task` section restates hand-back shape that `briefing-reporting` owns and was the next candidate. The margin is thin: the next addition to this prompt must relocate something first.
 - **The relocated enumerations disagree with each other.** Merging two non-identical lists into one is a content decision, not a move. It must be done deliberately and noted in the task, not silently resolved in favour of whichever was copied last.
 - **The moved detail may not be read.** A skill is selected by description match. Mitigation: `credential-harvest-triage` is already named explicitly in the section losing the text, so the routing already exists.
 - **No behavioural proof.** Prompt changes are not self-verifying: the 21.2 idle hours are the defect, not evidence that new prose cures it. Crediting this change requires a fresh A/B of print-mode sessions scored from session JSONL, not a re-read of the motivating corpus.

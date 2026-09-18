@@ -1,6 +1,6 @@
 ---
 name: maintaining-operating-picture
-description: Stop an already-fused picture from rotting while the operation runs — timestamping updates, setting decay on perishable facts and re-verifying them before reliance, and doing the analysis that needs no pending return while dispatched legs are still out.
+description: Keep a fused picture current while the operation runs — timestamping updates, decaying perishable facts, and doing the analysis that needs no pending return while legs are still out.
 metadata:
   acordia:
     family: take-handling
@@ -32,8 +32,8 @@ Keep the fused operating picture current and trustworthy as the operation runs a
 
 ### While dispatched legs are still out
 
-**Lead only.** This subsection applies to the orchestrator that dispatched the legs; a leg has none
-of its own, and updates and returns its own slice instead.
+**Lead only.** This subsection applies to the orchestrator that dispatched the legs; a leg dispatches
+no legs of its own, and updates and returns its own slice instead.
 
 Waiting on a return is not a pause in the analysis; it is an interval with its own work. Before
 re-entering a wait, establish what does not depend on a pending return:
