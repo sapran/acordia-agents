@@ -194,6 +194,8 @@ The bare tag takes `excluded` or `borderline` and nothing else.
 
 **Evidence cells.** The credential anatomies use an anchor only for genuine Aleph evidence with a canonical safe locator. Elsewhere an `Evidence` cell uses a source anchor only for another canonical `http` or `https` source locator for the issuing instance with a non-empty authority and no credentials, user-info, query data or fragment; HTML-attribute-escape that locator when materialising `href`. Render any observed, target, signed or credential-bearing URL as inert, sanitised issuer-and-path text instead. For local evidence use escaped `<code>` containing a source-root-relative document path plus its page, section, line or offset; in `classified` mode, do that only for a known sanitised non-credential record, otherwise use a non-locating issuer-qualified citation. Do not manufacture an `href` for a plain record id or a local source, and do not reformat a source path as an Aleph entity.
 
+For Aleph evidence, `ALEPH_BASE` is the safe UI origin and every entity anchor follows the common `/entities/<percent-encoded-entity-id>` route. Create the task-directory evidence receipt and run its receipt-to-HTML coverage check from [`aleph-entity-graph`](skill://aleph-entity-graph/references/report-evidence-links.md) before this layout-specific self-check. The receipt check detects an expected entity left inert; this self-check continues to protect the fixed layout and disclosure boundary.
+
 ## What fills the fixed blocks
 
 **Dateline (`div.sub`).** One line, `·`-separated:
