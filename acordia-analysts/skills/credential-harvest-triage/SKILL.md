@@ -78,7 +78,7 @@ it.** The packet carries fourteen fields:
 | 8 | confidence | how strongly each entry is held |
 | 9 | mission relevance | how the asset matters to the target's mission |
 | 10 | expected credential forms | the credential shapes anticipated for these assets |
-| 11 | planned specialist owners | which leg owns which bucket |
+| 11 | planned specialist owners | which specialist the lead plans for each bucket, within step 2's fixed mapping |
 | 12 | named mission/value gaps | what remains unknown |
 | 13 | exposure | what the orientation work itself incurred |
 | 14 | omissions | what was deliberately not covered |

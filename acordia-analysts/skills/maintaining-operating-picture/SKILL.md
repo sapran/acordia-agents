@@ -40,8 +40,9 @@ re-entering a wait, establish what does not depend on a pending return:
 
 - Verify the returns already in hand — read the notes each leg named rather than its summary, and
   reconcile them against the standing picture while the detail is still addressable.
-- Establish the size and shape of the corpus: what the denominator is, how much of it has been
-  covered, and whether a coverage claim could yet be stated honestly.
+- Establish the size and shape of the corpus where no dispatched leg owns that question — what the
+  denominator is, and whether a coverage claim could yet be stated honestly;
+  `exhaustive-data-processing` carries the method.
 - Name the gaps the dispatched legs are **not** covering. A leg's assignment bounds what it can
   find, so the uncovered remainder is visible only from the lead's seat and only while the legs run.
 - Re-verify the perishable facts the next decision will rest on, rather than after the return lands.
