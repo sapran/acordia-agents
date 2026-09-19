@@ -58,17 +58,40 @@ Every credential finding SHALL be classified along these axes. `ownership` is se
 | `priority` | P0/P1/P2/P3 — derived from scope, reuse-potential, freshness, confidence, asset criticality and mission relevance |
 | `next-action` | who owns follow-up (specialist name), or `hold` |
 
-For raw archives, the asset fields may remain `unresolved` or `unknown` until the evidence supports an association. For Aleph, the lead's orientation packet supplies the expected asset classes, fingerprints, credential hypotheses and mission context.
+For raw archives, the asset fields may remain `unresolved` or `unknown` until the evidence supports an association. For Aleph, the lead's orientation packet supplies the asset and credential context that the triage procedure below enumerates in full.
 
 ## Triage procedure
 
 For an Aleph-backed sweep, validate the lead-supplied orientation packet and declared collection scope
-before credential prioritisation. The packet must contain the asset register, mission relevance, system
-fingerprints, expected credential forms, planned bucket owners and named gaps. If it is missing or
-incomplete, report the missing fields and coverage impact and return an orientation task to the lead;
-do not launch generic credential priorities. For a raw archive, retain the local artefact inventory as
-the first step because the archive itself is the available source of shape; an orientation packet, when
-supplied, still steers bucket selection and pattern choice.
+before credential prioritisation. **This is the single definition of the packet; no prompt restates
+it.** The packet carries fourteen fields:
+
+| # | Field | What it establishes |
+|---|---|---|
+| 1 | scoped collections | which collections are in scope |
+| 2 | corpus state | size, coverage and ingestion state of that corpus |
+| 3 | asset/system classes | the asset register: the classes of asset and system discovered, and what step 7 extends |
+| 4 | non-secret fingerprints | steerable identifiers that are not themselves secrets |
+| 5 | evidence and provenance | what was observed and where it came from |
+| 6 | observed/inferred status | which entries are seen and which are deduced |
+| 7 | freshness | how current each entry is |
+| 8 | confidence | how strongly each entry is held |
+| 9 | mission relevance | how the asset matters to the target's mission |
+| 10 | expected credential forms | the credential shapes anticipated for these assets |
+| 11 | planned specialist owners | which specialist the lead plans for each bucket, within step 2's fixed mapping |
+| 12 | named mission/value gaps | what remains unknown |
+| 13 | exposure | what the orientation work itself incurred |
+| 14 | omissions | what was deliberately not covered |
+
+Fields 12 and 14 are distinct: a gap is unknown, an omission is a deliberate choice. Fields 1 and 2
+are distinct: which collections are in scope is not the condition of the corpus. The asset register
+is field 3. The *asset-and-credential hypothesis* register the lead fuses is a separate artefact,
+carried alongside the packet rather than as one of its fields.
+
+If the packet is missing or incomplete, report the missing fields and coverage impact and return an
+orientation task to the lead; do not launch generic credential priorities. For a raw archive, retain
+the local artefact inventory as the first step because the archive itself is the available source of
+shape; an orientation packet, when supplied, still steers bucket selection and pattern choice.
 
 1. **Inventory** the selected material: for Aleph, reconcile the material to the packet's asset classes;
    for a raw archive, list every file, size, mtime, MIME/file-type and directory shape. Output an

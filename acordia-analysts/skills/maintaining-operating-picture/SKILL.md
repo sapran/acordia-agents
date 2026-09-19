@@ -1,6 +1,6 @@
 ---
 name: maintaining-operating-picture
-description: Stop an already-fused picture from rotting while the operation runs — timestamping updates, setting decay on perishable facts and re-verifying them before reliance.
+description: Keep a fused picture current while the operation runs — timestamping updates, decaying perishable facts, and doing the analysis that needs no pending return while legs are still out.
 metadata:
   acordia:
     family: take-handling
@@ -29,6 +29,26 @@ Keep the fused operating picture current and trustworthy as the operation runs a
 - Set decay on facts: mark which elements are durable and which are perishable, and re-verify perishable ones before relying on them.
 - Reconcile new take against the standing picture; when they conflict, trust fresh observation and retire the stale entry.
 - Push the current picture to whoever acts on it, so operators are never steering on a picture the analyst already knows is dead.
+
+### While dispatched legs are still out
+
+**Lead only.** This subsection applies to the orchestrator that dispatched the legs; a leg dispatches
+no legs of its own, and updates and returns its own slice instead.
+
+Waiting on a return is not a pause in the analysis; it is an interval with its own work. Before
+re-entering a wait, establish what does not depend on a pending return:
+
+- Verify the returns already in hand — read the notes each leg named rather than its summary, and
+  reconcile them against the standing picture while the detail is still addressable.
+- Establish the size and shape of the corpus where no dispatched leg owns that question — what the
+  denominator is, and whether a coverage claim could yet be stated honestly;
+  `exhaustive-data-processing` carries the method.
+- Name the gaps the dispatched legs are **not** covering. A leg's assignment bounds what it can
+  find, so the uncovered remainder is visible only from the lead's seat and only while the legs run.
+- Re-verify the perishable facts the next decision will rest on, rather than after the return lands.
+
+Waiting is what remains when that work is exhausted. A picture that did not move while its legs
+ran is a picture nobody was keeping.
 
 ## Signals / outputs
 
