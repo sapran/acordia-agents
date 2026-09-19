@@ -284,3 +284,41 @@ malformed` on every call throughout that work, so the selection could not be mad
 ## Parked during `human-readable-reports`
 
 - **The retired ACORDIA library id `17fec536` did not resolve, while the proceedings child did.** The recovered work is Styran and Yashchuk, *Rethinking Exploitation in Cyber War*, document `1152d85c-b6e0-4236-9102-4478681251a0`; the source-register repair is unrelated to report readability and remains out of scope.
+
+## Parked during `lead-wait-discipline`
+
+- **The 21.2-hour waiting figure motivated this change but does not measure it.** It came from a
+  seven-day audit of the omp `opwe` profile on `mini` (2026-09-12 → 18, 49 leads, 48 legs, 4,083
+  executed tool calls): 434 `hub wait` calls, median 144 s, 202 of them returning a full empty
+  window, 62–78% of active lead time in the largest runs. Any claim that the new doctrine *reduced*
+  lead idling requires a fresh prospective A/B of print-mode sessions scored from session JSONL.
+  Re-reading the motivating corpus would confirm nothing.
+- **The orchestrator prompt now sits at 10,491 of the 10,500-character ceiling — 4 characters of
+  margin.** The next addition to `cyber-analyst.md` must relocate something first. The
+  `## A directory per task` section restates hand-back shape that `briefing-reporting` owns and is
+  the obvious next candidate, but it was deliberately not touched here: this change had no business
+  in it.
+- **`acordia-map.html` was not re-derived and its drift widens.** Last rebuilt at `4cc2456` for
+  6.19.0, it still carries the two removed prompt enumerations (three copies of "Briefs require
+  corpus state…", one per orchestrator surface), the skill's prior fourth packet list ("The packet
+  must contain the asset register…"), the superseded `maintaining-operating-picture` description,
+  and a `v6.19.0` badge against 6.20.0. Nothing ships from it — the plugin source is
+  `./acordia-analysts` — so there is no runtime impact and the staleness predates this change.
+  Recorded rather than left silent because every comparable change in this series either
+  re-derived the map or named its status explicitly. Regenerating it is the customary follow-up
+  `docs:` commit after merge.
+- **`task.maxConcurrency: 4` on the `opwe` profile serialises leg batches into waves.** Operator
+  configuration, not distribution prose. Raising it is *not* recommended on current evidence — the
+  same audit window carried 33 upstream `SERVICE_UNAVAILABLE` responses (all
+  `state not recovered / initialized`, an Elasticsearch cluster-state condition) and 17 MCP
+  transport timeouts, so more parallel legs would press the same strained backend harder.
+- **Eight `skill://…/references/…` reads failed for skills that are shipped** (4
+  `credential-harvest-triage`, 4 `aleph-entity-graph`). The agent asked correctly and the harness
+  could not serve it, so this is a resolver or install-state fault rather than a distribution bug.
+  A packaging CI job that installs the built artifact and resolves every shipped `skill://`
+  reference would catch it as a release gate; out of scope here.
+- **Aleph-side error ergonomics were sent upstream, not fixed here.** A field report was handed to
+  the aleph-mcp maintainer covering retry classification on 503s (all of which carried the
+  Elasticsearch `state not recovered / initialized` condition), a label-vs-id hint on
+  `invalid entity_id`, and a contract question about `get_entity_text` returning zero characters for
+  Workbook and Document attachments.
