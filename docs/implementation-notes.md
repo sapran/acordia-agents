@@ -293,20 +293,22 @@ malformed` on every call throughout that work, so the selection could not be mad
   window, 62–78% of active lead time in the largest runs. Any claim that the new doctrine *reduced*
   lead idling requires a fresh prospective A/B of print-mode sessions scored from session JSONL.
   Re-reading the motivating corpus would confirm nothing.
-- **The orchestrator prompt now sits at 10,491 of the 10,500-character ceiling — 4 characters of
+- **The orchestrator prompt now sits at 10,491 of the 10,500-character ceiling — 9 characters of
   margin.** The next addition to `cyber-analyst.md` must relocate something first. The
   `## A directory per task` section restates hand-back shape that `briefing-reporting` owns and is
   the obvious next candidate, but it was deliberately not touched here: this change had no business
   in it.
-- **`acordia-map.html` was not re-derived and its drift widens.** Last rebuilt at `4cc2456` for
-  6.19.0, it still carries the two removed prompt enumerations (three copies of "Briefs require
-  corpus state…", one per orchestrator surface), the skill's prior fourth packet list ("The packet
-  must contain the asset register…"), the superseded `maintaining-operating-picture` description,
-  and a `v6.19.0` badge against 6.20.0. Nothing ships from it — the plugin source is
-  `./acordia-analysts` — so there is no runtime impact and the staleness predates this change.
-  Recorded rather than left silent because every comparable change in this series either
-  re-derived the map or named its status explicitly. Regenerating it is the customary follow-up
-  `docs:` commit after merge.
+- **`acordia-map.html` drift — RESOLVED in 6.20.1.** It had been parked here as a follow-up: last
+  rebuilt at `4cc2456` for 6.19.0, still carrying the two removed prompt enumerations, the skill's
+  prior fourth packet list, the superseded `maintaining-operating-picture` description and a
+  `v6.19.0` badge. Re-derived in the 6.20.1 hotfix. The transform was validated first by rebuilding
+  the pre-change tree out of git: **58 of 61 records reproduced byte-for-byte**. The three that did
+  not — `human-automation-teaming`, `naming-the-gaps`, `outcome-judgement` — carry map text that
+  matches **no committed tree state**, so the map was last regenerated from an uncommitted working
+  state; that is a pre-existing inconsistency the rebuild now removes, not a transform defect.
+  Verified after splice: drift 0 against a fresh independent rebuild, landing page paints cold with
+  an empty hash (6,123 chars), 69 routes render, 5 retired slugs 404, zero pageerrors, no live
+  `<script>` or `<img>` in `#main`.
 - **`task.maxConcurrency: 4` on the `opwe` profile serialises leg batches into waves.** Operator
   configuration, not distribution prose. Raising it is *not* recommended on current evidence — the
   same audit window carried 33 upstream `SERVICE_UNAVAILABLE` responses (all
